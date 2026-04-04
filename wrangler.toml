@@ -1,0 +1,6 @@
+name = "pickedbyai"
+compatibility_date = "2024-01-01"
+
+# Static assets — serve landing/ as the site root
+[assets]
+directory = "landing"
