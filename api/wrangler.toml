@@ -1,0 +1,14 @@
+name = "pickedbyai-api"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "production"
+
+# Secrets (wrangler secret put으로 설정):
+# - GEMINI_API_KEY
+# - BREVO_API_KEY
+
+# Custom domain: api.pickedby.ai
+# → CF Dashboard > Workers > pickedbyai-api > Settings > Domains & Routes > Add Custom Domain
