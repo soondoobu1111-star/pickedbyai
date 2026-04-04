@@ -1,0 +1,7 @@
+api/node_modules/
+api/.wrangler/
+*.env
+.env.*
+docs/inputs/
+memory/
+CLAUDE.md

@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pickedby.ai — AI Visibility Score for Digital Creators</title>
+  <meta name="description" content="Does AI recommend your product? Free AI Visibility Score in 10 seconds. Built for digital creators." />
+  <meta property="og:title" content="pickedby.ai — Get Picked by AI" />
+  <meta property="og:description" content="Free AI Visibility Score for digital creators. See if AI recommends your product." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:      #000000;
+      --bg2:     #0d0d0d;
+      --bg3:     #161616;
+      --yellow:  #FFD700;
+      --yellow2: #b39700;
+      --text:    #ffffff;
+      --muted:   #666666;
+      --border:  #222222;
+      --green:   #00E676;
+      --red:     #FF3D3D;
+      --orange:  #FF9100;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      /* subtle dot grid */
+      background-image: radial-gradient(circle, #1c1c1c 1px, transparent 1px);
+      background-size: 28px 28px;
+      padding: 2.5rem 1rem 5rem;
+    }
+
+    .container { max-width: 560px; margin: 0 auto; }
+
+    /* ── HEADER ── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 3.5rem;
+    }
+
+    .logo {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.85rem;
+      color: var(--yellow);
+      letter-spacing: -1px;
+      line-height: 1.6;
+    }
+
+    .logo .dot { color: #fff; }
+
+    .badge-chip {
+      font-size: 0.65rem;
+      color: var(--yellow);
+      border: 1px solid var(--yellow);
+      padding: 0.25rem 0.6rem;
+      letter-spacing: 0.06em;
+      opacity: 0.6;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      margin-bottom: 2.75rem;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.45rem;
+      color: var(--yellow);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      letter-spacing: -0.5px;
+    }
+
+    .hero h1 em {
+      color: var(--yellow);
+      font-style: normal;
+      position: relative;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.65;
+      max-width: 420px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 1.75rem;
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+
+    /* pixel corner accent */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px;
+      width: 10px; height: 10px;
+      background: var(--yellow);
+    }
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; right: -1px;
+      width: 6px; height: 6px;
+      background: var(--border);
+    }
+
+    /* ── FIELDS ── */
+    .field { margin-bottom: 1.25rem; }
+
+    label {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.45rem;
+    }
+
+    input[type=text], input[type=email], select {
+      width: 100%;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 0;
+      padding: 0.7rem 0.85rem;
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    input[type=text]:focus, input[type=email]:focus, select:focus {
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 1px var(--yellow);
+    }
+
+    input::placeholder { color: #333; }
+    select option { background: #161616; }
+
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '▼';
+      position: absolute;
+      right: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--yellow);
+      font-size: 0.55rem;
+      pointer-events: none;
+    }
+    .select-wrap select { padding-right: 2rem; cursor: pointer; }
+
+    /* ── BUTTON PRIMARY ── */
+    .btn-primary {
+      width: 100%;
+      padding: 0.9rem 1rem;
+      background: var(--yellow);
+      color: #000;
+      border: none;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.65rem;
+      cursor: pointer;
+      letter-spacing: 0.06em;
+      box-shadow: 4px 4px 0 var(--yellow2);
+      transition: transform 0.08s, box-shadow 0.08s;
+      margin-top: 0.25rem;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0 var(--yellow2);
+    }
+
+    .btn-primary:active:not(:disabled) {
+      transform: translate(4px, 4px);
+      box-shadow: none;
+    }
+
+    .btn-primary:disabled {
+      background: #1e1e1e;
+      color: #333;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .error-msg {
+      color: var(--red);
+      font-size: 0.78rem;
+      margin-top: 0.6rem;
+      display: none;
+    }
+
+    /* ── LOADING ── */
+    .loading {
+      display: none;
+      padding: 2.5rem 0;
+      text-align: center;
+    }
+
+    .pixel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 1.25rem;
+    }
+
+    .pixel-dots span {
+      display: block;
+      width: 8px; height: 8px;
+      background: var(--yellow);
+      animation: pixelblink 1.2s infinite;
+    }
+    .pixel-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .pixel-dots span:nth-child(3) { animation-delay: 0.4s; }
+    .pixel-dots span:nth-child(4) { animation-delay: 0.6s; }
+    .pixel-dots span:nth-child(5) { animation-delay: 0.8s; }
+
+    @keyframes pixelblink {
+      0%, 100% { opacity: 1; transform: scaleY(1); }
+      50% { opacity: 0.15; transform: scaleY(0.4); }
+    }
+
+    .loading-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.48rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+    }
+
+    .loading-step {
+      font-size: 0.78rem;
+      color: #333;
+      margin-top: 0.5rem;
+    }
+
+    /* ── RESULT ── */
+    .result {
+      display: none;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px;
+      width: 10px; height: 10px;
+      background: var(--yellow);
+    }
+
+    .result.show { display: block; }
+
+    .result-inner { padding: 1.75rem; }
+
+    /* Score block */
+    .score-block {
+      text-align: center;
+      padding-bottom: 1.75rem;
+      margin-bottom: 1.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .score-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.45rem;
+      color: var(--muted);
+      letter-spacing: 0.18em;
+      margin-bottom: 1rem;
+    }
+
+    .score-display {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 0.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .score-num {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 4rem;
+      line-height: 1;
+    }
+    .score-num.s-low    { color: var(--red); }
+    .score-num.s-mid    { color: var(--orange); }
+    .score-num.s-hi     { color: #FFEB3B; }
+    .score-num.s-top    { color: var(--green); }
+
+    .score-denom {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    /* pixel progress bar */
+    .pbar {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin: 1rem 0 0.85rem;
+    }
+
+    .pbar-block {
+      width: 16px; height: 12px;
+      background: #1a1a1a;
+    }
+
+    .pbar-block.on          { background: #FFEB3B; }
+    .pbar-block.on.s-low    { background: var(--red); }
+    .pbar-block.on.s-mid    { background: var(--orange); }
+    .pbar-block.on.s-hi     { background: #FFEB3B; }
+    .pbar-block.on.s-top    { background: var(--green); }
+
+    .score-verdict {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Section header */
+    .sec-head {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.45rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    /* Query list */
+    .query-block {
+      margin-bottom: 1.75rem;
+      padding-bottom: 1.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .qitem {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.6rem 0;
+      border-top: 1px solid #181818;
+      font-size: 0.83rem;
+    }
+
+    .qitem:first-of-type { border-top: none; }
+
+    .qitem-icon { flex-shrink: 0; }
+    .qitem-text { flex: 1; color: var(--muted); }
+    .qitem-rank {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.42rem;
+      color: var(--yellow);
+      white-space: nowrap;
+    }
+
+    /* Suggestions */
+    .suggest-block {
+      margin-bottom: 1.75rem;
+      padding-bottom: 1.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .sitem {
+      display: flex;
+      gap: 0.85rem;
+      padding: 0.7rem 0;
+      font-size: 0.83rem;
+      line-height: 1.55;
+      border-top: 1px solid #181818;
+    }
+
+    .sitem:first-of-type { border-top: none; }
+
+    .sitem-n {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.42rem;
+      color: var(--yellow);
+      flex-shrink: 0;
+      padding-top: 0.3rem;
+    }
+
+    /* Actions */
+    .action-block { margin-bottom: 1.75rem; }
+
+    .btn-share {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      width: 100%;
+      padding: 0.78rem 1rem;
+      background: transparent;
+      border: 1px solid var(--yellow);
+      color: var(--yellow);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.5rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      margin-bottom: 0.75rem;
+    }
+
+    .btn-share:hover { background: var(--yellow); color: #000; }
+
+    /* Badge CTA */
+    .badge-cta {
+      display: none;
+      background: #0a0800;
+      border: 1px solid var(--yellow);
+      padding: 1.25rem;
+      text-align: center;
+    }
+
+    .badge-cta.show { display: block; }
+
+    .badge-chip-lg {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      color: var(--yellow);
+      border: 2px solid var(--yellow);
+      display: inline-block;
+      padding: 0.4rem 0.85rem;
+      margin-bottom: 0.85rem;
+      letter-spacing: 0.05em;
+    }
+
+    .badge-cta p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 0.9rem;
+    }
+
+    .btn-badge {
+      width: 100%;
+      padding: 0.75rem;
+      background: var(--yellow);
+      color: #000;
+      border: none;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.5rem;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--yellow2);
+      transition: transform 0.08s, box-shadow 0.08s;
+    }
+
+    .btn-badge:hover {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 var(--yellow2);
+    }
+
+    /* Email */
+    .email-block {
+      border-top: 1px solid var(--border);
+      padding-top: 1.5rem;
+    }
+
+    .email-block p {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 1rem;
+    }
+
+    .email-row { display: flex; gap: 0.5rem; }
+    .email-row input { flex: 1; }
+
+    .btn-email {
+      padding: 0 1rem;
+      background: var(--yellow);
+      color: #000;
+      border: none;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.45rem;
+      white-space: nowrap;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--yellow2);
+      transition: transform 0.08s, box-shadow 0.08s;
+    }
+
+    .btn-email:hover {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0 var(--yellow2);
+    }
+
+    .email-ok {
+      color: var(--green);
+      font-size: 0.78rem;
+      margin-top: 0.6rem;
+      display: none;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      margin-top: 3.5rem;
+      text-align: center;
+      font-size: 0.72rem;
+      color: #2a2a2a;
+    }
+
+    .footer a { color: #333; text-decoration: none; }
+    .footer a:hover { color: var(--muted); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 480px) {
+      .hero h1 { font-size: 1.75rem; }
+      .score-num { font-size: 3rem; }
+      .email-row { flex-direction: column; }
+      .btn-email { padding: 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- HEADER -->
+    <header class="header">
+      <div class="logo">picked<span class="dot">by</span>.ai</div>
+      <div class="badge-chip">BETA</div>
+    </header>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hero-eyebrow">▶ Free AI Visibility Check</div>
+      <h1>Does AI <em>recommend</em><br>your product?</h1>
+      <p>Find out in 10 seconds. Enter your product name and see your AI Visibility Score — the metric every digital creator needs to know.</p>
+    </div>
+
+    <!-- FORM CARD -->
+    <div class="card">
+      <div class="field">
+        <label for="product_name">Product name</label>
+        <input id="product_name" type="text" placeholder="e.g. Ultimate Notion Planner" maxlength="100" autocomplete="off" />
+      </div>
+
+      <div class="field">
+        <label for="category">Category</label>
+        <div class="select-wrap">
+          <select id="category">
+            <option value="">Select a category...</option>
+            <option value="notion template">Notion Template</option>
+            <option value="ai prompt pack">AI Prompt Pack</option>
+            <option value="online course">Online Course</option>
+            <option value="ebook">Ebook / Digital Guide</option>
+            <option value="digital planner">Digital Planner</option>
+            <option value="canva template">Canva Template</option>
+            <option value="spreadsheet template">Spreadsheet Template</option>
+            <option value="figma template">Figma Template</option>
+            <option value="stock photo pack">Stock Photo / Asset Pack</option>
+            <option value="other digital product">Other Digital Product</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="keywords">Target audience <span style="color:#333;font-size:0.85em">(optional)</span></label>
+        <input id="keywords" type="text" placeholder="e.g. freelancers, students, designers" maxlength="100" autocomplete="off" />
+      </div>
+
+      <button class="btn-primary" id="checkBtn" onclick="runCheck()">CHECK MY AI SCORE ▶▶</button>
+      <p class="error-msg" id="errorMsg"></p>
+    </div>
+
+    <!-- LOADING -->
+    <div class="loading" id="loading">
+      <div class="pixel-dots">
+        <span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="loading-label" id="loadingLabel">SCANNING AI ENGINES</div>
+      <div class="loading-step" id="loadingStep">Querying real-time search index...</div>
+    </div>
+
+    <!-- RESULT -->
+    <div class="result" id="result">
+      <div class="result-inner">
+
+        <!-- Score -->
+        <div class="score-block">
+          <div class="score-label">AI VISIBILITY SCORE</div>
+          <div class="score-display">
+            <span class="score-num" id="scoreNum">0</span>
+            <span class="score-denom">/ 100</span>
+          </div>
+          <div class="pbar" id="pbar"></div>
+          <div class="score-verdict" id="scoreVerdict"></div>
+        </div>
+
+        <!-- Scan results -->
+        <div class="query-block">
+          <div class="sec-head">Scan Results</div>
+          <div id="queryList"></div>
+        </div>
+
+        <!-- Suggestions -->
+        <div class="suggest-block">
+          <div class="sec-head">How to Improve</div>
+          <div id="suggestList"></div>
+        </div>
+
+        <!-- Actions -->
+        <div class="action-block">
+          <button class="btn-share" id="shareBtn" onclick="shareX()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            SHARE MY SCORE ON X
+          </button>
+
+          <div class="badge-cta" id="badgeCta">
+            <div class="badge-chip-lg">✓ PICKED BY AI</div>
+            <p>Your score qualifies for the official badge. Add it to your product page to signal AI-readiness to buyers.</p>
+            <button class="btn-badge" onclick="claimBadge()">CLAIM MY BADGE ▶▶</button>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="email-block">
+          <p>Get a weekly AI Visibility Report for your product — free. Track your score over time.</p>
+          <div class="email-row">
+            <input id="emailInput" type="email" placeholder="your@email.com" />
+            <button class="btn-email" onclick="submitEmail()">SEND ▶</button>
+          </div>
+          <div class="email-ok" id="emailOk">✅ You're in! Report incoming.</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>pickedby.ai &nbsp;·&nbsp; Built for digital creators &nbsp;·&nbsp; <a href="mailto:hello@pickedby.ai">hello@pickedby.ai</a></p>
+    </footer>
+
+  </div>
+
+  <script>
+    const GEMINI_MODEL  = 'gemini-2.5-flash';
+    const GEMINI_BASE   = 'https://generativelanguage.googleapis.com/v1beta/models/';
+    const API_BASE      = 'https://api.pickedby.ai';
+    let _key   = null;
+    let _score = 0;
+    let _product = '';
+
+    // ── Gemini key ──────────────────────────────────────────
+    async function getKey() {
+      if (_key) return _key;
+      const r = await fetch(`${API_BASE}/v1/gemini-key`);
+      const d = await r.json();
+      if (!d.key) throw new Error('key load failed');
+      _key = d.key;
+      return _key;
+    }
+
+    // ── Gemini + Search Grounding ────────────────────────────
+    async function queryGemini(key, prompt) {
+      const r = await fetch(`${GEMINI_BASE}${GEMINI_MODEL}:generateContent?key=${key}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          tools: [{ google_search: {} }],
+          generationConfig: { maxOutputTokens: 600 },
+        }),
+      });
+      if (!r.ok) throw new Error(`Gemini ${r.status}`);
+      const d = await r.json();
+      const text = (d.candidates?.[0]?.content?.parts ?? []).map(p => p.text ?? '').join('\n');
+      const grounded = !!(d.candidates?.[0]?.groundingMetadata?.groundingChunks?.length);
+      return { text, grounded };
+    }
+
+    // ── Rank detection ───────────────────────────────────────
+    function findRank(text, name) {
+      const lines = text.split('\n');
+      const lo = name.toLowerCase();
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].toLowerCase().includes(lo)) {
+          const m = lines[i].match(/^\s*(\d+)[.)]/);
+          if (m) return parseInt(m[1]);
+          return i + 1;
+        }
+      }
+      return null;
+    }
+
+    // ── Score calculation ────────────────────────────────────
+    function calcScore(results) {
+      const found = results.filter(r => r.found);
+      let score = (found.length / results.length) * 55;
+
+      const ranks = results.filter(r => r.rank != null).map(r => r.rank);
+      if (ranks.length) {
+        const avg = ranks.reduce((a, b) => a + b, 0) / ranks.length;
+        score += avg <= 2 ? 30 : avg <= 4 ? 22 : avg <= 6 ? 15 : 8;
+      }
+
+      const groundedCount = results.filter(r => r.grounded).length;
+      score += (groundedCount / results.length) * 15;
+
+      return Math.min(100, Math.round(score));
+    }
+
+    function scoreClass(s) {
+      if (s <= 35) return 's-low';
+      if (s <= 60) return 's-mid';
+      if (s <= 80) return 's-hi';
+      return 's-top';
+    }
+
+    function verdict(s) {
+      if (s <= 15) return "AI has no idea your product exists.";
+      if (s <= 35) return "Barely on AI's radar. Significant work needed.";
+      if (s <= 55) return "AI knows you exist, but rarely recommends you.";
+      if (s <= 70) return "Getting there — AI recommends you sometimes.";
+      if (s <= 85) return "Solid presence. AI recommends you regularly.";
+      return "Excellent! AI consistently picks your product.";
+    }
+
+    const SUGGESTIONS = {
+      low: [
+        "Create a dedicated product page with your exact product name in the title, H1, and meta description",
+        "Submit your product to major directories: Gumroad, Product Hunt, AppSumo — AI learns from these",
+        "Write 3–5 posts that include your product name and category keywords on public platforms",
+      ],
+      mid: [
+        "Add an llms.txt file to your website — a simple text file that helps AI systems understand your product",
+        "Collect public reviews that mention your product name on Google, Trustpilot, or Reddit",
+        "Create comparison content: 'Your Product vs [category alternatives]' — AI frequently surfaces these",
+      ],
+      hi: [
+        "Add schema.org JSON-LD Product markup to boost AI's confidence in your listing",
+        "Expand beyond Gemini — Perplexity and Claude use different data sources, so cross-check",
+        "Build topical authority: publish consistently in your category to become a top reference",
+      ],
+      top: [
+        "Maintain freshness: update your product pages regularly — AI prefers recently updated content",
+        "Add the 'Picked by AI' badge to your product pages to signal AI-readiness to buyers",
+        "Monitor competitors' AI visibility — are they closing the gap?",
+      ],
+    };
+
+    function getSuggestions(s) {
+      if (s <= 35) return SUGGESTIONS.low;
+      if (s <= 60) return SUGGESTIONS.mid;
+      if (s <= 80) return SUGGESTIONS.hi;
+      return SUGGESTIONS.top;
+    }
+
+    // ── Score counter animation ──────────────────────────────
+    function animateScore(target) {
+      const el = document.getElementById('scoreNum');
+      let cur = 0;
+      const step = target / 40;
+      const timer = setInterval(() => {
+        cur += step;
+        if (cur >= target) { cur = target; clearInterval(timer); }
+        el.textContent = Math.round(cur);
+      }, 18);
+    }
+
+    // ── Render result ────────────────────────────────────────
+    function renderResult(score, results) {
+      const cls = scoreClass(score);
+
+      // Score
+      const numEl = document.getElementById('scoreNum');
+      numEl.className = `score-num ${cls}`;
+      document.getElementById('scoreVerdict').textContent = verdict(score);
+
+      // Progress bar (10 blocks)
+      const bar = document.getElementById('pbar');
+      bar.innerHTML = '';
+      const filled = Math.round(score / 10);
+      for (let i = 0; i < 10; i++) {
+        const b = document.createElement('div');
+        b.className = 'pbar-block' + (i < filled ? ` on ${cls}` : '');
+        bar.appendChild(b);
+      }
+
+      // Query list
+      const qList = document.getElementById('queryList');
+      qList.innerHTML = '';
+      results.forEach(r => {
+        const div = document.createElement('div');
+        div.className = 'qitem';
+        div.innerHTML = `
+          <span class="qitem-icon">${r.found ? '✅' : '❌'}</span>
+          <span class="qitem-text">"${r.label}"</span>
+          ${r.rank ? `<span class="qitem-rank">#${r.rank}</span>` : ''}
+        `;
+        qList.appendChild(div);
+      });
+
+      // Suggestions
+      const sList = document.getElementById('suggestList');
+      sList.innerHTML = '';
+      getSuggestions(score).forEach((s, i) => {
+        const div = document.createElement('div');
+        div.className = 'sitem';
+        div.innerHTML = `<span class="sitem-n">0${i+1}</span><span>${s}</span>`;
+        sList.appendChild(div);
+      });
+
+      // Badge CTA
+      document.getElementById('badgeCta').classList.toggle('show', score >= 80);
+
+      // Show & animate
+      const resultEl = document.getElementById('result');
+      resultEl.classList.add('show');
+      animateScore(score);
+      resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    // ── Main check ───────────────────────────────────────────
+    async function runCheck() {
+      const name  = document.getElementById('product_name').value.trim();
+      const cat   = document.getElementById('category').value;
+      const kw    = document.getElementById('keywords').value.trim();
+      const errEl = document.getElementById('errorMsg');
+      const btn   = document.getElementById('checkBtn');
+
+      errEl.style.display = 'none';
+      document.getElementById('result').classList.remove('show');
+
+      if (!name) { errEl.textContent = 'Enter your product name.'; errEl.style.display = 'block'; return; }
+      if (!cat)  { errEl.textContent = 'Select a category.'; errEl.style.display = 'block'; return; }
+
+      _product = name;
+      btn.disabled = true;
+      document.getElementById('loading').style.display = 'block';
+
+      const audience = kw || 'digital creators';
+      const yr = new Date().getFullYear();
+      const queries = [
+        { prompt: `What are the best ${cat} products right now? List 10 specific product names, numbered.`,
+          label:  `Best ${cat} products right now` },
+        { prompt: `Recommend a ${cat} for ${audience}. List 10 specific product names, numbered.`,
+          label:  `Recommended ${cat} for ${audience}` },
+        { prompt: `Top ${cat} in ${yr}. List 10 product names only, one per line, numbered.`,
+          label:  `Top ${cat} in ${yr}` },
+      ];
+
+      const steps = ['SCANNING AI ENGINES', 'CHECKING SEARCH INDEX', 'CALCULATING SCORE'];
+      const stepTxts = [
+        'Querying real-time search index...',
+        'Checking AI recommendation lists...',
+        'Calculating your visibility score...',
+      ];
+      let si = 0;
+      const stepTimer = setInterval(() => {
+        si = (si + 1) % steps.length;
+        document.getElementById('loadingLabel').textContent = steps[si];
+        document.getElementById('loadingStep').textContent  = stepTxts[si];
+      }, 2200);
+
+      try {
+        const key = await getKey();
+        const lower = name.toLowerCase();
+
+        const results = await Promise.all(queries.map(async (q) => {
+          const { text, grounded } = await queryGemini(key, q.prompt);
+          const found = text.toLowerCase().includes(lower);
+          const rank  = found ? findRank(text, name) : null;
+          return { label: q.label, found, rank, grounded };
+        }));
+
+        clearInterval(stepTimer);
+        document.getElementById('loading').style.display = 'none';
+
+        _score = calcScore(results);
+        renderResult(_score, results);
+
+      } catch (e) {
+        clearInterval(stepTimer);
+        document.getElementById('loading').style.display = 'none';
+        errEl.textContent = 'Something went wrong. Please try again.';
+        errEl.style.display = 'block';
+      }
+
+      btn.disabled = false;
+    }
+
+    // ── Share on X ───────────────────────────────────────────
+    function shareX() {
+      const text = `My "${_product}" AI Visibility Score: ${_score}/100\n\nDoes AI recommend YOUR product? Check free → pickedby.ai`;
+      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
+    // ── Badge claim ──────────────────────────────────────────
+    function claimBadge() {
+      document.getElementById('emailInput').focus();
+      document.querySelector('.email-block').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // ── Email submit ─────────────────────────────────────────
+    async function submitEmail() {
+      const email = document.getElementById('emailInput').value.trim();
+      if (!email || !email.includes('@')) {
+        document.getElementById('emailInput').focus();
+        return;
+      }
+
+      try {
+        await fetch(`${API_BASE}/v1/subscribe`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, product: _product, score: _score, source: 'pickedby.ai' }),
+        });
+      } catch (_) { /* silent fail — endpoint not yet deployed */ }
+
+      document.getElementById('emailOk').style.display = 'block';
+      document.getElementById('emailInput').disabled = true;
+    }
+
+    // ── Enter key ────────────────────────────────────────────
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && document.activeElement.id !== 'emailInput') runCheck();
+    });
+  </script>
+</body>
+</html>
