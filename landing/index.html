@@ -528,12 +528,30 @@
     .footer a { color: #333; text-decoration: none; }
     .footer a:hover { color: var(--muted); }
 
+    /* ── TRUST BADGES ── */
+    .trust-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.4rem 1rem;
+      margin-top: 1.5rem;
+      margin-bottom: 2rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .trust-badges span {
+      white-space: nowrap;
+    }
+
     /* ── MOBILE ── */
     @media (max-width: 480px) {
       .hero h1 { font-size: 1.75rem; }
       .score-num { font-size: 3rem; }
       .email-row { flex-direction: column; }
       .btn-email { padding: 0.75rem; }
+      .card { padding: 1.25rem; }
+      .trust-badges { gap: 0.3rem 0.75rem; font-size: 0.72rem; }
     }
   </style>
 </head>
@@ -586,6 +604,15 @@
 
       <button class="btn-primary" id="checkBtn" onclick="runCheck()">CHECK MY AI SCORE ▶▶</button>
       <p class="error-msg" id="errorMsg"></p>
+    </div>
+
+    <!-- TRUST BADGES -->
+    <div class="trust-badges">
+      <span>✅ Google Search</span>
+      <span>✅ ChatGPT</span>
+      <span>✅ Claude</span>
+      <span>✅ Perplexity</span>
+      <span>✅ Web Reviews</span>
     </div>
 
     <!-- LOADING -->
