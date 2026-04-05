@@ -4,10 +4,28 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>pickedby.ai — AI Visibility Score for Digital Creators</title>
-  <meta name="description" content="Does AI recommend your product? Free AI Visibility Score in 10 seconds. Built for digital creators." />
-  <meta property="og:title" content="pickedby.ai — Get Picked by AI" />
-  <meta property="og:description" content="Free AI Visibility Score for digital creators. See if AI recommends your product." />
+  <meta name="description" content="Does AI recommend your product? Free AI Visibility Score in 10 seconds. For Gumroad sellers, Notion template creators, and digital creators." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pickedby.ai/" />
+  <meta property="og:title" content="pickedby.ai — Does AI Recommend Your Product?" />
+  <meta property="og:description" content="Free AI Visibility Score for digital creators. See if ChatGPT, Claude & Perplexity recommend your product. Results in 10 seconds." />
+  <meta property="og:url" content="https://pickedby.ai/" />
+  <meta property="og:type" content="website" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="pickedby.ai — AI Visibility Score for Digital Creators" />
+  <meta name="twitter:description" content="Does AI recommend your product? Free score in 10 seconds. For Gumroad sellers, Notion template creators & digital creators." />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "pickedby.ai",
+    "url": "https://pickedby.ai",
+    "description": "AI Visibility Score for digital creators. Check if ChatGPT, Claude, and Perplexity recommend your product in 10 seconds.",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Web",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
   <style>
@@ -32,13 +50,20 @@
       background: var(--bg);
       color: var(--text);
       min-height: 100vh;
-      /* subtle dot grid */
-      background-image: radial-gradient(circle, #1c1c1c 1px, transparent 1px);
-      background-size: 28px 28px;
       padding: 0 1rem 5rem;
     }
 
-    .container { max-width: 560px; margin: 0 auto; padding-top: 2.5rem; }
+    /* ── INTERACTIVE BG CANVAS ── */
+    #bg-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container { max-width: 620px; margin: 0 auto; padding-top: 2.5rem; position: relative; z-index: 1; }
+    .founding-bar { position: relative; z-index: 1; }
 
     /* ── HEADER ── */
     .header {
@@ -54,6 +79,9 @@
       color: var(--yellow);
       letter-spacing: -1px;
       line-height: 1.6;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .logo .dot { color: #fff; }
@@ -97,8 +125,8 @@
 
     .hero p {
       color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.65;
+      font-size: 1rem;
+      line-height: 1.7;
     }
 
     /* ── CARD ── */
@@ -131,11 +159,11 @@
 
     label {
       display: block;
-      font-size: 0.7rem;
+      font-size: 0.75rem;
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.5rem;
     }
 
     input[type=text], input[type=email], select {
@@ -143,9 +171,9 @@
       background: var(--bg3);
       border: 1px solid var(--border);
       border-radius: 0;
-      padding: 0.7rem 0.85rem;
+      padding: 0.8rem 0.95rem;
       color: var(--text);
-      font-size: 0.9rem;
+      font-size: 1rem;
       outline: none;
       -webkit-appearance: none;
       appearance: none;
@@ -338,9 +366,9 @@
     .pbar-block.on.s-top    { background: var(--green); }
 
     .score-verdict {
-      font-size: 0.85rem;
+      font-size: 0.95rem;
       color: var(--muted);
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
     /* Section header */
@@ -364,9 +392,9 @@
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      padding: 0.6rem 0;
+      padding: 0.65rem 0;
       border-top: 1px solid #181818;
-      font-size: 0.83rem;
+      font-size: 0.92rem;
     }
 
     .qitem:first-of-type { border-top: none; }
@@ -390,9 +418,9 @@
     .sitem {
       display: flex;
       gap: 0.85rem;
-      padding: 0.7rem 0;
-      font-size: 0.83rem;
-      line-height: 1.55;
+      padding: 0.75rem 0;
+      font-size: 0.92rem;
+      line-height: 1.6;
       border-top: 1px solid #181818;
     }
 
@@ -483,9 +511,9 @@
     }
 
     .email-block p {
-      font-size: 0.82rem;
+      font-size: 0.9rem;
       color: var(--muted);
-      line-height: 1.55;
+      line-height: 1.6;
       margin-bottom: 1rem;
     }
 
@@ -534,7 +562,7 @@
       background: #0a0800;
       border-bottom: 1px solid var(--yellow);
       color: var(--yellow);
-      font-size: 0.72rem;
+      font-size: 0.8rem;
       text-align: center;
       padding: 0.85rem 1rem;
       letter-spacing: 0.04em;
@@ -569,11 +597,11 @@
     /* ── AI VITALS ── */
     .vitals { margin-bottom: 1.75rem; }
     .vitals-head {
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       color: var(--muted);
       text-align: center;
       margin-bottom: 1.25rem;
-      line-height: 1.6;
+      line-height: 1.65;
     }
     .vitals-head em { color: var(--yellow); font-style: normal; }
     .vitals-grid {
@@ -605,7 +633,7 @@
       margin-bottom: 0.5rem;
       opacity: .7;
     }
-    .vital-desc { font-size: 0.68rem; color: #666; line-height: 1.4; }
+    .vital-desc { font-size: 0.78rem; color: #666; line-height: 1.45; }
 
     /* ── ENTRANCE ANIMATION ── */
     .fade-up {
@@ -707,12 +735,12 @@
     .sz-mid  .sz-range { color: var(--orange); }
     .sz-hi   .sz-range { color: #FFEB3B; }
     .sz-top  .sz-range { color: var(--green); }
-    .sz-title { font-size: 0.8rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .sz-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.3rem; }
     .sz-low  .sz-title { color: #ff6b6b; }
     .sz-mid  .sz-title { color: #ffa94d; }
     .sz-hi   .sz-title { color: #ffe066; }
     .sz-top  .sz-title { color: #69db7c; }
-    .sz-desc { font-size: 0.62rem; color: #555; line-height: 1.4; }
+    .sz-desc { font-size: 0.72rem; color: #555; line-height: 1.45; }
 
     /* ── QUERY TICKER ── */
     .qticker-wrap {
@@ -746,7 +774,7 @@
       align-items: center;
       gap: 0.5rem;
       padding: 0 1.75rem;
-      font-size: 0.73rem;
+      font-size: 0.82rem;
       white-space: nowrap;
       color: #444;
     }
@@ -799,8 +827,8 @@
       margin-bottom: 0.4rem;
       opacity: 0.5;
     }
-    .how-title { font-size: 0.78rem; font-weight: 600; margin-bottom: 0.3rem; }
-    .how-desc { font-size: 0.67rem; color: #666; line-height: 1.5; }
+    .how-title { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.35rem; }
+    .how-desc { font-size: 0.76rem; color: #666; line-height: 1.55; }
 
     /* ── CONSENT ── */
     .consent-note { font-size: 0.68rem; color: #444; margin-top: 0.5rem; line-height: 1.4; }
@@ -808,21 +836,36 @@
 
     /* ── MOBILE ── */
     @media (max-width: 767px) {
-      .how-steps { grid-template-columns: 1fr; }
+      body { padding: 0 0.75rem 5rem; }
+      .container { padding-top: 1.5rem; }
+      .how-steps { grid-template-columns: 1fr; gap: 1rem; }
       .how-arrow { display: none; }
-      .hero h1 { font-size: 1.75rem; }
+      .hero h1 { font-size: 2rem; }
+      .hero p { font-size: 0.95rem; }
       .score-num { font-size: 3rem; }
       .email-row { flex-direction: column; }
       .btn-email { min-height: 44px; padding: 0.75rem; }
-      .vitals-grid { grid-template-columns: 1fr; }
+      .vitals-grid { grid-template-columns: 1fr; gap: 0.5rem; }
       .vs-row { flex-direction: column; gap: 0.35rem; }
       .spectrum-zones { grid-template-columns: repeat(2, 1fr); }
       .how-section { padding: 1.25rem 1rem; }
-      .stat-item { padding: 0.85rem 0.4rem; }
+      .card { padding: 1.25rem; }
+      .sz { padding: 0.75rem 0.4rem; }
+      .vital-card { padding: 1rem 0.75rem; }
+      .qitem-text { word-break: break-word; }
+      .sitem { flex-wrap: nowrap; }
+    }
+
+    @media (max-width: 420px) {
+      .hero h1 { font-size: 1.65rem; }
+      .spectrum-zones { grid-template-columns: repeat(2, 1fr); }
+      .vitals-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
+  <canvas id="bg-canvas"></canvas>
+
   <!-- FOUNDING BAR -->
   <div class="founding-bar">
     <div class="founding-bar-inner">
@@ -835,7 +878,27 @@
 
     <!-- HEADER -->
     <header class="header">
-      <div class="logo">picked<span class="dot">by</span>.ai</div>
+      <div class="logo">
+        <!-- pixel robot icon -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+          <!-- top bar -->
+          <rect x="0" y="0" width="3" height="3"/><rect x="3" y="0" width="3" height="3"/><rect x="6" y="0" width="3" height="3"/><rect x="9" y="0" width="3" height="3"/><rect x="12" y="0" width="3" height="3"/><rect x="15" y="0" width="3" height="3"/><rect x="18" y="0" width="3" height="3"/><rect x="21" y="0" width="3" height="3"/>
+          <!-- eyes row -->
+          <rect x="0" y="3" width="3" height="3"/><rect x="6" y="3" width="3" height="3"/><rect x="15" y="3" width="3" height="3"/><rect x="21" y="3" width="3" height="3"/>
+          <!-- sides -->
+          <rect x="0" y="6" width="3" height="3"/><rect x="21" y="6" width="3" height="3"/>
+          <!-- mouth / scan bar -->
+          <rect x="0" y="9" width="3" height="3"/><rect x="6" y="9" width="3" height="3"/><rect x="9" y="9" width="3" height="3"/><rect x="12" y="9" width="3" height="3"/><rect x="15" y="9" width="3" height="3"/><rect x="21" y="9" width="3" height="3"/>
+          <!-- sides -->
+          <rect x="0" y="12" width="3" height="3"/><rect x="21" y="12" width="3" height="3"/>
+          <!-- bottom bar -->
+          <rect x="0" y="15" width="3" height="3"/><rect x="3" y="15" width="3" height="3"/><rect x="6" y="15" width="3" height="3"/><rect x="9" y="15" width="3" height="3"/><rect x="12" y="15" width="3" height="3"/><rect x="15" y="15" width="3" height="3"/><rect x="18" y="15" width="3" height="3"/><rect x="21" y="15" width="3" height="3"/>
+          <!-- legs -->
+          <rect x="6" y="18" width="3" height="3"/><rect x="15" y="18" width="3" height="3"/>
+          <rect x="6" y="21" width="3" height="3"/><rect x="15" y="21" width="3" height="3"/>
+        </svg>
+        picked<span class="dot">by</span>.ai
+      </div>
       <div class="badge-chip">BETA</div>
     </header>
 
@@ -857,6 +920,8 @@
       <span class="vs-item"><strong>✓</strong> Claude</span>
       <span class="vs-sep">·</span>
       <span class="vs-item"><strong>✓</strong> Perplexity</span>
+      <span class="vs-sep">·</span>
+      <span class="vs-item"><strong>✓</strong> Web Reviews</span>
     </div>
 
     <!-- SCORE SPECTRUM -->
@@ -927,8 +992,8 @@
         <div class="how-step">
           <span class="how-icon">🤖</span>
           <span class="how-num">02</span>
-          <div class="how-title">AI scans 3 ways</div>
-          <div class="how-desc">Direct search · Best-of list · Problem-solution</div>
+          <div class="how-title">AI scans 5 ways</div>
+          <div class="how-desc">Direct · Best-of · Problem-solution · Reviews · Comparisons</div>
         </div>
         <div class="how-arrow">→</div>
         <div class="how-step">
@@ -948,32 +1013,8 @@
       </div>
 
       <div class="field">
-        <label for="product_url">Product URL</label>
+        <label for="product_url">Product URL <span style="color:#555;font-size:0.85em">(optional)</span></label>
         <input id="product_url" type="text" placeholder="e.g. gumroad.com/l/your-product" maxlength="200" autocomplete="off" />
-      </div>
-
-      <div class="field">
-        <label for="category">Category <span style="color:#555;font-size:0.85em">(optional)</span></label>
-        <div class="select-wrap">
-          <select id="category">
-            <option value="">Select a category...</option>
-            <option value="notion template">Notion Template</option>
-            <option value="ai prompt pack">AI Prompt Pack</option>
-            <option value="online course">Online Course</option>
-            <option value="ebook">Ebook / Digital Guide</option>
-            <option value="digital planner">Digital Planner</option>
-            <option value="canva template">Canva Template</option>
-            <option value="spreadsheet template">Spreadsheet Template</option>
-            <option value="figma template">Figma Template</option>
-            <option value="stock photo pack">Stock Photo / Asset Pack</option>
-            <option value="other digital product">Other Digital Product</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="keywords">Target audience <span style="color:#555;font-size:0.85em">(optional)</span></label>
-        <input id="keywords" type="text" placeholder="e.g. freelancers, students, designers" maxlength="100" autocomplete="off" />
       </div>
 
       <button class="btn-primary" id="checkBtn" onclick="runCheck()">CHECK MY AI SCORE ▶▶</button>
@@ -1170,9 +1211,8 @@
     // ── Main check ───────────────────────────────────────────
     async function runCheck() {
       const name  = document.getElementById('product_name').value.trim();
-      const cat   = document.getElementById('category').value;
-      const kw    = document.getElementById('keywords').value.trim();
-      const url   = document.getElementById('product_url').value.trim();
+      let url     = document.getElementById('product_url').value.trim();
+      if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
       const errEl = document.getElementById('errorMsg');
       const btn   = document.getElementById('checkBtn');
 
@@ -1180,7 +1220,6 @@
       document.getElementById('result').classList.remove('show');
 
       if (!name) { errEl.textContent = 'Enter your product name.'; errEl.style.display = 'block'; return; }
-      if (!url)  { errEl.textContent = 'Enter your product URL.'; errEl.style.display = 'block'; return; }
 
       _product = name;
       btn.disabled = true;
@@ -1203,7 +1242,7 @@
         const res = await fetch(`${API_BASE}/v1/check`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ product: name, category: cat, keywords: kw, url: url || undefined }),
+          body: JSON.stringify({ product: name, url: url || undefined }),
         });
 
         if (!res.ok) throw new Error(`API ${res.status}`);
@@ -1261,7 +1300,7 @@
     document.addEventListener('keydown', e => {
       if (e.key !== 'Enter') return;
       const el = document.activeElement;
-      if (el && (el.id === 'product_name' || el.id === 'product_url' || el.id === 'keywords')) runCheck();
+      if (el && (el.id === 'product_name' || el.id === 'product_url')) runCheck();
     });
 
     // ── Entrance animations (IntersectionObserver) ────────────
@@ -1292,6 +1331,82 @@
       el.innerHTML = all.map(q =>
         `<span class="qticker-item"><span class="qticker-q">"${q}"</span></span><span class="qticker-sep">·</span>`
       ).join('');
+    })();
+  </script>
+
+  <!-- Interactive background particles -->
+  <script>
+    (function () {
+      var canvas = document.getElementById('bg-canvas');
+      var ctx = canvas.getContext('2d');
+      var W = window.innerWidth, H = window.innerHeight;
+      var mouse = { x: -9999, y: -9999 };
+      function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+      resize();
+      window.addEventListener('resize', resize);
+      document.addEventListener('mousemove', function (e) { mouse.x = e.clientX; mouse.y = e.clientY; });
+      document.addEventListener('touchmove', function (e) {
+        if (e.touches[0]) { mouse.x = e.touches[0].clientX; mouse.y = e.touches[0].clientY; }
+      }, { passive: true });
+
+      var COUNT = 60;
+      var dots = [];
+      for (var i = 0; i < COUNT; i++) {
+        dots.push({
+          x: Math.random() * W, y: Math.random() * H,
+          vx: (Math.random() - 0.5) * 0.35,
+          vy: (Math.random() - 0.5) * 0.35,
+        });
+      }
+
+      var LINK_DIST = 130;
+      var REPEL_DIST = 90;
+
+      function frame() {
+        ctx.clearRect(0, 0, W, H);
+
+        for (var i = 0; i < dots.length; i++) {
+          var d = dots[i];
+          var dx = d.x - mouse.x, dy = d.y - mouse.y;
+          var md = Math.sqrt(dx * dx + dy * dy);
+          if (md < REPEL_DIST && md > 0) {
+            d.vx += (dx / md) * 0.07;
+            d.vy += (dy / md) * 0.07;
+          }
+          d.vx *= 0.992; d.vy *= 0.992;
+          d.x += d.vx; d.y += d.vy;
+          if (d.x < 0) d.x = W; else if (d.x > W) d.x = 0;
+          if (d.y < 0) d.y = H; else if (d.y > H) d.y = 0;
+        }
+
+        // draw connections
+        for (var i = 0; i < dots.length; i++) {
+          for (var j = i + 1; j < dots.length; j++) {
+            var dx = dots[i].x - dots[j].x, dy = dots[i].y - dots[j].y;
+            var dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < LINK_DIST) {
+              var a = (1 - dist / LINK_DIST) * 0.13;
+              ctx.strokeStyle = 'rgba(255,215,0,' + a + ')';
+              ctx.lineWidth = 0.8;
+              ctx.beginPath();
+              ctx.moveTo(dots[i].x, dots[i].y);
+              ctx.lineTo(dots[j].x, dots[j].y);
+              ctx.stroke();
+            }
+          }
+        }
+
+        // draw dots
+        for (var i = 0; i < dots.length; i++) {
+          ctx.beginPath();
+          ctx.arc(dots[i].x, dots[i].y, 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(255,215,0,0.22)';
+          ctx.fill();
+        }
+
+        requestAnimationFrame(frame);
+      }
+      frame();
     })();
   </script>
 </body>
