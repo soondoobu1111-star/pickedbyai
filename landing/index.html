@@ -457,52 +457,80 @@
 
     .btn-share:hover { background: var(--yellow); color: #000; }
 
-    /* Badge CTA */
-    .badge-cta {
+    /* ── AI BADGE SYSTEM ── */
+    .ai-badge {
       display: none;
-      background: #0a0800;
-      border: 1px solid var(--yellow);
-      padding: 1.25rem;
+      padding: 1.5rem 1.25rem;
       text-align: center;
+      margin-bottom: 0.75rem;
+      position: relative;
+    }
+    .ai-badge.show { display: block; }
+
+    /* Gold — glowing pulse */
+    .ai-badge.gold {
+      background: #0a0800;
+      border: 2px solid #FFD700;
+      animation: goldPulse 2.5s ease infinite;
+    }
+    @keyframes goldPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); border-color: #FFD700; }
+      50%       { box-shadow: 0 0 22px 6px rgba(255,215,0,0.35), 0 0 50px 10px rgba(255,215,0,0.1); border-color: #FFE55C; }
+    }
+    /* Silver */
+    .ai-badge.silver {
+      background: #08090a;
+      border: 2px solid #C0C0C0;
+    }
+    /* Bronze */
+    .ai-badge.bronze {
+      background: #090809;
+      border: 2px solid #CD7F32;
     }
 
-    .badge-cta.show { display: block; }
+    .badge-crown { display: flex; justify-content: center; margin-bottom: 0.65rem; }
 
-    .badge-chip-lg {
+    .badge-tier-label {
       font-family: 'Press Start 2P', monospace;
-      font-size: 0.55rem;
-      color: var(--yellow);
-      border: 2px solid var(--yellow);
-      display: inline-block;
-      padding: 0.4rem 0.85rem;
-      margin-bottom: 0.85rem;
-      letter-spacing: 0.05em;
+      font-size: 0.42rem;
+      letter-spacing: 0.15em;
+      margin-bottom: 0.45rem;
+      opacity: 0.75;
     }
+    .ai-badge.gold   .badge-tier-label { color: #FFD700; }
+    .ai-badge.silver .badge-tier-label { color: #C0C0C0; }
+    .ai-badge.bronze .badge-tier-label { color: #CD7F32; }
 
-    .badge-cta p {
+    .badge-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.65rem;
+    }
+    .ai-badge.gold   .badge-title { color: #FFD700; }
+    .ai-badge.silver .badge-title { color: #C0C0C0; }
+    .ai-badge.bronze .badge-title { color: #CD7F32; }
+
+    .badge-desc {
       font-size: 0.8rem;
       color: var(--muted);
-      line-height: 1.5;
-      margin-bottom: 0.9rem;
+      line-height: 1.55;
+      margin-bottom: 1rem;
     }
 
     .btn-badge {
       width: 100%;
       padding: 0.75rem;
-      background: var(--yellow);
-      color: #000;
       border: none;
       font-family: 'Press Start 2P', monospace;
       font-size: 0.5rem;
       cursor: pointer;
-      box-shadow: 3px 3px 0 var(--yellow2);
       transition: transform 0.08s, box-shadow 0.08s;
     }
-
-    .btn-badge:hover {
-      transform: translate(1px, 1px);
-      box-shadow: 2px 2px 0 var(--yellow2);
-    }
+    .ai-badge.gold   .btn-badge { background: #FFD700; color: #000; box-shadow: 3px 3px 0 #b39700; }
+    .ai-badge.silver .btn-badge { background: #C0C0C0; color: #000; box-shadow: 3px 3px 0 #808080; }
+    .ai-badge.bronze .btn-badge { background: #CD7F32; color: #000; box-shadow: 3px 3px 0 #7d4a14; }
+    .btn-badge:hover { transform: translate(1px,1px); }
 
     /* Email */
     .email-block {
@@ -879,23 +907,18 @@
     <!-- HEADER -->
     <header class="header">
       <div class="logo">
-        <!-- pixel robot icon -->
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <!-- top bar -->
-          <rect x="0" y="0" width="3" height="3"/><rect x="3" y="0" width="3" height="3"/><rect x="6" y="0" width="3" height="3"/><rect x="9" y="0" width="3" height="3"/><rect x="12" y="0" width="3" height="3"/><rect x="15" y="0" width="3" height="3"/><rect x="18" y="0" width="3" height="3"/><rect x="21" y="0" width="3" height="3"/>
-          <!-- eyes row -->
-          <rect x="0" y="3" width="3" height="3"/><rect x="6" y="3" width="3" height="3"/><rect x="15" y="3" width="3" height="3"/><rect x="21" y="3" width="3" height="3"/>
-          <!-- sides -->
-          <rect x="0" y="6" width="3" height="3"/><rect x="21" y="6" width="3" height="3"/>
-          <!-- mouth / scan bar -->
-          <rect x="0" y="9" width="3" height="3"/><rect x="6" y="9" width="3" height="3"/><rect x="9" y="9" width="3" height="3"/><rect x="12" y="9" width="3" height="3"/><rect x="15" y="9" width="3" height="3"/><rect x="21" y="9" width="3" height="3"/>
-          <!-- sides -->
-          <rect x="0" y="12" width="3" height="3"/><rect x="21" y="12" width="3" height="3"/>
-          <!-- bottom bar -->
-          <rect x="0" y="15" width="3" height="3"/><rect x="3" y="15" width="3" height="3"/><rect x="6" y="15" width="3" height="3"/><rect x="9" y="15" width="3" height="3"/><rect x="12" y="15" width="3" height="3"/><rect x="15" y="15" width="3" height="3"/><rect x="18" y="15" width="3" height="3"/><rect x="21" y="15" width="3" height="3"/>
-          <!-- legs -->
-          <rect x="6" y="18" width="3" height="3"/><rect x="15" y="18" width="3" height="3"/>
-          <rect x="6" y="21" width="3" height="3"/><rect x="15" y="21" width="3" height="3"/>
+        <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+          <rect x="0" y="0" width="2" height="4"/>
+          <rect x="9" y="0" width="2" height="4"/>
+          <rect x="18" y="0" width="2" height="4"/>
+          <rect x="0" y="4" width="20" height="2"/>
+          <rect x="0" y="6" width="2" height="6"/>
+          <rect x="18" y="6" width="2" height="6"/>
+          <rect x="4" y="8" width="2" height="2"/>
+          <rect x="9" y="8" width="2" height="2"/>
+          <rect x="14" y="8" width="2" height="2"/>
+          <rect x="0" y="12" width="20" height="2"/>
+          <rect x="2" y="14" width="16" height="2"/>
         </svg>
         picked<span class="dot">by</span>.ai
       </div>
@@ -1064,9 +1087,11 @@
             SHARE MY SCORE ON X
           </button>
 
-          <div class="badge-cta" id="badgeCta">
-            <div class="badge-chip-lg">✓ PICKED BY AI</div>
-            <p>Your score qualifies for the official badge. Add it to your product page to signal AI-readiness to buyers.</p>
+          <div class="ai-badge" id="aiBadge">
+            <div class="badge-crown" id="badgeCrownIcon"></div>
+            <div class="badge-tier-label" id="badgeTierLabel"></div>
+            <div class="badge-title" id="badgeTitle"></div>
+            <p class="badge-desc" id="badgeDesc"></p>
             <button class="btn-badge" onclick="claimBadge()">CLAIM MY BADGE ▶▶</button>
           </div>
         </div>
@@ -1143,6 +1168,30 @@
       return SUGGESTIONS.top;
     }
 
+    // ── Badge tier ───────────────────────────────────────────
+    function getBadgeTier(s) {
+      if (s >= 81) return { tier: 'gold',   color: '#FFD700', label: '✦ GOLD BADGE',   title: 'PICKED BY AI',   desc: 'AI consistently recommends your product. Add this badge to your product page to signal AI-readiness to buyers.' };
+      if (s >= 61) return { tier: 'silver', color: '#C0C0C0', label: '✦ SILVER BADGE', title: 'SEEN BY AI',     desc: 'AI knows and sometimes recommends your product. A few improvements will push you to Gold.' };
+      if (s >= 36) return { tier: 'bronze', color: '#CD7F32', label: '✦ BRONZE BADGE', title: 'NOTICED BY AI', desc: 'AI is aware of your product. Apply the fixes above to climb to Silver or Gold.' };
+      return null;
+    }
+
+    function crownSVG(color, px) {
+      return `<svg width="${px}" height="${Math.round(px*0.8)}" viewBox="0 0 20 16" fill="${color}" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="2" height="4"/>
+        <rect x="9" y="0" width="2" height="4"/>
+        <rect x="18" y="0" width="2" height="4"/>
+        <rect x="0" y="4" width="20" height="2"/>
+        <rect x="0" y="6" width="2" height="6"/>
+        <rect x="18" y="6" width="2" height="6"/>
+        <rect x="4" y="8" width="2" height="2"/>
+        <rect x="9" y="8" width="2" height="2"/>
+        <rect x="14" y="8" width="2" height="2"/>
+        <rect x="0" y="12" width="20" height="2"/>
+        <rect x="2" y="14" width="16" height="2"/>
+      </svg>`;
+    }
+
     // ── Score counter animation ──────────────────────────────
     function animateScore(target) {
       const el = document.getElementById('scoreNum');
@@ -1198,8 +1247,17 @@
         sList.appendChild(div);
       });
 
-      // Badge CTA
-      document.getElementById('badgeCta').classList.toggle('show', score >= 80);
+      // Badge
+      const tier = getBadgeTier(score);
+      const badgeEl = document.getElementById('aiBadge');
+      badgeEl.className = 'ai-badge';
+      if (tier) {
+        document.getElementById('badgeCrownIcon').innerHTML = crownSVG(tier.color, tier.tier === 'gold' ? 36 : 28);
+        document.getElementById('badgeTierLabel').textContent = tier.label;
+        document.getElementById('badgeTitle').textContent = tier.title;
+        document.getElementById('badgeDesc').textContent = tier.desc;
+        badgeEl.classList.add('show', tier.tier);
+      }
 
       // Show & animate
       const resultEl = document.getElementById('result');
