@@ -77,36 +77,36 @@ body { background: #000; color: #fff; font-family: 'Press Start 2P', monospace; 
 .copy-btn.copied { border-color: #4CAF50; color: #4CAF50; }
 
 /* XL size */
-.size-xl .ai-badge { width: 460px; }
-.size-xl .badge-tier-label { font-size: 0.5rem; }
-.size-xl .badge-title { font-size: 0.75rem; }
-.size-xl .badge-desc { font-size: 0.9rem; }
-.size-xl .btn-badge { font-size: 0.55rem; }
-.size-xl .badge-crown svg { width: 80px; height: 64px; }
+.size-xl .ai-badge { width: 320px; }
+.size-xl .badge-tier-label { font-size: 0.42rem; }
+.size-xl .badge-title { font-size: 0.62rem; }
+.size-xl .badge-desc { font-size: 0.78rem; }
+.size-xl .btn-badge { font-size: 0.48rem; }
+.size-xl .badge-crown svg { width: 60px; height: 48px; }
 
 /* L size */
-.size-l .ai-badge { width: 320px; }
-.size-l .badge-tier-label { font-size: 0.42rem; }
-.size-l .badge-title { font-size: 0.62rem; }
-.size-l .badge-desc { font-size: 0.78rem; }
-.size-l .btn-badge { font-size: 0.48rem; }
-.size-l .badge-crown svg { width: 60px; height: 48px; }
+.size-l .ai-badge { width: 220px; padding: 1rem; }
+.size-l .badge-tier-label { font-size: 0.32rem; }
+.size-l .badge-title { font-size: 0.48rem; }
+.size-l .badge-desc { display: none; }
+.size-l .btn-badge { font-size: 0.35rem; padding: 0.55rem; }
+.size-l .badge-crown svg { width: 44px; height: 35px; }
 
 /* M size */
-.size-m .ai-badge { width: 220px; padding: 1rem; }
-.size-m .badge-tier-label { font-size: 0.32rem; }
-.size-m .badge-title { font-size: 0.48rem; }
+.size-m .ai-badge { width: 150px; padding: 0.75rem 0.6rem; }
+.size-m .badge-tier-label { font-size: 0.25rem; }
+.size-m .badge-title { font-size: 0.35rem; margin-bottom: 0.4rem; }
 .size-m .badge-desc { display: none; }
-.size-m .btn-badge { font-size: 0.35rem; padding: 0.55rem; }
-.size-m .badge-crown svg { width: 44px; height: 35px; }
+.size-m .btn-badge { font-size: 0.25rem; padding: 0.4rem; }
+.size-m .badge-crown svg { width: 28px; height: 22px; }
 
 /* S size */
-.size-s .ai-badge { width: 150px; padding: 0.75rem 0.6rem; }
-.size-s .badge-tier-label { font-size: 0.25rem; }
-.size-s .badge-title { font-size: 0.35rem; margin-bottom: 0.4rem; }
+.size-s .ai-badge { width: 100px; padding: 0.5rem 0.4rem; }
+.size-s .badge-tier-label { display: none; }
+.size-s .badge-title { font-size: 0.25rem; margin-bottom: 0.3rem; }
 .size-s .badge-desc { display: none; }
-.size-s .btn-badge { font-size: 0.25rem; padding: 0.4rem; }
-.size-s .badge-crown svg { width: 28px; height: 22px; }
+.size-s .btn-badge { display: none; }
+.size-s .badge-crown svg { width: 20px; height: 16px; }
 </style>
 </head>
 <body>
@@ -203,10 +203,10 @@ body { background: #000; color: #fff; font-family: 'Press Start 2P', monospace; 
 
 <script>
 const sizes = {
-  xl: { label: 'XL — 랜딩페이지 히어로 섹션 (460px)', w: 460, crownW: 80, crownH: 64 },
-  l:  { label: 'L — 웹사이트 푸터 / About 페이지 (320px)', w: 320, crownW: 60, crownH: 48 },
-  m:  { label: 'M — 사이드바 / 블로그 하단 (220px)', w: 220, crownW: 44, crownH: 35 },
-  s:  { label: 'S — 이메일 서명 / 링크트리 (150px)', w: 150, crownW: 28, crownH: 22 },
+  xl: { label: 'XL — 랜딩페이지 히어로 섹션 (320px)', w: 320, crownW: 60, crownH: 48 },
+  l:  { label: 'L — 웹사이트 푸터 / About 페이지 (220px)', w: 220, crownW: 44, crownH: 35 },
+  m:  { label: 'M — 사이드바 / 블로그 하단 (150px)', w: 150, crownW: 28, crownH: 22 },
+  s:  { label: 'S — 이메일 서명 / 링크트리 (100px)', w: 100, crownW: 20, crownH: 16 },
 };
 
 function setSize(size, btn) {
