@@ -1,0 +1,286 @@
+{
+  "meta": {
+    "project": "pickedbyai",
+    "branch": "claude/analyze-sleek-analytics-27qyf",
+    "created": "2026-04-05",
+    "author": "mobile_planning_session",
+    "based_on": "Sleek Analytics (getsleek.io) 비교 분석",
+    "bizplan_ref": "docs/bizplan.md"
+  },
+
+  "sync_protocol": {
+    "description": "데스크탑 Claude가 이 계획을 받았을 때 반드시 따를 순서",
+    "rule": "싱크 = 즉시 작업 시작이 아님. 상황 파악 → 객관적 판단 → 확인 → 작업",
+    "steps": [
+      {
+        "step": 1,
+        "action": "STATE_SYNC",
+        "do": [
+          "git status, git log, git branch 확인",
+          "landing/, api/, docs/ 현재 구조 파악 (Glob + Read)",
+          "landing/index.html 전체 읽고 현재 섹션/카피/입력폼 구조 파악",
+          "api/ 엔드포인트 목록 확인 (어떤 입력 받는지)",
+          "docs/bizplan.md 재확인"
+        ]
+      },
+      {
+        "step": 2,
+        "action": "OBJECTIVE_JUDGMENT",
+        "do": [
+          "이 계획의 각 트랙(A/B/C/D)을 현재 코드베이스와 대조",
+          "실현 가능성/리스크/의존성을 독립적으로 판단",
+          "계획과 실제 코드가 다를 경우 어느 쪽이 맞는지 판단",
+          "계획에 누락된 게 있으면 찾아내기",
+          "계획이 과잉설계면 축소 제안",
+          "open_source_ethos 원칙에 어긋나는 부분 있는지 검토"
+        ],
+        "output": "JUDGMENT_REPORT 작성 (각 트랙별 GO/MODIFY/SKIP 판정)"
+      },
+      {
+        "step": 3,
+        "action": "USER_CONFIRM",
+        "do": [
+          "JUDGMENT_REPORT를 유저에게 제시",
+          "유저 승인 받은 후에만 작업 시작",
+          "승인 안 받고 바로 코드 수정 금지"
+        ]
+      },
+      {
+        "step": 4,
+        "action": "EXECUTE",
+        "do": [
+          "승인된 트랙만 순서대로 실행",
+          "트랙별 커밋 분리",
+          "PR은 유저가 명시적으로 요청할 때만 생성"
+        ]
+      }
+    ]
+  },
+
+  "open_source_ethos": {
+    "principle": "선점 전까지 최대 무료, 서버비용 경계 내에서",
+    "user_intent_quote": "선점전까진 거의 오픈소스처럼 유지. 서버운영비만 많이 안든다면 최대한 제공하고 싶다.",
+    "preemption_criteria": {
+      "note": "아래 중 하나 만족 시 '선점 달성'으로 간주",
+      "metrics": [
+        {"id": "A", "name": "누적 체크 수", "target": 100000, "rationale": "데이터 네트워크 효과 임계점 (Cloudflare식)"},
+        {"id": "B", "name": "Verified Owner 수", "target": 1000, "rationale": "소유자 1k = 시장의 '이미 쓰고 있는 툴' 인식"},
+        {"id": "C", "name": "활성 임베드 배지", "target": 500, "rationale": "외부 사이트 500곳 = 브랜드 확산"},
+        {"id": "D", "name": "Google 'AI visibility score' Top 10", "target": "1페이지 진입", "rationale": "AI Vitals 용어 표준화"},
+        {"id": "E", "name": "MRR", "target": 2000, "rationale": "100명 유료 전환, 인프라 비용 자립 경계"},
+        {"id": "F", "name": "외부 인용/언급", "target": 20, "rationale": "TechCrunch/Medium/Newsletter 언급"}
+      ],
+      "loose_preemption": "A or C 달성 → 데이터/네트워크 해자 완성",
+      "full_preemption": "A + B + E 동시 달성 → 시장/수익/데이터 3박자",
+      "review_cadence": "매월 1일 6개 지표 체크"
+    },
+    "cost_ceiling": {
+      "free_tier_bottleneck": "Gemini 2.5 Flash 1,500 req/day",
+      "free_capacity": "15,000 체크/월 (체크당 3쿼리 기준)",
+      "beyond_free_cost": "Gemini 유료 사용자당 월 약 $0.05",
+      "monthly_budget_ceiling_usd": 500,
+      "capacity_at_ceiling": "1만 유저까지 무료 감당 가능"
+    },
+    "free_tier_scope_until_preemption": {
+      "T1_anonymous": {
+        "signup": "없음",
+        "check_limit": "IP당 일 10회",
+        "features": ["점수", "3가지 개선 제안", "AI Vitals 3대 지표"],
+        "history": "없음"
+      },
+      "T2_email": {
+        "signup": "이메일 1필드",
+        "check_limit": "월 30회",
+        "features": ["7일 점수 히스토리", "추적 제품 1개", "주간 이메일 리포트", "주간 AI 언급 다이제스트"]
+      },
+      "T3_verified_owner_free": {
+        "note": "선점 전까지 아래 전부 무료 제공",
+        "signup": "meta 태그 또는 도메인 이메일 검증",
+        "features": [
+          "일일 점수 자동 갱신",
+          "30일 히스토리",
+          "경쟁자 1명 추적",
+          "임베드 라이브 배지",
+          "AI Query Explorer (본인 제품)",
+          "Fix-It Playbook 기본 버전"
+        ]
+      }
+    },
+    "paid_boundary": {
+      "never_paid_forever": [
+        "URL 체크 기능 자체",
+        "기본 AI Visibility Score",
+        "AI Vitals 3대 지표"
+      ],
+      "paid_only": [
+        "제품 3개 이상 관리",
+        "경쟁자 3명 이상 추적",
+        "모델별 점수 분해 (Gemini/Claude/GPT)",
+        "llms.txt/Schema 자동 생성 (풀버전)",
+        "API 접근",
+        "주간 AI 최적화 리포트",
+        "CSV 익스포트"
+      ]
+    },
+    "post_preemption_policy": {
+      "promise": "무료 한도 축소 금지 (신뢰 자본 유지)",
+      "founding_100": "평생 $9 유지",
+      "open_core_declaration": "기본 기능 영구 무료 공개 선언 (블로그)",
+      "data_asset": "익명 로깅 데이터로 연간 '크리에이터 AI 추천 리포트' 발행"
+    }
+  },
+
+  "context_decisions": {
+    "language_support": {
+      "current": "English only (landing/index.html, lang=en, ko/en 폴더 없음)",
+      "strategy": "영어 기본 → 한/일/스 순차 확장",
+      "priority": ["en", "ko", "ja", "es"],
+      "rationale": {
+        "en": "글로벌 기본, Product Hunt/Gumroad 공용어",
+        "ko": "창업자 네이티브, 초기 피드백 루프, '모두의 창업' 지원",
+        "ja": "Note/BASE 크리에이터 시장 거대, 유료 전환율 높음",
+        "es": "Gumroad LATAM 급증, 10억 화자"
+      },
+      "skip": ["de", "fr", "zh"],
+      "i18n_structure_decision": "PENDING — 데스크탑에서 판단 필요 (단일파일 HTML 기반이므로 i18n 오버엔지니어링 주의)",
+      "mvp_scope": "en + ko 2개로 시작, ja는 Phase 2"
+    },
+    "input_form_redesign": {
+      "current": "제품명 + 카테고리 + 태그(옵션)",
+      "new": "제품명 + URL (2필드)",
+      "rationale": "마찰 최소화 + URL이 소유권 검증/파싱 기반",
+      "fallback": "URL 없으면 제품명만으로도 동작"
+    },
+    "tier_structure": {
+      "T1_anonymous": "현재 플로우 유지, 가입 불필요",
+      "T2_email": "이메일 1필드로 히스토리 추적 해금",
+      "T3_verified_owner": "meta 태그 or 도메인 이메일로 소유권 검증"
+    }
+  },
+
+  "tracks": {
+    "A_landing_copy": {
+      "priority": 1,
+      "risk": "low",
+      "estimate": "2-3h",
+      "tasks": [
+        {
+          "id": "A1",
+          "name": "Founding Creator 100 배너",
+          "location": "landing/index.html (Pricing 상단 or Hero 아래 sticky)",
+          "copy_ko": "🎉 Founding Creator 100 · 선착순 100명 · Creator 플랜 평생 $9 (정가 $19)",
+          "copy_en": "🎉 Founding Creator 100 · First 100 creators · Creator plan $9/mo forever (reg. $19)",
+          "counter": "정적 하드코딩 (동적화는 Phase 2)"
+        },
+        {
+          "id": "A2",
+          "name": "AI Vitals 3대 지표 섹션",
+          "metrics": [
+            {"name": "Schema Score", "desc": "Product/FAQ JSON-LD 완성도", "range": "0-100"},
+            {"name": "llms.txt Score", "desc": "AI 크롤러 친화도", "range": "0-100"},
+            {"name": "Mention Frequency", "desc": "AI 언급 빈도", "range": "weekly count"}
+          ],
+          "headline_en": "Like Core Web Vitals for SEO — AI Vitals for the AI era",
+          "headline_ko": "Core Web Vitals가 SEO의 표준이듯, AI Vitals는 AEO의 표준입니다",
+          "visual": "3 circular gauges (green/orange/red tiers)"
+        },
+        {
+          "id": "A3",
+          "name": "vs 경쟁사 숫자 대비 카피",
+          "copy": "10s vs Otterly 15min signup / $0 vs Profound $500+"
+        },
+        {
+          "id": "A4",
+          "name": "'한 줄' 단순화 카피 강조",
+          "copy_en": "One URL. One score. Zero signup."
+        }
+      ]
+    },
+
+    "B_input_form": {
+      "priority": 2,
+      "risk": "medium",
+      "estimate": "3-4h",
+      "depends_on": "current api/ structure",
+      "tasks": [
+        {"id": "B1", "name": "현재 입력 필드 전수조사 (landing + api)"},
+        {"id": "B2", "name": "입력 필드 2개로 축소 (제품명 + URL)"},
+        {"id": "B3", "name": "URL 파싱 API 엔드포인트 (og:title, meta, schema.org 자동 추출)"},
+        {"id": "B4", "name": "카테고리 자동 감지 + '맞나요?' 확인 UI"},
+        {"id": "B5", "name": "URL 없음 fallback 경로"}
+      ],
+      "security_note": "SSRF 방지 필수 — localhost/내부IP/메타데이터 엔드포인트 차단"
+    },
+
+    "C_tier_structure": {
+      "priority": 3,
+      "risk": "high (DB schema)",
+      "estimate": "4-6h",
+      "tasks": [
+        {"id": "C1", "name": "T1 Anonymous 플로우 유지 확인 (IP당 일 10회 throttle)"},
+        {"id": "C2", "name": "결과 화면 T2 이메일 게이트 CTA 추가"},
+        {"id": "C3", "name": "T3 meta 태그 검증 방식 설계 문서 작성 (docs/owner-verification.md)"},
+        {"id": "C4", "name": "Supabase 스키마 설계 (anonymous_checks, tracked_products, verified_owners)"}
+      ],
+      "schema_review_required": true
+    },
+
+    "D_dashboard": {
+      "priority": 4,
+      "risk": "medium",
+      "estimate": "4-5h",
+      "tasks": [
+        {"id": "D1", "name": "landing/dashboard.html 생성"},
+        {"id": "D2", "name": "7일 점수 히스토리 라인 차트 (Chart.js CDN)"},
+        {"id": "D3", "name": "AI 언급 카운트 위젯"},
+        {"id": "D4", "name": "델타 배지 ('+12 this week')"},
+        {"id": "D5", "name": "'Upgrade to Creator' CTA"}
+      ]
+    },
+
+    "E_owner_features": {
+      "priority": 5,
+      "risk": "medium",
+      "estimate": "Phase 1.5 (추후)",
+      "note": "지금은 설계만, 구현은 후순위",
+      "top_3_recommended": [
+        "AI Query Explorer — 내 제품 추천되는 실제 AI 쿼리 리스트",
+        "Fix-It Playbook — 점수 취약점별 수정 스크립트 자동생성",
+        "Steal This — 경쟁자 Schema diff"
+      ],
+      "full_list": [
+        "AI Query Explorer",
+        "Competitor Monitoring (Top 5)",
+        "AI Mention Timeline + snippet",
+        "Fix-It Playbook (auto-generated llms.txt/schema)",
+        "Steal This (competitor schema diff)",
+        "Deep-link UTM tracker",
+        "Embeddable Owner Badge",
+        "Weekly Email Report",
+        "API Access",
+        "Slack/Discord Webhook"
+      ]
+    }
+  },
+
+  "execution_order": {
+    "day1": ["A1", "A2", "A3", "A4"],
+    "day2": ["B1", "B2", "B3", "B4", "B5"],
+    "day3": ["C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4", "D5"],
+    "later": ["E_owner_features"]
+  },
+
+  "guardrails": [
+    "모든 작업은 claude/analyze-sleek-analytics-27qyf 브랜치에서",
+    "트랙별 커밋 분리 (롤백 용이성)",
+    "PR은 유저 명시 요청 시에만 생성",
+    "docs/bizplan.md 수정 금지 (별도 작업)",
+    "wrangler.toml 수정 금지",
+    "Supabase 스키마는 유저 리뷰 필수",
+    "SSRF 방지 (URL 파싱 시)",
+    "i18n 구조 오버엔지니어링 금지",
+    "open_source_ethos 원칙 준수 (체크 기능 유료화 금지)"
+  ],
+
+  "desktop_first_prompt": "docs/plan-sleek-inspired.json 파일을 읽고 sync_protocol에 따라 STATE_SYNC → OBJECTIVE_JUDGMENT → USER_CONFIRM 순서로 진행해줘. 절대 바로 코드 수정 시작하지 말 것. 먼저 현재 상황 파악하고 각 트랙에 대한 객관적 판단을 JUDGMENT_REPORT로 제시해. 특히 open_source_ethos 원칙에 어긋나는 부분 있는지 꼼꼼히 봐줘."
+}
