@@ -65,6 +65,7 @@ app.use('*', cors({
 // ── Health check ─────────────────────────────────────────────
 app.get('/', (c) => c.json({ ok: true, service: 'pickedbyai-api' }))
 
+
 // ── POST /v1/check ────────────────────────────────────────────
 // Runs 3 Gemini queries server-side, returns AI visibility results
 app.post('/v1/check', async (c) => {
@@ -105,7 +106,7 @@ app.post('/v1/check', async (c) => {
     },
   ]
 
-  const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${c.env.GEMINI_API_KEY}`
+  const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${c.env.GEMINI_API_KEY}`
 
   const fetchQuery = async (q: CheckQuery): Promise<CheckResult> => {
     try {
@@ -114,7 +115,7 @@ app.post('/v1/check', async (c) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: q.prompt }] }],
-          tools: [{ googleSearch: {} }],
+          generationConfig: { maxOutputTokens: 600 },
         }),
       })
 
@@ -124,13 +125,15 @@ app.post('/v1/check', async (c) => {
 
       const data = await res.json() as {
         candidates?: Array<{
-          content?: { parts?: Array<{ text?: string }> }
+          content?: { parts?: Array<{ text?: string; thought?: boolean }> }
           groundingMetadata?: { webSearchQueries?: string[] }
         }>
       }
 
-      const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
-      const grounded = !!(data.candidates?.[0]?.groundingMetadata?.webSearchQueries?.length)
+      // 2.5-flash returns thinking blocks first — filter them out
+      const parts = data.candidates?.[0]?.content?.parts ?? []
+      const text = parts.filter(p => !p.thought).map(p => p.text ?? '').join('\n')
+      const grounded = false // googleSearch disabled (CF Workers geo-restriction)
       const rank = findRank(text, name)
       const found = rank !== null || text.toLowerCase().includes(name.toLowerCase())
 
