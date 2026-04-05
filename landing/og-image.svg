@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="450" viewBox="0 0 1200 450">
+  <defs>
+    <radialGradient id="glow" cx="30%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1a1400"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="450" fill="url(#glow)"/>
+
+  <!-- Subtle grid dots -->
+  <g fill="#1a1400" opacity="0.6">
+    <rect x="0" y="0" width="1200" height="450" fill="none"/>
+  </g>
+
+  <!-- Crown: original 20x16, scale=14, position left-center -->
+  <!-- x offset=100, y offset=225-(16*14/2)=225-112=113 -->
+  <g fill="#FFD700" transform="translate(100, 113) scale(14)">
+    <rect x="0" y="0" width="2" height="4"/>
+    <rect x="9" y="0" width="2" height="4"/>
+    <rect x="18" y="0" width="2" height="4"/>
+    <rect x="0" y="4" width="20" height="2"/>
+    <rect x="0" y="6" width="2" height="6"/>
+    <rect x="18" y="6" width="2" height="6"/>
+    <rect x="4" y="8" width="2" height="2"/>
+    <rect x="9" y="8" width="2" height="2"/>
+    <rect x="14" y="8" width="2" height="2"/>
+    <rect x="0" y="12" width="20" height="2"/>
+    <rect x="2" y="14" width="16" height="2"/>
+  </g>
+
+  <!-- Vertical divider -->
+  <rect x="420" y="80" width="1" height="290" fill="#222"/>
+
+  <!-- pickedby.ai wordmark -->
+  <text x="470" y="210" font-family="'Courier New', monospace" font-size="64" font-weight="bold" fill="#FFD700" letter-spacing="-2">picked<tspan fill="#ffffff">by</tspan>.ai</text>
+
+  <!-- Tagline -->
+  <text x="472" y="275" font-family="'Courier New', monospace" font-size="22" fill="#555" letter-spacing="3">GET PICKED BY AI</text>
+
+  <!-- Sub tagline -->
+  <text x="472" y="320" font-family="'Courier New', monospace" font-size="16" fill="#333" letter-spacing="1">AI Visibility Score for Digital Creators</text>
+</svg>
