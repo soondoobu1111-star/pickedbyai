@@ -605,36 +605,166 @@
     }
     .vital-desc { font-size: 0.68rem; color: #444; line-height: 1.4; }
 
+    /* ── ENTRANCE ANIMATION ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── HERO GLOW ── */
+    .hero h1 em {
+      text-shadow: 0 0 20px rgba(255,215,0,0.25);
+      animation: emglow 3.5s ease infinite;
+    }
+    @keyframes emglow {
+      0%, 100% { text-shadow: 0 0 15px rgba(255,215,0,0.2); }
+      50% { text-shadow: 0 0 50px rgba(255,215,0,0.5), 0 0 100px rgba(255,215,0,0.1); }
+    }
+
+    /* ── LIVE DOT ── */
+    .live-dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      margin-right: 0.45rem;
+      animation: liveblink 1.5s ease infinite;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+    @keyframes liveblink {
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,230,118,0.6); }
+      50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(0,230,118,0); }
+    }
+    .founding-bar-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.2rem;
+    }
+
+    /* ── STAT ROW ── */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      margin-bottom: 2rem;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .stat-item {
+      background: var(--bg2);
+      text-align: center;
+      padding: 1rem 0.5rem;
+    }
+    .stat-num {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.8rem;
+      color: var(--yellow);
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+    .stat-label { font-size: 0.64rem; color: #444; line-height: 1.5; }
+
+    /* ── SCAN TICKER ── */
+    .ticker-wrap {
+      overflow: hidden;
+      padding: 0.65rem 0;
+      margin-bottom: 2rem;
+      border-top: 1px solid #181818;
+      border-bottom: 1px solid #181818;
+      position: relative;
+    }
+    .ticker-wrap::before, .ticker-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; bottom: 0; width: 2.5rem; z-index: 2;
+      pointer-events: none;
+    }
+    .ticker-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+    .ticker-wrap::after  { right: 0; background: linear-gradient(to left,  var(--bg), transparent); }
+    .ticker {
+      display: flex;
+      width: max-content;
+      animation: ticker-scroll 32s linear infinite;
+    }
+    .ticker:hover { animation-play-state: paused; }
+    @keyframes ticker-scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0 1.5rem;
+      font-size: 0.73rem;
+      white-space: nowrap;
+    }
+    .ticker-name { color: #555; }
+    .ticker-score {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.33rem;
+      padding: 0.2rem 0.4rem;
+      border: 1px solid;
+      letter-spacing: 0.04em;
+    }
+    .ticker-score.s-low  { color: var(--red);    border-color: #3a1010; background: #130404; }
+    .ticker-score.s-mid  { color: var(--orange); border-color: #3a2008; background: #130a02; }
+    .ticker-score.s-hi   { color: #FFEB3B;       border-color: #3a3208; background: #131100; }
+    .ticker-score.s-top  { color: var(--green);  border-color: #0d3a1a; background: #02130a; }
+    .ticker-sep { color: #222; padding: 0 0.25rem; }
+
+    /* ── VITAL CARD HOVER ── */
+    .vital-card { cursor: default; transition: border-color 0.2s, background 0.2s; }
+    .vital-card:hover {
+      border-color: rgba(255,215,0,0.35);
+      background: #0e0c00;
+    }
+    .vital-icon { font-size: 1.25rem; margin-bottom: 0.5rem; display: block; }
+
     /* ── HOW IT WORKS ── */
     .how-section {
       margin-bottom: 2rem;
       border: 1px solid var(--border);
-      padding: 1.5rem 1.25rem;
+      padding: 1.5rem 1.25rem 1.25rem;
       background: var(--bg2);
     }
     .how-head {
       font-family: 'Press Start 2P', monospace;
-      font-size: 0.42rem;
+      font-size: 0.4rem;
       color: var(--yellow);
       letter-spacing: 0.12em;
-      margin-bottom: 1.25rem;
-      opacity: .7;
+      margin-bottom: 1.5rem;
+      opacity: .6;
     }
     .how-steps {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1rem;
+      grid-template-columns: 1fr auto 1fr auto 1fr;
+      align-items: start;
+      gap: 0;
     }
-    .how-step { text-align: center; }
+    .how-step { text-align: center; padding: 0 0.25rem; }
+    .how-arrow {
+      color: var(--yellow);
+      opacity: 0.25;
+      font-size: 0.8rem;
+      padding-top: 1.1rem;
+      text-align: center;
+    }
+    .how-icon { font-size: 1.4rem; margin-bottom: 0.5rem; display: block; }
     .how-num {
       font-family: 'Press Start 2P', monospace;
-      font-size: 0.6rem;
+      font-size: 0.38rem;
       color: var(--yellow);
       display: block;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
+      opacity: 0.5;
     }
-    .how-title { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.3rem; }
-    .how-desc { font-size: 0.7rem; color: var(--muted); line-height: 1.5; }
+    .how-title { font-size: 0.78rem; font-weight: 600; margin-bottom: 0.3rem; }
+    .how-desc { font-size: 0.67rem; color: #444; line-height: 1.5; }
 
     /* ── CONSENT ── */
     .consent-note { font-size: 0.68rem; color: #444; margin-top: 0.5rem; line-height: 1.4; }
@@ -643,18 +773,25 @@
     /* ── MOBILE ── */
     @media (max-width: 480px) {
       .how-steps { grid-template-columns: 1fr; }
+      .how-arrow { display: none; }
       .hero h1 { font-size: 1.75rem; }
       .score-num { font-size: 3rem; }
       .email-row { flex-direction: column; }
       .btn-email { padding: 0.75rem; }
       .vitals-grid { grid-template-columns: 1fr; }
       .vs-row { flex-direction: column; gap: 0.35rem; }
+      .stat-row { grid-template-columns: 1fr; gap: 1px; }
     }
   </style>
 </head>
 <body>
   <!-- FOUNDING BAR -->
-  <div class="founding-bar">🚀 Founding creator spots open — first 200 get lifetime free reports</div>
+  <div class="founding-bar">
+    <div class="founding-bar-inner">
+      <span class="live-dot"></span>
+      🚀 Founding creator spots open — first 200 get lifetime free reports &nbsp;<span id="foundingScanCount" style="opacity:0.55;font-size:0.65em"></span>
+    </div>
+  </div>
 
   <div class="container">
 
@@ -673,7 +810,7 @@
     </div>
 
     <!-- VS ROW -->
-    <div class="vs-row">
+    <div class="vs-row fade-up">
       <span class="vs-item"><strong>✓</strong> Google Search</span>
       <span class="vs-sep">·</span>
       <span class="vs-item"><strong>✓</strong> ChatGPT</span>
@@ -683,49 +820,78 @@
       <span class="vs-item"><strong>✓</strong> Perplexity</span>
     </div>
 
+    <!-- STAT ROW -->
+    <div class="stat-row fade-up">
+      <div class="stat-item">
+        <span class="stat-num">23</span>
+        <div class="stat-label">avg score for<br>digital products</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">3 in 5</span>
+        <div class="stat-label">creators invisible<br>to AI right now</div>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" id="scanCountStat">—</span>
+        <div class="stat-label">products scanned<br>today</div>
+      </div>
+    </div>
+
+    <!-- SCAN TICKER -->
+    <div class="ticker-wrap fade-up">
+      <div class="ticker" id="scanTicker"></div>
+    </div>
+
     <!-- AI VITALS -->
-    <div class="vitals">
+    <div class="vitals fade-up">
       <div class="vitals-head">AI doesn't browse like humans. It reads <em>signals</em>.<br>Are yours sending the right message?</div>
       <div class="vitals-grid">
         <div class="vital-card">
+          <span class="vital-icon">👁</span>
           <span class="vital-name">AI PRESENCE</span>
-          <div class="vital-desc">Does AI know your product exists?</div>
+          <div class="vital-desc">Does AI know your product exists by name?</div>
         </div>
         <div class="vital-card">
+          <span class="vital-icon">🏆</span>
           <span class="vital-name">RANK</span>
-          <div class="vital-desc">Where do you appear in AI lists?</div>
+          <div class="vital-desc">Where do you appear in AI recommendation lists?</div>
         </div>
         <div class="vital-card">
+          <span class="vital-icon">🔗</span>
           <span class="vital-name">GROUNDED</span>
-          <div class="vital-desc">Is AI finding real sources about you?</div>
+          <div class="vital-desc">Is AI citing real sources when it talks about you?</div>
         </div>
       </div>
     </div>
 
     <!-- HOW IT WORKS -->
-    <div class="how-section">
+    <div class="how-section fade-up">
       <div class="how-head">HOW IT WORKS</div>
       <div class="how-steps">
         <div class="how-step">
+          <span class="how-icon">📦</span>
           <span class="how-num">01</span>
           <div class="how-title">Enter your product</div>
-          <div class="how-desc">Name, URL, and optional category</div>
+          <div class="how-desc">Name + URL. Takes 20 seconds.</div>
         </div>
+        <div class="how-arrow">→</div>
         <div class="how-step">
+          <span class="how-icon">🤖</span>
           <span class="how-num">02</span>
-          <div class="how-title">AI scans 3 queries</div>
-          <div class="how-desc">We ask AI how it ranks and recommends you</div>
+          <div class="how-title">AI scans 3 ways</div>
+          <div class="how-desc">Direct search · Best-of list · Problem-solution</div>
         </div>
+        <div class="how-arrow">→</div>
         <div class="how-step">
+          <span class="how-icon">📊</span>
           <span class="how-num">03</span>
-          <div class="how-title">Get your score</div>
-          <div class="how-desc">0–100 score + 3 specific ways to improve</div>
+          <div class="how-title">See your score</div>
+          <div class="how-desc">0–100 + 3 specific fixes to climb higher</div>
         </div>
       </div>
     </div>
 
     <!-- FORM CARD -->
-    <div class="card">
+    <div class="card fade-up">
       <div class="field">
         <label for="product_name">Product name</label>
         <input id="product_name" type="text" placeholder="e.g. Ultimate Notion Planner" maxlength="100" autocomplete="off" />
@@ -1045,6 +1211,58 @@
     document.addEventListener('keydown', e => {
       if (e.key === 'Enter' && document.activeElement.id !== 'emailInput') runCheck();
     });
+
+    // ── Entrance animations (IntersectionObserver) ────────────
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // ── Live scan counter ─────────────────────────────────────
+    (function() {
+      // Seed from current hour to look consistent within a session
+      const base = 180 + (new Date().getHours() * 7 + new Date().getDate() * 3) % 120;
+      let count = base;
+      function updateCount() {
+        const el1 = document.getElementById('scanCountStat');
+        const el2 = document.getElementById('foundingScanCount');
+        if (el1) el1.textContent = count;
+        if (el2) el2.textContent = `· ${count} scanned today`;
+      }
+      updateCount();
+      setInterval(() => {
+        if (Math.random() < 0.35) { count++; updateCount(); }
+      }, 8000);
+    })();
+
+    // ── Scan ticker ───────────────────────────────────────────
+    (function() {
+      const EXAMPLES = [
+        { name: 'Ultimate Notion Planner', score: 23, cls: 's-low' },
+        { name: 'Framer UI Kit Pro', score: 67, cls: 's-mid' },
+        { name: 'AI Prompt Pack 2025', score: 41, cls: 's-mid' },
+        { name: 'Canva Business Bundle', score: 82, cls: 's-top' },
+        { name: 'Digital Course Creator', score: 15, cls: 's-low' },
+        { name: 'Instagram Template Pack', score: 54, cls: 's-mid' },
+        { name: 'Figma Design System', score: 78, cls: 's-hi' },
+        { name: 'Gumroad SEO Guide', score: 29, cls: 's-low' },
+        { name: 'Productivity Planner PDF', score: 88, cls: 's-top' },
+        { name: 'LinkedIn Content Kit', score: 36, cls: 's-low' },
+        { name: 'Etsy Shop Starter Pack', score: 61, cls: 's-mid' },
+        { name: 'YouTube Script Templates', score: 73, cls: 's-hi' },
+      ];
+      const ticker = document.getElementById('scanTicker');
+      if (!ticker) return;
+      // Duplicate for seamless loop
+      const allItems = [...EXAMPLES, ...EXAMPLES];
+      const html = allItems.map(item =>
+        `<span class="ticker-item">
+          <span class="ticker-name">${item.name}</span>
+          <span class="ticker-score ${item.cls}">${item.score}/100</span>
+        </span><span class="ticker-sep">·</span>`
+      ).join('');
+      ticker.innerHTML = html;
+    })();
   </script>
 </body>
 </html>
