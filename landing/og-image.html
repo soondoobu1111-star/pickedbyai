@@ -7,13 +7,12 @@
 body { width: 1200px; height: 450px; overflow: hidden; background: #000; }
 .container {
   width: 1200px; height: 450px;
-  background: radial-gradient(ellipse at 30% 50%, #1a1200 0%, #000 65%);
-  display: flex; align-items: center;
+  background: radial-gradient(ellipse at 70% 50%, #1a1200 0%, #000 65%);
+  display: flex; align-items: center; justify-content: flex-end;
   padding: 0 80px; gap: 60px;
+  position: relative;
 }
-.crown { flex-shrink: 0; }
-.divider { width: 1px; height: 280px; background: #222; flex-shrink: 0; }
-.text { display: flex; flex-direction: column; gap: 16px; }
+.text { display: flex; flex-direction: column; gap: 16px; align-items: flex-end; }
 .wordmark {
   font-family: 'Courier New', monospace;
   font-size: 72px;
@@ -21,6 +20,7 @@ body { width: 1200px; height: 450px; overflow: hidden; background: #000; }
   color: #FFD700;
   letter-spacing: -2px;
   line-height: 1;
+  text-align: right;
 }
 .wordmark span { color: #fff; }
 .tagline {
@@ -29,37 +29,71 @@ body { width: 1200px; height: 450px; overflow: hidden; background: #000; }
   color: #666;
   letter-spacing: 4px;
   text-transform: uppercase;
+  text-align: right;
 }
 .sub {
   font-family: 'Courier New', monospace;
   font-size: 15px;
   color: #444;
   letter-spacing: 1px;
+  text-align: right;
+}
+/* badges row */
+.badges { display: flex; gap: 10px; margin-top: 8px; }
+.badge-mini {
+  padding: 5px 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  font-weight: bold;
+  letter-spacing: 1px;
+  display: flex; align-items: center; gap: 6px;
+}
+.badge-mini svg { flex-shrink: 0; }
+.badge-gold  { border: 1px solid #FFD700; color: #FFD700; background: #0a0800; }
+.badge-silver{ border: 1px solid #C0C0C0; color: #C0C0C0; background: #08090a; }
+.badge-bronze{ border: 1px solid #CD7F32; color: #CD7F32; background: #090809; }
+/* crown left */
+.crown-left {
+  position: absolute; left: 80px; top: 50%;
+  transform: translateY(-50%);
 }
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="crown">
-    <svg width="196" height="157" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0" y="0" width="2" height="4"/>
-      <rect x="9" y="0" width="2" height="4"/>
-      <rect x="18" y="0" width="2" height="4"/>
+  <!-- Crown left -->
+  <div class="crown-left">
+    <svg width="160" height="128" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
       <rect x="0" y="4" width="20" height="2"/>
-      <rect x="0" y="6" width="2" height="6"/>
-      <rect x="18" y="6" width="2" height="6"/>
-      <rect x="4" y="8" width="2" height="2"/>
-      <rect x="9" y="8" width="2" height="2"/>
-      <rect x="14" y="8" width="2" height="2"/>
-      <rect x="0" y="12" width="20" height="2"/>
-      <rect x="2" y="14" width="16" height="2"/>
+      <rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
+      <rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
+      <rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/>
     </svg>
   </div>
-  <div class="divider"></div>
+
+  <!-- Right-aligned text -->
   <div class="text">
     <div class="wordmark">picked<span>by</span>.ai</div>
     <div class="tagline">Get Picked by AI</div>
     <div class="sub">AI Visibility Score for Digital Creators</div>
+    <div class="badges">
+      <!-- Gold -->
+      <div class="badge-mini badge-gold">
+        <svg width="12" height="10" viewBox="0 0 20 16" fill="#FFD700"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+        PICKED BY AI
+      </div>
+      <!-- Silver -->
+      <div class="badge-mini badge-silver">
+        <svg width="12" height="10" viewBox="0 0 20 16" fill="#C0C0C0"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+        SEEN BY AI
+      </div>
+      <!-- Bronze -->
+      <div class="badge-mini badge-bronze">
+        <svg width="12" height="10" viewBox="0 0 20 16" fill="#CD7F32"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+        NOTICED BY AI
+      </div>
+    </div>
   </div>
 </div>
 </body>
