@@ -5,6 +5,7 @@ type Bindings = {
   GEMINI_API_KEY: string
   BREVO_API_KEY: string
   SUPABASE_ANON_KEY: string
+  SUPABASE_SERVICE_KEY: string
 }
 
 const SUPABASE_URL = 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
@@ -208,13 +209,13 @@ app.post('/v1/subscribe', async (c) => {
     return c.json({ error: 'Subscribe failed' }, 500)
   }
 
-  // Save to Supabase (upsert — no duplicate emails)
+  // Save to Supabase (upsert — no duplicate emails, service key bypasses RLS)
   await fetch(`${SUPABASE_URL}/rest/v1/emails`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'apikey': c.env.SUPABASE_ANON_KEY,
-      'Authorization': `Bearer ${c.env.SUPABASE_ANON_KEY}`,
+      'apikey': c.env.SUPABASE_SERVICE_KEY,
+      'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
       'Prefer': 'resolution=merge-duplicates',
     },
     body: JSON.stringify({
