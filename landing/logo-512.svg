@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Black background -->
+  <rect width="512" height="512" fill="#000000"/>
+
+  <!-- Crown centered: original 20x16 grid, scaled to 240x192, centered at 256,256 -->
+  <!-- offset: x=136, y=160 | scale=12 -->
+  <g fill="#FFD700" transform="translate(136, 160) scale(12)">
+    <!-- 3 peaks -->
+    <rect x="0" y="0" width="2" height="4"/>
+    <rect x="9" y="0" width="2" height="4"/>
+    <rect x="18" y="0" width="2" height="4"/>
+    <!-- top bar -->
+    <rect x="0" y="4" width="20" height="2"/>
+    <!-- side walls -->
+    <rect x="0" y="6" width="2" height="6"/>
+    <rect x="18" y="6" width="2" height="6"/>
+    <!-- 3 gems -->
+    <rect x="4" y="8" width="2" height="2"/>
+    <rect x="9" y="8" width="2" height="2"/>
+    <rect x="14" y="8" width="2" height="2"/>
+    <!-- bottom bar -->
+    <rect x="0" y="12" width="20" height="2"/>
+    <!-- bottom trim -->
+    <rect x="2" y="14" width="16" height="2"/>
+  </g>
+</svg>
