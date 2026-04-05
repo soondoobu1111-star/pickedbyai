@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" shape-rendering="crispEdges">
+  <!-- pickedby.ai symbol logo — pixel art creature, Claude Code style -->
+  <!-- 16x16 grid, each pixel = 40px -->
+
+  <!-- transparent background (remove this comment if you want black bg) -->
+
+  <g fill="#FFD700">
+    <!-- sparkle (picked by AI) above head -->
+    <rect x="520" y="0"   width="40" height="40"/>
+    <rect x="480" y="40"  width="40" height="40"/>
+    <rect x="520" y="40"  width="40" height="40"/>
+    <rect x="560" y="40"  width="40" height="40"/>
+    <rect x="520" y="80"  width="40" height="40"/>
+
+    <!-- head top (rows 4-5, cols 2-13) -->
+    <rect x="80"  y="160" width="480" height="80"/>
+
+    <!-- eye row (row 6-7) left body block cols 2-3 -->
+    <rect x="80"  y="240" width="80" height="80"/>
+    <!-- nose bridge cols 6-9 -->
+    <rect x="240" y="240" width="160" height="80"/>
+    <!-- right body block cols 12-13 -->
+    <rect x="480" y="240" width="80" height="80"/>
+
+    <!-- arms (rows 8-9, full width cols 0-15) -->
+    <rect x="0"   y="320" width="640" height="80"/>
+
+    <!-- body (rows 10-11, cols 2-13) -->
+    <rect x="80"  y="400" width="480" height="80"/>
+
+    <!-- legs (rows 12-13) -->
+    <rect x="80"  y="480" width="80" height="80"/>
+    <rect x="200" y="480" width="80" height="80"/>
+    <rect x="360" y="480" width="80" height="80"/>
+    <rect x="480" y="480" width="80" height="80"/>
+  </g>
+</svg>
