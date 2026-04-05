@@ -117,7 +117,7 @@ Reply in exactly this format (5 lines):
   let results: CheckResult[]
 
   try {
-    const response = await c.env.AI.run('@cf/meta/llama-3.2-1b-instruct', {
+    const response = await c.env.AI.run('@cf/meta/llama-3.2-3b-instruct', {
       messages: [{ role: 'user', content: prompt }],
       max_tokens: 60,
     }) as { response?: string }
