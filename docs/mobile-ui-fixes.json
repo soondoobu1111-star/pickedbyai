@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "task": "mobile_ui_fixes",
+    "created": "2026-04-05",
+    "context": "모바일 스크린샷 리뷰 후 발견된 UI 문제점 수정",
+    "note": "배포된 사이트(Windsurf에서 작업)와 레포 코드가 다를 수 있음. 반드시 배포된 landing/index.html 기준으로 작업할 것."
+  },
+
+  "sync_protocol": {
+    "step1": "현재 배포 중인 landing/index.html 전체 읽기 (Windsurf에서 작업한 최신 버전 확인)",
+    "step2": "아래 fixes를 현재 코드와 대조하여 적용 가능 여부 판단",
+    "step3": "수정 후 모바일 뷰포트(375px)에서 반드시 확인",
+    "step4": "커밋 → 배포"
+  },
+
+  "fixes": [
+    {
+      "id": "M1",
+      "name": "CTA 버튼 모바일 풀폭",
+      "problem": "CHECK MY SCORE 버튼이 모바일에서 좌측 정렬되어 있고 좁아 보임",
+      "solution": "모바일(max-width: 480px)에서 버튼을 카드 밖으로 빼거나, 카드 패딩 축소하여 버튼이 화면 가로 100%에 가깝게 보이도록",
+      "css_change": {
+        "selector": "@media (max-width: 480px)",
+        "add": ".card { padding: 1rem; } .btn-primary { font-size: 0.6rem; }"
+      },
+      "alternative": "버튼을 카드 밖 독립 섹션으로 이동 → 가로 100% 자연스럽게 확보"
+    },
+    {
+      "id": "M2",
+      "name": "체크리스트 세로→가로 변경",
+      "problem": "Google Search / ChatGPT / Claude / Perplexity / Web Reviews가 5줄로 세로 나열됨. 모바일에서 공간 낭비 + 레이아웃 어색",
+      "solution": "flex-wrap 가로 인라인으로 변경. 모바일에서 2줄, 데스크탑에서 1줄",
+      "html_change": {
+        "find": "체크리스트 섹션 (✅ Google Search 등이 있는 div)",
+        "wrap_with": "<div class=\"trust-badges\">...</div>"
+      },
+      "css_change": {
+        "add_new_class": ".trust-badges { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 1rem; font-size: 0.78rem; color: #666; }",
+        "mobile": ".trust-badges { gap: 0.3rem 0.75rem; font-size: 0.72rem; }"
+      },
+      "expected_result": {
+        "mobile_375px": "✅ Google Search  ✅ ChatGPT  ✅ Claude\n        ✅ Perplexity  ✅ Web Reviews",
+        "desktop": "✅ Google Search  ✅ ChatGPT  ✅ Claude  ✅ Perplexity  ✅ Web Reviews"
+      }
+    },
+    {
+      "id": "M3",
+      "name": "IF AI DOESN'T KNOW YOU 텍스트 위치 확인",
+      "problem": "스크린샷에서 이 텍스트가 버튼 위에 있는데 코드에는 없을 수 있음",
+      "solution": "Windsurf 코드에 있다면 유지, 없다면 hero-eyebrow 스타일로 버튼 바로 위에 추가",
+      "copy": "IF AI DOESN'T KNOW YOU · YOU DON'T EXIST",
+      "style": "font-family: 'Press Start 2P'; font-size: 0.4rem; color: #666; letter-spacing: 0.15em; margin-bottom: 0.75rem;"
+    },
+    {
+      "id": "M4",
+      "name": "WHAT YOUR SCORE MEANS 섹션 간격",
+      "problem": "스크린샷 하단에 81-100 / 61-80 점수 범위 표가 잘리며 보임. 체크리스트와 너무 붙어있을 수 있음",
+      "solution": "해당 섹션 상단에 margin-top: 2rem 이상 확보"
+    }
+  ],
+
+  "desktop_prompt": "docs/mobile-ui-fixes.json을 읽고 현재 배포된 landing/index.html 코드 기준으로 M1~M4 수정 적용해줘. 수정 전에 현재 코드 상태 먼저 보여주고, 각 fix 적용 가능한지 판단한 뒤 진행해. 모바일 375px 기준으로 레이아웃 확인."
+}
