@@ -528,16 +528,99 @@
     .footer a { color: #333; text-decoration: none; }
     .footer a:hover { color: var(--muted); }
 
+    /* ── FOUNDING BAR ── */
+    .founding-bar {
+      background: #0a0800;
+      border-bottom: 1px solid var(--yellow);
+      color: var(--yellow);
+      font-size: 0.72rem;
+      text-align: center;
+      padding: 0.55rem 1rem;
+      letter-spacing: 0.04em;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    /* ── HERO TAGLINE ── */
+    .hero-tagline {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.45rem;
+      color: #555;
+      letter-spacing: 0.14em;
+      margin-top: 1.25rem;
+    }
+
+    /* ── VS ROW ── */
+    .vs-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.75rem;
+      font-size: 0.75rem;
+      color: var(--muted);
+    }
+    .vs-item strong { color: var(--green); }
+    .vs-sep { color: #2a2a2a; }
+
+    /* ── AI VITALS ── */
+    .vitals { margin-bottom: 1.75rem; }
+    .vitals-head {
+      font-size: 0.8rem;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 1.25rem;
+      line-height: 1.6;
+    }
+    .vitals-head em { color: var(--yellow); font-style: normal; }
+    .vitals-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+    }
+    .vital-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 1rem 0.6rem;
+      text-align: center;
+      position: relative;
+    }
+    .vital-card::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px;
+      width: 5px; height: 5px;
+      background: var(--yellow);
+      opacity: .5;
+    }
+    .vital-name {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.35rem;
+      color: var(--yellow);
+      letter-spacing: 0.1em;
+      display: block;
+      margin-bottom: 0.5rem;
+      opacity: .7;
+    }
+    .vital-desc { font-size: 0.68rem; color: #444; line-height: 1.4; }
+
     /* ── MOBILE ── */
     @media (max-width: 480px) {
       .hero h1 { font-size: 1.75rem; }
       .score-num { font-size: 3rem; }
       .email-row { flex-direction: column; }
       .btn-email { padding: 0.75rem; }
+      .vitals-grid { grid-template-columns: 1fr; }
+      .vs-row { flex-direction: column; gap: 0.35rem; }
     }
   </style>
 </head>
 <body>
+  <!-- FOUNDING BAR -->
+  <div class="founding-bar">🚀 Founding creator spots open — first 200 get lifetime free reports</div>
+
   <div class="container">
 
     <!-- HEADER -->
@@ -551,6 +634,37 @@
       <div class="hero-eyebrow">▶ Free AI Visibility Check</div>
       <h1>Does AI <em>recommend</em><br>your product?</h1>
       <p>Find out in 10 seconds. Enter your product name and see your AI Visibility Score — the metric every digital creator needs to know.</p>
+      <div class="hero-tagline">IF AI DOESN'T KNOW YOU · YOU DON'T EXIST</div>
+    </div>
+
+    <!-- VS ROW -->
+    <div class="vs-row">
+      <span class="vs-item"><strong>✓</strong> Google Search</span>
+      <span class="vs-sep">·</span>
+      <span class="vs-item"><strong>✓</strong> ChatGPT</span>
+      <span class="vs-sep">·</span>
+      <span class="vs-item"><strong>✓</strong> Claude</span>
+      <span class="vs-sep">·</span>
+      <span class="vs-item"><strong>✓</strong> Perplexity</span>
+    </div>
+
+    <!-- AI VITALS -->
+    <div class="vitals">
+      <div class="vitals-head">AI doesn't browse like humans. It reads <em>signals</em>.<br>Are yours sending the right message?</div>
+      <div class="vitals-grid">
+        <div class="vital-card">
+          <span class="vital-name">AI PRESENCE</span>
+          <div class="vital-desc">Does AI know your product exists?</div>
+        </div>
+        <div class="vital-card">
+          <span class="vital-name">RANK</span>
+          <div class="vital-desc">Where do you appear in AI lists?</div>
+        </div>
+        <div class="vital-card">
+          <span class="vital-name">GROUNDED</span>
+          <div class="vital-desc">Is AI finding real sources about you?</div>
+        </div>
+      </div>
     </div>
 
     <!-- FORM CARD -->
@@ -582,6 +696,11 @@
       <div class="field">
         <label for="keywords">Target audience <span style="color:#333;font-size:0.85em">(optional)</span></label>
         <input id="keywords" type="text" placeholder="e.g. freelancers, students, designers" maxlength="100" autocomplete="off" />
+      </div>
+
+      <div class="field">
+        <label for="product_url">Product URL <span style="color:#333;font-size:0.85em">(optional)</span></label>
+        <input id="product_url" type="text" placeholder="e.g. gumroad.com/l/your-product" maxlength="200" autocomplete="off" />
       </div>
 
       <button class="btn-primary" id="checkBtn" onclick="runCheck()">CHECK MY AI SCORE ▶▶</button>
@@ -659,71 +778,9 @@
   </div>
 
   <script>
-    const GEMINI_MODEL  = 'gemini-2.5-flash';
-    const GEMINI_BASE   = 'https://generativelanguage.googleapis.com/v1beta/models/';
-    const API_BASE      = 'https://api.pickedby.ai';
-    let _key   = null;
-    let _score = 0;
+    const API_BASE = 'https://api.pickedby.ai';
+    let _score   = 0;
     let _product = '';
-
-    // ── Gemini key ──────────────────────────────────────────
-    async function getKey() {
-      if (_key) return _key;
-      const r = await fetch(`${API_BASE}/v1/gemini-key`);
-      const d = await r.json();
-      if (!d.key) throw new Error('key load failed');
-      _key = d.key;
-      return _key;
-    }
-
-    // ── Gemini + Search Grounding ────────────────────────────
-    async function queryGemini(key, prompt) {
-      const r = await fetch(`${GEMINI_BASE}${GEMINI_MODEL}:generateContent?key=${key}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: prompt }] }],
-          tools: [{ google_search: {} }],
-          generationConfig: { maxOutputTokens: 600 },
-        }),
-      });
-      if (!r.ok) throw new Error(`Gemini ${r.status}`);
-      const d = await r.json();
-      const text = (d.candidates?.[0]?.content?.parts ?? []).map(p => p.text ?? '').join('\n');
-      const grounded = !!(d.candidates?.[0]?.groundingMetadata?.groundingChunks?.length);
-      return { text, grounded };
-    }
-
-    // ── Rank detection ───────────────────────────────────────
-    function findRank(text, name) {
-      const lines = text.split('\n');
-      const lo = name.toLowerCase();
-      for (let i = 0; i < lines.length; i++) {
-        if (lines[i].toLowerCase().includes(lo)) {
-          const m = lines[i].match(/^\s*(\d+)[.)]/);
-          if (m) return parseInt(m[1]);
-          return i + 1;
-        }
-      }
-      return null;
-    }
-
-    // ── Score calculation ────────────────────────────────────
-    function calcScore(results) {
-      const found = results.filter(r => r.found);
-      let score = (found.length / results.length) * 55;
-
-      const ranks = results.filter(r => r.rank != null).map(r => r.rank);
-      if (ranks.length) {
-        const avg = ranks.reduce((a, b) => a + b, 0) / ranks.length;
-        score += avg <= 2 ? 30 : avg <= 4 ? 22 : avg <= 6 ? 15 : 8;
-      }
-
-      const groundedCount = results.filter(r => r.grounded).length;
-      score += (groundedCount / results.length) * 15;
-
-      return Math.min(100, Math.round(score));
-    }
 
     function scoreClass(s) {
       if (s <= 35) return 's-low';
@@ -841,6 +898,7 @@
       const name  = document.getElementById('product_name').value.trim();
       const cat   = document.getElementById('category').value;
       const kw    = document.getElementById('keywords').value.trim();
+      const url   = document.getElementById('product_url').value.trim();
       const errEl = document.getElementById('errorMsg');
       const btn   = document.getElementById('checkBtn');
 
@@ -853,17 +911,6 @@
       _product = name;
       btn.disabled = true;
       document.getElementById('loading').style.display = 'block';
-
-      const audience = kw || 'digital creators';
-      const yr = new Date().getFullYear();
-      const queries = [
-        { prompt: `What are the best ${cat} products right now? List 10 specific product names, numbered.`,
-          label:  `Best ${cat} products right now` },
-        { prompt: `Recommend a ${cat} for ${audience}. List 10 specific product names, numbered.`,
-          label:  `Recommended ${cat} for ${audience}` },
-        { prompt: `Top ${cat} in ${yr}. List 10 product names only, one per line, numbered.`,
-          label:  `Top ${cat} in ${yr}` },
-      ];
 
       const steps = ['SCANNING AI ENGINES', 'CHECKING SEARCH INDEX', 'CALCULATING SCORE'];
       const stepTxts = [
@@ -879,21 +926,20 @@
       }, 2200);
 
       try {
-        const key = await getKey();
-        const lower = name.toLowerCase();
+        const res = await fetch(`${API_BASE}/v1/check`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ product: name, category: cat, keywords: kw, url: url || undefined }),
+        });
 
-        const results = await Promise.all(queries.map(async (q) => {
-          const { text, grounded } = await queryGemini(key, q.prompt);
-          const found = text.toLowerCase().includes(lower);
-          const rank  = found ? findRank(text, name) : null;
-          return { label: q.label, found, rank, grounded };
-        }));
+        if (!res.ok) throw new Error(`API ${res.status}`);
+        const data = await res.json();
 
         clearInterval(stepTimer);
         document.getElementById('loading').style.display = 'none';
 
-        _score = calcScore(results);
-        renderResult(_score, results);
+        _score = data.score ?? 0;
+        renderResult(_score, data.results ?? []);
 
       } catch (e) {
         clearInterval(stepTimer);
