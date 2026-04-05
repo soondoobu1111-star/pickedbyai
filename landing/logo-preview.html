@@ -5,193 +5,149 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  background: #000;
-  padding: 50px;
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
-  width: 680px;
-}
-.card {
-  background: #0d0d0d;
-  border: 1px solid #2a2a2a;
-  padding: 32px 36px;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
-}
-.card-label {
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.5rem;
-  color: #555;
-  letter-spacing: 3px;
-}
-.logo-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Press Start 2P', monospace;
-  font-size: 0.85rem;
-  color: #FFD700;
-  letter-spacing: -1px;
-  line-height: 1.6;
-}
+body { background: #000; padding: 50px; display: flex; flex-direction: column; gap: 40px; width: 700px; }
+.card { background: #0d0d0d; border: 1px solid #2a2a2a; padding: 30px 36px; display: flex; flex-direction: column; gap: 20px; }
+.card-label { font-family: 'Press Start 2P', monospace; font-size: 0.5rem; color: #555; letter-spacing: 3px; }
+.logo-row { display: flex; align-items: center; gap: 8px; font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: #FFD700; letter-spacing: -1px; line-height: 1.6; }
 .logo-row .dot { color: #fff; }
-.zoom-row {
-  display: flex;
-  gap: 36px;
-  align-items: flex-end;
-  padding-top: 16px;
-  border-top: 1px solid #1a1a1a;
-}
-.zoom-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-}
-.zoom-label {
-  font-size: 0.6rem;
-  color: #444;
-  font-family: monospace;
-  letter-spacing: 1px;
-}
+.zoom-row { display: flex; gap: 36px; align-items: flex-end; padding-top: 16px; border-top: 1px solid #1a1a1a; }
+.zoom-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.zoom-label { font-size: 0.6rem; color: #444; font-family: monospace; letter-spacing: 1px; }
 </style>
 </head>
 <body>
 
-<!-- OPTION A: CROWN -->
+<!-- CROWN V2: narrow peaks + hollow band + gems -->
 <div class="card">
-  <div class="card-label">OPTION A — PIXEL CROWN</div>
-
-  <!-- Logo in context -->
+  <div class="card-label">CROWN V2 — 얇은 피크 + 젬</div>
   <div class="logo-row">
-    <svg width="18" height="13" viewBox="0 0 24 18" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-      <rect x="0" y="0" width="3" height="3"/>
-      <rect x="9" y="0" width="3" height="3"/>
-      <rect x="18" y="0" width="3" height="3"/>
-      <rect x="0" y="3" width="24" height="12"/>
-      <rect x="3" y="15" width="18" height="3"/>
+    <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+      <!-- 3 narrow peaks -->
+      <rect x="0" y="0" width="2" height="4"/>
+      <rect x="9" y="0" width="2" height="4"/>
+      <rect x="18" y="0" width="2" height="4"/>
+      <!-- band top full -->
+      <rect x="0" y="4" width="20" height="2"/>
+      <!-- band sides -->
+      <rect x="0" y="6" width="2" height="6"/>
+      <rect x="18" y="6" width="2" height="6"/>
+      <!-- gems (2 dots inside band) -->
+      <rect x="5" y="8" width="2" height="2"/>
+      <rect x="13" y="8" width="2" height="2"/>
+      <!-- band bottom full -->
+      <rect x="0" y="12" width="20" height="2"/>
+      <!-- inset base -->
+      <rect x="2" y="14" width="16" height="2"/>
     </svg>
     picked<span class="dot">by</span>.ai
   </div>
-
-  <!-- Zoom levels -->
   <div class="zoom-row">
     <div class="zoom-item">
-      <svg width="24" height="18" viewBox="0 0 24 18" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="0" width="3" height="3"/>
-        <rect x="9" y="0" width="3" height="3"/>
-        <rect x="18" y="0" width="3" height="3"/>
-        <rect x="0" y="3" width="24" height="12"/>
-        <rect x="3" y="15" width="18" height="3"/>
+      <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
+        <rect x="0" y="4" width="20" height="2"/>
+        <rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
+        <rect x="5" y="8" width="2" height="2"/><rect x="13" y="8" width="2" height="2"/>
+        <rect x="0" y="12" width="20" height="2"/>
+        <rect x="2" y="14" width="16" height="2"/>
       </svg>
       <div class="zoom-label">1×</div>
     </div>
     <div class="zoom-item">
-      <svg width="72" height="54" viewBox="0 0 24 18" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="0" width="3" height="3"/>
-        <rect x="9" y="0" width="3" height="3"/>
-        <rect x="18" y="0" width="3" height="3"/>
-        <rect x="0" y="3" width="24" height="12"/>
-        <rect x="3" y="15" width="18" height="3"/>
+      <svg width="60" height="48" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
+        <rect x="0" y="4" width="20" height="2"/>
+        <rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
+        <rect x="5" y="8" width="2" height="2"/><rect x="13" y="8" width="2" height="2"/>
+        <rect x="0" y="12" width="20" height="2"/>
+        <rect x="2" y="14" width="16" height="2"/>
       </svg>
       <div class="zoom-label">3×</div>
     </div>
     <div class="zoom-item">
-      <svg width="144" height="108" viewBox="0 0 24 18" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="0" width="3" height="3"/>
-        <rect x="9" y="0" width="3" height="3"/>
-        <rect x="18" y="0" width="3" height="3"/>
-        <rect x="0" y="3" width="24" height="12"/>
-        <rect x="3" y="15" width="18" height="3"/>
+      <svg width="120" height="96" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
+        <rect x="0" y="4" width="20" height="2"/>
+        <rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
+        <rect x="5" y="8" width="2" height="2"/><rect x="13" y="8" width="2" height="2"/>
+        <rect x="0" y="12" width="20" height="2"/>
+        <rect x="2" y="14" width="16" height="2"/>
       </svg>
       <div class="zoom-label">6×</div>
     </div>
   </div>
 </div>
 
-<!-- OPTION B: CURSOR + STAR -->
+<!-- CROWN V3: 5 peaks, more regal -->
 <div class="card">
-  <div class="card-label">OPTION B — CURSOR + SPARKLE</div>
-
-  <!-- Logo in context -->
+  <div class="card-label">CROWN V3 — 5 피크 (더 화려)</div>
   <div class="logo-row">
-    <svg width="22" height="16" viewBox="0 0 22 14" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-      <!-- pixel cursor arrow -->
-      <rect x="0" y="0" width="2" height="2"/>
-      <rect x="0" y="2" width="4" height="2"/>
-      <rect x="0" y="4" width="6" height="2"/>
-      <rect x="0" y="6" width="8" height="2"/>
-      <rect x="0" y="8" width="6" height="2"/>
-      <rect x="0" y="10" width="2" height="2"/><rect x="4" y="10" width="2" height="2"/>
-      <rect x="0" y="12" width="2" height="2"/><rect x="6" y="12" width="2" height="2"/>
-      <!-- sparkle: + cross -->
-      <rect x="16" y="2" width="2" height="10"/>
-      <rect x="12" y="6" width="10" height="2"/>
-      <!-- extra diagonal dots for star feel -->
-      <rect x="12" y="2" width="2" height="2"/>
-      <rect x="20" y="2" width="2" height="2"/>
-      <rect x="12" y="10" width="2" height="2"/>
-      <rect x="20" y="10" width="2" height="2"/>
+    <svg width="24" height="16" viewBox="0 0 24 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+      <!-- 5 alternating peaks: cols 0,2,4,6,8,10,12 (every other) -->
+      <rect x="0" y="0" width="2" height="6"/>
+      <rect x="4" y="2" width="2" height="4"/>
+      <rect x="8" y="0" width="2" height="6"/>
+      <rect x="12" y="2" width="2" height="4"/>
+      <rect x="16" y="0" width="2" height="6"/>
+      <!-- full body row -->
+      <rect x="0" y="6" width="18" height="2"/>
+      <!-- band with hollow + center gem -->
+      <rect x="0" y="8" width="2" height="4"/>
+      <rect x="16" y="8" width="2" height="4"/>
+      <rect x="8" y="9" width="2" height="2"/>
+      <!-- band bottom -->
+      <rect x="0" y="12" width="18" height="2"/>
+      <!-- base -->
+      <rect x="2" y="14" width="14" height="2"/>
     </svg>
     picked<span class="dot">by</span>.ai
   </div>
-
-  <!-- Zoom levels -->
   <div class="zoom-row">
     <div class="zoom-item">
-      <svg width="22" height="14" viewBox="0 0 22 14" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="0" width="2" height="2"/>
-        <rect x="0" y="2" width="4" height="2"/>
-        <rect x="0" y="4" width="6" height="2"/>
-        <rect x="0" y="6" width="8" height="2"/>
-        <rect x="0" y="8" width="6" height="2"/>
-        <rect x="0" y="10" width="2" height="2"/><rect x="4" y="10" width="2" height="2"/>
-        <rect x="0" y="12" width="2" height="2"/><rect x="6" y="12" width="2" height="2"/>
-        <rect x="16" y="2" width="2" height="10"/>
-        <rect x="12" y="6" width="10" height="2"/>
-        <rect x="12" y="2" width="2" height="2"/>
-        <rect x="20" y="2" width="2" height="2"/>
-        <rect x="12" y="10" width="2" height="2"/>
-        <rect x="20" y="10" width="2" height="2"/>
+      <svg width="18" height="16" viewBox="0 0 18 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="2" height="6"/>
+        <rect x="4" y="2" width="2" height="4"/>
+        <rect x="8" y="0" width="2" height="6"/>
+        <rect x="12" y="2" width="2" height="4"/>
+        <rect x="16" y="0" width="2" height="6"/>
+        <rect x="0" y="6" width="18" height="2"/>
+        <rect x="0" y="8" width="2" height="4"/>
+        <rect x="16" y="8" width="2" height="4"/>
+        <rect x="8" y="9" width="2" height="2"/>
+        <rect x="0" y="12" width="18" height="2"/>
+        <rect x="2" y="14" width="14" height="2"/>
       </svg>
       <div class="zoom-label">1×</div>
     </div>
     <div class="zoom-item">
-      <svg width="66" height="42" viewBox="0 0 22 14" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="0" width="2" height="2"/>
-        <rect x="0" y="2" width="4" height="2"/>
-        <rect x="0" y="4" width="6" height="2"/>
-        <rect x="0" y="6" width="8" height="2"/>
-        <rect x="0" y="8" width="6" height="2"/>
-        <rect x="0" y="10" width="2" height="2"/><rect x="4" y="10" width="2" height="2"/>
-        <rect x="0" y="12" width="2" height="2"/><rect x="6" y="12" width="2" height="2"/>
-        <rect x="16" y="2" width="2" height="10"/>
-        <rect x="12" y="6" width="10" height="2"/>
-        <rect x="12" y="2" width="2" height="2"/>
-        <rect x="20" y="2" width="2" height="2"/>
-        <rect x="12" y="10" width="2" height="2"/>
-        <rect x="20" y="10" width="2" height="2"/>
+      <svg width="54" height="48" viewBox="0 0 18 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="2" height="6"/>
+        <rect x="4" y="2" width="2" height="4"/>
+        <rect x="8" y="0" width="2" height="6"/>
+        <rect x="12" y="2" width="2" height="4"/>
+        <rect x="16" y="0" width="2" height="6"/>
+        <rect x="0" y="6" width="18" height="2"/>
+        <rect x="0" y="8" width="2" height="4"/>
+        <rect x="16" y="8" width="2" height="4"/>
+        <rect x="8" y="9" width="2" height="2"/>
+        <rect x="0" y="12" width="18" height="2"/>
+        <rect x="2" y="14" width="14" height="2"/>
       </svg>
       <div class="zoom-label">3×</div>
     </div>
     <div class="zoom-item">
-      <svg width="132" height="84" viewBox="0 0 22 14" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="0" width="2" height="2"/>
-        <rect x="0" y="2" width="4" height="2"/>
-        <rect x="0" y="4" width="6" height="2"/>
-        <rect x="0" y="6" width="8" height="2"/>
-        <rect x="0" y="8" width="6" height="2"/>
-        <rect x="0" y="10" width="2" height="2"/><rect x="4" y="10" width="2" height="2"/>
-        <rect x="0" y="12" width="2" height="2"/><rect x="6" y="12" width="2" height="2"/>
-        <rect x="16" y="2" width="2" height="10"/>
-        <rect x="12" y="6" width="10" height="2"/>
-        <rect x="12" y="2" width="2" height="2"/>
-        <rect x="20" y="2" width="2" height="2"/>
-        <rect x="12" y="10" width="2" height="2"/>
-        <rect x="20" y="10" width="2" height="2"/>
+      <svg width="108" height="96" viewBox="0 0 18 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
+        <rect x="0" y="0" width="2" height="6"/>
+        <rect x="4" y="2" width="2" height="4"/>
+        <rect x="8" y="0" width="2" height="6"/>
+        <rect x="12" y="2" width="2" height="4"/>
+        <rect x="16" y="0" width="2" height="6"/>
+        <rect x="0" y="6" width="18" height="2"/>
+        <rect x="0" y="8" width="2" height="4"/>
+        <rect x="16" y="8" width="2" height="4"/>
+        <rect x="8" y="9" width="2" height="2"/>
+        <rect x="0" y="12" width="18" height="2"/>
+        <rect x="2" y="14" width="14" height="2"/>
       </svg>
       <div class="zoom-label">6×</div>
     </div>
