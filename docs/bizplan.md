@@ -1,5 +1,5 @@
 # pickedby.ai (PBA) 사업계획서
-> 최종 업데이트: 2026-04-05 | 기반: pickedby_ai_full_report.json (10회 딥리서치)
+> 최종 업데이트: 2026-04-06 | 기반: pickedby_ai_full_report.json (10회 딥리서치)
 
 ---
 
@@ -26,13 +26,13 @@ ChatGPT, Claude, Perplexity가 쇼핑 추천의 주요 채널이 되고 있다.
 
 ## 3. 솔루션
 
-**surfaiced** = 크리에이터가 URL/제품명을 입력하면:
+**pickedby.ai** = 크리에이터가 URL/제품명을 입력하면:
 
-1. **10초 무료**: AI(Gemini 기준) 추천 여부 + AI Visibility Score (0-100)
-2. **즉시 진단**: 왜 점수가 낮은지 3가지 이유
-3. **원클릭 처방**: llms.txt 자동 생성, Schema.org JSON-LD 자동 생성
-4. **알림**: 내 제품이 AI에서 언급되면 이메일 알림
-5. **배지**: Score 80+ 달성 시 "Picked by AI ✓" 배지 발급
+1. **10초 무료**: AI 추천 여부 + AI Visibility Score (0-100)
+2. **즉시 진단**: 5개 차원(인지도/추천도/카테고리 순위/리뷰/비교 언급) 시각화
+3. **배지**: Score별 "Picked by AI" Gold/Silver/Bronze 배지 발급
+4. **원클릭 처방**: llms.txt 자동 생성, Schema.org JSON-LD 자동 생성 (Phase 2)
+5. **알림**: 내 제품이 AI에서 언급되면 이메일 알림 (Phase 2)
 
 ---
 
@@ -57,7 +57,7 @@ ChatGPT, Claude, Perplexity가 쇼핑 추천의 주요 채널이 되고 있다.
 | Profound | $500+/월 | Fortune 500 | 대기업 전용 |
 | Durable Discoverability | 무료 | 로컬 비즈니스 | 배관공/레스토랑 타겟 |
 | Goodie AI | TBD | 인디 SaaS | B2B SaaS 타겟 |
-| **surfaiced** | **무료/$19** | **크리에이터** | **10초 무료, 가입 불필요** |
+| **pickedby.ai** | **무료/$19** | **크리에이터** | **10초 무료, 가입 불필요** |
 
 **혁신자의 딜레마**: 기존 경쟁사는 더 높은 마진의 기업 고객 집중 → 크리에이터 시장에 안 내려옴.
 
@@ -88,13 +88,14 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 | Pro | $49/월 | 경쟁자 추적, API 접근, 다국어 최적화 |
 
 **전략**: 지금은 돈보다 선점. 무료로 깔고, 유료는 가치 증명 후.
+**결제 인프라**: DodoPay + Wise USD 계좌 (Bank Verification 승인 대기, 2026-04-06 제출)
 
 ---
 
 ## 8. 성장 전략
 
-### Phase 1 (0-1개월): 바이럴 훅
-- 무료 AI Visibility Score 배포
+### Phase 1 (0-1개월): 바이럴 훅 ← 현재 단계
+- 무료 AI Visibility Score 배포 ✅
 - AI Visibility Score가 SNS에 공유되도록 설계 ("내 점수 23/100")
 - Product Hunt 출시 → 1,000 이메일 목표
 
@@ -114,52 +115,68 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 
 ## 9. 기술 스택
 
-| 레이어 | 기술 | 이유 |
+| 레이어 | 기술 | 비고 |
 |--------|------|------|
-| FE | 정적 HTML + Tailwind CDN | MVP 빠른 빌드, CF Pages 무료 |
-| BE | TypeScript + Hono + CF Workers | perceptdot 검증된 스택 90% 재활용 |
+| FE | 정적 HTML + Tailwind CDN | CF Pages 무료 |
+| BE | TypeScript + Hono + CF Workers | perceptdot 스택 재활용 |
 | DB | Supabase PostgreSQL | 이메일/스코어 저장, 무료 티어 |
-| AI | Gemini 2.5 Flash | 무료 1,500 req/일, perceptdot 재활용 |
-| 이메일 | Brevo | 무료 300통/일, perceptdot 계정 재활용 |
-| 결제 | Paddle | perceptdot 계정 재활용 (Phase 2) |
-| 배포 | CF Pages + GitHub 연동 | perceptdot 방식 그대로 |
+| AI | **CF Workers AI (llama-3.2-3b-instruct)** | **지역 제한 없음, ~4초, 추가 API 키 불필요** |
+| 이메일 | Brevo | 무료 300통/일 |
+| 결제 | DodoPay | Phase 2, Wise USD 계좌 연결 완료 |
+| 배포 | CF Pages + CF Workers | pickedby.ai / api.pickedby.ai |
 
 **월 운영비**: Phase 1 ~$0, Phase 2 ~$55
 
 ---
 
-## 10. 리스크 & 대응
+## 10. 배지 시스템 (V2-C, 2026-04-06 확정)
+
+| 점수 | 티어 | 문구 | 특이사항 |
+|------|------|------|---------|
+| 81-100 | Gold | PICKED BY AI | goldPulse 애니메이션, 박스 글로우 |
+| 61-80 | Silver | SEEN BY AI | #C0C0C0 |
+| 36-60 | Bronze | NOTICED BY AI | #CD7F32 |
+| 0-35 | 없음 | — | — |
+
+크라운 로고: V2-C (3피크 + 3젬, x=4/9/14)
+
+---
+
+## 11. 리스크 & 대응
 
 | 리스크 | 확률 | 대응 |
 |--------|------|------|
-| AI 쿼리 ToS/Rate Limit | 높음 | Gemini 공식 API 우선, 쿼리 간격 조절 |
+| ~~Gemini HKG DC 차단~~ | **해결됨** | CF Workers AI 전환으로 구조적 해결 (2026-04-06) |
+| AI 답변 변동성 | 낮음 | YES/NO 구조화 쿼리 + 5차원 통계적 점수 |
 | Otterly 크리에이터 플랜 출시 | 중간 | 속도 선점 + 크리에이터 전용 UX 깊이 |
-| AI 답변 변동성 | 확실 | 3쿼리 통계적 점수 산출 |
 | ROI 증명 어려움 | 높음 | 딥링크 클릭 데이터로 AEO 측정 |
 | 자동 치료 한계 | 확실 | 과장 금지, "인프라 제공"으로 정직하게 커뮤니케이션 |
 
 ---
 
-## 11. 마일스톤
+## 12. 마일스톤
 
-| 날짜 | 마일스톤 |
-|------|---------|
-| 2026-04-05 | SFD 킥오프, 폴더 셋팅 |
-| 2026-04-12 | CHECK-03 수요검증 완료 (크리에이터 20명 DM) |
-| 2026-04-14 | GO 확정 → pickedby.ai 도메인 구매 |
-| 2026-04-21 | Phase 1 MVP 빌드 완료 |
-| 2026-04-28 | Product Hunt 출시 |
-| 2026-05-15 | 모두의 창업 지원서 제출 (마감) |
-| 2026-05-31 | 이메일 1,000개 목표 |
-| 2026-07-01 | Phase 2 유료 전환, MRR $1,900 목표 |
+| 날짜 | 마일스톤 | 상태 |
+|------|---------|------|
+| 2026-04-05 | pickedby.ai 도메인 구매 ($160/2년, Cloudflare) | ✅ |
+| 2026-04-05 | HTTPS 라이브 + E2E 정상 (Notion Planner 10점, ChatGPT 53점) | ✅ |
+| 2026-04-05 | Supabase 이메일 수집 DB 연동 | ✅ |
+| 2026-04-06 | API 안정화 (Gemini → CF Workers AI, 4초) | ✅ |
+| 2026-04-06 | 배지 시스템 V2-C (Gold/Silver/Bronze) 구현 | ✅ |
+| 2026-04-06 | DodoPay + Wise USD 결제 인프라 구축 | ✅ 제출 |
+| 2026-04-09 | DodoPay Bank Verification 승인 예상 | ⏳ |
+| 2026-04-14 | Twitter/X 런칭 포스트 + Product Hunt 출시 | 예정 |
+| 2026-05-15 | 모두의 창업 지원서 제출 (마감) | 예정 |
+| 2026-05-31 | 이메일 1,000개 목표 | 예정 |
+| 2026-07-01 | Phase 2 유료 전환, MRR $1,900 목표 | 예정 |
 
 ---
 
-## 12. 창업자 적합도
+## 13. 창업자 적합도
 
 - **UX/서비스기획 출신**: 비기술 크리에이터를 위한 UX 설계 = 핵심 경쟁력
 - **바이브코딩 가능**: Claude Code로 Phase 1-2 혼자 빌드 가능
-- **perceptdot 운영 경험**: MCP 서버, CF Workers, Paddle 이미 검증
+- **perceptdot 운영 경험**: MCP 서버, CF Workers, Brevo 이미 검증
 - **본인 페인포인트**: 디지털 제품 만들고 마케팅 귀찮다 → 자기가 쓸 제품
 
 ---
@@ -178,3 +195,4 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 
 *기반 리서치: `/Volumes/My Passport for Mac/My_project/docs/input/pickedby_ai_full_report.json`*
 *작성: 2026-04-05, CPO (데스크탑 Claude)*
+*최종 업데이트: 2026-04-06 — AI 엔진 교체(CF Workers AI), 배지 V2-C 확정, 결제 인프라, 마일스톤 현황 반영*
