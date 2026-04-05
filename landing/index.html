@@ -605,8 +605,44 @@
     }
     .vital-desc { font-size: 0.68rem; color: #444; line-height: 1.4; }
 
+    /* ── HOW IT WORKS ── */
+    .how-section {
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+      padding: 1.5rem 1.25rem;
+      background: var(--bg2);
+    }
+    .how-head {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.42rem;
+      color: var(--yellow);
+      letter-spacing: 0.12em;
+      margin-bottom: 1.25rem;
+      opacity: .7;
+    }
+    .how-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    .how-step { text-align: center; }
+    .how-num {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      color: var(--yellow);
+      display: block;
+      margin-bottom: 0.5rem;
+    }
+    .how-title { font-size: 0.8rem; font-weight: 600; margin-bottom: 0.3rem; }
+    .how-desc { font-size: 0.7rem; color: var(--muted); line-height: 1.5; }
+
+    /* ── CONSENT ── */
+    .consent-note { font-size: 0.68rem; color: #444; margin-top: 0.5rem; line-height: 1.4; }
+    .consent-note a { color: #555; text-decoration: underline; }
+
     /* ── MOBILE ── */
     @media (max-width: 480px) {
+      .how-steps { grid-template-columns: 1fr; }
       .hero h1 { font-size: 1.75rem; }
       .score-num { font-size: 3rem; }
       .email-row { flex-direction: column; }
@@ -662,6 +698,28 @@
         <div class="vital-card">
           <span class="vital-name">GROUNDED</span>
           <div class="vital-desc">Is AI finding real sources about you?</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOW IT WORKS -->
+    <div class="how-section">
+      <div class="how-head">HOW IT WORKS</div>
+      <div class="how-steps">
+        <div class="how-step">
+          <span class="how-num">01</span>
+          <div class="how-title">Enter your product</div>
+          <div class="how-desc">Name, URL, and optional category</div>
+        </div>
+        <div class="how-step">
+          <span class="how-num">02</span>
+          <div class="how-title">AI scans 3 queries</div>
+          <div class="how-desc">We ask AI how it ranks and recommends you</div>
+        </div>
+        <div class="how-step">
+          <span class="how-num">03</span>
+          <div class="how-title">Get your score</div>
+          <div class="how-desc">0–100 score + 3 specific ways to improve</div>
         </div>
       </div>
     </div>
@@ -764,6 +822,7 @@
             <button class="btn-email" onclick="submitEmail()">SEND ▶</button>
           </div>
           <div class="email-ok" id="emailOk">✅ You're in! Report incoming.</div>
+          <p class="consent-note">By submitting, you agree to receive occasional AI visibility updates. No spam, unsubscribe anytime. <a href="/privacy">Privacy Policy</a></p>
         </div>
 
       </div>
@@ -771,7 +830,7 @@
 
     <!-- FOOTER -->
     <footer class="footer">
-      <p>pickedby.ai &nbsp;·&nbsp; Built for digital creators &nbsp;·&nbsp; <a href="mailto:hello@pickedby.ai">hello@pickedby.ai</a></p>
+      <p>pickedby.ai &nbsp;·&nbsp; Built for digital creators &nbsp;·&nbsp; <a href="mailto:hello@pickedby.ai">hello@pickedby.ai</a> &nbsp;·&nbsp; <a href="/privacy">Privacy</a></p>
     </footer>
 
   </div>
