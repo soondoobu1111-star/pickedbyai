@@ -2,41 +2,111 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Badge Preview — pickedby.ai</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #000; padding: 48px 40px; display: flex; flex-direction: column; gap: 28px; width: 520px; }
-.label { font-family: 'Press Start 2P', monospace; font-size: 0.4rem; color: #444; letter-spacing: 3px; margin-bottom: 6px; }
+body { background: #000; color: #fff; font-family: 'Press Start 2P', monospace; padding: 40px 32px; min-height: 100vh; }
 
-/* Logo row */
-.logo-row { display: flex; align-items: center; gap: 8px; font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: #FFD700; letter-spacing: -1px; margin-bottom: 28px; }
+/* Logo */
+.logo-row { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; color: #FFD700; letter-spacing: -1px; margin-bottom: 36px; }
 .logo-row .dot { color: #fff; }
 
-/* Badge shared */
-.ai-badge { padding: 1.5rem 1.25rem; text-align: center; position: relative; }
+/* Size tabs */
+.tabs { display: flex; gap: 4px; margin-bottom: 32px; }
+.tab { padding: 10px 18px; font-family: 'Press Start 2P', monospace; font-size: 0.45rem; cursor: pointer; border: 2px solid #333; background: transparent; color: #555; letter-spacing: 2px; transition: all 0.1s; }
+.tab.active { border-color: #FFD700; color: #FFD700; background: #0a0800; }
+.tab:hover:not(.active) { border-color: #555; color: #888; }
+
+/* Size label */
+.size-hint { font-size: 0.35rem; color: #444; letter-spacing: 3px; margin-bottom: 28px; }
+
+/* Badge grid */
+.badge-grid { display: flex; flex-direction: column; gap: 24px; max-width: 520px; }
+
+/* Badge wrapper */
+.badge-wrap { position: relative; }
+.tier-label { font-size: 0.35rem; color: #444; letter-spacing: 3px; margin-bottom: 8px; }
+
+/* Badge core */
+.ai-badge { padding: 1.5rem 1.25rem; text-align: center; position: relative; transition: width 0.15s; }
 .ai-badge.gold   { background: #0a0800; border: 2px solid #FFD700; animation: goldPulse 2.5s ease infinite; }
 .ai-badge.silver { background: #08090a; border: 2px solid #C0C0C0; }
 .ai-badge.bronze { background: #090809; border: 2px solid #CD7F32; }
+
 @keyframes goldPulse {
   0%,100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); border-color: #FFD700; }
   50%     { box-shadow: 0 0 22px 6px rgba(255,215,0,0.35), 0 0 50px 10px rgba(255,215,0,0.1); border-color: #FFE55C; }
 }
+
 .badge-crown { display: flex; justify-content: center; margin-bottom: 0.65rem; }
-.badge-tier-label { font-family: 'Press Start 2P', monospace; font-size: 0.42rem; letter-spacing: 0.15em; margin-bottom: 0.45rem; opacity: 0.75; }
+.badge-tier-label { font-family: 'Press Start 2P', monospace; letter-spacing: 0.15em; margin-bottom: 0.45rem; opacity: 0.75; }
 .ai-badge.gold   .badge-tier-label { color: #FFD700; }
 .ai-badge.silver .badge-tier-label { color: #C0C0C0; }
 .ai-badge.bronze .badge-tier-label { color: #CD7F32; }
-.badge-title { font-family: 'Press Start 2P', monospace; font-size: 0.62rem; letter-spacing: 0.06em; margin-bottom: 0.65rem; }
+
+.badge-title { font-family: 'Press Start 2P', monospace; letter-spacing: 0.06em; margin-bottom: 0.65rem; }
 .ai-badge.gold   .badge-title { color: #FFD700; }
 .ai-badge.silver .badge-title { color: #C0C0C0; }
 .ai-badge.bronze .badge-title { color: #CD7F32; }
-.badge-desc { font-size: 0.8rem; color: #666; line-height: 1.55; margin-bottom: 1rem; }
-.btn-badge { width: 100%; padding: 0.75rem; border: none; font-family: 'Press Start 2P', monospace; font-size: 0.5rem; cursor: pointer; transition: transform 0.08s; }
+
+.badge-desc { color: #666; line-height: 1.55; margin-bottom: 1rem; }
+.btn-badge { width: 100%; padding: 0.75rem; border: none; font-family: 'Press Start 2P', monospace; cursor: pointer; transition: transform 0.08s; }
+.btn-badge:active { transform: translate(2px, 2px); }
 .ai-badge.gold   .btn-badge { background: #FFD700; color: #000; box-shadow: 3px 3px 0 #b39700; }
 .ai-badge.silver .btn-badge { background: #C0C0C0; color: #000; box-shadow: 3px 3px 0 #808080; }
 .ai-badge.bronze .btn-badge { background: #CD7F32; color: #000; box-shadow: 3px 3px 0 #7d4a14; }
-.score-tag { font-family: 'Press Start 2P', monospace; font-size: 0.35rem; color: #333; margin-top: 10px; letter-spacing: 2px; }
+
+/* Copy button */
+.copy-btn {
+  margin-top: 8px;
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  border: 1px solid #333;
+  color: #444;
+  font-family: 'Press Start 2P', monospace;
+  font-size: 0.3rem;
+  cursor: pointer;
+  letter-spacing: 2px;
+  transition: all 0.1s;
+}
+.copy-btn:hover { border-color: #666; color: #888; }
+.copy-btn.copied { border-color: #4CAF50; color: #4CAF50; }
+
+/* XL size */
+.size-xl .ai-badge { width: 460px; }
+.size-xl .badge-tier-label { font-size: 0.5rem; }
+.size-xl .badge-title { font-size: 0.75rem; }
+.size-xl .badge-desc { font-size: 0.9rem; }
+.size-xl .btn-badge { font-size: 0.55rem; }
+.size-xl .badge-crown svg { width: 80px; height: 64px; }
+
+/* L size */
+.size-l .ai-badge { width: 320px; }
+.size-l .badge-tier-label { font-size: 0.42rem; }
+.size-l .badge-title { font-size: 0.62rem; }
+.size-l .badge-desc { font-size: 0.78rem; }
+.size-l .btn-badge { font-size: 0.48rem; }
+.size-l .badge-crown svg { width: 60px; height: 48px; }
+
+/* M size */
+.size-m .ai-badge { width: 220px; padding: 1rem; }
+.size-m .badge-tier-label { font-size: 0.32rem; }
+.size-m .badge-title { font-size: 0.48rem; }
+.size-m .badge-desc { display: none; }
+.size-m .btn-badge { font-size: 0.35rem; padding: 0.55rem; }
+.size-m .badge-crown svg { width: 44px; height: 35px; }
+
+/* S size */
+.size-s .ai-badge { width: 150px; padding: 0.75rem 0.6rem; }
+.size-s .badge-tier-label { font-size: 0.25rem; }
+.size-s .badge-title { font-size: 0.35rem; margin-bottom: 0.4rem; }
+.size-s .badge-desc { display: none; }
+.size-s .btn-badge { font-size: 0.25rem; padding: 0.4rem; }
+.size-s .badge-crown svg { width: 28px; height: 22px; }
 </style>
 </head>
 <body>
@@ -44,83 +114,147 @@ body { background: #000; padding: 48px 40px; display: flex; flex-direction: colu
 <!-- Logo -->
 <div class="logo-row">
   <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-    <rect x="0" y="0" width="2" height="4"/>
-    <rect x="9" y="0" width="2" height="4"/>
-    <rect x="18" y="0" width="2" height="4"/>
+    <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
     <rect x="0" y="4" width="20" height="2"/>
-    <rect x="0" y="6" width="2" height="6"/>
-    <rect x="18" y="6" width="2" height="6"/>
-    <rect x="4" y="8" width="2" height="2"/>
-    <rect x="9" y="8" width="2" height="2"/>
-    <rect x="14" y="8" width="2" height="2"/>
-    <rect x="0" y="12" width="20" height="2"/>
-    <rect x="2" y="14" width="16" height="2"/>
+    <rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
+    <rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
+    <rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/>
   </svg>
-  picked<span class="dot">by</span>.ai
+  picked<span class="dot">by</span>.ai — Badge Preview
 </div>
 
-<!-- GOLD -->
-<div>
-  <div class="label">GOLD — SCORE 81~100</div>
-  <div class="ai-badge gold">
-    <div class="badge-crown">
-      <svg width="72" height="58" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
-        <rect x="0" y="4" width="20" height="2"/>
-        <rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
-        <rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
-        <rect x="0" y="12" width="20" height="2"/>
-        <rect x="2" y="14" width="16" height="2"/>
-      </svg>
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active" onclick="setSize('xl', this)">XL</button>
+  <button class="tab" onclick="setSize('l', this)">L</button>
+  <button class="tab" onclick="setSize('m', this)">M</button>
+  <button class="tab" onclick="setSize('s', this)">S</button>
+</div>
+
+<div class="size-hint" id="size-hint">XL — 랜딩페이지 히어로 섹션 (460px)</div>
+
+<!-- Badge Grid -->
+<div class="badge-grid" id="badge-grid">
+
+  <!-- GOLD -->
+  <div class="badge-wrap size-xl" id="wrap-gold">
+    <div class="tier-label">GOLD — SCORE 81~100</div>
+    <div class="ai-badge gold">
+      <div class="badge-crown">
+        <svg viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
+          <rect x="0" y="4" width="20" height="2"/>
+          <rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
+          <rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
+          <rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/>
+        </svg>
+      </div>
+      <div class="badge-tier-label">✦ GOLD BADGE</div>
+      <div class="badge-title">PICKED BY AI</div>
+      <p class="badge-desc">AI consistently recommends your product. Add this badge to your product page to signal AI-readiness to buyers.</p>
+      <button class="btn-badge">CLAIM MY BADGE ▶▶</button>
     </div>
-    <div class="badge-tier-label">✦ GOLD BADGE</div>
-    <div class="badge-title">PICKED BY AI</div>
-    <p class="badge-desc">AI consistently recommends your product. Add this badge to your product page to signal AI-readiness to buyers.</p>
-    <button class="btn-badge">CLAIM MY BADGE ▶▶</button>
+    <button class="copy-btn" onclick="copyBadge('gold')">[ COPY HTML SNIPPET ]</button>
   </div>
-</div>
 
-<!-- SILVER -->
-<div>
-  <div class="label">SILVER — SCORE 61~80</div>
-  <div class="ai-badge silver">
-    <div class="badge-crown">
-      <svg width="72" height="58" viewBox="0 0 20 16" fill="#C0C0C0" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
-        <rect x="0" y="4" width="20" height="2"/>
-        <rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
-        <rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
-        <rect x="0" y="12" width="20" height="2"/>
-        <rect x="2" y="14" width="16" height="2"/>
-      </svg>
+  <!-- SILVER -->
+  <div class="badge-wrap size-xl" id="wrap-silver">
+    <div class="tier-label">SILVER — SCORE 61~80</div>
+    <div class="ai-badge silver">
+      <div class="badge-crown">
+        <svg viewBox="0 0 20 16" fill="#C0C0C0" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
+          <rect x="0" y="4" width="20" height="2"/>
+          <rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
+          <rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
+          <rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/>
+        </svg>
+      </div>
+      <div class="badge-tier-label">✦ SILVER BADGE</div>
+      <div class="badge-title">SEEN BY AI</div>
+      <p class="badge-desc">AI knows and sometimes recommends your product. A few improvements will push you to Gold.</p>
+      <button class="btn-badge">CLAIM MY BADGE ▶▶</button>
     </div>
-    <div class="badge-tier-label">✦ SILVER BADGE</div>
-    <div class="badge-title">SEEN BY AI</div>
-    <p class="badge-desc">AI knows and sometimes recommends your product. A few improvements will push you to Gold.</p>
-    <button class="btn-badge">CLAIM MY BADGE ▶▶</button>
+    <button class="copy-btn" onclick="copyBadge('silver')">[ COPY HTML SNIPPET ]</button>
   </div>
-</div>
 
-<!-- BRONZE -->
-<div>
-  <div class="label">BRONZE — SCORE 36~60</div>
-  <div class="ai-badge bronze">
-    <div class="badge-crown">
-      <svg width="72" height="58" viewBox="0 0 20 16" fill="#CD7F32" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
-        <rect x="0" y="4" width="20" height="2"/>
-        <rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
-        <rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
-        <rect x="0" y="12" width="20" height="2"/>
-        <rect x="2" y="14" width="16" height="2"/>
-      </svg>
+  <!-- BRONZE -->
+  <div class="badge-wrap size-xl" id="wrap-bronze">
+    <div class="tier-label">BRONZE — SCORE 36~60</div>
+    <div class="ai-badge bronze">
+      <div class="badge-crown">
+        <svg viewBox="0 0 20 16" fill="#CD7F32" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
+          <rect x="0" y="4" width="20" height="2"/>
+          <rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
+          <rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
+          <rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/>
+        </svg>
+      </div>
+      <div class="badge-tier-label">✦ BRONZE BADGE</div>
+      <div class="badge-title">NOTICED BY AI</div>
+      <p class="badge-desc">AI is aware of your product. Apply the fixes above to climb to Silver or Gold.</p>
+      <button class="btn-badge">CLAIM MY BADGE ▶▶</button>
     </div>
-    <div class="badge-tier-label">✦ BRONZE BADGE</div>
-    <div class="badge-title">NOTICED BY AI</div>
-    <p class="badge-desc">AI is aware of your product. Apply the fixes above to climb to Silver or Gold.</p>
-    <button class="btn-badge">CLAIM MY BADGE ▶▶</button>
+    <button class="copy-btn" onclick="copyBadge('bronze')">[ COPY HTML SNIPPET ]</button>
   </div>
+
 </div>
 
+<script>
+const sizes = {
+  xl: { label: 'XL — 랜딩페이지 히어로 섹션 (460px)', w: 460, crownW: 80, crownH: 64 },
+  l:  { label: 'L — 웹사이트 푸터 / About 페이지 (320px)', w: 320, crownW: 60, crownH: 48 },
+  m:  { label: 'M — 사이드바 / 블로그 하단 (220px)', w: 220, crownW: 44, crownH: 35 },
+  s:  { label: 'S — 이메일 서명 / 링크트리 (150px)', w: 150, crownW: 28, crownH: 22 },
+};
+
+function setSize(size, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('size-hint').textContent = sizes[size].label;
+  ['gold','silver','bronze'].forEach(tier => {
+    const wrap = document.getElementById('wrap-' + tier);
+    wrap.className = 'badge-wrap size-' + size;
+  });
+}
+
+const snippets = {
+  gold: (w, cw, ch) => `<a href="https://pickedby.ai" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none;width:${w}px;padding:1.5rem 1.25rem;background:#0a0800;border:2px solid #FFD700;text-align:center;font-family:'Press Start 2P',monospace;">
+  <svg width="${cw}" height="${ch}" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 0.65rem;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+  <div style="color:#FFD700;font-size:0.42rem;letter-spacing:0.15em;margin-bottom:0.45rem;">✦ GOLD BADGE</div>
+  <div style="color:#FFD700;font-size:0.62rem;letter-spacing:0.06em;">PICKED BY AI</div>
+</a>`,
+  silver: (w, cw, ch) => `<a href="https://pickedby.ai" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none;width:${w}px;padding:1.5rem 1.25rem;background:#08090a;border:2px solid #C0C0C0;text-align:center;font-family:'Press Start 2P',monospace;">
+  <svg width="${cw}" height="${ch}" viewBox="0 0 20 16" fill="#C0C0C0" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 0.65rem;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+  <div style="color:#C0C0C0;font-size:0.42rem;letter-spacing:0.15em;margin-bottom:0.45rem;">✦ SILVER BADGE</div>
+  <div style="color:#C0C0C0;font-size:0.62rem;letter-spacing:0.06em;">SEEN BY AI</div>
+</a>`,
+  bronze: (w, cw, ch) => `<a href="https://pickedby.ai" target="_blank" rel="noopener" style="display:inline-block;text-decoration:none;width:${w}px;padding:1.5rem 1.25rem;background:#090809;border:2px solid #CD7F32;text-align:center;font-family:'Press Start 2P',monospace;">
+  <svg width="${cw}" height="${ch}" viewBox="0 0 20 16" fill="#CD7F32" xmlns="http://www.w3.org/2000/svg" style="display:block;margin:0 auto 0.65rem;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+  <div style="color:#CD7F32;font-size:0.42rem;letter-spacing:0.15em;margin-bottom:0.45rem;">✦ BRONZE BADGE</div>
+  <div style="color:#CD7F32;font-size:0.62rem;letter-spacing:0.06em;">NOTICED BY AI</div>
+</a>`
+};
+
+function copyBadge(tier) {
+  const activeSize = document.querySelector('.tab.active').textContent.toLowerCase();
+  const s = sizes[activeSize];
+  const html = snippets[tier](s.w, s.crownW, s.crownH);
+  navigator.clipboard.writeText(html).then(() => {
+    const btns = document.querySelectorAll('.copy-btn');
+    btns.forEach(b => {
+      if (b.getAttribute('onclick') === `copyBadge('${tier}')`) {
+        b.textContent = '[ COPIED! ✓ ]';
+        b.classList.add('copied');
+        setTimeout(() => {
+          b.textContent = '[ COPY HTML SNIPPET ]';
+          b.classList.remove('copied');
+        }, 2000);
+      }
+    });
+  });
+}
+</script>
 </body>
 </html>
