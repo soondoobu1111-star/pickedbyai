@@ -39,7 +39,7 @@ function isBlockedUrl(url: string): boolean {
   }
 }
 
-// Extract rank from Gemini response text
+// Extract rank from Gemini response text (1-20 only, avoids years/large numbers)
 function findRank(text: string, name: string): number | null {
   const lower = text.toLowerCase()
   const nameLower = name.toLowerCase()
@@ -47,7 +47,10 @@ function findRank(text: string, name: string): number | null {
   for (const line of lines) {
     if (!line.includes(nameLower)) continue
     const m = line.match(/(\d+)/)
-    if (m) return parseInt(m[1], 10)
+    if (m) {
+      const n = parseInt(m[1], 10)
+      if (n >= 1 && n <= 20) return n
+    }
   }
   return null
 }
@@ -71,9 +74,9 @@ app.get('/', (c) => c.json({ ok: true, service: 'pickedbyai-api' }))
 
 
 // ── POST /v1/check ────────────────────────────────────────────
-// Runs 3 Gemini queries server-side, returns AI visibility results
+// Runs 5 Gemini queries server-side, returns AI visibility results
 app.post('/v1/check', async (c) => {
-  let body: { product?: string; category?: string; keywords?: string; url?: string }
+  let body: { product?: string; url?: string; category?: string; keywords?: string }
 
   try {
     body = await c.req.json()
@@ -81,7 +84,7 @@ app.post('/v1/check', async (c) => {
     return c.json({ error: 'Invalid JSON' }, 400)
   }
 
-  const { product, category, keywords, url } = body
+  const { product, url } = body
 
   if (!product || product.trim().length < 1) {
     return c.json({ error: 'product is required' }, 400)
@@ -92,21 +95,28 @@ app.post('/v1/check', async (c) => {
   }
 
   const name = product.trim()
-  const cat = category ? category.trim() : ''
-  const kw = keywords ? keywords.trim() : ''
+  const urlCtx = url ? ` (website: ${url})` : ''
 
   const queries: CheckQuery[] = [
     {
       label: 'Direct name search',
-      prompt: `List the top 10 ${cat || 'digital'} products or creators named or similar to "${name}"${kw ? ` related to ${kw}` : ''}. Number each item. Be concise.`,
+      prompt: `List the top 10 digital products or tools named or very similar to "${name}"${urlCtx}. Number each item.`,
     },
     {
       label: 'Best-of recommendation',
-      prompt: `What are the best ${cat || 'digital'} products${kw ? ` for ${kw}` : ''} recommended by AI assistants in 2024-2025? List top 10 with numbers. Include "${name}" if relevant.`,
+      prompt: `What are the best digital products like "${name}" that AI assistants recommend in 2025? List top 10 with numbers.`,
     },
     {
       label: 'Problem-solution search',
-      prompt: `Someone is looking for a ${cat || 'digital'} product${kw ? ` to help with ${kw}` : ''}. What are the top 10 recommendations? List with numbers. Include "${name}" if it fits.`,
+      prompt: `Recommend the top 10 digital products that do what "${name}"${urlCtx} does. List with numbers.`,
+    },
+    {
+      label: 'Reviews & mentions',
+      prompt: `Search for online reviews and mentions of "${name}"${urlCtx}. Does it appear on Reddit, Product Hunt, G2, or review sites? Summarize briefly.`,
+    },
+    {
+      label: 'Comparison searches',
+      prompt: `Search for "${name} vs" comparison articles or discussions online. Is "${name}" mentioned in "best alternatives" or comparison content?`,
     },
   ]
 
@@ -119,7 +129,8 @@ app.post('/v1/check', async (c) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           contents: [{ parts: [{ text: q.prompt }] }],
-          generationConfig: { maxOutputTokens: 600 },
+          tools: [{ google_search: {} }],
+          generationConfig: { maxOutputTokens: 2000 },
         }),
       })
 
@@ -130,14 +141,15 @@ app.post('/v1/check', async (c) => {
       const data = await res.json() as {
         candidates?: Array<{
           content?: { parts?: Array<{ text?: string; thought?: boolean }> }
-          groundingMetadata?: { webSearchQueries?: string[] }
+          groundingMetadata?: { webSearchQueries?: string[]; groundingChunks?: unknown[] }
         }>
       }
 
       // 2.5-flash returns thinking blocks first — filter them out
       const parts = data.candidates?.[0]?.content?.parts ?? []
       const text = parts.filter(p => !p.thought).map(p => p.text ?? '').join('\n')
-      const grounded = false // googleSearch disabled (CF Workers geo-restriction)
+      const groundingMeta = data.candidates?.[0]?.groundingMetadata
+      const grounded = !!(groundingMeta?.webSearchQueries?.length)
       const rank = findRank(text, name)
       const found = rank !== null || text.toLowerCase().includes(name.toLowerCase())
 
@@ -150,19 +162,26 @@ app.post('/v1/check', async (c) => {
   const results = await Promise.all(queries.map(fetchQuery))
 
   // Compute AI Visibility Score (0-100)
+  // Core AI score: first 3 queries (presence + rank)
+  const coreResults = results.slice(0, 3)
+  const signalResults = results.slice(3) // review + comparison
+
   let score = 0
-  const foundCount = results.filter(r => r.found).length
-  score += foundCount * 20 // up to 60 for presence
-  const bestRank = results.reduce((best: number | null, r) => {
+  const foundCount = coreResults.filter(r => r.found).length
+  score += foundCount * 16 // up to 48 for core AI presence
+  const bestRank = coreResults.reduce((best: number | null, r) => {
     if (r.rank === null) return best
     if (best === null) return r.rank
     return Math.min(best, r.rank)
   }, null)
   if (bestRank !== null) {
-    if (bestRank <= 3) score += 40
-    else if (bestRank <= 5) score += 25
-    else if (bestRank <= 10) score += 15
+    if (bestRank <= 3) score += 36
+    else if (bestRank <= 5) score += 22
+    else if (bestRank <= 10) score += 12
   }
+  // Content signal bonus: reviews + comparison presence (up to 16 pts)
+  const signalFound = signalResults.filter(r => r.found).length
+  score += signalFound * 8
   score = Math.min(100, score)
 
   return c.json({ results, score, product: name })

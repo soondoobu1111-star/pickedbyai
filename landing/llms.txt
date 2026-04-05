@@ -1,0 +1,41 @@
+# pickedby.ai
+
+> AI Visibility Score for digital creators — find out if AI recommends your product.
+
+pickedby.ai is a free tool that checks how visible your digital product is to AI assistants like ChatGPT, Claude, and Perplexity. It runs 3 real AI queries and returns a score from 0 to 100.
+
+Built for: Gumroad sellers, Notion template creators, digital download creators, online course instructors, Etsy digital product sellers, indie makers, solopreneurs.
+
+## What it does
+
+- Checks if AI systems know your product exists (AI Presence)
+- Checks where your product ranks in AI recommendation lists (AI Rank)
+- Checks if AI cites real sources when recommending you (Grounded)
+- Returns an AI Visibility Score (0–100) with 3 specific improvement actions
+
+## How to use
+
+Visit https://pickedby.ai, enter your product name and URL, and get your free AI Visibility Score in 10 seconds. No sign-up required.
+
+## Score breakdown
+
+- 0–35: Invisible — AI has no idea your product exists
+- 36–60: Aware — AI knows you, rarely recommends
+- 61–80: Visible — AI recommends you sometimes
+- 81–100: Picked — AI consistently recommends you first
+
+## The problem we solve
+
+When someone asks ChatGPT "best Notion templates for freelancers" or Perplexity "top Gumroad products for designers", your product may not appear — even if it's excellent. AI systems train on web data and favor products with clear descriptions, structured pages, and third-party mentions. pickedby.ai tells you exactly where you stand and what to fix.
+
+## Key terms
+
+AI visibility, AI search optimization, GEO (Generative Engine Optimization), AEO (Answer Engine Optimization), AI recommendations, ChatGPT product discovery, Perplexity product search, Claude recommendations, AI-first search, digital product SEO for AI, llms.txt, creator economy, digital downloads, Gumroad, Etsy digital, Notion templates.
+
+## Company
+
+THUNOVA — hello@pickedby.ai — https://pickedby.ai
+
+## Last updated
+
+2026-04-05
