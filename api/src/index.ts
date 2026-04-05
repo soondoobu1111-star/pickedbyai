@@ -4,7 +4,10 @@ import { cors } from 'hono/cors'
 type Bindings = {
   GEMINI_API_KEY: string
   BREVO_API_KEY: string
+  SUPABASE_ANON_KEY: string
 }
+
+const SUPABASE_URL = 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
 
 type CheckQuery = {
   label: string
@@ -204,6 +207,23 @@ app.post('/v1/subscribe', async (c) => {
     console.error('Brevo error:', res.status, text)
     return c.json({ error: 'Subscribe failed' }, 500)
   }
+
+  // Save to Supabase (upsert — no duplicate emails)
+  await fetch(`${SUPABASE_URL}/rest/v1/emails`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': c.env.SUPABASE_ANON_KEY,
+      'Authorization': `Bearer ${c.env.SUPABASE_ANON_KEY}`,
+      'Prefer': 'resolution=merge-duplicates',
+    },
+    body: JSON.stringify({
+      email,
+      product: product ?? null,
+      score: score ?? null,
+      source: source ?? 'pickedby.ai',
+    }),
+  }).catch(err => console.error('Supabase error:', err))
 
   return c.json({ ok: true })
 })
