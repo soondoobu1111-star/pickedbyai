@@ -157,7 +157,7 @@
       box-shadow: 0 0 0 1px var(--yellow);
     }
 
-    input::placeholder { color: #333; }
+    input::placeholder { color: #555; }
     select option { background: #161616; }
 
     .select-wrap { position: relative; }
@@ -252,7 +252,7 @@
 
     .loading-step {
       font-size: 0.78rem;
-      color: #333;
+      color: #666;
       margin-top: 0.5rem;
     }
 
@@ -263,6 +263,7 @@
       border: 1px solid var(--border);
       position: relative;
       overflow: hidden;
+      scroll-margin-top: 3.5rem;
     }
 
     .result::before {
@@ -493,6 +494,7 @@
 
     .btn-email {
       padding: 0 1rem;
+      min-height: 44px;
       background: var(--yellow);
       color: #000;
       border: none;
@@ -603,7 +605,7 @@
       margin-bottom: 0.5rem;
       opacity: .7;
     }
-    .vital-desc { font-size: 0.68rem; color: #444; line-height: 1.4; }
+    .vital-desc { font-size: 0.68rem; color: #666; line-height: 1.4; }
 
     /* ── ENTRANCE ANIMATION ── */
     .fade-up {
@@ -645,77 +647,111 @@
       gap: 0.2rem;
     }
 
-    /* ── STAT ROW ── */
-    .stat-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1px;
-      margin-bottom: 2rem;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-    .stat-item {
-      background: var(--bg2);
-      text-align: center;
-      padding: 1rem 0.5rem;
-    }
-    .stat-num {
+    /* ── HERO CTA BUTTON ── */
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 1.5rem;
+      padding: 0.7rem 1.25rem;
+      background: var(--yellow);
+      color: #000;
+      border: none;
       font-family: 'Press Start 2P', monospace;
-      font-size: 0.8rem;
-      color: var(--yellow);
+      font-size: 0.55rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      box-shadow: 3px 3px 0 var(--yellow2);
+      transition: transform 0.08s, box-shadow 0.08s;
+    }
+    .hero-cta:hover { transform: translate(1px,1px); box-shadow: 2px 2px 0 var(--yellow2); }
+    .hero-cta:active { transform: translate(3px,3px); box-shadow: none; }
+
+    /* ── SCORE SPECTRUM ── */
+    .spectrum-wrap {
+      margin-bottom: 2rem;
+    }
+    .spectrum-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.38rem;
+      color: var(--muted);
+      letter-spacing: 0.15em;
+      margin-bottom: 0.75rem;
+      opacity: 0.5;
+    }
+    .spectrum-zones {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2px;
+    }
+    .sz {
+      padding: 0.85rem 0.5rem;
+      text-align: center;
+      border: 1px solid;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s;
+    }
+    .sz:hover { transform: translateY(-2px); }
+    .sz-low  { background: #130404; border-color: #3a1010; }
+    .sz-mid  { background: #130a02; border-color: #3a2008; }
+    .sz-hi   { background: #131100; border-color: #3a3208; }
+    .sz-top  { background: #02130a; border-color: #0d3a1a; }
+    .sz-range {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.38rem;
       display: block;
       margin-bottom: 0.4rem;
     }
-    .stat-label { font-size: 0.64rem; color: #444; line-height: 1.5; }
+    .sz-low  .sz-range { color: var(--red); }
+    .sz-mid  .sz-range { color: var(--orange); }
+    .sz-hi   .sz-range { color: #FFEB3B; }
+    .sz-top  .sz-range { color: var(--green); }
+    .sz-title { font-size: 0.8rem; font-weight: 700; margin-bottom: 0.3rem; }
+    .sz-low  .sz-title { color: #ff6b6b; }
+    .sz-mid  .sz-title { color: #ffa94d; }
+    .sz-hi   .sz-title { color: #ffe066; }
+    .sz-top  .sz-title { color: #69db7c; }
+    .sz-desc { font-size: 0.62rem; color: #555; line-height: 1.4; }
 
-    /* ── SCAN TICKER ── */
-    .ticker-wrap {
+    /* ── QUERY TICKER ── */
+    .qticker-wrap {
       overflow: hidden;
-      padding: 0.65rem 0;
       margin-bottom: 2rem;
+      padding: 0.8rem 0;
       border-top: 1px solid #181818;
       border-bottom: 1px solid #181818;
       position: relative;
     }
-    .ticker-wrap::before, .ticker-wrap::after {
+    .qticker-wrap::before, .qticker-wrap::after {
       content: '';
       position: absolute;
-      top: 0; bottom: 0; width: 2.5rem; z-index: 2;
+      top: 0; bottom: 0; width: 3rem; z-index: 2;
       pointer-events: none;
     }
-    .ticker-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
-    .ticker-wrap::after  { right: 0; background: linear-gradient(to left,  var(--bg), transparent); }
-    .ticker {
+    .qticker-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
+    .qticker-wrap::after  { right: 0; background: linear-gradient(to left,  var(--bg), transparent); }
+    .qticker {
       display: flex;
       width: max-content;
-      animation: ticker-scroll 32s linear infinite;
+      animation: ticker-scroll 40s linear infinite;
     }
-    .ticker:hover { animation-play-state: paused; }
+    .qticker:hover { animation-play-state: paused; }
     @keyframes ticker-scroll {
       0%   { transform: translateX(0); }
       100% { transform: translateX(-50%); }
     }
-    .ticker-item {
+    .qticker-item {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0 1.5rem;
+      padding: 0 1.75rem;
       font-size: 0.73rem;
       white-space: nowrap;
+      color: #444;
     }
-    .ticker-name { color: #555; }
-    .ticker-score {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.33rem;
-      padding: 0.2rem 0.4rem;
-      border: 1px solid;
-      letter-spacing: 0.04em;
-    }
-    .ticker-score.s-low  { color: var(--red);    border-color: #3a1010; background: #130404; }
-    .ticker-score.s-mid  { color: var(--orange); border-color: #3a2008; background: #130a02; }
-    .ticker-score.s-hi   { color: #FFEB3B;       border-color: #3a3208; background: #131100; }
-    .ticker-score.s-top  { color: var(--green);  border-color: #0d3a1a; background: #02130a; }
-    .ticker-sep { color: #222; padding: 0 0.25rem; }
+    .qticker-q { color: #555; font-style: italic; }
+    .qticker-sep { color: #1e1e1e; font-size: 1rem; }
 
     /* ── VITAL CARD HOVER ── */
     .vital-card { cursor: default; transition: border-color 0.2s, background 0.2s; }
@@ -764,23 +800,25 @@
       opacity: 0.5;
     }
     .how-title { font-size: 0.78rem; font-weight: 600; margin-bottom: 0.3rem; }
-    .how-desc { font-size: 0.67rem; color: #444; line-height: 1.5; }
+    .how-desc { font-size: 0.67rem; color: #666; line-height: 1.5; }
 
     /* ── CONSENT ── */
     .consent-note { font-size: 0.68rem; color: #444; margin-top: 0.5rem; line-height: 1.4; }
     .consent-note a { color: #555; text-decoration: underline; }
 
     /* ── MOBILE ── */
-    @media (max-width: 480px) {
+    @media (max-width: 767px) {
       .how-steps { grid-template-columns: 1fr; }
       .how-arrow { display: none; }
       .hero h1 { font-size: 1.75rem; }
       .score-num { font-size: 3rem; }
       .email-row { flex-direction: column; }
-      .btn-email { padding: 0.75rem; }
+      .btn-email { min-height: 44px; padding: 0.75rem; }
       .vitals-grid { grid-template-columns: 1fr; }
       .vs-row { flex-direction: column; gap: 0.35rem; }
-      .stat-row { grid-template-columns: 1fr; gap: 1px; }
+      .spectrum-zones { grid-template-columns: repeat(2, 1fr); }
+      .how-section { padding: 1.25rem 1rem; }
+      .stat-item { padding: 0.85rem 0.4rem; }
     }
   </style>
 </head>
@@ -789,7 +827,7 @@
   <div class="founding-bar">
     <div class="founding-bar-inner">
       <span class="live-dot"></span>
-      🚀 Founding creator spots open — first 200 get lifetime free reports &nbsp;<span id="foundingScanCount" style="opacity:0.55;font-size:0.65em"></span>
+      🚀 Early access open — founding creators get lifetime free weekly reports
     </div>
   </div>
 
@@ -805,8 +843,9 @@
     <div class="hero">
       <div class="hero-eyebrow">▶ Free AI Visibility Check</div>
       <h1>Does AI <em>recommend</em><br>your product?</h1>
-      <p>Find out in 10 seconds. Enter your product name and see your AI Visibility Score — the metric every digital creator needs to know.</p>
+      <p>When someone asks ChatGPT <em style="color:#ccc;font-style:normal">"best Notion templates for freelancers"</em> — is your product on the list? Find out free in 10 seconds.</p>
       <div class="hero-tagline">IF AI DOESN'T KNOW YOU · YOU DON'T EXIST</div>
+      <button class="hero-cta" onclick="document.getElementById('checkForm').scrollIntoView({behavior:'smooth'})">CHECK MY SCORE FREE ▶▶</button>
     </div>
 
     <!-- VS ROW -->
@@ -820,25 +859,36 @@
       <span class="vs-item"><strong>✓</strong> Perplexity</span>
     </div>
 
-    <!-- STAT ROW -->
-    <div class="stat-row fade-up">
-      <div class="stat-item">
-        <span class="stat-num">23</span>
-        <div class="stat-label">avg score for<br>digital products</div>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num">3 in 5</span>
-        <div class="stat-label">creators invisible<br>to AI right now</div>
-      </div>
-      <div class="stat-item">
-        <span class="stat-num" id="scanCountStat">—</span>
-        <div class="stat-label">products scanned<br>today</div>
+    <!-- SCORE SPECTRUM -->
+    <div class="spectrum-wrap fade-up">
+      <div class="spectrum-label">WHAT YOUR SCORE MEANS</div>
+      <div class="spectrum-zones">
+        <div class="sz sz-low">
+          <span class="sz-range">0 – 35</span>
+          <div class="sz-title">Invisible</div>
+          <div class="sz-desc">AI doesn't know you exist</div>
+        </div>
+        <div class="sz sz-mid">
+          <span class="sz-range">36 – 60</span>
+          <div class="sz-title">Aware</div>
+          <div class="sz-desc">AI knows you, rarely recommends</div>
+        </div>
+        <div class="sz sz-hi">
+          <span class="sz-range">61 – 80</span>
+          <div class="sz-title">Visible</div>
+          <div class="sz-desc">AI recommends you sometimes</div>
+        </div>
+        <div class="sz sz-top">
+          <span class="sz-range">81 – 100</span>
+          <div class="sz-title">Picked</div>
+          <div class="sz-desc">AI consistently picks you first</div>
+        </div>
       </div>
     </div>
 
-    <!-- SCAN TICKER -->
-    <div class="ticker-wrap fade-up">
-      <div class="ticker" id="scanTicker"></div>
+    <!-- AI QUERY TICKER — real examples of how people query AI -->
+    <div class="qticker-wrap fade-up">
+      <div class="qticker" id="queryTicker"></div>
     </div>
 
     <!-- AI VITALS -->
@@ -891,7 +941,7 @@
     </div>
 
     <!-- FORM CARD -->
-    <div class="card fade-up">
+    <div class="card fade-up" id="checkForm">
       <div class="field">
         <label for="product_name">Product name</label>
         <input id="product_name" type="text" placeholder="e.g. Ultimate Notion Planner" maxlength="100" autocomplete="off" />
@@ -903,7 +953,7 @@
       </div>
 
       <div class="field">
-        <label for="category">Category <span style="color:#333;font-size:0.85em">(optional)</span></label>
+        <label for="category">Category <span style="color:#555;font-size:0.85em">(optional)</span></label>
         <div class="select-wrap">
           <select id="category">
             <option value="">Select a category...</option>
@@ -922,7 +972,7 @@
       </div>
 
       <div class="field">
-        <label for="keywords">Target audience <span style="color:#333;font-size:0.85em">(optional)</span></label>
+        <label for="keywords">Target audience <span style="color:#555;font-size:0.85em">(optional)</span></label>
         <input id="keywords" type="text" placeholder="e.g. freelancers, students, designers" maxlength="100" autocomplete="off" />
       </div>
 
@@ -982,7 +1032,7 @@
 
         <!-- Email -->
         <div class="email-block">
-          <p>Get a weekly AI Visibility Report for your product — free. Track your score over time.</p>
+          <p>Know before your competitors do. Get a free weekly AI Visibility Report and track how your score changes.</p>
           <div class="email-row">
             <input id="emailInput" type="email" placeholder="your@email.com" />
             <button class="btn-email" onclick="submitEmail()">SEND ▶</button>
@@ -1168,7 +1218,7 @@
       } catch (e) {
         clearInterval(stepTimer);
         document.getElementById('loading').style.display = 'none';
-        errEl.textContent = 'Something went wrong. Please try again.';
+        errEl.textContent = 'Scan failed — check your connection and try again. Still broken? Email hello@pickedby.ai';
         errEl.style.display = 'block';
       }
 
@@ -1207,9 +1257,11 @@
       document.getElementById('emailInput').disabled = true;
     }
 
-    // ── Enter key ────────────────────────────────────────────
+    // ── Enter key (text/url inputs only — not select or email) ──
     document.addEventListener('keydown', e => {
-      if (e.key === 'Enter' && document.activeElement.id !== 'emailInput') runCheck();
+      if (e.key !== 'Enter') return;
+      const el = document.activeElement;
+      if (el && (el.id === 'product_name' || el.id === 'product_url' || el.id === 'keywords')) runCheck();
     });
 
     // ── Entrance animations (IntersectionObserver) ────────────
@@ -1218,50 +1270,28 @@
     }, { threshold: 0.12 });
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-    // ── Live scan counter ─────────────────────────────────────
+    // ── AI Query ticker — real examples of how people query AI ──
     (function() {
-      // Seed from current hour to look consistent within a session
-      const base = 180 + (new Date().getHours() * 7 + new Date().getDate() * 3) % 120;
-      let count = base;
-      function updateCount() {
-        const el1 = document.getElementById('scanCountStat');
-        const el2 = document.getElementById('foundingScanCount');
-        if (el1) el1.textContent = count;
-        if (el2) el2.textContent = `· ${count} scanned today`;
-      }
-      updateCount();
-      setInterval(() => {
-        if (Math.random() < 0.35) { count++; updateCount(); }
-      }, 8000);
-    })();
-
-    // ── Scan ticker ───────────────────────────────────────────
-    (function() {
-      const EXAMPLES = [
-        { name: 'Ultimate Notion Planner', score: 23, cls: 's-low' },
-        { name: 'Framer UI Kit Pro', score: 67, cls: 's-mid' },
-        { name: 'AI Prompt Pack 2025', score: 41, cls: 's-mid' },
-        { name: 'Canva Business Bundle', score: 82, cls: 's-top' },
-        { name: 'Digital Course Creator', score: 15, cls: 's-low' },
-        { name: 'Instagram Template Pack', score: 54, cls: 's-mid' },
-        { name: 'Figma Design System', score: 78, cls: 's-hi' },
-        { name: 'Gumroad SEO Guide', score: 29, cls: 's-low' },
-        { name: 'Productivity Planner PDF', score: 88, cls: 's-top' },
-        { name: 'LinkedIn Content Kit', score: 36, cls: 's-low' },
-        { name: 'Etsy Shop Starter Pack', score: 61, cls: 's-mid' },
-        { name: 'YouTube Script Templates', score: 73, cls: 's-hi' },
+      const QUERIES = [
+        'best Notion templates for freelancers',
+        'top AI prompt packs for content creators',
+        'recommended Canva templates for small businesses',
+        'best digital planners on Gumroad',
+        'top online courses for side hustlers',
+        'best Figma UI kits 2025',
+        'recommended ebooks for solopreneurs',
+        'best spreadsheet templates for finance',
+        'top Etsy digital products for teachers',
+        'best productivity courses for remote workers',
+        'recommended Instagram templates for creators',
+        'top digital tools for Etsy sellers',
       ];
-      const ticker = document.getElementById('scanTicker');
-      if (!ticker) return;
-      // Duplicate for seamless loop
-      const allItems = [...EXAMPLES, ...EXAMPLES];
-      const html = allItems.map(item =>
-        `<span class="ticker-item">
-          <span class="ticker-name">${item.name}</span>
-          <span class="ticker-score ${item.cls}">${item.score}/100</span>
-        </span><span class="ticker-sep">·</span>`
+      const el = document.getElementById('queryTicker');
+      if (!el) return;
+      const all = [...QUERIES, ...QUERIES]; // duplicate for seamless loop
+      el.innerHTML = all.map(q =>
+        `<span class="qticker-item"><span class="qticker-q">"${q}"</span></span><span class="qticker-sep">·</span>`
       ).join('');
-      ticker.innerHTML = html;
     })();
   </script>
 </body>
