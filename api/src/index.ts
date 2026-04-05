@@ -2,18 +2,13 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 
 type Bindings = {
-  GEMINI_API_KEY: string
   BREVO_API_KEY: string
   SUPABASE_ANON_KEY: string
   SUPABASE_SERVICE_KEY: string
+  AI: Ai
 }
 
 const SUPABASE_URL = 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
-
-type CheckQuery = {
-  label: string
-  prompt: string
-}
 
 type CheckResult = {
   label: string
@@ -39,7 +34,7 @@ function isBlockedUrl(url: string): boolean {
   }
 }
 
-// Extract rank from Gemini response text (1-20 only, avoids years/large numbers)
+// Extract rank from AI response text (1-20 only, avoids years/large numbers)
 function findRank(text: string, name: string): number | null {
   const lower = text.toLowerCase()
   const nameLower = name.toLowerCase()
@@ -72,9 +67,8 @@ app.use('*', cors({
 // ── Health check ─────────────────────────────────────────────
 app.get('/', (c) => c.json({ ok: true, service: 'pickedbyai-api' }))
 
-
 // ── POST /v1/check ────────────────────────────────────────────
-// Runs 5 Gemini queries server-side, returns AI visibility results
+// Single Workers AI query evaluating 5 dimensions, returns AI visibility results
 app.post('/v1/check', async (c) => {
   let body: { product?: string; url?: string; category?: string; keywords?: string }
 
@@ -97,91 +91,64 @@ app.post('/v1/check', async (c) => {
   const name = product.trim()
   const urlCtx = url ? ` (website: ${url})` : ''
 
-  const queries: CheckQuery[] = [
-    {
-      label: 'Direct name search',
-      prompt: `List the top 10 digital products or tools named or very similar to "${name}"${urlCtx}. Number each item.`,
-    },
-    {
-      label: 'Best-of recommendation',
-      prompt: `What are the best digital products like "${name}" that AI assistants recommend in 2025? List top 10 with numbers.`,
-    },
-    {
-      label: 'Problem-solution search',
-      prompt: `Recommend the top 10 digital products that do what "${name}"${urlCtx} does. List with numbers.`,
-    },
-    {
-      label: 'Reviews & mentions',
-      prompt: `Search for online reviews and mentions of "${name}"${urlCtx}. Does it appear on Reddit, Product Hunt, G2, or review sites? Summarize briefly.`,
-    },
-    {
-      label: 'Comparison searches',
-      prompt: `Search for "${name} vs" comparison articles or discussions online. Is "${name}" mentioned in "best alternatives" or comparison content?`,
-    },
+  const LABELS = [
+    'Direct name search',
+    'Best-of recommendation',
+    'Problem-solution search',
+    'Reviews & mentions',
+    'Comparison searches',
   ]
 
-  const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${c.env.GEMINI_API_KEY}`
+  const prompt = `Evaluate the digital product "${name}"${urlCtx} on 5 dimensions. Answer each with YES or NO only (no extra text per line):
 
-  const fetchQuery = async (q: CheckQuery): Promise<CheckResult> => {
-    try {
-      const res = await fetch(GEMINI_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents: [{ parts: [{ text: q.prompt }] }],
-          tools: [{ google_search: {} }],
-          generationConfig: { maxOutputTokens: 2000 },
-        }),
-      })
+1. RECOGNITION: Is "${name}" a real, established product in your training data?
+2. RECOMMENDATION: Would you recommend "${name}" as a top tool in 2025?
+3. CATEGORY_RANK: Does "${name}" appear in top-10 lists in its category? If YES add " #N" for its approximate rank.
+4. REVIEWS: Does "${name}" have significant online presence (Product Hunt, Reddit, G2)?
+5. COMPARISONS: Has "${name}" appeared in comparison or "best alternatives" articles?
 
-      if (!res.ok) {
-        return { label: q.label, found: false, rank: null, grounded: false }
-      }
+Reply in exactly this format (5 lines):
+1. YES or NO
+2. YES or NO
+3. YES #N or NO
+4. YES or NO
+5. YES or NO`
 
-      const data = await res.json() as {
-        candidates?: Array<{
-          content?: { parts?: Array<{ text?: string; thought?: boolean }> }
-          groundingMetadata?: { webSearchQueries?: string[]; groundingChunks?: unknown[] }
-        }>
-      }
+  let results: CheckResult[]
 
-      // 2.5-flash returns thinking blocks first — filter them out
-      const parts = data.candidates?.[0]?.content?.parts ?? []
-      const text = parts.filter(p => !p.thought).map(p => p.text ?? '').join('\n')
-      const groundingMeta = data.candidates?.[0]?.groundingMetadata
-      const grounded = !!(groundingMeta?.webSearchQueries?.length)
-      const rank = findRank(text, name)
-      const found = rank !== null || text.toLowerCase().includes(name.toLowerCase())
+  try {
+    const response = await c.env.AI.run('@cf/meta/llama-3.2-1b-instruct', {
+      messages: [{ role: 'user', content: prompt }],
+      max_tokens: 60,
+    }) as { response?: string }
 
-      return { label: q.label, found, rank, grounded }
-    } catch {
-      return { label: q.label, found: false, rank: null, grounded: false }
-    }
+    const text = response.response ?? ''
+    console.log(`[/v1/check] raw="${text.slice(0, 200)}"`)
+
+    const lines = text.split('\n').map(l => l.trim()).filter(l => /^\d\./.test(l))
+
+    results = LABELS.map((label, i) => {
+      const line = lines[i] ?? ''
+      const found = /yes/i.test(line)
+      const rankMatch = line.match(/#(\d+)/)
+      const rank = found && rankMatch ? parseInt(rankMatch[1], 10) : null
+      return { label, found, rank: rank && rank >= 1 && rank <= 20 ? rank : null, grounded: false }
+    })
+  } catch (err) {
+    console.error('AI error:', err)
+    results = LABELS.map(label => ({ label, found: false, rank: null, grounded: false }))
   }
-
-  const results = await Promise.all(queries.map(fetchQuery))
 
   // Compute AI Visibility Score (0-100)
-  // Core AI score: first 3 queries (presence + rank)
-  const coreResults = results.slice(0, 3)
-  const signalResults = results.slice(3) // review + comparison
+  // Each YES = 20 points. Rank bonus if category rank is high.
+  const totalFound = results.filter(r => r.found).length
+  let score = totalFound * 20
 
-  let score = 0
-  const foundCount = coreResults.filter(r => r.found).length
-  score += foundCount * 16 // up to 48 for core AI presence
-  const bestRank = coreResults.reduce((best: number | null, r) => {
-    if (r.rank === null) return best
-    if (best === null) return r.rank
-    return Math.min(best, r.rank)
-  }, null)
-  if (bestRank !== null) {
-    if (bestRank <= 3) score += 36
-    else if (bestRank <= 5) score += 22
-    else if (bestRank <= 10) score += 12
+  const rankResult = results[2] // CATEGORY_RANK
+  if (rankResult?.found && rankResult.rank !== null) {
+    if (rankResult.rank <= 3) score = Math.min(100, score + 10)
+    else if (rankResult.rank <= 5) score = Math.min(100, score + 5)
   }
-  // Content signal bonus: reviews + comparison presence (up to 16 pts)
-  const signalFound = signalResults.filter(r => r.found).length
-  score += signalFound * 8
   score = Math.min(100, score)
 
   return c.json({ results, score, product: name })
