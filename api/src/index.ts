@@ -57,7 +57,7 @@ async function queryGemini(apiKey: string, prompt: string): Promise<{ text: stri
   const body = {
     contents: [{ role: 'user', parts: [{ text: prompt }] }],
     tools: [{ google_search: {} }],
-    generationConfig: { maxOutputTokens: 120, temperature: 0.1 },
+    generationConfig: { maxOutputTokens: 300, temperature: 0.1 },
   }
   const res = await fetch(url, {
     method: 'POST',
