@@ -9,6 +9,18 @@ mode = "smart"
 [vars]
 ENVIRONMENT = "production"
 
+[env.staging]
+name = "pickedbyai-api-staging"
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+[env.staging.placement]
+mode = "smart"
+
+[env.staging.ai]
+binding = "AI"
+
 [ai]
 binding = "AI"
 

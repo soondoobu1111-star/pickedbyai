@@ -8,3 +8,9 @@ mode = "smart"
 
 # Secret (wrangler secret put으로 설정):
 # - GEMINI_API_KEY
+
+[env.staging]
+name = "pickedbyai-gemini-relay-staging"
+
+[env.staging.placement]
+mode = "smart"
