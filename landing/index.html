@@ -170,6 +170,16 @@
       opacity: 0.6;
     }
 
+    .nav-blog-link {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.45rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-decoration: none;
+      transition: color 0.15s;
+    }
+    .nav-blog-link:hover { color: var(--yellow); }
+
     /* ── HERO ── */
     .hero {
       margin-bottom: 2.75rem;
@@ -1181,8 +1191,9 @@
           <rect x="2" y="14" width="16" height="2"/>
         </svg>
         <span>picked<span class="dot">by</span>.ai</span>
+        <div class="badge-chip">BETA</div>
       </div>
-      <div class="badge-chip">BETA</div>
+      <a href="/blog/" class="nav-blog-link">BLOG</a>
     </header>
 
     <!-- HERO -->
