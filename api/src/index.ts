@@ -114,25 +114,29 @@ app.post('/v1/check', async (c) => {
   const LABELS = [
     'Direct name search',
     'Best-of recommendation',
-    'Problem-solution search',
+    'Category ranking',
     'Reviews & mentions',
     'Comparison searches',
   ]
 
-  const prompt = `Evaluate the digital product "${name}"${urlCtx} on 5 dimensions. Answer each with YES or NO only (no extra text per line):
+  const prompt = `Evaluate whether AI systems know the digital product named "${name}"${urlCtx}.
 
-1. RECOGNITION: Is "${name}" a real, established product in your training data?
-2. RECOMMENDATION: Would you recommend "${name}" as a top tool in 2025?
-3. CATEGORY_RANK: Does "${name}" appear in top-10 lists in its category? If YES add " #N" for its approximate rank.
-4. REVIEWS: Does "${name}" have significant online presence (Product Hunt, Reddit, G2)?
-5. COMPARISONS: Has "${name}" appeared in comparison or "best alternatives" articles?
+"${name}" refers to a specific software product or SaaS tool — NOT a generic concept or phrase.
+Only answer YES if you have direct, specific knowledge of "${name}" as a named product.
 
-Reply in exactly this format (5 lines):
+Reply in EXACTLY this format (5 lines only, no explanation):
 1. YES or NO
 2. YES or NO
 3. YES #N or NO
 4. YES or NO
-5. YES or NO`
+5. YES or NO
+
+Questions:
+1. RECOGNITION: Do you have specific knowledge of "${name}" as a real software product (not just the words)?
+2. RECOMMENDATION: Is "${name}" the product recommended by AI tools as a top solution in its category?
+3. CATEGORY_RANK: Does the product "${name}" appear in "best of" or top-10 lists? If YES add " #N" for rank.
+4. REVIEWS: Does the product "${name}" have reviews on Product Hunt, Reddit, G2, or tech blogs?
+5. COMPARISONS: Has the product "${name}" appeared in "vs" or "alternatives to" comparison articles?`
 
   let results: CheckResult[]
   const colo = (c.req.raw as Request & { cf?: { colo?: string } }).cf?.colo ?? 'unknown'
