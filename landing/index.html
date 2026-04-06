@@ -901,6 +901,77 @@
       .card { padding: 1rem; }
       .btn-primary { font-size: 0.55rem; }
     }
+
+    /* ── FAQ ── */
+    .faq-section {
+      margin-bottom: 2.5rem;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      padding: 1.5rem 1.25rem 1.25rem;
+    }
+    .faq-head {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.4rem;
+      color: var(--yellow);
+      letter-spacing: 0.12em;
+      margin-bottom: 1.5rem;
+      opacity: 0.6;
+    }
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-align: left;
+      padding: 1rem 0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      line-height: 1.45;
+    }
+    .faq-q:hover { color: var(--yellow); }
+    .faq-icon {
+      font-size: 1.1rem;
+      color: var(--yellow);
+      flex-shrink: 0;
+      transition: transform 0.25s;
+    }
+    .faq-item.open .faq-icon { transform: rotate(45deg); }
+    .faq-a {
+      display: none;
+      font-size: 0.84rem;
+      color: #aaa;
+      line-height: 1.7;
+      padding-bottom: 1rem;
+    }
+    .faq-item.open .faq-a { display: block; }
+    .faq-a strong { color: var(--text); }
+    .faq-a ul { margin: 0.5rem 0 0.5rem 1.1rem; }
+    .faq-a ul li { margin-bottom: 0.35rem; }
+    .faq-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+    .faq-badge {
+      padding: 0.2rem 0.6rem;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-radius: 2px;
+    }
+    .faq-badge.gold   { background: rgba(255,215,0,0.12); color: #FFD700; border: 1px solid rgba(255,215,0,0.3); }
+    .faq-badge.silver { background: rgba(192,192,192,0.1); color: #C0C0C0; border: 1px solid rgba(192,192,192,0.25); }
+    .faq-badge.bronze { background: rgba(205,127,50,0.1); color: #CD7F32; border: 1px solid rgba(205,127,50,0.25); }
+    .faq-badge.none   { background: rgba(102,102,102,0.1); color: #666; border: 1px solid rgba(102,102,102,0.2); }
+    @media (max-width: 767px) {
+      .faq-section { padding: 1.25rem 1rem; }
+      .faq-q { font-size: 0.86rem; }
+    }
   </style>
 </head>
 <body>
@@ -1123,6 +1194,222 @@
       </div>
     </div>
 
+    <!-- FAQ -->
+    <div class="faq-section fade-up">
+      <div class="faq-head">FAQ — FREQUENTLY ASKED QUESTIONS</div>
+
+      <!-- Q1 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What is pickedby.ai? <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>Think of it like a <strong>Google Search Console — but for AI.</strong></p>
+          <p style="margin-top:0.5rem;">When someone asks ChatGPT, Claude, or Perplexity <em>"what's a good Notion template for budgeting?"</em> — does your product show up?</p>
+          <p style="margin-top:0.5rem;">Most creators have no idea. pickedby.ai checks for you in <strong>10 seconds</strong> and gives you a score from 0 to 100 — your <strong>AI Visibility Score.</strong></p>
+          <p style="margin-top:0.5rem;">No signup. No credit card. Completely free.</p>
+        </div>
+      </div>
+
+      <!-- Q2 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What is the AI Visibility Score? <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>It's a number from <strong>0 to 100</strong> that tells you how well AI systems "know" your product.</p>
+          <div class="faq-badge-row" style="margin-top:0.75rem;">
+            <span class="faq-badge gold">81–100 · GOLD · PICKED BY AI</span>
+            <span class="faq-badge silver">61–80 · SILVER · SEEN BY AI</span>
+            <span class="faq-badge bronze">36–60 · BRONZE · NOTICED BY AI</span>
+            <span class="faq-badge none">0–35 · NO BADGE · Invisible</span>
+          </div>
+          <p style="margin-top:0.75rem;">A score of <strong>100</strong> means AI knows your product really well and is likely to mention it. A score of <strong>0</strong> means AI has basically never heard of you.</p>
+          <p style="margin-top:0.5rem;">Example: Figma scores 100. A brand-new unknown product scores 0.</p>
+        </div>
+      </div>
+
+      <!-- Q3 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Which AI systems do you check? <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>We currently test your product's visibility across the <strong>3 most popular AI assistants</strong> people use to discover products:</p>
+          <ul>
+            <li><strong>ChatGPT</strong> — used by 200M+ people every week</li>
+            <li><strong>Claude</strong> — Anthropic's AI, growing fast</li>
+            <li><strong>Perplexity</strong> — the AI search engine replacing Google for many users</li>
+          </ul>
+          <p style="margin-top:0.5rem;">More AI sources (Gemini, Grok, etc.) are coming in future updates.</p>
+        </div>
+      </div>
+
+      <!-- Q4 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is it really free? Do I need to create an account? <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p><strong>Yes, 100% free. No account needed.</strong></p>
+          <p style="margin-top:0.5rem;">Just type your product name → hit Check → get your score in ~10 seconds. That's it.</p>
+          <p style="margin-top:0.5rem;">We'll ask for your email at the end if you want to <strong>save your score and get weekly updates</strong> — but that's completely optional.</p>
+        </div>
+      </div>
+
+      <!-- Q5 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How does the score actually get calculated? <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>Our system asks an AI model <strong>multiple questions the way a real customer would</strong> — things like:</p>
+          <ul>
+            <li>"What are the best [category] tools?"</li>
+            <li>"Recommend a [product type] for [use case]"</li>
+            <li>"Is [product name] good?"</li>
+          </ul>
+          <p style="margin-top:0.5rem;">We then analyze the AI's responses for <strong>mentions, confidence, and context</strong> to generate your 0–100 score.</p>
+          <p style="margin-top:0.5rem;">The higher the score, the more consistently AI systems recognize and recommend your product.</p>
+        </div>
+      </div>
+
+      <!-- Q6 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          What are the Gold / Silver / Bronze badges? <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>Badges are <strong>earned proof</strong> that AI systems recognize your product. Think of them like quality marks you can display on your store.</p>
+          <div class="faq-badge-row" style="margin-top:0.6rem;">
+            <span class="faq-badge gold">GOLD — Score 81–100</span>
+            <span class="faq-badge silver">SILVER — Score 61–80</span>
+            <span class="faq-badge bronze">BRONZE — Score 36–60</span>
+          </div>
+          <p style="margin-top:0.75rem;">Once you earn a badge, you'll get an <strong>embeddable snippet</strong> to add to your Gumroad, Etsy, or website. It tells buyers: <em>"This product is recognized by AI."</em></p>
+          <p style="margin-top:0.5rem;">Scores below 36 don't earn a badge — yet. That's when the tips we provide are most useful.</p>
+        </div>
+      </div>
+
+      <!-- Q7 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Does a high score guarantee AI will recommend my product? <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p><strong>No — and we'll never claim that.</strong> AI recommendations are dynamic. No tool can guarantee placement.</p>
+          <p style="margin-top:0.5rem;">What your score <em>does</em> tell you is <strong>how visible your product is to AI right now</strong> — and whether you have a realistic chance of showing up when customers ask AI for recommendations.</p>
+          <p style="margin-top:0.5rem;">Think of it like SEO: good optimization improves your chances, but doesn't guarantee page 1. Same idea here.</p>
+        </div>
+      </div>
+
+      <!-- Q8 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          My score is low. Why isn't AI recommending my product? <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>AI learns from what's publicly available on the internet. If your product has a low score, it usually means one of these:</p>
+          <ul>
+            <li><strong>Not enough public content</strong> — reviews, blog posts, forum mentions about your product are sparse</li>
+            <li><strong>Vague product description</strong> — AI doesn't have a clear category or use-case to attach to your product</li>
+            <li><strong>New product</strong> — AI training data hasn't caught up yet</li>
+            <li><strong>No llms.txt or schema markup</strong> — AI crawlers can't easily parse what your product does</li>
+          </ul>
+          <p style="margin-top:0.5rem;">After your scan, we show you <strong>specific suggestions</strong> tailored to your score. These are your starting points.</p>
+        </div>
+      </div>
+
+      <!-- Q9 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How do I improve my score? <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>After your scan you'll see personalized tips. Generally the most effective moves are:</p>
+          <ul>
+            <li><strong>Write clear product copy</strong> — state exactly what your product does, who it's for, and when to use it</li>
+            <li><strong>Get mentioned in context</strong> — Reddit threads, YouTube reviews, blog posts, comparison articles all feed AI training data</li>
+            <li><strong>Add an <code>llms.txt</code> file</strong> to your site — a simple text file AI crawlers can read (we'll generate this for you in Phase 2)</li>
+            <li><strong>Get on curated lists</strong> — "Best Notion templates for X" type roundups are gold for AI visibility</li>
+            <li><strong>Consistent naming</strong> — use the same product name everywhere, so AI can connect the dots</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Q10 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How is this different from Google SEO? <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>SEO = getting ranked in Google search results (blue links).<br>
+          AI Visibility = getting <strong>mentioned in AI chat answers.</strong></p>
+          <p style="margin-top:0.5rem;">More and more people skip Google entirely and just ask ChatGPT: <em>"What's the best budget spreadsheet template?"</em> — they get one answer, not ten links. <strong>If you're not in that answer, you don't exist for that buyer.</strong></p>
+          <p style="margin-top:0.5rem;">SEO and AI Visibility overlap but are <strong>different games with different rules.</strong> You can rank #1 on Google and still be invisible to AI — and vice versa.</p>
+        </div>
+      </div>
+
+      <!-- Q11 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Who is pickedby.ai for? <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>We built this specifically for <strong>digital product creators</strong>:</p>
+          <ul>
+            <li>Gumroad sellers (templates, ebooks, courses, presets)</li>
+            <li>Notion / Airtable template creators</li>
+            <li>Etsy digital download sellers</li>
+            <li>LemonSqueezy / Payhip / Ko-fi creators</li>
+            <li>Independent SaaS tools and micro-apps</li>
+          </ul>
+          <p style="margin-top:0.5rem;">If you sell a <strong>digital product</strong> and want to know if AI is sending you buyers — this is for you.</p>
+          <p style="margin-top:0.5rem;">(We're not for big brands or enterprises. There are expensive tools for that. We focus on solo creators and small teams.)</p>
+        </div>
+      </div>
+
+      <!-- Q12 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          How often should I check my score? <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>AI training data gets refreshed periodically — so your score can change over time.</p>
+          <p style="margin-top:0.5rem;">We recommend:</p>
+          <ul>
+            <li><strong>After any major update</strong> to your product or landing page</li>
+            <li><strong>After a launch</strong> or press mention</li>
+            <li><strong>Monthly</strong> as a routine check-in</li>
+          </ul>
+          <p style="margin-top:0.5rem;">Enter your email after the scan to get <strong>automatic weekly score reports</strong> — so you always know where you stand without coming back manually.</p>
+        </div>
+      </div>
+
+      <!-- Q13 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Is my product data safe? What do you store? <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>We store <strong>only the product name you enter and the score result</strong> — nothing else.</p>
+          <p style="margin-top:0.5rem;">If you give us your email, we store that to send you reports. We don't sell data, share it with third parties, or use it for advertising. Full details in our <a href="/privacy" style="color:var(--yellow);">Privacy Policy</a>.</p>
+        </div>
+      </div>
+
+      <!-- Q14 -->
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          I still have a question — how do I reach you? <span class="faq-icon">+</span>
+        </button>
+        <div class="faq-a">
+          <p>Email us any time: <a href="mailto:hello@pickedby.ai" style="color:var(--yellow);">hello@pickedby.ai</a></p>
+          <p style="margin-top:0.5rem;">We're a small team and we actually read every message. Feedback, feature requests, weird bugs — all welcome.</p>
+        </div>
+      </div>
+
+    </div>
+
     <!-- FOOTER -->
     <footer class="footer">
       <p>pickedby.ai &nbsp;·&nbsp; Built for digital creators &nbsp;·&nbsp; <a href="mailto:hello@pickedby.ai">hello@pickedby.ai</a> &nbsp;·&nbsp; <a href="/privacy">Privacy</a></p>
@@ -1134,6 +1421,13 @@
     const API_BASE = 'https://api.pickedby.ai';
     let _score   = 0;
     let _product = '';
+
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      const isOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+      if (!isOpen) item.classList.add('open');
+    }
 
     function scoreClass(s) {
       if (s <= 35) return 's-low';
