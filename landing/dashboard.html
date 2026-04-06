@@ -179,12 +179,9 @@
 <script>
   // ── Config ─────────────────────────────────────────────────
   const IS_STAGING = window.location.hostname.includes('staging') || window.location.hostname === 'localhost'
-  const SUPABASE_URL = IS_STAGING
-    ? 'https://xzecybljfipmmzzzfnit.supabase.co'
-    : 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
-  const SUPABASE_ANON_KEY = IS_STAGING
-    ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZWN5YmxqZmlwbW16enpmbml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NTY4NjAsImV4cCI6MjA5MTAzMjg2MH0.pYqbBfJ7hwgKFgUSjvlhRlaOBIG4RqAgwDVTNUat03w'
-    : 'PRODUCTION_ANON_KEY_TODO'
+  // TODO: production Supabase 설정 완료 시 분기 복구
+  const SUPABASE_URL = 'https://xzecybljfipmmzzzfnit.supabase.co'
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZWN5YmxqZmlwbW16enpmbml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NTY4NjAsImV4cCI6MjA5MTAzMjg2MH0.pYqbBfJ7hwgKFgUSjvlhRlaOBIG4RqAgwDVTNUat03w'
   const API_URL = IS_STAGING
     ? 'https://pickedbyai-api-staging.perceptdot.workers.dev'
     : 'https://api.pickedby.ai'
