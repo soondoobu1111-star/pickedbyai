@@ -1292,14 +1292,15 @@
           How does the score actually get calculated? <span class="faq-icon">+</span>
         </button>
         <div class="faq-a">
-          <p>Our system asks an AI model <strong>multiple questions the way a real customer would</strong> — things like:</p>
+          <p>We run your product through <strong>5 dimensions</strong> that reflect how AI systems actually discover and recommend products:</p>
           <ul>
-            <li>"What are the best [category] tools?"</li>
-            <li>"Recommend a [product type] for [use case]"</li>
-            <li>"Is [product name] good?"</li>
+            <li><strong>Recognition</strong> — Does AI know your product exists as a specific named product?</li>
+            <li><strong>Recommendation</strong> — Would AI recommend it as a top solution in its category?</li>
+            <li><strong>Category Ranking</strong> — Does it appear in "best of" or top-10 lists?</li>
+            <li><strong>Reviews &amp; Mentions</strong> — Does it have a presence on Product Hunt, Reddit, G2?</li>
+            <li><strong>Comparison Searches</strong> — Has it appeared in "vs" or "alternatives to" articles?</li>
           </ul>
-          <p style="margin-top:0.5rem;">We then analyze the AI's responses for <strong>mentions, confidence, and context</strong> to generate your 0–100 score.</p>
-          <p style="margin-top:0.5rem;">The higher the score, the more consistently AI systems recognize and recommend your product.</p>
+          <p style="margin-top:0.5rem;">Each dimension is worth 20 points. A top-3 category rank adds a bonus. The higher the score, the more consistently AI systems recognize and recommend your product.</p>
         </div>
       </div>
 
@@ -1476,24 +1477,24 @@
 
     const SUGGESTIONS = {
       low: [
-        "Create a dedicated product page with your exact product name in the title, H1, and meta description",
-        "Submit your product to major directories: Gumroad, Product Hunt, AppSumo — AI learns from these",
-        "Write 3–5 posts that include your product name and category keywords on public platforms",
+        "Create a dedicated page with your exact product name in the H1 title, meta description, and URL slug",
+        "Add an llms.txt file to your website root — AI crawlers read this to understand your product instantly",
+        "Publish your product on at least one major directory: Product Hunt, AppSumo, or Gumroad — AI trains on these",
       ],
       mid: [
-        "Add an llms.txt file to your website — a simple text file that helps AI systems understand your product",
-        "Collect public reviews that mention your product name on Google, Trustpilot, or Reddit",
-        "Create comparison content: 'Your Product vs [category alternatives]' — AI frequently surfaces these",
+        "Get 5+ public reviews on Product Hunt, Reddit (r/SideProject, r/Entrepreneur), or G2 mentioning your product name",
+        "Create a 'Your Product vs [Top Competitor]' comparison page — AI frequently surfaces these when users ask for alternatives",
+        "Write 3–5 guest posts or public threads that include your product name and category keywords (dev.to, Indie Hackers, Medium)",
       ],
       hi: [
-        "Add schema.org JSON-LD Product markup to boost AI's confidence in your listing",
-        "Expand beyond Gemini — Perplexity and Claude use different data sources, so cross-check",
-        "Build topical authority: publish consistently in your category to become a top reference",
+        "Submit to curated 'best of' lists in your category — Capterra, G2, Trustpilot, AlternativeTo",
+        "Add schema.org JSON-LD Product markup to your website — signals product data directly to AI crawlers",
+        "Build topical authority: publish consistently in your niche so AI learns to associate your name with the category",
       ],
       top: [
-        "Maintain freshness: update your product pages regularly — AI prefers recently updated content",
-        "Add the 'Picked by AI' badge to your product pages to signal AI-readiness to buyers",
-        "Monitor competitors' AI visibility — are they closing the gap?",
+        "Monitor competitors' AI visibility monthly — are newer tools closing the gap on you?",
+        "Add the 'Picked by AI' badge to your Gumroad/Etsy/website — signals AI credibility to buyers",
+        "Maintain freshness: update product descriptions and pages regularly — AI prefers recently updated content",
       ],
     };
 
