@@ -50,6 +50,21 @@
     .nav-links { display: flex; align-items: center; gap: 1.5rem; font-size: 0.8rem; }
     .nav-links a { text-decoration: none; color: #888; }
     .nav-links a:hover { color: #fff; }
+    /* profile dropdown */
+    .nav-profile { position: relative; }
+    .nav-avatar-btn { background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; }
+    .nav-avatar-btn img { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #333; display: block; }
+    .nav-avatar-btn:hover img { border-color: #FFD700; }
+    .nav-dropdown {
+      display: none; position: absolute; right: 0; top: calc(100% + 8px);
+      background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px;
+      min-width: 160px; overflow: hidden; z-index: 100;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .nav-dropdown.open { display: block; }
+    .nav-dropdown-email { padding: 0.65rem 1rem; font-size: 0.72rem; color: #555; border-bottom: 1px solid #2a2a2a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+    .nav-dropdown button { width: 100%; background: none; border: none; padding: 0.65rem 1rem; text-align: left; font-size: 0.8rem; color: #ccc; cursor: pointer; font-family: inherit; }
+    .nav-dropdown button:hover { background: #222; color: #fff; }
     .spinner { border: 2px solid #333; border-top-color: #FFD700; border-radius: 50%; width: 18px; height: 18px; animation: spin 0.7s linear infinite; display: inline-block; }
     @keyframes spin { to { transform: rotate(360deg); } }
     .result-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #1e1e1e; }
@@ -69,11 +84,15 @@
   <div class="nav-links">
     <a href="/blog/">Blog</a>
     <a href="/llms-generator.html">Tools</a>
-    <a href="/dashboard.html" style="color:#FFD700;border:1px solid #FFD700;padding:0.15rem 0.6rem;border-radius:4px;">Dashboard</a>
-    <div id="nav-user" style="display:none!important;align-items:center;gap:0.75rem;">
-      <img id="nav-avatar" src="" alt="" style="width:26px;height:26px;border-radius:50%;border:1px solid #333;" />
-      <span id="nav-email" style="font-size:0.78rem;color:#888;"></span>
-      <button class="btn-ghost" onclick="signOut()" style="font-size:0.72rem;padding:0.3rem 0.7rem;">Sign out</button>
+    <!-- Profile icon + dropdown (shown when logged in) -->
+    <div id="nav-user" class="nav-profile" style="display:none;">
+      <button class="nav-avatar-btn" onclick="toggleDropdown()" id="nav-avatar-btn">
+        <img id="nav-avatar" src="" alt="Profile" />
+      </button>
+      <div class="nav-dropdown" id="nav-dropdown">
+        <div class="nav-dropdown-email" id="nav-email"></div>
+        <button onclick="signOut()">Sign out</button>
+      </div>
     </div>
   </div>
 </nav>
@@ -205,9 +224,7 @@
   function showDashboard(user) {
     document.getElementById('screen-login').style.display = 'none'
     document.getElementById('screen-dashboard').style.display = 'block'
-    const navUser = document.getElementById('nav-user')
-    navUser.style.removeProperty('display')
-    navUser.style.display = 'flex'
+    document.getElementById('nav-user').style.display = 'flex'
     document.getElementById('nav-email').textContent = user.email
     if (user.user_metadata?.avatar_url) {
       document.getElementById('nav-avatar').src = user.user_metadata.avatar_url
@@ -452,6 +469,18 @@
   function escHtml(s) {
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
   }
+
+  // ── Profile dropdown ──────────────────────────────────────
+  function toggleDropdown() {
+    document.getElementById('nav-dropdown').classList.toggle('open')
+  }
+  document.addEventListener('click', (e) => {
+    const btn = document.getElementById('nav-avatar-btn')
+    const dd = document.getElementById('nav-dropdown')
+    if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
+      dd.classList.remove('open')
+    }
+  })
 
   // ── Enter key on inputs ────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
