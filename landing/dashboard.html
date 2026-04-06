@@ -143,9 +143,6 @@
       ℹ️ Results based on AI training data only (real-time search unavailable in your region).
     </p>
     <div class="flex items-center gap-3 flex-wrap mt-4">
-      <button class="btn-primary" id="btn-save" onclick="saveScore()" style="font-size:0.85rem;padding:0.6rem 1.2rem;">
-        Save to History
-      </button>
       <button class="btn-ghost" id="btn-share-tweet" onclick="shareTweet()" style="font-size:0.85rem;">
         𝕏 Share Score
       </button>
@@ -171,8 +168,8 @@
       <p style="font-size:0.85rem;">No checks yet. Run your first check above.</p>
     </div>
     <div id="history-table" style="display:none;">
-      <div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid #2a2a2a;font-size:0.75rem;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
-        <span>Product</span><span style="text-align:center;">Score</span><span style="text-align:center;">Badge</span><span style="text-align:right;">Date</span><span></span>
+      <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid #2a2a2a;font-size:0.75rem;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+        <span>Product</span><span style="text-align:center;">Score</span><span style="text-align:center;">Badge</span><span style="text-align:right;">Date</span>
       </div>
       <div id="history-rows"></div>
     </div>
@@ -254,6 +251,7 @@
       const data = await res.json()
       showResult(data)
       lastCheckResult = { product, url: url || null, score: data.score, results: data.results }
+      await autoSave()
     } catch (err) {
       alert('Check failed. Please try again.')
     } finally {
@@ -294,27 +292,29 @@
     document.getElementById('check-result').style.display = 'block'
   }
 
-  // ── Save ───────────────────────────────────────────────────
-  async function saveScore() {
+  // ── Auto Save (called after runCheck / refreshProduct) ─────
+  async function autoSave() {
     if (!lastCheckResult || !currentUser) return
-    const btn = document.getElementById('btn-save')
-    btn.disabled = true
-    btn.textContent = 'Saving...'
-
-    // Max 5 distinct products check
-    const { data: existing } = await sb
-      .from('scores')
-      .select('product_name')
+    // 24h duplicate check
+    const today = new Date().toISOString().split('T')[0]
+    const { data: todayCheck } = await sb
+      .from('scores').select('id')
       .eq('user_id', currentUser.id)
+      .eq('product_name', lastCheckResult.product)
+      .gte('checked_at', today + 'T00:00:00.000Z')
+      .limit(1)
+    if (todayCheck && todayCheck.length > 0) {
+      document.getElementById('save-status').style.display = 'inline'
+      loadHistory()
+      return
+    }
+    // Max 5 products check
+    const { data: existing } = await sb.from('scores').select('product_name').eq('user_id', currentUser.id)
     const distinctProducts = [...new Set((existing || []).map(r => r.product_name))]
-    const isNew = !distinctProducts.includes(lastCheckResult.product)
-    if (isNew && distinctProducts.length >= 5) {
-      btn.disabled = false
-      btn.textContent = 'Save to History'
+    if (!distinctProducts.includes(lastCheckResult.product) && distinctProducts.length >= 5) {
       alert('Maximum 5 products allowed. Delete an existing product to add a new one.')
       return
     }
-
     const { error } = await sb.from('scores').insert({
       user_id: currentUser.id,
       product_name: lastCheckResult.product,
@@ -322,28 +322,61 @@
       score: lastCheckResult.score,
       results: lastCheckResult.results,
     })
-
-    btn.disabled = false
-    btn.textContent = 'Save to History'
-
-    if (error) {
-      alert('Save failed: ' + error.message)
-    } else {
+    if (!error) {
       document.getElementById('save-status').style.display = 'inline'
       loadHistory()
     }
   }
 
-  // ── Delete ─────────────────────────────────────────────────
-  async function deleteScore(id) {
+  // ── Delete product (all history) ───────────────────────────
+  async function deleteProduct(productName) {
     if (!currentUser) return
+    if (!confirm(`Remove "${productName}" and all its history?`)) return
     const { error } = await sb
-      .from('scores')
-      .delete()
-      .eq('id', id)
+      .from('scores').delete()
       .eq('user_id', currentUser.id)
+      .eq('product_name', productName)
     if (error) { alert('Delete failed: ' + error.message); return }
     loadHistory()
+  }
+
+  // ── Toggle detail panel ─────────────────────────────────────
+  function toggleDetail(idx) {
+    const el = document.getElementById(`prod-detail-${idx}`)
+    if (!el) return
+    el.style.display = el.style.display === 'none' ? 'block' : 'none'
+  }
+
+  // ── Refresh product score (once per day) ────────────────────
+  async function refreshProduct(name, url, checkedAt, idx) {
+    const lastDate = new Date(checkedAt).toDateString()
+    const today = new Date().toDateString()
+    if (lastDate === today) {
+      alert('Already refreshed today. Come back tomorrow!')
+      return
+    }
+    const btn = document.getElementById(`refresh-btn-${idx}`)
+    if (btn) { btn.disabled = true; btn.textContent = 'Refreshing...' }
+    try {
+      const res = await fetch(`${API_URL}/v1/check`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product: name, url: url || undefined }),
+      })
+      const data = await res.json()
+      lastCheckResult = { product: name, url: url || null, score: data.score, results: data.results }
+      await autoSave()
+    } catch (err) {
+      alert('Refresh failed. Please try again.')
+      if (btn) { btn.disabled = false; btn.textContent = 'Refresh Score' }
+    }
+  }
+
+  // ── Share tweet for product list item ──────────────────────
+  function shareTweetProduct(score, name) {
+    let tier = score >= 81 ? '🥇 PICKED BY AI' : score >= 61 ? '🥈 SEEN BY AI' : score >= 36 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
+    const text = `I just checked "${name}" on @pickedbyAI\n\nAI Visibility Score: ${score}/100 — ${tier}\n\nCheck yours free (10 seconds, no signup):`
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent('https://pickedby.ai')}`, '_blank', 'width=550,height=420')
   }
 
   // ── History ────────────────────────────────────────────────
@@ -352,16 +385,12 @@
     document.getElementById('history-empty').style.display = 'none'
     document.getElementById('history-table').style.display = 'none'
 
-    const since = new Date()
-    since.setDate(since.getDate() - 30)
-
     const { data, error } = await sb
       .from('scores')
       .select('*')
       .eq('user_id', currentUser.id)
-      .gte('checked_at', since.toISOString())
       .order('checked_at', { ascending: false })
-      .limit(50)
+      .limit(200)
 
     document.getElementById('history-loading').style.display = 'none'
 
@@ -370,7 +399,14 @@
       return
     }
 
-    const rows = data.map(row => {
+    // One row per product (latest check per product)
+    const latestMap = {}
+    for (const row of data) {
+      if (!latestMap[row.product_name]) latestMap[row.product_name] = row
+    }
+    const products = Object.values(latestMap)
+
+    const rows = products.map((row, idx) => {
       const score = row.score
       let badge = ''
       if (score >= 81) badge = '<span class="badge-gold">PICKED</span>'
@@ -378,22 +414,67 @@
       else if (score >= 36) badge = '<span class="badge-bronze">NOTICED</span>'
       else badge = '<span class="badge-none">—</span>'
 
+      let badgeFull = ''
+      if (score >= 81) badgeFull = '<span class="badge-gold">PICKED BY AI</span>'
+      else if (score >= 61) badgeFull = '<span class="badge-silver">SEEN BY AI</span>'
+      else if (score >= 36) badgeFull = '<span class="badge-bronze">NOTICED BY AI</span>'
+      else badgeFull = '<span class="badge-none">NOT VISIBLE</span>'
+
       const date = new Date(row.checked_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-      const barColor = score >= 81 ? '#FFD700' : score >= 61 ? '#C0C0C0' : score >= 36 ? '#CD7F32' : '#333'
+      const barColor = score >= 81 ? '#FFD700' : score >= 61 ? '#C0C0C0' : score >= 36 ? '#CD7F32' : '#444'
+      const isToday = new Date(row.checked_at).toDateString() === new Date().toDateString()
+
+      const results = row.results || []
+      const hasUngrounded = results.some(r => !r.grounded)
+      const dimsHtml = results.map(r => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0;border-bottom:1px solid #1a1a1a;">
+          <span style="font-size:0.88rem;color:#aaa;">${escHtml(r.label || '')}</span>
+          <span style="font-size:0.88rem;font-weight:600;${r.found ? 'color:#4ade80;' : 'color:#ef4444;'}">${r.found ? '✓ YES' : '✗ NO'}</span>
+        </div>
+      `).join('')
 
       return `
-        <div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:0.5rem;align-items:center;padding:0.7rem 0;border-bottom:1px solid #1a1a1a;">
-          <div>
-            <div style="font-size:0.92rem;font-weight:600;">${escHtml(row.product_name)}</div>
-            ${row.product_url ? `<div style="font-size:0.75rem;color:#555;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px;">${escHtml(row.product_url)}</div>` : ''}
+        <div style="border-bottom:1px solid #1f1f1f;">
+          <div onclick="toggleDetail(${idx})" style="cursor:pointer;display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;align-items:center;padding:0.8rem 0;transition:background 0.15s;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
+            <div>
+              <div style="font-size:0.95rem;font-weight:600;">${escHtml(row.product_name)}</div>
+              ${row.product_url ? `<div style="font-size:0.75rem;color:#555;">${escHtml(row.product_url)}</div>` : ''}
+            </div>
+            <div style="text-align:center;"><span style="font-size:1.05rem;font-weight:700;color:${barColor};">${score}</span></div>
+            <div style="text-align:center;">${badge}</div>
+            <div style="text-align:right;font-size:0.8rem;color:#666;">${date}</div>
           </div>
-          <div style="text-align:center;">
-            <span style="font-size:1.05rem;font-weight:700;color:${barColor};">${score}</span>
-          </div>
-          <div style="text-align:center;">${badge}</div>
-          <div style="text-align:right;font-size:0.8rem;color:#666;">${date}</div>
-          <div style="text-align:right;">
-            <button onclick="deleteScore('${row.id}')" title="Delete" style="background:none;border:none;cursor:pointer;color:#444;font-size:1rem;padding:0 4px;line-height:1;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#444'">✕</button>
+          <div id="prod-detail-${idx}" style="display:none;background:#0f0f0f;border-radius:0.5rem;padding:1.25rem;margin-bottom:0.75rem;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
+              <div>
+                <span style="font-size:1rem;font-weight:700;">${escHtml(row.product_name)}</span>
+                <span style="margin-left:8px;">${badgeFull}</span>
+              </div>
+              <div style="text-align:right;">
+                <span style="font-size:2rem;font-weight:800;color:${barColor};">${score}</span>
+                <span style="color:#555;font-size:0.8rem;">/100</span>
+              </div>
+            </div>
+            <div class="score-bar-bg" style="margin-bottom:1rem;">
+              <div class="score-bar-fill" style="width:${score}%;background:${barColor};"></div>
+            </div>
+            ${dimsHtml}
+            ${hasUngrounded ? `<p style="font-size:0.72rem;color:#555;margin-top:0.75rem;">ℹ️ Results based on AI training data only (real-time search unavailable in your region).</p>` : ''}
+            <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;align-items:center;">
+              <button id="refresh-btn-${idx}" onclick="refreshProduct('${escHtml(row.product_name).replace(/'/g,"\\'")}','${(row.product_url||'').replace(/'/g,"\\'")}','${row.checked_at}',${idx})"
+                style="background:none;border:1px solid ${isToday?'#333':'#FFD700'};color:${isToday?'#444':'#FFD700'};padding:0.5rem 1rem;border-radius:0.375rem;cursor:${isToday?'not-allowed':'pointer'};font-size:0.82rem;font-family:inherit;"
+                ${isToday ? 'disabled title="Already refreshed today"' : ''}>
+                ${isToday ? '✓ Refreshed today' : '↻ Refresh Score'}
+              </button>
+              <button onclick="shareTweetProduct(${score},'${escHtml(row.product_name).replace(/'/g,"\\'")}');event.stopPropagation()"
+                style="background:none;border:1px solid #FFD700;color:#FFD700;padding:0.5rem 1rem;border-radius:0.375rem;cursor:pointer;font-size:0.82rem;font-family:inherit;">
+                𝕏 Share Score
+              </button>
+              <button onclick="deleteProduct('${escHtml(row.product_name).replace(/'/g,"\\'")}');event.stopPropagation()"
+                style="background:none;border:none;cursor:pointer;color:#444;font-size:0.82rem;margin-left:auto;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#444'">
+                Delete product
+              </button>
+            </div>
           </div>
         </div>
       `
