@@ -1176,7 +1176,7 @@
       <h1>Does AI <em>recommend</em><br>your product?</h1>
       <p>When someone asks ChatGPT <em style="color:#ccc;font-style:normal">"best Notion templates for freelancers"</em> — is your product on the list? Find out free in 10 seconds.</p>
       <div class="hero-tagline">IF AI DOESN'T KNOW YOU · YOU DON'T EXIST</div>
-      <button class="hero-cta" onclick="document.getElementById('checkForm').scrollIntoView({behavior:'smooth'})">CHECK MY SCORE FREE ▶▶</button>
+      <button class="hero-cta" onclick="window.location.href='/dashboard.html'">CHECK MY SCORE FREE ▶▶</button>
     </div>
 
     <!-- VS ROW -->
@@ -1271,88 +1271,6 @@
           <div class="how-title">See your score</div>
           <div class="how-desc">0–100 + 3 specific fixes to climb higher</div>
         </div>
-      </div>
-    </div>
-
-    <!-- FORM CARD -->
-    <div class="card fade-up" id="checkForm">
-      <div class="field">
-        <label for="product_name">Product name</label>
-        <input id="product_name" type="text" placeholder="e.g. Ultimate Notion Planner" maxlength="100" autocomplete="off" />
-      </div>
-
-      <div class="field">
-        <label for="product_url">Product URL <span style="color:#555;font-size:0.85em">(optional)</span></label>
-        <input id="product_url" type="text" placeholder="e.g. gumroad.com/l/your-product" maxlength="200" autocomplete="off" />
-      </div>
-
-      <button class="btn-primary" id="checkBtn" onclick="runCheck()">CHECK MY AI SCORE ▶▶</button>
-      <p class="error-msg" id="errorMsg"></p>
-    </div>
-
-    <!-- LOADING -->
-    <div class="loading" id="loading">
-      <div class="pixel-dots">
-        <span></span><span></span><span></span><span></span><span></span>
-      </div>
-      <div class="loading-label" id="loadingLabel">SCANNING AI ENGINES</div>
-      <div class="loading-step" id="loadingStep">Querying real-time search index...</div>
-    </div>
-
-    <!-- RESULT -->
-    <div class="result" id="result">
-      <div class="result-inner">
-
-        <!-- Score -->
-        <div class="score-block">
-          <div class="score-label">AI VISIBILITY SCORE</div>
-          <div class="score-display">
-            <span class="score-num" id="scoreNum">0</span>
-            <span class="score-denom">/ 100</span>
-          </div>
-          <div class="pbar" id="pbar"></div>
-          <div class="score-verdict" id="scoreVerdict"></div>
-        </div>
-
-        <!-- Scan results -->
-        <div class="query-block">
-          <div class="sec-head">Scan Results</div>
-          <div id="queryList"></div>
-        </div>
-
-        <!-- Suggestions -->
-        <div class="suggest-block">
-          <div class="sec-head">How to Improve</div>
-          <div id="suggestList"></div>
-        </div>
-
-        <!-- Actions -->
-        <div class="action-block">
-          <button class="btn-share" id="shareBtn" onclick="shareX()">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            SHARE MY SCORE ON X
-          </button>
-
-          <div class="ai-badge" id="aiBadge">
-            <div class="badge-crown" id="badgeCrownIcon"></div>
-            <div class="badge-tier-label" id="badgeTierLabel"></div>
-            <div class="badge-title" id="badgeTitle"></div>
-            <p class="badge-desc" id="badgeDesc"></p>
-            <button class="btn-badge" onclick="claimBadge()">CLAIM MY BADGE ▶▶</button>
-          </div>
-        </div>
-
-        <!-- Email -->
-        <div class="email-block">
-          <p>pickedby.ai is in beta. <strong style="color:var(--yellow)">Join the waitlist</strong> — early access members get score history, weekly reports, and dashboard access free when we launch.</p>
-          <div class="email-row">
-            <input id="emailInput" type="email" placeholder="your@email.com" />
-            <button class="btn-email" onclick="submitEmail()">JOIN WAITLIST ▶</button>
-          </div>
-          <div class="email-ok" id="emailOk">✅ You're on the list! We'll notify you at launch.</div>
-          <p class="consent-note">By joining, you agree to receive product updates from pickedby.ai. No spam, unsubscribe anytime. <a href="/privacy">Privacy Policy</a></p>
-        </div>
-
       </div>
     </div>
 
