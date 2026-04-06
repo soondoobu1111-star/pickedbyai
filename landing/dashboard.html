@@ -60,10 +60,13 @@
   <a href="/" class="logo-font text-xs" style="letter-spacing:0.05em;">
     <span class="gold">picked</span><span style="color:#fff;">by</span><span class="gold">.ai</span>
   </a>
-  <div id="nav-user" class="flex items-center gap-3" style="display:none!important;">
-    <img id="nav-avatar" src="" alt="" style="width:28px;height:28px;border-radius:50%;border:1px solid #333;" />
-    <span id="nav-email" style="font-size:0.8rem;color:#888;"></span>
-    <button class="btn-ghost" onclick="signOut()" style="font-size:0.75rem;padding:0.4rem 0.8rem;">Sign out</button>
+  <div class="flex items-center gap-4">
+    <a href="/llms-generator.html" style="font-size:0.78rem;color:#888;text-decoration:none;" onmouseover="this.style.color='#FFD700'" onmouseout="this.style.color='#888'">llms.txt Tool</a>
+    <div id="nav-user" class="flex items-center gap-3" style="display:none!important;">
+      <img id="nav-avatar" src="" alt="" style="width:28px;height:28px;border-radius:50%;border:1px solid #333;" />
+      <span id="nav-email" style="font-size:0.8rem;color:#888;"></span>
+      <button class="btn-ghost" onclick="signOut()" style="font-size:0.75rem;padding:0.4rem 0.8rem;">Sign out</button>
+    </div>
   </div>
 </nav>
 
@@ -173,7 +176,7 @@
     const { error } = await sb.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.href,
+        redirectTo: window.location.origin + '/dashboard.html',
       },
     })
     if (error) alert('Sign in failed: ' + error.message)
@@ -358,46 +361,81 @@
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank', 'width=550,height=420')
   }
 
-  // ── NEW-02: Trend Chart ────────────────────────────────────
+  // ── NEW-02: Trend Chart (per-product multi-line, max 5) ───
   let trendChartInstance = null
+  const CHART_PALETTE = ['#FFD700', '#4ade80', '#60a5fa', '#f472b6', '#a78bfa']
 
   function renderTrendChart(data) {
     const wrap = document.getElementById('trend-chart-wrap')
     if (!data || data.length < 2) { wrap.style.display = 'none'; return }
 
-    // Chronological order, last 30 entries max
-    const sorted = [...data].reverse().slice(-30)
-    const labels = sorted.map(r => new Date(r.checked_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))
-    const scores = sorted.map(r => r.score)
-    const colors = sorted.map(r => r.score >= 81 ? '#FFD700' : r.score >= 61 ? '#C0C0C0' : r.score >= 36 ? '#CD7F32' : '#444')
+    // Group by product_name — keep latest score per (product, day)
+    // data is ordered desc by checked_at, so first occurrence per day = latest
+    const productDayMap = {}   // { name: { 'Apr 6': score } }
+    const seenOrder = []       // insertion order = most-recently-checked first
+    for (const row of data) {
+      const name = row.product_name
+      const day = new Date(row.checked_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      if (!productDayMap[name]) { productDayMap[name] = {}; seenOrder.push(name) }
+      if (productDayMap[name][day] === undefined) productDayMap[name][day] = row.score
+    }
+
+    // Max 5 most-recently-active products
+    const products = seenOrder.slice(0, 5)
+
+    // All unique days in chronological order
+    const daySet = new Set()
+    ;[...data].reverse().forEach(r =>
+      daySet.add(new Date(r.checked_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))
+    )
+    const allDays = [...daySet]
+
+    // Build datasets — null where no data (Chart.js will gap)
+    const datasets = products.map((name, i) => ({
+      label: name.length > 24 ? name.slice(0, 22) + '…' : name,
+      data: allDays.map(day => productDayMap[name]?.[day] ?? null),
+      borderColor: CHART_PALETTE[i],
+      backgroundColor: 'transparent',
+      pointBackgroundColor: CHART_PALETTE[i],
+      pointRadius: allDays.length < 8 ? 6 : 4,
+      pointHoverRadius: 8,
+      borderWidth: 2,
+      tension: 0.3,
+      spanGaps: false,
+    }))
 
     wrap.style.display = 'block'
     if (trendChartInstance) trendChartInstance.destroy()
 
     trendChartInstance = new Chart(document.getElementById('trend-chart'), {
       type: 'line',
-      data: {
-        labels,
-        datasets: [{
-          data: scores,
-          borderColor: '#FFD700',
-          backgroundColor: 'rgba(255,215,0,0.08)',
-          pointBackgroundColor: colors,
-          pointRadius: 5,
-          pointHoverRadius: 7,
-          borderWidth: 2,
-          tension: 0.3,
-          fill: true,
-        }]
-      },
+      data: { labels: allDays, datasets },
       options: {
         responsive: true,
-        plugins: { legend: { display: false }, tooltip: {
-          callbacks: { label: ctx => ` Score: ${ctx.parsed.y}/100` }
-        }},
+        plugins: {
+          legend: {
+            display: products.length > 1,
+            position: 'bottom',
+            labels: {
+              color: '#888', font: { size: 11 }, boxWidth: 10,
+              padding: 14, usePointStyle: true, pointStyle: 'circle',
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => ctx.parsed.y !== null
+                ? ` ${ctx.dataset.label}: ${ctx.parsed.y}/100`
+                : null
+            }
+          }
+        },
         scales: {
-          x: { ticks: { color: '#666', font: { size: 10 } }, grid: { color: '#1a1a1a' } },
-          y: { min: 0, max: 100, ticks: { color: '#666', font: { size: 10 }, stepSize: 20 }, grid: { color: '#1a1a1a' } },
+          x: { ticks: { color: '#555', font: { size: 10 } }, grid: { color: '#1a1a1a' } },
+          y: {
+            min: 0, max: 100,
+            ticks: { color: '#555', font: { size: 10 }, stepSize: 20 },
+            grid: { color: '#1a1a1a' },
+          },
         },
       }
     })
