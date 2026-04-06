@@ -27,7 +27,7 @@ export default {
     const geminiBody = {
       contents: [{ role: 'user', parts: [{ text: body.prompt }] }],
       tools: [{ google_search: {} }],
-      generationConfig: { maxOutputTokens: 300, temperature: 0.1 },
+      generationConfig: { maxOutputTokens: 150, temperature: 0.1, thinkingConfig: { thinkingBudget: 0 } },
     }
 
     const res = await fetch(url, {
