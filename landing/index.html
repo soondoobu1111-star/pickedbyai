@@ -13,13 +13,19 @@
   <meta property="og:site_name" content="pickedby.ai" />
   <meta name="twitter:site" content="@pickedbyAI" />
   <meta name="twitter:creator" content="@pickedbyAI" />
-  <!-- Google tag (gtag.js) -->
+  <!-- Google tag (gtag.js) — Consent Mode v2 -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-2H007YWM9F"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    // Default: block analytics until consent given (GDPR)
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied' });
     gtag('js', new Date());
     gtag('config', 'G-2H007YWM9F');
+    // Restore consent if already given
+    if (localStorage.getItem('cookie_consent') === 'accepted') {
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+    }
   </script>
   <meta property="og:title" content="pickedby.ai — Does AI Recommend Your Product?" />
   <meta property="og:description" content="Free AI Visibility Score for digital creators. See if ChatGPT, Claude & Perplexity recommend your product. Results in 10 seconds." />
@@ -1065,9 +1071,87 @@
       .faq-section { padding: 1.25rem 1rem; }
       .faq-q { font-size: 0.86rem; }
     }
+    /* ── Cookie Consent Banner ── */
+    #cookieBanner {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #111; border-top: 1px solid #2a2a2a;
+      padding: 0.9rem 1.5rem;
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+      z-index: 10000; font-size: 0.75rem; color: #888;
+    }
+    #cookieBanner p { flex: 1; min-width: 200px; margin: 0; line-height: 1.5; }
+    #cookieBanner a { color: #666; text-decoration: underline; }
+    .cookie-btns { display: flex; gap: 0.5rem; flex-shrink: 0; }
+    .btn-cookie-accept {
+      background: var(--yellow); color: #000; border: none;
+      font-family: 'Press Start 2P', monospace; font-size: 0.4rem;
+      padding: 0.5rem 0.9rem; cursor: pointer;
+    }
+    .btn-cookie-decline {
+      background: transparent; color: #555; border: 1px solid #333;
+      font-family: 'Press Start 2P', monospace; font-size: 0.4rem;
+      padding: 0.5rem 0.9rem; cursor: pointer;
+    }
+    /* ── Floating Waitlist Bar ── */
+    #floatBar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: #0d0d0d; border-top: 1px solid #2a2a2a;
+      padding: 0.85rem 1.5rem;
+      display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+      z-index: 9999;
+      transform: translateY(100%);
+      transition: transform 0.4s ease;
+    }
+    #floatBar.show { transform: translateY(0); }
+    #floatBar .float-text { flex: 1; min-width: 180px; }
+    #floatBar .float-text strong { color: var(--yellow); font-family: 'Press Start 2P', monospace; font-size: 0.42rem; display: block; margin-bottom: 0.25rem; }
+    #floatBar .float-text span { font-size: 0.72rem; color: #777; }
+    #floatBar .float-inputs { display: flex; gap: 0.5rem; flex-shrink: 0; align-items: center; }
+    #floatBar input[type="email"] { height: 38px; padding: 0 0.75rem; font-size: 0.78rem; background: #1a1a1a; border: 1px solid #333; color: var(--text); outline: none; width: 220px; }
+    #floatBar input[type="email"]:focus { border-color: var(--yellow); }
+    .btn-float-join {
+      height: 38px; padding: 0 1rem;
+      background: var(--yellow); color: #000; border: none;
+      font-family: 'Press Start 2P', monospace; font-size: 0.4rem;
+      cursor: pointer; white-space: nowrap;
+    }
+    #floatClose {
+      background: none; border: none; color: #444; font-size: 1rem;
+      cursor: pointer; padding: 0.25rem; flex-shrink: 0; line-height: 1;
+    }
+    #floatClose:hover { color: #888; }
+    #floatOk { font-size: 0.75rem; color: var(--green); display: none; }
+    @media (max-width: 600px) {
+      #floatBar input[type="email"] { width: 100%; }
+      #floatBar .float-inputs { width: 100%; }
+      #cookieBanner { padding: 0.75rem 1rem; }
+    }
   </style>
 </head>
 <body>
+
+  <!-- Cookie Consent Banner -->
+  <div id="cookieBanner" style="display:none;">
+    <p>We use cookies to analyze traffic (Google Analytics). No personal data is sold or shared. <a href="/privacy">Privacy Policy</a></p>
+    <div class="cookie-btns">
+      <button class="btn-cookie-accept" onclick="cookieAccept()">ACCEPT</button>
+      <button class="btn-cookie-decline" onclick="cookieDecline()">DECLINE</button>
+    </div>
+  </div>
+
+  <!-- Floating Waitlist Bar -->
+  <div id="floatBar">
+    <div class="float-text">
+      <strong>🚀 EARLY ACCESS</strong>
+      <span>pickedby.ai is in beta — join the waitlist for free early access.</span>
+    </div>
+    <div class="float-inputs">
+      <input type="email" id="floatEmail" placeholder="your@email.com" />
+      <button class="btn-float-join" onclick="submitFloatEmail()">JOIN ▶</button>
+      <span id="floatOk">✅ You're in!</span>
+    </div>
+    <button id="floatClose" onclick="dismissFloat()" title="Close">✕</button>
+  </div>
   <canvas id="bg-canvas"></canvas>
 
   <!-- FOUNDING BAR -->
@@ -1275,13 +1359,13 @@
 
         <!-- Email -->
         <div class="email-block">
-          <p>Know before your competitors do. Get a free weekly AI Visibility Report and track how your score changes.</p>
+          <p>pickedby.ai is in beta. <strong style="color:var(--yellow)">Join the waitlist</strong> — early access members get score history, weekly reports, and dashboard access free when we launch.</p>
           <div class="email-row">
             <input id="emailInput" type="email" placeholder="your@email.com" />
-            <button class="btn-email" onclick="submitEmail()">SEND ▶</button>
+            <button class="btn-email" onclick="submitEmail()">JOIN WAITLIST ▶</button>
           </div>
-          <div class="email-ok" id="emailOk">✅ You're in! Report incoming.</div>
-          <p class="consent-note">By submitting, you agree to receive occasional AI visibility updates. No spam, unsubscribe anytime. <a href="/privacy">Privacy Policy</a></p>
+          <div class="email-ok" id="emailOk">✅ You're on the list! We'll notify you at launch.</div>
+          <p class="consent-note">By joining, you agree to receive product updates from pickedby.ai. No spam, unsubscribe anytime. <a href="/privacy">Privacy Policy</a></p>
         </div>
 
       </div>
@@ -1743,24 +1827,83 @@
       document.querySelector('.email-block').scrollIntoView({ behavior: 'smooth' });
     }
 
-    // ── Email submit ─────────────────────────────────────────
+    // ── Cookie Consent ────────────────────────────────────────
+    (function initCookieBanner() {
+      const consent = localStorage.getItem('cookie_consent');
+      if (!consent) {
+        document.getElementById('cookieBanner').style.display = 'flex';
+      }
+    })();
+    function cookieAccept() {
+      localStorage.setItem('cookie_consent', 'accepted');
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+      document.getElementById('cookieBanner').style.display = 'none';
+      maybeShowFloat();
+    }
+    function cookieDecline() {
+      localStorage.setItem('cookie_consent', 'declined');
+      document.getElementById('cookieBanner').style.display = 'none';
+      maybeShowFloat();
+    }
+
+    // ── Floating Waitlist Bar ─────────────────────────────────
+    function maybeShowFloat() {
+      const dismissed = localStorage.getItem('float_dismissed');
+      if (dismissed && Date.now() - parseInt(dismissed) < 7 * 24 * 60 * 60 * 1000) return;
+      if (localStorage.getItem('float_joined')) return;
+      document.getElementById('floatBar').classList.add('show');
+    }
+    function dismissFloat() {
+      localStorage.setItem('float_dismissed', Date.now().toString());
+      document.getElementById('floatBar').classList.remove('show');
+    }
+    // Show float after scrolling 50% — only after cookie banner resolved
+    window.addEventListener('scroll', function onScroll() {
+      const consent = localStorage.getItem('cookie_consent');
+      if (!consent) return; // wait for cookie decision
+      const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+      if (scrolled > 0.5) {
+        maybeShowFloat();
+        window.removeEventListener('scroll', onScroll);
+      }
+    });
+
+    // ── Shared subscribe logic ────────────────────────────────
+    async function doSubscribe(email, source) {
+      await fetch(`${API_BASE}/v1/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, product: _product, score: _score, source }),
+      }).catch(() => {});
+    }
+
+    // ── Email submit (inline block) ───────────────────────────
     async function submitEmail() {
       const email = document.getElementById('emailInput').value.trim();
       if (!email || !email.includes('@')) {
         document.getElementById('emailInput').focus();
         return;
       }
-
-      try {
-        await fetch(`${API_BASE}/v1/subscribe`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, product: _product, score: _score, source: 'pickedby.ai' }),
-        });
-      } catch (_) { /* silent fail — endpoint not yet deployed */ }
-
+      await doSubscribe(email, 'pickedby.ai-inline');
       document.getElementById('emailOk').style.display = 'block';
       document.getElementById('emailInput').disabled = true;
+      localStorage.setItem('float_joined', '1');
+      document.getElementById('floatBar').classList.remove('show');
+    }
+
+    // ── Email submit (floating bar) ───────────────────────────
+    async function submitFloatEmail() {
+      const email = document.getElementById('floatEmail').value.trim();
+      if (!email || !email.includes('@')) {
+        document.getElementById('floatEmail').focus();
+        return;
+      }
+      await doSubscribe(email, 'pickedby.ai-float');
+      document.getElementById('floatOk').style.display = 'inline';
+      document.getElementById('floatEmail').disabled = true;
+      document.querySelector('.btn-float-join').disabled = true;
+      localStorage.setItem('float_joined', '1');
+      setTimeout(() => document.getElementById('floatBar').classList.remove('show'), 3000);
     }
 
     // ── Enter key (text/url inputs only — not select or email) ──
