@@ -1,5 +1,5 @@
 # pickedby.ai (PBA) 사업계획서
-> 최종 업데이트: 2026-04-06 | 기반: pickedby_ai_full_report.json (10회 딥리서치)
+> 최종 업데이트: 2026-04-06 (CPO 전면 재정렬) | 기반: pickedby_ai_full_report.json (10회 딥리서치)
 
 ---
 
@@ -94,21 +94,35 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 
 ## 8. 성장 전략
 
-### Phase 1 (0-1개월): 바이럴 훅 ← 현재 단계
+### Phase 1 (0-1개월): 바이럴 훅 ✅ 완료
 - 무료 AI Visibility Score 배포 ✅
-- AI Visibility Score가 SNS에 공유되도록 설계 ("내 점수 23/100")
-- Product Hunt 출시 → 1,000 이메일 목표
+- 배지 시스템 V2-C (Gold/Silver/Bronze) ✅
+- @pickedbyAI Twitter/X 개설 + 런칭 스레드 ✅
 
-### Phase 2 (1-3개월): 유료 전환
-- 이메일 100명 → $19 유료 전환 시도
-- llms.txt/Schema 생성 기능 출시
-- Gumroad API 연동
+### Phase 1.5 (지금): 마케팅 런칭 ← 현재 단계
+- Product Hunt 출시 (목표: 2026-04-14)
+- 내부 /blog 구현 + 첫 글 작성
+- Reddit: r/Gumroad, r/Etsy, r/NotionTemplates
+- Indie Hackers 빌딩 인 퍼블릭
+- 목표: 이메일 1,000개
+
+### Phase 2 (1-3개월): 핵심 제품 확장 — 전체 무료 운영 (CEO 확정)
+- DEEP-01 딥링크 생성/추적 (bit.ly 패턴 — 데이터 해자)
+- NOTIF-01 AI 추천 알림 (Linktree 패턴 — 불가능했던 가치)
+- FEAT-05 대시보드 (로그인 + 히스토리)
+- GA4-01/02 Google OAuth2 + GA4 AI 채널 트래픽 연동
+- FEAT-01/02 llms.txt/Schema.org 자동 생성 (무료)
+- FEAT-03 주간 리포트 이메일 (GA4 데이터 포함)
+- INT-01 Gumroad API 연동
+- PAY-01 DodoPay 결제 연동 (Phase 2 후반)
 - 목표: MRR $1,900
 
 ### Phase 3 (3-12개월): 플랫폼화
-- Etsy/LemonSqueezy API 연동
-- "Picked by AI" 배지 생태계
+- INT-02/03/04 LemonSqueezy, Etsy, Shopify API
+- INT-05 Zapier/Make (100개 직접 연동 대신)
 - MCP 서버 (AI 에이전트가 직접 쿼리)
+- 다국어 최적화 (영어→일본어/스페인어)
+- AI 광고 (프리미엄 크리에이터 우선 노출)
 - 목표: MRR $19,000+, 시드 펀딩 준비
 
 ---
@@ -149,7 +163,7 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 | ~~Gemini HKG DC 차단~~ | **해결됨** | CF Workers AI 전환으로 구조적 해결 (2026-04-06) |
 | AI 답변 변동성 | 낮음 | YES/NO 구조화 쿼리 + 5차원 통계적 점수 |
 | Otterly 크리에이터 플랜 출시 | 중간 | 속도 선점 + 크리에이터 전용 UX 깊이 |
-| ROI 증명 어려움 | 높음 | 딥링크 클릭 데이터로 AEO 측정 |
+| ROI 증명 어려움 | 높음 | GA4 연동 + 딥링크 클릭 데이터로 AEO 측정 |
 | 자동 치료 한계 | 확실 | 과장 금지, "인프라 제공"으로 정직하게 커뮤니케이션 |
 
 ---
