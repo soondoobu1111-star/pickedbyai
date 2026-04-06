@@ -29,7 +29,7 @@
 
 ### 구성 요소
 1. **픽셀 크라운 아이콘** — 3피크 3젬, `#FFD700` (골드)
-2. **로고 텍스트** — `pickedby` (골드) + `.` (흰색) + `ai` (골드)
+2. **로고 텍스트** — `picked` (골드) + `by` (흰색) + `.ai` (골드)
    - 폰트: `Press Start 2P` (픽셀 게임 폰트)
    - 크기: `0.85rem` (헤더 기준)
    - Letter-spacing: `-1px`
@@ -51,9 +51,13 @@
     <rect x="0" y="12" width="20" height="2"/>
     <rect x="2" y="14" width="16" height="2"/>
   </svg>
-  pickedby<span class="dot">.</span>ai
+  <!-- ⚠️ 반드시 외부 <span>으로 텍스트 전체를 감쌀 것 -->
+  <!-- flex gap이 텍스트 노드를 분리하는 버그 방지 -->
+  <span>picked<span class="dot">by</span>.ai</span>
 </div>
 ```
+
+> **주의**: 텍스트를 외부 `<span>` 없이 직접 넣으면 `display: flex` + `gap: 8px` 로 인해 `picked` · `by` · `.ai` 각각이 별개의 flex item이 되어 공백이 생깁니다.
 
 ### 로고 CSS
 ```css
@@ -65,7 +69,7 @@
   line-height: 1.6;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 8px;  /* SVG ↔ 텍스트 간격. 텍스트 내부에는 적용 안 됨 */
 }
 .logo .dot { color: #ffffff; }
 ```
@@ -178,4 +182,8 @@
 
 ## 변경 이력
 - 2026-04-06: v1.0 최초 작성 (CPO)
-  - 로고 수정: `picked by .ai` → `pickedby.ai` (by에서 도트로 강조 이동)
+  - 로고 색상 확정: `picked`(골드) + `by`(흰색) + `.ai`(골드)
+- 2026-04-06: v1.1 로고 HTML 구조 수정 (CPO)
+  - flex gap 버그 수정: 텍스트 전체를 외부 `<span>`으로 감싸야 공백 없음
+  - 잘못된 구조: `picked<span>by</span>.ai` (직접 삽입 → flex item 3개로 분리)
+  - 올바른 구조: `<span>picked<span class="dot">by</span>.ai</span>` (단일 flex item)
