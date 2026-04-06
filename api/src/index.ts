@@ -60,7 +60,7 @@ async function queryGemini(_apiKey: string, prompt: string): Promise<{ text: str
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ prompt }),
-    signal: AbortSignal.timeout(12000),
+    signal: AbortSignal.timeout(4000),
   })
   if (!res.ok) {
     const err = await res.json() as { error?: string; detail?: string }
