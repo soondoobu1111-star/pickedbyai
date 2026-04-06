@@ -29,7 +29,7 @@
 
 ### 구성 요소
 1. **픽셀 크라운 아이콘** — 3피크 3젬, `#FFD700` (골드)
-2. **로고 텍스트** — `pickedby.ai` 전체 골드(`#FFD700`)
+2. **로고 텍스트** — `picked` (골드) + `by` (흰색) + `.ai` (골드)
    - 폰트: `Press Start 2P` (픽셀 게임 폰트)
    - 크기: `0.85rem` (헤더 기준)
    - Letter-spacing: `-1px`
@@ -71,7 +71,7 @@
   align-items: center;
   gap: 8px;  /* SVG ↔ 텍스트 간격. 텍스트 내부에는 적용 안 됨 */
 }
-.logo .dot { color: #FFD700; }  /* 전체 골드 통일 (2026-04-06 CEO 확정) */
+.logo .dot { color: #ffffff; }
 ```
 
 ### 로고 금지 사항
