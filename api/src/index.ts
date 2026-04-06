@@ -266,4 +266,42 @@ app.post('/v1/subscribe', async (c) => {
   return c.json({ ok: true })
 })
 
+// ── POST /v1/unsubscribe ──────────────────────────────────────
+// Removes email from Brevo list and marks as unsubscribed
+app.post('/v1/unsubscribe', async (c) => {
+  let body: { email?: string }
+
+  try {
+    body = await c.req.json()
+  } catch {
+    return c.json({ error: 'Invalid JSON' }, 400)
+  }
+
+  const { email } = body
+
+  if (!email || !email.includes('@')) {
+    return c.json({ error: 'Invalid email' }, 400)
+  }
+
+  // Brevo: update contact — remove from list 4
+  const res = await fetch(`https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'api-key': c.env.BREVO_API_KEY,
+    },
+    body: JSON.stringify({
+      unlinkListIds: [4],
+    }),
+  })
+
+  if (!res.ok && res.status !== 204) {
+    const text = await res.text()
+    console.error('Brevo unsubscribe error:', res.status, text)
+    // Still return ok — user experience shouldn't break on Brevo errors
+  }
+
+  return c.json({ ok: true })
+})
+
 export default app
