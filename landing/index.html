@@ -730,6 +730,7 @@
 
     /* ── SCORE SPECTRUM ── */
     .spectrum-wrap {
+      margin-top: 2rem;
       margin-bottom: 2rem;
     }
     .spectrum-label {
@@ -879,7 +880,8 @@
       .email-row { flex-direction: column; }
       .btn-email { min-height: 44px; padding: 0.75rem; }
       .vitals-grid { grid-template-columns: 1fr; gap: 0.5rem; }
-      .vs-row { flex-direction: column; gap: 0.35rem; }
+      .vs-row { flex-wrap: wrap; gap: 0.3rem 0.6rem; justify-content: center; }
+      .vs-sep { display: none; }
       .spectrum-zones { grid-template-columns: repeat(2, 1fr); }
       .how-section { padding: 1.25rem 1rem; }
       .card { padding: 1.25rem; }
@@ -893,6 +895,8 @@
       .hero h1 { font-size: 1.65rem; }
       .spectrum-zones { grid-template-columns: repeat(2, 1fr); }
       .vitals-grid { grid-template-columns: 1fr; }
+      .card { padding: 1rem; }
+      .btn-primary { font-size: 0.55rem; }
     }
   </style>
 </head>
