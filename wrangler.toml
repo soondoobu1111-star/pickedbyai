@@ -8,5 +8,9 @@ directory = "landing"
 [env.staging]
 name = "pickedbyai-staging"
 
+[[env.staging.routes]]
+pattern = "staging-0404.pickedby.ai"
+custom_domain = true
+
 [env.staging.assets]
 directory = "landing"
