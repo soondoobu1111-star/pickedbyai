@@ -40,5 +40,5 @@ rm -rf "$STAGING_DIR"
 
 echo ""
 echo "✅ 스테이징 배포 완료!"
-echo "🌐 FE: https://pickedbyai-staging.perceptdot.workers.dev"
+echo "🌐 FE: https://staging-0404.pickedby.ai"
 echo "🔌 API: https://pickedbyai-api-staging.perceptdot.workers.dev"
