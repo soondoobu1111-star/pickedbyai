@@ -150,7 +150,6 @@ Reply in exactly this format (5 lines):
 
   // ── Primary: Gemini 2.5 Flash + Search Grounding ──────────
   let geminiSuccess = false
-  console.log(`[key] GEMINI_API_KEY present=${!!c.env.GEMINI_API_KEY} len=${c.env.GEMINI_API_KEY?.length ?? 0}`)
   if (c.env.GEMINI_API_KEY) {
     try {
       const { text, grounded } = await queryGemini(c.env.GEMINI_API_KEY, prompt)
