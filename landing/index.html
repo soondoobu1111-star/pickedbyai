@@ -1935,6 +1935,26 @@
     })();
   </script>
 
+  <!-- Auth redirect: if logged in, go to dashboard -->
+  <script src="https://unpkg.com/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
+  <script>
+    (function () {
+      const IS_STAGING = window.location.hostname.includes('staging') || window.location.hostname === 'localhost'
+      const SUPABASE_URL = IS_STAGING
+        ? 'https://xzecybljfipmmzzzfnit.supabase.co'
+        : 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
+      const SUPABASE_ANON_KEY = IS_STAGING
+        ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZWN5YmxqZmlwbW16enpmbml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NTY4NjAsImV4cCI6MjA5MTAzMjg2MH0.pYqbBfJ7hwgKFgUSjvlhRlaOBIG4RqAgwDVTNUat03w'
+        : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmcmNwcGdlY3FzYm5oa2tqa2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjQ5OTQsImV4cCI6MjA5MDkwMDk5NH0.cxBUHjJoSEPJ7IilidxpVfCjS0SFmLFNWCeq92W0fUI'
+      const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      sb.auth.getSession().then(({ data }) => {
+        if (data?.session?.user) {
+          window.location.replace('/dashboard.html')
+        }
+      })
+    })()
+  </script>
+
   <!-- Grounding notice toast -->
   <div class="grounding-toast" id="groundingToast">
     ⚠️ <strong>Training data only</strong> — real-time web search unavailable in your region.
