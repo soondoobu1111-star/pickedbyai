@@ -376,6 +376,35 @@
       line-height: 1.55;
     }
 
+    /* Grounding notice toast */
+    .grounding-toast {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(6rem);
+      background: rgba(30, 30, 40, 0.96);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 0.75rem;
+      padding: 0.7rem 1.1rem;
+      font-size: 0.78rem;
+      color: #aaa;
+      text-align: center;
+      max-width: 340px;
+      width: calc(100% - 2rem);
+      z-index: 9999;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+      transition: transform 0.35s ease, opacity 0.35s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .grounding-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .grounding-toast strong { color: #ccc; }
+
     /* Section header */
     .sec-head {
       font-family: 'Press Start 2P', monospace;
@@ -1619,6 +1648,14 @@
         _score = data.score ?? 0;
         renderResult(_score, data.results ?? []);
 
+        // Show grounding notice if real-time search was unavailable
+        const isGrounded = (data.results ?? []).some(r => r.grounded);
+        if (!isGrounded) {
+          const toast = document.getElementById('groundingToast');
+          toast.classList.add('show');
+          setTimeout(() => toast.classList.remove('show'), 7000);
+        }
+
       } catch (e) {
         clearInterval(stepTimer);
         document.getElementById('loading').style.display = 'none';
@@ -1774,5 +1811,14 @@
       frame();
     })();
   </script>
+
+  <!-- Grounding notice toast -->
+  <div class="grounding-toast" id="groundingToast">
+    ⚠️ <strong>Training data only</strong> — real-time web search unavailable in your region.
+    Results may be inaccurate for new or obscure products.
+    <span style="display:block;margin-top:0.3rem;font-size:0.72rem;color:#888;">
+      Score based on AI's existing knowledge, not live search.
+    </span>
+  </div>
 </body>
 </html>
