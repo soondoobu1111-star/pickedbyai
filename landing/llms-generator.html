@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>llms.txt Generator — pickedby.ai</title>
+  <meta name="description" content="Generate a free llms.txt file to help AI systems discover and recommend your digital product." />
+  <meta property="og:title" content="llms.txt Generator — pickedby.ai" />
+  <meta property="og:description" content="Tell AI what your product is. One file, 10 seconds." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body { background: #0a0a0a; color: #f5f5f5; font-family: 'Inter', sans-serif; }
+    .logo-font { font-family: 'Press Start 2P', monospace; }
+    .gold { color: #FFD700; }
+    .btn-primary {
+      background: #FFD700; color: #0a0a0a; font-weight: 700;
+      padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none;
+      cursor: pointer; transition: opacity 0.2s; font-size: 0.95rem;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-ghost {
+      background: transparent; color: #FFD700; font-weight: 600;
+      padding: 0.6rem 1.2rem; border-radius: 0.5rem;
+      border: 1px solid #FFD700; cursor: pointer; transition: all 0.2s;
+      font-size: 0.85rem;
+    }
+    .btn-ghost:hover { background: #FFD700; color: #0a0a0a; }
+    .card { background: #141414; border: 1px solid #2a2a2a; border-radius: 0.75rem; padding: 1.5rem; }
+    .input-field {
+      background: #1a1a1a; border: 1px solid #333; color: #f5f5f5;
+      padding: 0.75rem 1rem; border-radius: 0.5rem; width: 100%;
+      font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+    }
+    .input-field:focus { border-color: #FFD700; }
+    .input-field::placeholder { color: #555; }
+    textarea.input-field { resize: vertical; min-height: 90px; line-height: 1.5; }
+    .output-box {
+      background: #0d0d0d; border: 1px solid #2a2a2a; border-radius: 0.5rem;
+      padding: 1.25rem; font-family: 'Courier New', monospace; font-size: 0.8rem;
+      line-height: 1.7; color: #b0b0b0; white-space: pre-wrap; word-break: break-all;
+      max-height: 420px; overflow-y: auto;
+    }
+    .step-badge {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 24px; height: 24px; background: #FFD700; color: #0a0a0a;
+      border-radius: 50%; font-size: 0.7rem; font-weight: 800; flex-shrink: 0;
+    }
+    .platform-tag {
+      display: inline-block; background: #1a1a1a; border: 1px solid #333;
+      border-radius: 4px; padding: 2px 8px; font-size: 0.72rem; color: #888;
+      margin: 2px;
+    }
+    .copied-toast {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      background: #FFD700; color: #0a0a0a; padding: 0.6rem 1.5rem;
+      border-radius: 2rem; font-weight: 700; font-size: 0.85rem;
+      opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 100;
+    }
+    .copied-toast.show { opacity: 1; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav style="border-bottom: 1px solid #1e1e1e;" class="px-6 py-4 flex items-center justify-between max-w-3xl mx-auto">
+  <a href="/" class="logo-font text-xs" style="letter-spacing:0.05em;">
+    <span class="gold">picked</span><span style="color:#fff;">by</span><span class="gold">.ai</span>
+  </a>
+  <a href="/" style="font-size:0.8rem;color:#666;">← Back to checker</a>
+</nav>
+
+<main class="max-w-3xl mx-auto px-6 py-10">
+
+  <!-- Hero -->
+  <div class="text-center mb-10">
+    <h1 style="font-size:1.6rem;font-weight:800;margin-bottom:0.75rem;">
+      Free <span class="gold">llms.txt</span> Generator
+    </h1>
+    <p style="color:#888;font-size:0.95rem;max-width:480px;margin:0 auto;">
+      Tell AI systems exactly what your product is — so they can recommend it.<br/>
+      One file. 10 seconds. Zero cost.
+    </p>
+  </div>
+
+  <!-- Form -->
+  <div class="card mb-6">
+    <h2 style="font-size:0.9rem;font-weight:700;margin-bottom:1.25rem;">1. Tell us about your product</h2>
+    <div class="flex flex-col gap-4">
+      <div>
+        <label style="font-size:0.78rem;color:#888;display:block;margin-bottom:0.4rem;">Product name <span class="gold">*</span></label>
+        <input id="f-name" class="input-field" placeholder="e.g. Notion Budget Tracker" />
+      </div>
+      <div>
+        <label style="font-size:0.78rem;color:#888;display:block;margin-bottom:0.4rem;">Product URL <span class="gold">*</span></label>
+        <input id="f-url" class="input-field" placeholder="e.g. https://gumroad.com/l/budget-tracker" />
+      </div>
+      <div>
+        <label style="font-size:0.78rem;color:#888;display:block;margin-bottom:0.4rem;">One-line description <span class="gold">*</span></label>
+        <input id="f-tagline" class="input-field" placeholder="e.g. A Notion template that tracks monthly budgets for freelancers" />
+      </div>
+      <div>
+        <label style="font-size:0.78rem;color:#888;display:block;margin-bottom:0.4rem;">Category</label>
+        <input id="f-category" class="input-field" placeholder="e.g. Notion template, Procreate brush, Canva template, digital planner…" />
+      </div>
+      <div>
+        <label style="font-size:0.78rem;color:#888;display:block;margin-bottom:0.4rem;">Target audience</label>
+        <input id="f-audience" class="input-field" placeholder="e.g. Freelancers, side-hustlers, small business owners" />
+      </div>
+      <div>
+        <label style="font-size:0.78rem;color:#888;display:block;margin-bottom:0.4rem;">Key features (one per line)</label>
+        <textarea id="f-features" class="input-field" placeholder="e.g.&#10;Monthly budget overview&#10;Income vs expense tracker&#10;Automated category totals"></textarea>
+      </div>
+      <div>
+        <label style="font-size:0.78rem;color:#888;display:block;margin-bottom:0.4rem;">Creator / Author name</label>
+        <input id="f-author" class="input-field" placeholder="e.g. Jane Smith" />
+      </div>
+    </div>
+    <button class="btn-primary mt-6 w-full" onclick="generateLlms()">Generate llms.txt →</button>
+  </div>
+
+  <!-- Output -->
+  <div id="output-section" class="card mb-6" style="display:none;">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-3">
+      <h2 style="font-size:0.9rem;font-weight:700;">2. Your llms.txt file</h2>
+      <div class="flex gap-2">
+        <button class="btn-ghost" onclick="copyLlms()">Copy</button>
+        <button class="btn-ghost" onclick="downloadLlms()">Download</button>
+      </div>
+    </div>
+    <div id="llms-output" class="output-box"></div>
+  </div>
+
+  <!-- How to use -->
+  <div id="howto-section" class="card mb-6" style="display:none;">
+    <h2 style="font-size:0.9rem;font-weight:700;margin-bottom:1.25rem;">3. Where to add it</h2>
+    <div class="flex flex-col gap-5">
+
+      <div class="flex gap-3">
+        <span class="step-badge">A</span>
+        <div>
+          <div style="font-weight:600;font-size:0.85rem;margin-bottom:0.3rem;">Gumroad / Lemon Squeezy</div>
+          <p style="font-size:0.8rem;color:#888;margin-bottom:0.5rem;">Paste the full text into your <strong style="color:#f5f5f5;">product description</strong> or an <strong style="color:#f5f5f5;">About section</strong>. AI crawlers index public product pages.</p>
+          <span class="platform-tag">Gumroad</span>
+          <span class="platform-tag">Lemon Squeezy</span>
+          <span class="platform-tag">Payhip</span>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <span class="step-badge">B</span>
+        <div>
+          <div style="font-weight:600;font-size:0.85rem;margin-bottom:0.3rem;">Personal website or blog</div>
+          <p style="font-size:0.8rem;color:#888;margin-bottom:0.5rem;">Upload as <code style="background:#1a1a1a;padding:1px 4px;border-radius:3px;font-size:0.75rem;">llms.txt</code> to your root domain — e.g. <code style="background:#1a1a1a;padding:1px 4px;border-radius:3px;font-size:0.75rem;">yourdomain.com/llms.txt</code></p>
+          <span class="platform-tag">WordPress</span>
+          <span class="platform-tag">Webflow</span>
+          <span class="platform-tag">Squarespace</span>
+          <span class="platform-tag">Ghost</span>
+        </div>
+      </div>
+
+      <div class="flex gap-3">
+        <span class="step-badge">C</span>
+        <div>
+          <div style="font-weight:600;font-size:0.85rem;margin-bottom:0.3rem;">Etsy shop</div>
+          <p style="font-size:0.8rem;color:#888;margin-bottom:0.5rem;">Add key details to your <strong style="color:#f5f5f5;">shop About section</strong> and individual <strong style="color:#f5f5f5;">listing descriptions</strong>. Etsy pages are indexed by AI crawlers.</p>
+          <span class="platform-tag">Etsy</span>
+          <span class="platform-tag">Creative Market</span>
+        </div>
+      </div>
+
+      <div style="background:#1a1000;border:1px solid #3a2800;border-radius:0.5rem;padding:1rem;">
+        <p style="font-size:0.8rem;color:#aaa;">
+          💡 <strong style="color:#FFD700;">Pro tip:</strong> After adding, come back and
+          <a href="/" style="color:#FFD700;text-decoration:underline;">check your AI Visibility Score</a>
+          — most products see an improvement within 1–2 weeks as AI systems re-crawl.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Check CTA -->
+  <div id="cta-section" style="display:none;text-align:center;padding:1.5rem 0;">
+    <p style="color:#888;font-size:0.85rem;margin-bottom:1rem;">Want to see your current AI Visibility Score?</p>
+    <a href="/" class="btn-primary" style="display:inline-block;text-decoration:none;">Check My Score Free →</a>
+  </div>
+
+</main>
+
+<div class="copied-toast" id="copied-toast">✓ Copied!</div>
+
+<script>
+  let generatedText = ''
+
+  function generateLlms() {
+    const name = document.getElementById('f-name').value.trim()
+    const url = document.getElementById('f-url').value.trim()
+    const tagline = document.getElementById('f-tagline').value.trim()
+    const category = document.getElementById('f-category').value.trim()
+    const audience = document.getElementById('f-audience').value.trim()
+    const featuresRaw = document.getElementById('f-features').value.trim()
+    const author = document.getElementById('f-author').value.trim()
+
+    if (!name || !tagline) {
+      alert('Please fill in Product name and Description.')
+      return
+    }
+
+    const features = featuresRaw
+      ? featuresRaw.split('\n').map(f => f.trim()).filter(Boolean)
+      : []
+
+    const today = new Date().toISOString().split('T')[0]
+
+    let lines = []
+    lines.push(`# ${name}`)
+    lines.push(``)
+    lines.push(`> ${tagline}`)
+    lines.push(``)
+    if (url) {
+      lines.push(`## Product URL`)
+      lines.push(`- ${url}`)
+      lines.push(``)
+    }
+    if (category) {
+      lines.push(`## Category`)
+      lines.push(`- ${category}`)
+      lines.push(``)
+    }
+    if (audience) {
+      lines.push(`## Target Audience`)
+      lines.push(`- ${audience}`)
+      lines.push(``)
+    }
+    if (features.length > 0) {
+      lines.push(`## Key Features`)
+      features.forEach(f => lines.push(`- ${f}`))
+      lines.push(``)
+    }
+    if (author) {
+      lines.push(`## Creator`)
+      lines.push(`- ${author}`)
+      lines.push(``)
+    }
+    lines.push(`## About This File`)
+    lines.push(`- Format: llms.txt — standard for AI discoverability`)
+    lines.push(`- Purpose: Help AI systems (ChatGPT, Claude, Perplexity, Gemini) accurately describe and recommend this product`)
+    lines.push(`- Generated: ${today} via pickedby.ai`)
+
+    generatedText = lines.join('\n')
+
+    document.getElementById('llms-output').textContent = generatedText
+    document.getElementById('output-section').style.display = 'block'
+    document.getElementById('howto-section').style.display = 'block'
+    document.getElementById('cta-section').style.display = 'block'
+    document.getElementById('output-section').scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function copyLlms() {
+    if (!generatedText) return
+    navigator.clipboard.writeText(generatedText).then(() => {
+      const t = document.getElementById('copied-toast')
+      t.classList.add('show')
+      setTimeout(() => t.classList.remove('show'), 1800)
+    })
+  }
+
+  function downloadLlms() {
+    if (!generatedText) return
+    const name = document.getElementById('f-name').value.trim().replace(/[^a-z0-9]/gi, '-').toLowerCase() || 'product'
+    const blob = new Blob([generatedText], { type: 'text/plain' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = 'llms.txt'
+    a.click()
+    URL.revokeObjectURL(a.href)
+  }
+
+  // Generate on Enter in any input
+  document.addEventListener('DOMContentLoaded', () => {
+    ['f-name','f-url','f-tagline','f-category','f-audience','f-author'].forEach(id => {
+      document.getElementById(id)?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') generateLlms()
+      })
+    })
+  })
+</script>
+</body>
+</html>

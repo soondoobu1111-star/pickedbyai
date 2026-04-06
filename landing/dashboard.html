@@ -8,6 +8,7 @@
   <meta name="robots" content="noindex, nofollow" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     body { background: #0a0a0a; color: #f5f5f5; font-family: 'Inter', sans-serif; }
@@ -111,10 +112,15 @@
     <p id="result-grounded-note" style="font-size:0.72rem;color:#555;margin-top:0.75rem;display:none;">
       ℹ️ Results based on AI training data only (real-time search unavailable in your region).
     </p>
-    <button class="btn-primary mt-4" id="btn-save" onclick="saveScore()" style="font-size:0.85rem;padding:0.6rem 1.2rem;">
-      Save to History
-    </button>
-    <span id="save-status" style="font-size:0.8rem;margin-left:0.75rem;color:#4ade80;display:none;">✓ Saved</span>
+    <div class="flex items-center gap-3 flex-wrap mt-4">
+      <button class="btn-primary" id="btn-save" onclick="saveScore()" style="font-size:0.85rem;padding:0.6rem 1.2rem;">
+        Save to History
+      </button>
+      <button class="btn-ghost" id="btn-share-tweet" onclick="shareTweet()" style="font-size:0.85rem;">
+        𝕏 Share Score
+      </button>
+      <span id="save-status" style="font-size:0.8rem;color:#4ade80;display:none;">✓ Saved</span>
+    </div>
   </div>
 
   <!-- History -->
@@ -122,6 +128,10 @@
     <div class="flex items-center justify-between mb-4">
       <h2 style="font-size:0.95rem;font-weight:700;">Score History</h2>
       <span style="font-size:0.75rem;color:#555;">Last 30 days</span>
+    </div>
+    <!-- Trend Chart (visible when ≥2 data points) -->
+    <div id="trend-chart-wrap" style="display:none;margin-bottom:1.5rem;">
+      <canvas id="trend-chart" height="120"></canvas>
     </div>
     <div id="history-loading" class="text-center py-8" style="color:#555;">
       <div class="spinner mx-auto mb-2"></div>
@@ -334,6 +344,63 @@
 
     document.getElementById('history-rows').innerHTML = rows
     document.getElementById('history-table').style.display = 'block'
+    renderTrendChart(data)
+  }
+
+  // ── NEW-01: Share Tweet ────────────────────────────────────
+  function shareTweet() {
+    if (!lastCheckResult) return
+    const score = lastCheckResult.score
+    const name = lastCheckResult.product
+    let tier = score >= 81 ? '🥇 PICKED BY AI' : score >= 61 ? '🥈 SEEN BY AI' : score >= 36 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
+    const text = `I just checked "${name}" on @pickedbyAI\n\nAI Visibility Score: ${score}/100 — ${tier}\n\nCheck yours free (10 seconds, no signup):`
+    const url = 'https://pickedby.ai'
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank', 'width=550,height=420')
+  }
+
+  // ── NEW-02: Trend Chart ────────────────────────────────────
+  let trendChartInstance = null
+
+  function renderTrendChart(data) {
+    const wrap = document.getElementById('trend-chart-wrap')
+    if (!data || data.length < 2) { wrap.style.display = 'none'; return }
+
+    // Chronological order, last 30 entries max
+    const sorted = [...data].reverse().slice(-30)
+    const labels = sorted.map(r => new Date(r.checked_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))
+    const scores = sorted.map(r => r.score)
+    const colors = sorted.map(r => r.score >= 81 ? '#FFD700' : r.score >= 61 ? '#C0C0C0' : r.score >= 36 ? '#CD7F32' : '#444')
+
+    wrap.style.display = 'block'
+    if (trendChartInstance) trendChartInstance.destroy()
+
+    trendChartInstance = new Chart(document.getElementById('trend-chart'), {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          data: scores,
+          borderColor: '#FFD700',
+          backgroundColor: 'rgba(255,215,0,0.08)',
+          pointBackgroundColor: colors,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          borderWidth: 2,
+          tension: 0.3,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false }, tooltip: {
+          callbacks: { label: ctx => ` Score: ${ctx.parsed.y}/100` }
+        }},
+        scales: {
+          x: { ticks: { color: '#666', font: { size: 10 } }, grid: { color: '#1a1a1a' } },
+          y: { min: 0, max: 100, ticks: { color: '#666', font: { size: 10 }, stepSize: 20 }, grid: { color: '#1a1a1a' } },
+        },
+      }
+    })
   }
 
   function escHtml(s) {
