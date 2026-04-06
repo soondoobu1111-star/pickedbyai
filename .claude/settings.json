@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 -c \"\nimport sys, json\ntry:\n    d = json.load(sys.stdin)\n    prompt = d.get('user_prompt', '').lower()\n    keywords = ['로고','logo','색상','color','배지','badge','카피','copy','마케팅','marketing','브랜드','brand','타이포','font','디자인','design','아이콘','icon','typography','palette']\n    if any(k in prompt for k in keywords):\n        content = open('/Volumes/My Passport for Mac/My_project/pickedbyai/docs/brand-guide.md').read()\n        print(json.dumps({'hookSpecificOutput': {'hookEventName': 'UserPromptSubmit', 'additionalContext': '[브랜드 가이드 자동 주입]\\n\\n' + content}}))\nexcept:\n    pass\n\"",
+            "statusMessage": "브랜드 가이드 확인 중...",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
