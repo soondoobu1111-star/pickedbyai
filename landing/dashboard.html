@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — pickedby.ai</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body { background: #0a0a0a; color: #f5f5f5; font-family: 'Inter', sans-serif; }
+    .logo-font { font-family: 'Press Start 2P', monospace; }
+    .gold { color: #FFD700; }
+    .btn-primary {
+      background: #FFD700; color: #0a0a0a; font-weight: 700;
+      padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none;
+      cursor: pointer; transition: opacity 0.2s; font-size: 0.95rem;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-ghost {
+      background: transparent; color: #FFD700; font-weight: 600;
+      padding: 0.6rem 1.2rem; border-radius: 0.5rem;
+      border: 1px solid #FFD700; cursor: pointer; transition: all 0.2s;
+      font-size: 0.85rem;
+    }
+    .btn-ghost:hover { background: #FFD700; color: #0a0a0a; }
+    .card {
+      background: #141414; border: 1px solid #2a2a2a;
+      border-radius: 0.75rem; padding: 1.5rem;
+    }
+    .input-field {
+      background: #1a1a1a; border: 1px solid #333; color: #f5f5f5;
+      padding: 0.75rem 1rem; border-radius: 0.5rem; width: 100%;
+      font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+    }
+    .input-field:focus { border-color: #FFD700; }
+    .input-field::placeholder { color: #555; }
+    .badge-gold { background: #2a2000; color: #FFD700; border: 1px solid #FFD700; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .badge-silver { background: #1a1a1a; color: #C0C0C0; border: 1px solid #C0C0C0; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .badge-bronze { background: #1a0f00; color: #CD7F32; border: 1px solid #CD7F32; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .badge-none { background: #1a1a1a; color: #555; border: 1px solid #333; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; }
+    .score-bar-bg { background: #1a1a1a; border-radius: 999px; height: 6px; overflow: hidden; }
+    .score-bar-fill { height: 100%; border-radius: 999px; transition: width 0.6s ease; }
+    .spinner { border: 2px solid #333; border-top-color: #FFD700; border-radius: 50%; width: 18px; height: 18px; animation: spin 0.7s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .result-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #1e1e1e; }
+    .result-row:last-child { border-bottom: none; }
+    .dot-yes { color: #4ade80; }
+    .dot-no { color: #ef4444; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav style="border-bottom: 1px solid #1e1e1e;" class="px-6 py-4 flex items-center justify-between max-w-4xl mx-auto">
+  <a href="/" class="logo-font text-xs" style="letter-spacing:0.05em;">
+    <span class="gold">picked</span><span style="color:#fff;">by</span><span class="gold">.ai</span>
+  </a>
+  <div id="nav-user" class="flex items-center gap-3" style="display:none!important;">
+    <img id="nav-avatar" src="" alt="" style="width:28px;height:28px;border-radius:50%;border:1px solid #333;" />
+    <span id="nav-email" style="font-size:0.8rem;color:#888;"></span>
+    <button class="btn-ghost" onclick="signOut()" style="font-size:0.75rem;padding:0.4rem 0.8rem;">Sign out</button>
+  </div>
+</nav>
+
+<!-- LOGIN SCREEN -->
+<div id="screen-login" class="flex flex-col items-center justify-center min-h-screen px-6" style="margin-top:-64px;">
+  <div class="card text-center" style="max-width:400px;width:100%;">
+    <div class="logo-font text-sm mb-2 gold" style="letter-spacing:0.05em;">Dashboard</div>
+    <p style="color:#888;font-size:0.85rem;margin-bottom:1.5rem;">Track your AI Visibility Score over time</p>
+    <button class="btn-primary w-full flex items-center justify-center gap-3" onclick="signInWithGoogle()" id="btn-login">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#0a0a0a" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#0a0a0a" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#0a0a0a" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#0a0a0a" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <p style="color:#555;font-size:0.72rem;margin-top:1rem;">Free forever. No credit card required.</p>
+  </div>
+</div>
+
+<!-- DASHBOARD SCREEN -->
+<div id="screen-dashboard" class="max-w-4xl mx-auto px-6 py-8" style="display:none;">
+
+  <!-- Check form -->
+  <div class="card mb-6">
+    <h2 style="font-size:0.95rem;font-weight:700;margin-bottom:1rem;">Check AI Visibility</h2>
+    <div class="flex gap-3 flex-wrap">
+      <input id="input-product" class="input-field" placeholder="Product name (e.g. Notion Budget Tracker)" style="flex:1;min-width:200px;" />
+      <input id="input-url" class="input-field" placeholder="URL (optional)" style="flex:1;min-width:160px;" />
+      <button class="btn-primary" id="btn-check" onclick="runCheck()">Check</button>
+    </div>
+  </div>
+
+  <!-- Check result -->
+  <div id="check-result" class="card mb-6" style="display:none;">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <div>
+        <span id="result-product" style="font-weight:700;font-size:1rem;"></span>
+        <span id="result-badge" style="margin-left:8px;"></span>
+      </div>
+      <div style="text-align:right;">
+        <span id="result-score" style="font-size:2rem;font-weight:800;color:#FFD700;"></span>
+        <span style="color:#555;font-size:0.8rem;">/100</span>
+      </div>
+    </div>
+    <div class="score-bar-bg mb-4">
+      <div id="result-bar" class="score-bar-fill" style="width:0%;background:#FFD700;"></div>
+    </div>
+    <div id="result-dimensions"></div>
+    <p id="result-grounded-note" style="font-size:0.72rem;color:#555;margin-top:0.75rem;display:none;">
+      ℹ️ Results based on AI training data only (real-time search unavailable in your region).
+    </p>
+    <button class="btn-primary mt-4" id="btn-save" onclick="saveScore()" style="font-size:0.85rem;padding:0.6rem 1.2rem;">
+      Save to History
+    </button>
+    <span id="save-status" style="font-size:0.8rem;margin-left:0.75rem;color:#4ade80;display:none;">✓ Saved</span>
+  </div>
+
+  <!-- History -->
+  <div class="card">
+    <div class="flex items-center justify-between mb-4">
+      <h2 style="font-size:0.95rem;font-weight:700;">Score History</h2>
+      <span style="font-size:0.75rem;color:#555;">Last 30 days</span>
+    </div>
+    <div id="history-loading" class="text-center py-8" style="color:#555;">
+      <div class="spinner mx-auto mb-2"></div>
+      <p style="font-size:0.8rem;">Loading history...</p>
+    </div>
+    <div id="history-empty" style="display:none;text-align:center;padding:2rem 0;color:#555;">
+      <p style="font-size:0.85rem;">No checks yet. Run your first check above.</p>
+    </div>
+    <div id="history-table" style="display:none;">
+      <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid #2a2a2a;font-size:0.72rem;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+        <span>Product</span><span style="text-align:center;">Score</span><span style="text-align:center;">Badge</span><span style="text-align:right;">Date</span>
+      </div>
+      <div id="history-rows"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── Config ─────────────────────────────────────────────────
+  const IS_STAGING = window.location.hostname.includes('staging') || window.location.hostname === 'localhost'
+  const SUPABASE_URL = IS_STAGING
+    ? 'https://xzecybljfipmmzzzfnit.supabase.co'
+    : 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
+  const SUPABASE_ANON_KEY = IS_STAGING
+    ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZWN5YmxqZmlwbW16enpmbml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NTY4NjAsImV4cCI6MjA5MTAzMjg2MH0.pYqbBfJ7hwgKFgUSjvlhRlaOBIG4RqAgwDVTNUat03w'
+    : 'PRODUCTION_ANON_KEY_TODO'
+  const API_URL = IS_STAGING
+    ? 'https://pickedbyai-api-staging.perceptdot.workers.dev'
+    : 'https://api.pickedby.ai'
+
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+  let currentUser = null
+  let lastCheckResult = null
+
+  // ── Auth ───────────────────────────────────────────────────
+  async function signInWithGoogle() {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.href,
+      },
+    })
+    if (error) alert('Sign in failed: ' + error.message)
+  }
+
+  async function signOut() {
+    await supabase.auth.signOut()
+    currentUser = null
+    showLogin()
+  }
+
+  function showLogin() {
+    document.getElementById('screen-login').style.display = 'flex'
+    document.getElementById('screen-dashboard').style.display = 'none'
+    document.getElementById('nav-user').style.display = 'none'
+  }
+
+  function showDashboard(user) {
+    document.getElementById('screen-login').style.display = 'none'
+    document.getElementById('screen-dashboard').style.display = 'block'
+    const navUser = document.getElementById('nav-user')
+    navUser.style.removeProperty('display')
+    navUser.style.display = 'flex'
+    document.getElementById('nav-email').textContent = user.email
+    if (user.user_metadata?.avatar_url) {
+      document.getElementById('nav-avatar').src = user.user_metadata.avatar_url
+    }
+    loadHistory()
+  }
+
+  // ── Check ──────────────────────────────────────────────────
+  async function runCheck() {
+    const product = document.getElementById('input-product').value.trim()
+    const url = document.getElementById('input-url').value.trim()
+    if (!product) { document.getElementById('input-product').focus(); return }
+
+    const btn = document.getElementById('btn-check')
+    btn.disabled = true
+    btn.innerHTML = '<span class="spinner"></span>'
+    document.getElementById('check-result').style.display = 'none'
+    document.getElementById('save-status').style.display = 'none'
+    lastCheckResult = null
+
+    try {
+      const res = await fetch(`${API_URL}/v1/check`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product, url: url || undefined }),
+      })
+      const data = await res.json()
+      showResult(data)
+      lastCheckResult = { product, url: url || null, score: data.score, results: data.results }
+    } catch (err) {
+      alert('Check failed. Please try again.')
+    } finally {
+      btn.disabled = false
+      btn.textContent = 'Check'
+    }
+  }
+
+  function showResult(data) {
+    const { score, results, product } = data
+    document.getElementById('result-product').textContent = product
+    document.getElementById('result-score').textContent = score
+    document.getElementById('result-bar').style.width = score + '%'
+
+    // Badge
+    let badgeHtml = ''
+    if (score >= 81) badgeHtml = '<span class="badge-gold">PICKED BY AI</span>'
+    else if (score >= 61) badgeHtml = '<span class="badge-silver">SEEN BY AI</span>'
+    else if (score >= 36) badgeHtml = '<span class="badge-bronze">NOTICED BY AI</span>'
+    else badgeHtml = '<span class="badge-none">NOT VISIBLE</span>'
+    document.getElementById('result-badge').innerHTML = badgeHtml
+
+    // Dimensions
+    const dims = document.getElementById('result-dimensions')
+    dims.innerHTML = (results || []).map(r => `
+      <div class="result-row">
+        <span style="font-size:0.82rem;color:#aaa;">${r.label}</span>
+        <span style="font-size:0.85rem;font-weight:600;" class="${r.found ? 'dot-yes' : 'dot-no'}">
+          ${r.found ? '✓ YES' : '✗ NO'}
+        </span>
+      </div>
+    `).join('')
+
+    // Grounding note
+    const hasUngrounded = (results || []).some(r => !r.grounded)
+    document.getElementById('result-grounded-note').style.display = hasUngrounded ? 'block' : 'none'
+
+    document.getElementById('check-result').style.display = 'block'
+  }
+
+  // ── Save ───────────────────────────────────────────────────
+  async function saveScore() {
+    if (!lastCheckResult || !currentUser) return
+    const btn = document.getElementById('btn-save')
+    btn.disabled = true
+    btn.textContent = 'Saving...'
+
+    const { error } = await supabase.from('scores').insert({
+      user_id: currentUser.id,
+      product_name: lastCheckResult.product,
+      product_url: lastCheckResult.url,
+      score: lastCheckResult.score,
+      results: lastCheckResult.results,
+    })
+
+    btn.disabled = false
+    btn.textContent = 'Save to History'
+
+    if (error) {
+      alert('Save failed: ' + error.message)
+    } else {
+      document.getElementById('save-status').style.display = 'inline'
+      loadHistory()
+    }
+  }
+
+  // ── History ────────────────────────────────────────────────
+  async function loadHistory() {
+    document.getElementById('history-loading').style.display = 'block'
+    document.getElementById('history-empty').style.display = 'none'
+    document.getElementById('history-table').style.display = 'none'
+
+    const since = new Date()
+    since.setDate(since.getDate() - 30)
+
+    const { data, error } = await supabase
+      .from('scores')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .gte('checked_at', since.toISOString())
+      .order('checked_at', { ascending: false })
+      .limit(50)
+
+    document.getElementById('history-loading').style.display = 'none'
+
+    if (error || !data || data.length === 0) {
+      document.getElementById('history-empty').style.display = 'block'
+      return
+    }
+
+    const rows = data.map(row => {
+      const score = row.score
+      let badge = ''
+      if (score >= 81) badge = '<span class="badge-gold">PICKED</span>'
+      else if (score >= 61) badge = '<span class="badge-silver">SEEN</span>'
+      else if (score >= 36) badge = '<span class="badge-bronze">NOTICED</span>'
+      else badge = '<span class="badge-none">—</span>'
+
+      const date = new Date(row.checked_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      const barColor = score >= 81 ? '#FFD700' : score >= 61 ? '#C0C0C0' : score >= 36 ? '#CD7F32' : '#333'
+
+      return `
+        <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;align-items:center;padding:0.6rem 0;border-bottom:1px solid #1a1a1a;">
+          <div>
+            <div style="font-size:0.85rem;font-weight:600;">${escHtml(row.product_name)}</div>
+            ${row.product_url ? `<div style="font-size:0.7rem;color:#555;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;">${escHtml(row.product_url)}</div>` : ''}
+          </div>
+          <div style="text-align:center;">
+            <span style="font-size:1rem;font-weight:700;color:${barColor};">${score}</span>
+          </div>
+          <div style="text-align:center;">${badge}</div>
+          <div style="text-align:right;font-size:0.75rem;color:#666;">${date}</div>
+        </div>
+      `
+    }).join('')
+
+    document.getElementById('history-rows').innerHTML = rows
+    document.getElementById('history-table').style.display = 'block'
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+  }
+
+  // ── Enter key on inputs ────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    ['input-product', 'input-url'].forEach(id => {
+      document.getElementById(id)?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') runCheck()
+      })
+    })
+  })
+
+  // ── Init ───────────────────────────────────────────────────
+  supabase.auth.onAuthStateChange((_event, session) => {
+    if (session?.user) {
+      currentUser = session.user
+      showDashboard(session.user)
+    } else {
+      showLogin()
+    }
+  })
+</script>
+</body>
+</html>

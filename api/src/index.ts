@@ -75,6 +75,7 @@ const app = new Hono<{ Bindings: Bindings }>()
 const ALLOWED_ORIGINS = [
   'https://pickedby.ai',
   'https://www.pickedby.ai',
+  'https://staging-0404.pickedby.ai',
 ]
 
 app.use('*', cors({
