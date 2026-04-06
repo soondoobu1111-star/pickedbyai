@@ -45,9 +45,9 @@
     .badge-none { background: #1a1a1a; color: #555; border: 1px solid #333; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; }
     .score-bar-bg { background: #1a1a1a; border-radius: 999px; height: 6px; overflow: hidden; }
     .score-bar-fill { height: 100%; border-radius: 999px; transition: width 0.6s ease; }
-    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid #1f1f1f; max-width: 1233px; margin: 0 auto; }
-    .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.7rem; color: #FFD700; text-decoration: none; }
-    .nav-links { display: flex; align-items: center; gap: 1.5rem; font-size: 0.8rem; }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid #1f1f1f; max-width: 1080px; margin: 0 auto; }
+    .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: #FFD700; text-decoration: none; }
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; font-size: 0.95rem; }
     .nav-links a { text-decoration: none; color: #888; }
     .nav-links a:hover { color: #fff; }
     /* profile dropdown */
@@ -171,8 +171,8 @@
       <p style="font-size:0.85rem;">No checks yet. Run your first check above.</p>
     </div>
     <div id="history-table" style="display:none;">
-      <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid #2a2a2a;font-size:0.72rem;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
-        <span>Product</span><span style="text-align:center;">Score</span><span style="text-align:center;">Badge</span><span style="text-align:right;">Date</span>
+      <div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid #2a2a2a;font-size:0.75rem;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+        <span>Product</span><span style="text-align:center;">Score</span><span style="text-align:center;">Badge</span><span style="text-align:right;">Date</span><span></span>
       </div>
       <div id="history-rows"></div>
     </div>
@@ -301,6 +301,20 @@
     btn.disabled = true
     btn.textContent = 'Saving...'
 
+    // Max 5 distinct products check
+    const { data: existing } = await sb
+      .from('scores')
+      .select('product_name')
+      .eq('user_id', currentUser.id)
+    const distinctProducts = [...new Set((existing || []).map(r => r.product_name))]
+    const isNew = !distinctProducts.includes(lastCheckResult.product)
+    if (isNew && distinctProducts.length >= 5) {
+      btn.disabled = false
+      btn.textContent = 'Save to History'
+      alert('Maximum 5 products allowed. Delete an existing product to add a new one.')
+      return
+    }
+
     const { error } = await sb.from('scores').insert({
       user_id: currentUser.id,
       product_name: lastCheckResult.product,
@@ -318,6 +332,18 @@
       document.getElementById('save-status').style.display = 'inline'
       loadHistory()
     }
+  }
+
+  // ── Delete ─────────────────────────────────────────────────
+  async function deleteScore(id) {
+    if (!currentUser) return
+    const { error } = await sb
+      .from('scores')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', currentUser.id)
+    if (error) { alert('Delete failed: ' + error.message); return }
+    loadHistory()
   }
 
   // ── History ────────────────────────────────────────────────
@@ -356,16 +382,19 @@
       const barColor = score >= 81 ? '#FFD700' : score >= 61 ? '#C0C0C0' : score >= 36 ? '#CD7F32' : '#333'
 
       return `
-        <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;align-items:center;padding:0.6rem 0;border-bottom:1px solid #1a1a1a;">
+        <div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:0.5rem;align-items:center;padding:0.7rem 0;border-bottom:1px solid #1a1a1a;">
           <div>
-            <div style="font-size:0.85rem;font-weight:600;">${escHtml(row.product_name)}</div>
-            ${row.product_url ? `<div style="font-size:0.7rem;color:#555;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:180px;">${escHtml(row.product_url)}</div>` : ''}
+            <div style="font-size:0.92rem;font-weight:600;">${escHtml(row.product_name)}</div>
+            ${row.product_url ? `<div style="font-size:0.75rem;color:#555;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px;">${escHtml(row.product_url)}</div>` : ''}
           </div>
           <div style="text-align:center;">
-            <span style="font-size:1rem;font-weight:700;color:${barColor};">${score}</span>
+            <span style="font-size:1.05rem;font-weight:700;color:${barColor};">${score}</span>
           </div>
           <div style="text-align:center;">${badge}</div>
-          <div style="text-align:right;font-size:0.75rem;color:#666;">${date}</div>
+          <div style="text-align:right;font-size:0.8rem;color:#666;">${date}</div>
+          <div style="text-align:right;">
+            <button onclick="deleteScore('${row.id}')" title="Delete" style="background:none;border:none;cursor:pointer;color:#444;font-size:1rem;padding:0 4px;line-height:1;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#444'">✕</button>
+          </div>
         </div>
       `
     }).join('')
