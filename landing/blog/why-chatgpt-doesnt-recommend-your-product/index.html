@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Why ChatGPT Doesn't Recommend Your Product (And How to Fix It) — pickedby.ai</title>
-  <meta name="description" content="Most digital creators are invisible to AI — not because their product is bad, but because AI has never been properly introduced to it. Here's what's actually going on, and the 5 moves that change it." />
+  <meta name="description" content="I typed my own product into ChatGPT. It had no idea it existed. Here's what I found out — and the 5 things that actually change it." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://pickedby.ai/blog/why-chatgpt-doesnt-recommend-your-product/" />
   <meta property="og:title" content="Why ChatGPT Doesn't Recommend Your Product (And How to Fix It)" />
-  <meta property="og:description" content="Most digital creators are invisible to AI — not because their product is bad, but because AI has never been properly introduced to it." />
+  <meta property="og:description" content="I typed my own product into ChatGPT. It had no idea it existed. Here's what I found out." />
   <meta property="og:url" content="https://pickedby.ai/blog/why-chatgpt-doesnt-recommend-your-product/" />
   <meta property="og:type" content="article" />
   <meta property="og:image" content="https://pickedby.ai/og.png" />
@@ -17,13 +17,13 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:site" content="@pickedbyAI" />
   <meta name="twitter:title" content="Why ChatGPT Doesn't Recommend Your Product" />
-  <meta name="twitter:description" content="Most digital creators are invisible to AI — not because their product is bad, but because AI has never been properly introduced to it." />
+  <meta name="twitter:description" content="I typed my own product into ChatGPT. It had no idea it existed. Here's what I found out." />
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "Why ChatGPT Doesn't Recommend Your Product (And How to Fix It)",
-    "description": "Most digital creators are invisible to AI — not because their product is bad, but because AI has never been properly introduced to it.",
+    "description": "I typed my own product into ChatGPT. It had no idea it existed. Here's what I found out — and the 5 things that actually change it.",
     "datePublished": "2026-04-06",
     "author": { "@type": "Organization", "name": "pickedby.ai", "url": "https://pickedby.ai" },
     "publisher": { "@type": "Organization", "name": "pickedby.ai", "url": "https://pickedby.ai" },
@@ -43,48 +43,35 @@
     body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; line-height: 1.7; }
     a { color: var(--yellow); text-decoration: none; }
     a:hover { text-decoration: underline; }
-
-    /* NAV */
     .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); }
     .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.7rem; color: var(--yellow); text-decoration: none; }
-    .nav-links { display: flex; gap: 1.5rem; font-size: 0.8rem; color: var(--muted); }
+    .nav-links { display: flex; gap: 1.5rem; font-size: 0.8rem; }
     .nav-links a { color: var(--muted); }
     .nav-links a:hover { color: var(--text); text-decoration: none; }
     .nav-cta { font-family: 'Press Start 2P', monospace; font-size: 0.4rem; background: var(--yellow); color: #000; padding: 0.5rem 0.9rem; text-decoration: none; }
-
-    /* ARTICLE */
-    .article-wrap { max-width: 720px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+    .article-wrap { max-width: 680px; margin: 0 auto; padding: 3rem 2rem 5rem; }
     .article-tag { font-family: 'Press Start 2P', monospace; font-size: 0.38rem; color: var(--yellow); letter-spacing: 0.1em; margin-bottom: 1.25rem; }
     .article-tag a { color: var(--yellow); text-decoration: none; }
-    .article-tag a:hover { text-decoration: underline; }
-    h1 { font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 1.25rem; }
+    h1 { font-size: 1.9rem; font-weight: 800; line-height: 1.25; margin-bottom: 1.25rem; }
     .article-meta { font-size: 0.78rem; color: #555; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
-    .article-body h2 { font-size: 1.3rem; font-weight: 700; margin: 2.5rem 0 0.9rem; color: var(--text); }
-    .article-body p { font-size: 0.95rem; color: #ccc; margin-bottom: 1.2rem; line-height: 1.75; }
-    .article-body ul, .article-body ol { margin: 0.75rem 0 1.25rem 1.4rem; }
-    .article-body li { font-size: 0.95rem; color: #ccc; margin-bottom: 0.6rem; line-height: 1.7; }
+    .article-body h2 { font-size: 1.2rem; font-weight: 700; margin: 2.5rem 0 0.85rem; color: var(--text); }
+    .article-body p { font-size: 0.95rem; color: #ccc; margin-bottom: 1.15rem; line-height: 1.8; }
+    .article-body ul { margin: 0.5rem 0 1.25rem 1.2rem; }
+    .article-body li { font-size: 0.95rem; color: #ccc; margin-bottom: 0.65rem; line-height: 1.75; }
     .article-body strong { color: var(--text); }
-    .article-body em { color: var(--muted); }
-    .article-body code { background: #1a1a1a; border: 1px solid #2a2a2a; padding: 0.15em 0.4em; font-size: 0.85em; font-family: monospace; color: var(--yellow); border-radius: 3px; }
-    .callout { background: var(--bg2); border-left: 3px solid var(--yellow); padding: 1rem 1.25rem; margin: 1.75rem 0; border-radius: 0 4px 4px 0; }
-    .callout p { margin-bottom: 0; color: #bbb; }
-
-    /* CTA BOX */
+    .article-body em { color: var(--muted); font-style: normal; }
+    .callout { background: var(--bg2); border-left: 3px solid var(--yellow); padding: 1rem 1.25rem; margin: 1.75rem 0; }
+    .callout p { margin-bottom: 0; color: #bbb; font-size: 0.92rem; }
     .cta-box { background: var(--bg2); border: 1px solid #2a2a2a; padding: 2rem; margin: 3rem 0; text-align: center; }
-    .cta-box h3 { font-family: 'Press Start 2P', monospace; font-size: 0.6rem; color: var(--yellow); margin-bottom: 0.75rem; line-height: 1.6; }
+    .cta-box h3 { font-family: 'Press Start 2P', monospace; font-size: 0.55rem; color: var(--yellow); margin-bottom: 0.75rem; line-height: 1.7; }
     .cta-box p { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.25rem; }
-    .btn-cta { display: inline-block; background: var(--yellow); color: #000; font-family: 'Press Start 2P', monospace; font-size: 0.45rem; padding: 0.75rem 1.5rem; text-decoration: none; box-shadow: 3px 3px 0 var(--yellow2); }
-    .btn-cta:hover { text-decoration: none; transform: translate(1px,1px); box-shadow: 2px 2px 0 var(--yellow2); display: inline-block; }
-
-    /* FOOTER */
+    .btn-cta { display: inline-block; background: var(--yellow); color: #000; font-family: 'Press Start 2P', monospace; font-size: 0.42rem; padding: 0.75rem 1.5rem; box-shadow: 3px 3px 0 var(--yellow2); }
     footer { border-top: 1px solid var(--border); padding: 1.5rem 2rem; text-align: center; font-size: 0.75rem; color: #444; }
     footer a { color: #555; text-decoration: underline; }
-
     @media (max-width: 600px) {
       .nav { padding: 1rem; }
       .article-wrap { padding: 2rem 1rem 4rem; }
       h1 { font-size: 1.4rem; }
-      .article-body h2 { font-size: 1.1rem; }
     }
   </style>
 </head>
@@ -107,73 +94,87 @@
 
     <div class="article-body">
 
-      <p>You built something real. You put it on Gumroad, Etsy, or your own site. You've got a few happy customers, maybe some reviews. And yet — when someone asks ChatGPT <em>"what's a good Notion template for freelancers?"</em> or <em>"best digital planners on Gumroad?"</em> — your product isn't there.</p>
+      <p>A few weeks ago, I typed my own product into ChatGPT.</p>
 
-      <p>It's not because your product is bad. It's because <strong>AI has never been properly introduced to it.</strong></p>
+      <p>Not to test anything. Just curious. I'd been building tools for a while and figured — hey, if I ask AI about what I make, maybe it'll know.</p>
 
-      <p>This is the new version of being buried on page 5 of Google. Except most creators don't even know it's happening.</p>
+      <p>It didn't. Not even close.</p>
 
-      <h2>How AI Actually Decides What to Recommend</h2>
+      <p>I tried different phrasings. Described the product. Asked for alternatives in the same category. Every time, ChatGPT gave me a list of well-known products — and mine wasn't anywhere in it.</p>
 
-      <p>When someone asks ChatGPT for a product recommendation, it isn't searching the web in real time (unless it has browsing enabled). It's drawing from patterns in its training data — billions of pages, forum threads, reviews, blog posts, and product listings it absorbed during training.</p>
+      <p>That felt wrong. Not personally — I got over that quickly. But <em>strategically</em> wrong. Because I knew buyers were starting to use AI to discover products. And if AI didn't know I existed, those buyers would never find me.</p>
 
-      <p>What this means: <strong>AI recommends products it has seen talked about, multiple times, in multiple places.</strong></p>
+      <p>That's why we built pickedby.ai. And in the process, I learned why this happens to almost every creator.</p>
 
-      <p>Figma gets recommended because it's been mentioned in thousands of blog posts, YouTube transcripts, Reddit threads, and comparison articles. Your Gumroad template — even if it's objectively better for a specific use case — might not have a single public mention outside your own product page.</p>
+      <h2>AI doesn't search. It remembers.</h2>
+
+      <p>Here's the thing most people don't realize: ChatGPT isn't browsing the web when it answers your question. It's drawing from patterns it absorbed during training — millions of pages, forums, reviews, and blog posts it ingested months ago.</p>
+
+      <p>So when someone asks "what's a good Notion template for freelancers?" — ChatGPT doesn't look it up. It recalls what it's already seen discussed, in enough places, with enough consistency, to feel confident recommending it.</p>
+
+      <p><strong>The bar isn't quality. It's public signal.</strong></p>
 
       <div class="callout">
-        <p><strong>The bar isn't quality. The bar is public signal.</strong> AI favors what the internet has collectively discussed — not what secretly deserves to win.</p>
+        <p>Figma gets recommended because ten thousand blog posts, YouTube transcripts, and Reddit threads mention it by name. Your Gumroad template — even a genuinely great one — might have exactly one public page: your listing.</p>
       </div>
 
-      <h2>The 5 Reasons AI Doesn't Know You Exist</h2>
+      <p>That's the gap. And most creators don't know it exists.</p>
 
-      <p>After analyzing hundreds of digital products, here are the five patterns that keep creators invisible to AI:</p>
+      <h2>The 5 reasons AI doesn't know you exist</h2>
 
-      <p><strong>1. Your product only lives on one platform.</strong> If your only public presence is a Gumroad listing, AI might know Gumroad — but it doesn't know <em>you</em>. One page isn't enough signal. AI needs to see your product name appear in multiple contexts: a Reddit thread, a YouTube review, a comparison post, a newsletter mention.</p>
+      <p>After running hundreds of products through our scoring system, these are the patterns we see over and over:</p>
 
-      <p><strong>2. Your product description is vague.</strong> "A minimalist planner for productivity" tells AI nothing it can act on. When a user asks <em>"best planner for freelance designers,"</em> AI needs to match your product to that exact query. If your description doesn't include the category, the audience, and the specific use case — AI can't make the connection.</p>
+      <p><strong>Your product only lives in one place.</strong> A single Gumroad listing isn't enough signal. AI needs to see your product name show up in multiple contexts — a Reddit thread, a comparison post, a newsletter mention, a YouTube comment. One page means one data point. That's not enough.</p>
 
-      <p><strong>3. You have no third-party mentions.</strong> AI trusts corroboration. A single seller saying "my product is great" carries almost no weight. But a Reddit comment saying "I've been using [Product Name] for three months and it changed my workflow" — that's signal. Public, third-party, named mentions are what AI training data is made of.</p>
+      <p><strong>Your description is vague.</strong> "A minimalist productivity planner" tells AI nothing it can match to a specific query. When someone asks for "the best planner for freelance designers working in sprints," AI needs your product description to contain those words — the audience, the use case, the category. If it doesn't, you're invisible to that query.</p>
 
-      <p><strong>4. Your product name is inconsistent.</strong> If you call it "The Freelance Bundle" on Gumroad, "Freelance Starter Pack" in your emails, and "my template pack" on Reddit — AI can't connect the dots. Consistent naming is how AI learns that all these mentions refer to the same thing.</p>
+      <p><strong>Nobody else is talking about you.</strong> AI trusts corroboration. You saying "my product is great" carries almost no weight. A stranger on Reddit saying "I've been using [Product] for three months and it changed my workflow" — that's the kind of signal AI learns from. Third-party, public, named.</p>
 
-      <p><strong>5. You don't appear on any curated lists.</strong> When AI answers "what are the best Notion templates for X," it's often citing content that explicitly ranks or lists products. Blog posts titled "10 best Gumroad products for designers." Community threads asking for recommendations. If you're not on any of these, you don't exist in that conversation.</p>
+      <p><strong>Your product name is inconsistent.</strong> "The Freelance Bundle" on Gumroad, "Freelance Starter Pack" in your emails, "my template pack" on Reddit. AI can't connect those dots. Every variation you use is signal you're splitting instead of stacking.</p>
 
-      <h2>What Actually Works</h2>
+      <p><strong>You're not on any lists.</strong> When AI answers "what are the best Notion templates for X," it's often citing content that explicitly ranks products. Blog posts. Community roundups. If none of those mention you by name, you don't exist in that conversation.</p>
 
-      <p>The good news: you don't need to go viral. You just need consistent, public, named mentions across a handful of the right channels. Here's what moves the needle:</p>
+      <h2>What we tried when we found this out</h2>
+
+      <p>When I realized pickedby.ai itself scored 0 out of 100 on our own tool — yeah, that stung a bit — we started testing what actually moves the needle.</p>
+
+      <p>We added an <code>llms.txt</code> file. We posted on Reddit with our actual product name in the title. We wrote one comparison piece. Within 24 hours, our score went from 0 to 35.</p>
+
+      <p>Not 100. Not even close. But the direction changed. And we learned something important: <strong>you don't need to go viral. You just need consistent, public, named mentions across a handful of the right places.</strong></p>
+
+      <h2>5 things that actually move your score</h2>
 
       <ul>
-        <li><strong>Write your product name into the first sentence of every public description.</strong> Your Gumroad page, your Etsy listing, your Twitter/X bio — the first sentence should contain your exact product name and what it does. AI reads the top of every page first.</li>
-        <li><strong>Get 2–3 public posts mentioning your product name.</strong> A Reddit thread in your niche. A Medium post. A Twitter thread. A newsletter mention. Each one is a data point AI can learn from.</li>
-        <li><strong>Get on a curated list.</strong> Find "best of" blog posts in your category and reach out to be included. These are gold — AI frequently cites them directly.</li>
-        <li><strong>Create one comparison piece.</strong> A post titled "[Your Product] vs [Competitor]" or "Best [category] for [specific audience]" does two things: it targets a real search query, and it signals to AI what category you belong in.</li>
-        <li><strong>Use the same name everywhere.</strong> Pick one name and stick to it. Every variation you use is signal you're splitting.</li>
+        <li><strong>Put your product name in the first sentence of every public description.</strong> Gumroad, Etsy, Twitter bio — the first line should contain your exact name and what it does. AI reads the top of pages first.</li>
+        <li><strong>Get 2–3 public posts mentioning your product by name.</strong> A Reddit thread in your niche. A Medium post. A Twitter thread. Each one is a real data point.</li>
+        <li><strong>Find a "best of" list in your category and get on it.</strong> These roundup posts are some of the most cited content when AI answers recommendation queries. One mention here is worth ten mentions on your own page.</li>
+        <li><strong>Write one comparison piece.</strong> "[Your product] vs [Competitor]" or "Best [category] for [specific audience]." It signals to AI what category you belong in — and it targets a real query people are typing.</li>
+        <li><strong>Pick one name and use it everywhere.</strong> Forever. Every variation is wasted signal.</li>
       </ul>
 
       <div class="callout">
-        <p>These aren't hacks. They're the same fundamentals that make any product discoverable — applied to how AI learns. The difference is that AI is making product decisions for millions of buyers <em>right now</em>, and most creators haven't started yet.</p>
+        <p>None of these are hacks. They're the same fundamentals that make any product discoverable — applied to how AI learns. The difference is that AI is making product decisions for millions of buyers right now, and most creators still haven't started.</p>
       </div>
 
-      <h2>How to Know Where You Actually Stand</h2>
+      <h2>Start by knowing where you actually stand</h2>
 
-      <p>The first step is knowing your current score — not guessing. We built pickedby.ai specifically for this: enter your product name, and in about 10 seconds you'll see exactly which of the five visibility dimensions you're passing and which you're failing.</p>
+      <p>The hardest part is knowing what to fix when you can't see the problem.</p>
 
-      <p>It's free. No signup. And it tells you what to fix first — so you're not spending time on things that won't move your score.</p>
+      <p>We built pickedby.ai for exactly this: enter your product name, and in about 10 seconds you'll see a score from 0 to 100 — and exactly which of the five dimensions you're passing and which you're not. No guessing. No generic advice. Just your actual score, and what to do about it.</p>
+
+      <p>It's free. No account. Takes less time than reading this post.</p>
 
       <div class="cta-box">
-        <h3>CHECK YOUR AI VISIBILITY SCORE</h3>
-        <p>Find out if ChatGPT, Claude, and Perplexity know your product exists. Free, 10 seconds, no signup.</p>
+        <h3>WHAT'S YOUR AI VISIBILITY SCORE?</h3>
+        <p>Find out if ChatGPT, Claude, and Perplexity know your product exists. Free, ~10 seconds, no signup.</p>
         <a href="/" class="btn-cta">CHECK MY SCORE — FREE ▶▶</a>
       </div>
 
-      <h2>The Window Is Now</h2>
+      <p>One last thing.</p>
 
-      <p>AI-powered search is not coming — it's here. ChatGPT now handles over 50 million product-related queries every day. Perplexity is replacing Google for a growing slice of buyers. And the products getting recommended are mostly the ones that established their public signal <em>before</em> everyone else figured out this was important.</p>
+      <p>The window to do this before everyone else figures it out is real — but it won't stay open forever. The products getting recommended by AI a year from now are mostly the ones that established their public signal <em>before</em> this became obvious.</p>
 
-      <p>That's the window. And it won't stay open forever.</p>
-
-      <p>Start with your score. Then fix one thing at a time. It's not complicated — it just has to happen before the next creator in your category does it first.</p>
+      <p>You might as well start today.</p>
 
     </div>
 
