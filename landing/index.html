@@ -140,26 +140,12 @@
     .container { max-width: 896px; margin: 0 auto; padding-top: 2.5rem; position: relative; z-index: 1; }
     .founding-bar { position: relative; z-index: 1; }
 
-    /* ── HEADER ── */
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 3.5rem;
-    }
-
-    .logo {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.85rem;
-      color: var(--yellow);
-      letter-spacing: -1px;
-      line-height: 1.6;
-      text-decoration: none; display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .logo .dot { color: #fff; }
+    /* ── NAV (unified with blog) ── */
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); }
+    .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.7rem; color: var(--yellow); text-decoration: none; }
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; font-size: 0.8rem; color: #888; }
+    .nav-links a { text-decoration: none; color: #888; }
+    .nav-links a:hover { color: #fff; }
 
     .badge-chip {
       font-size: 0.65rem;
@@ -1172,30 +1158,19 @@
     </div>
   </div>
 
-  <div class="container">
+  <nav class="nav">
+    <a href="/" class="nav-logo" style="display:flex;align-items:center;gap:8px;">
+      <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+      <span><span style="color:var(--yellow);">picked</span><span style="color:#fff;">by</span><span style="color:var(--yellow);">.ai</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="/blog/">Blog</a>
+      <a href="/llms-generator.html">Tools</a>
+      <a href="/dashboard.html" style="color:var(--yellow);border:1px solid var(--yellow);padding:0.15rem 0.6rem;border-radius:4px;">Dashboard</a>
+    </div>
+  </nav>
 
-    <!-- HEADER -->
-    <header class="header">
-      <a href="/" class="logo">
-        <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
-          <rect x="0" y="0" width="2" height="4"/>
-          <rect x="9" y="0" width="2" height="4"/>
-          <rect x="18" y="0" width="2" height="4"/>
-          <rect x="0" y="4" width="20" height="2"/>
-          <rect x="0" y="6" width="2" height="6"/>
-          <rect x="18" y="6" width="2" height="6"/>
-          <rect x="4" y="8" width="2" height="2"/>
-          <rect x="9" y="8" width="2" height="2"/>
-          <rect x="14" y="8" width="2" height="2"/>
-          <rect x="0" y="12" width="20" height="2"/>
-          <rect x="2" y="14" width="16" height="2"/>
-        </svg>
-        <span><span style="color:#FFD700;">picked</span><span style="color:#fff;">by</span><span style="color:#FFD700;">.ai</span></span>
-      </a>
-      <a href="/blog/" class="nav-blog-link">BLOG</a>
-      <a href="/llms-generator.html" class="nav-blog-link">TOOLS</a>
-      <a href="/dashboard.html" class="nav-blog-link" style="border:1px solid #FFD700;padding:0.25rem 0.75rem;border-radius:0.375rem;">DASHBOARD</a>
-    </header>
+  <div class="container">
 
     <!-- HERO -->
     <div class="hero">
