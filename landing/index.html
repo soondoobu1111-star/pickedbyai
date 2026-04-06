@@ -1797,6 +1797,16 @@
         _score = data.score ?? 0;
         renderResult(_score, data.results ?? []);
 
+        // GA4: check_completed event
+        if (typeof gtag === 'function') {
+          gtag('event', 'check_completed', {
+            product_name: name,
+            score: _score,
+            grounded: (data.results ?? []).some(r => r.grounded),
+            has_url: !!url,
+          });
+        }
+
         // Show grounding notice if real-time search was unavailable
         const isGrounded = (data.results ?? []).some(r => r.grounded);
         if (!isGrounded) {
