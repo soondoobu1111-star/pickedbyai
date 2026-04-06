@@ -1,0 +1,10 @@
+name = "pickedbyai-gemini-relay"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[placement]
+mode = "smart"
+
+# Secret (wrangler secret put으로 설정):
+# - GEMINI_API_KEY

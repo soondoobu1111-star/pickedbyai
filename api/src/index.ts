@@ -51,33 +51,23 @@ function findRank(text: string, name: string): number | null {
   return null
 }
 
-// ── Gemini 2.5 Flash + Google Search Grounding ────────────────
-async function queryGemini(apiKey: string, prompt: string): Promise<{ text: string; grounded: boolean }> {
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`
-  const body = {
-    contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    tools: [{ google_search: {} }],
-    generationConfig: { maxOutputTokens: 300, temperature: 0.1 },
-  }
-  const res = await fetch(url, {
+const GEMINI_RELAY_URL = 'https://pickedbyai-gemini-relay.perceptdot.workers.dev/relay'
+
+// ── Gemini via Relay Worker (Smart Placement → Japan/US DC) ───
+// Relay Worker bypasses HKG Gemini block by running in accessible DC
+async function queryGemini(_apiKey: string, prompt: string): Promise<{ text: string; grounded: boolean }> {
+  const res = await fetch(GEMINI_RELAY_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-    signal: AbortSignal.timeout(9000),
+    body: JSON.stringify({ prompt }),
+    signal: AbortSignal.timeout(12000),
   })
   if (!res.ok) {
-    const err = await res.text()
-    throw new Error(`Gemini ${res.status}: ${err.slice(0, 200)}`)
+    const err = await res.json() as { error?: string; detail?: string }
+    throw new Error(`Relay ${res.status}: ${err.error ?? ''} ${err.detail ?? ''}`)
   }
-  const json = await res.json() as {
-    candidates?: Array<{
-      content?: { parts?: Array<{ text?: string }> }
-      groundingMetadata?: { webSearchQueries?: string[] }
-    }>
-  }
-  const text = json.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
-  const grounded = (json.candidates?.[0]?.groundingMetadata?.webSearchQueries?.length ?? 0) > 0
-  return { text, grounded }
+  const json = await res.json() as { text: string; grounded: boolean }
+  return { text: json.text, grounded: json.grounded }
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
