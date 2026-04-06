@@ -5,6 +5,7 @@ type Bindings = {
   BREVO_API_KEY: string
   SUPABASE_ANON_KEY: string
   SUPABASE_SERVICE_KEY: string
+  GEMINI_API_KEY: string
   AI: Ai
 }
 
@@ -48,6 +49,35 @@ function findRank(text: string, name: string): number | null {
     }
   }
   return null
+}
+
+// ── Gemini 2.5 Flash + Google Search Grounding ────────────────
+async function queryGemini(apiKey: string, prompt: string): Promise<{ text: string; grounded: boolean }> {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`
+  const body = {
+    contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    tools: [{ google_search: {} }],
+    generationConfig: { maxOutputTokens: 120, temperature: 0.1 },
+  }
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(9000),
+  })
+  if (!res.ok) {
+    const err = await res.text()
+    throw new Error(`Gemini ${res.status}: ${err.slice(0, 200)}`)
+  }
+  const json = await res.json() as {
+    candidates?: Array<{
+      content?: { parts?: Array<{ text?: string }> }
+      groundingMetadata?: { webSearchQueries?: string[] }
+    }>
+  }
+  const text = json.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+  const grounded = (json.candidates?.[0]?.groundingMetadata?.webSearchQueries?.length ?? 0) > 0
+  return { text, grounded }
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -115,28 +145,56 @@ Reply in exactly this format (5 lines):
 5. YES or NO`
 
   let results: CheckResult[]
+  const colo = (c.req.raw as Request & { cf?: { colo?: string } }).cf?.colo ?? 'unknown'
+  console.log(`[DC] ${colo}`)
 
-  try {
-    const response = await c.env.AI.run('@cf/meta/llama-3.2-3b-instruct', {
-      messages: [{ role: 'user', content: prompt }],
-      max_tokens: 60,
-    }) as { response?: string }
+  // ── Primary: Gemini 2.5 Flash + Search Grounding ──────────
+  let geminiSuccess = false
+  console.log(`[key] GEMINI_API_KEY present=${!!c.env.GEMINI_API_KEY} len=${c.env.GEMINI_API_KEY?.length ?? 0}`)
+  if (c.env.GEMINI_API_KEY) {
+    try {
+      const { text, grounded } = await queryGemini(c.env.GEMINI_API_KEY, prompt)
+      console.log(`[Gemini] grounded=${grounded} raw="${text.slice(0, 200)}"`)
 
-    const text = response.response ?? ''
-    console.log(`[/v1/check] raw="${text.slice(0, 200)}"`)
+      const lines = text.split('\n').map(l => l.trim()).filter(l => /^\d\./.test(l))
+      if (lines.length >= 3) {
+        results = LABELS.map((label, i) => {
+          const line = lines[i] ?? ''
+          const found = /yes/i.test(line)
+          const rankMatch = line.match(/#(\d+)/)
+          const rank = found && rankMatch ? parseInt(rankMatch[1], 10) : null
+          return { label, found, rank: rank && rank >= 1 && rank <= 20 ? rank : null, grounded }
+        })
+        geminiSuccess = true
+      }
+    } catch (err) {
+      console.error('[Gemini] error (falling back to llama):', err)
+    }
+  }
 
-    const lines = text.split('\n').map(l => l.trim()).filter(l => /^\d\./.test(l))
+  // ── Fallback: CF Workers AI (llama-3.2-3b) ───────────────
+  if (!geminiSuccess) {
+    try {
+      const response = await c.env.AI.run('@cf/meta/llama-3.2-3b-instruct', {
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 60,
+      }) as { response?: string }
 
-    results = LABELS.map((label, i) => {
-      const line = lines[i] ?? ''
-      const found = /yes/i.test(line)
-      const rankMatch = line.match(/#(\d+)/)
-      const rank = found && rankMatch ? parseInt(rankMatch[1], 10) : null
-      return { label, found, rank: rank && rank >= 1 && rank <= 20 ? rank : null, grounded: false }
-    })
-  } catch (err) {
-    console.error('AI error:', err)
-    results = LABELS.map(label => ({ label, found: false, rank: null, grounded: false }))
+      const text = response.response ?? ''
+      console.log(`[llama] raw="${text.slice(0, 200)}"`)
+
+      const lines = text.split('\n').map(l => l.trim()).filter(l => /^\d\./.test(l))
+      results = LABELS.map((label, i) => {
+        const line = lines[i] ?? ''
+        const found = /yes/i.test(line)
+        const rankMatch = line.match(/#(\d+)/)
+        const rank = found && rankMatch ? parseInt(rankMatch[1], 10) : null
+        return { label, found, rank: rank && rank >= 1 && rank <= 20 ? rank : null, grounded: false }
+      })
+    } catch (err) {
+      console.error('[llama] error:', err)
+      results = LABELS.map(label => ({ label, found: false, rank: null, grounded: false }))
+    }
   }
 
   // Compute AI Visibility Score (0-100)
