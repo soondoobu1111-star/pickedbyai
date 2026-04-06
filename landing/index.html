@@ -626,6 +626,7 @@
     }
     .vs-item strong { color: var(--green); }
     .vs-sep { color: #2a2a2a; }
+    .vs-break { display: none; }
 
     /* ── AI VITALS ── */
     .vitals { margin-bottom: 1.75rem; }
@@ -882,6 +883,8 @@
       .vitals-grid { grid-template-columns: 1fr; gap: 0.5rem; }
       .vs-row { flex-wrap: wrap; gap: 0.3rem 0.6rem; justify-content: center; }
       .vs-sep { display: none; }
+      .vs-break { display: block; width: 100%; }
+      .hero-cta { display: flex; width: 100%; justify-content: center; }
       .spectrum-zones { grid-template-columns: repeat(2, 1fr); }
       .how-section { padding: 1.25rem 1rem; }
       .card { padding: 1.25rem; }
@@ -951,6 +954,7 @@
       <span class="vs-sep">·</span>
       <span class="vs-item"><strong>✓</strong> Claude</span>
       <span class="vs-sep">·</span>
+      <br class="vs-break">
       <span class="vs-item"><strong>✓</strong> Perplexity</span>
       <span class="vs-sep">·</span>
       <span class="vs-item"><strong>✓</strong> Web Reviews</span>
