@@ -1948,8 +1948,9 @@
         ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZWN5YmxqZmlwbW16enpmbml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NTY4NjAsImV4cCI6MjA5MTAzMjg2MH0.pYqbBfJ7hwgKFgUSjvlhRlaOBIG4RqAgwDVTNUat03w'
         : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmcmNwcGdlY3FzYm5oa2tqa2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjQ5OTQsImV4cCI6MjA5MDkwMDk5NH0.cxBUHjJoSEPJ7IilidxpVfCjS0SFmLFNWCeq92W0fUI'
       const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      const skipRedirect = new URLSearchParams(window.location.search).get('home')
       sb.auth.getSession().then(({ data }) => {
-        if (data?.session?.user) {
+        if (data?.session?.user && !skipRedirect) {
           window.location.replace('/dashboard.html')
         }
       })
