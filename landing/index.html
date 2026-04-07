@@ -1514,18 +1514,17 @@
     }
 
     function scoreClass(s) {
-      if (s <= 35) return 's-low';
-      if (s <= 60) return 's-mid';
-      if (s <= 80) return 's-hi';
+      if (s <= 29) return 's-low';
+      if (s <= 49) return 's-mid';
+      if (s <= 65) return 's-hi';
       return 's-top';
     }
 
     function verdict(s) {
-      if (s <= 15) return "AI has no idea your product exists.";
-      if (s <= 35) return "Barely on AI's radar. Significant work needed.";
-      if (s <= 55) return "AI knows you exist, but rarely recommends you.";
-      if (s <= 70) return "Getting there — AI recommends you sometimes.";
-      if (s <= 85) return "Solid presence. AI recommends you regularly.";
+      if (s <= 12) return "AI has no idea your product exists.";
+      if (s <= 29) return "Barely on AI's radar. Significant work needed.";
+      if (s <= 49) return "AI knows you exist, but rarely recommends you.";
+      if (s <= 65) return "Getting there — AI recommends you sometimes.";
       return "Excellent! AI consistently picks your product.";
     }
 
@@ -1561,9 +1560,9 @@
 
     // ── Badge tier ───────────────────────────────────────────
     function getBadgeTier(s) {
-      if (s >= 81) return { tier: 'gold',   color: '#FFD700', label: '✦ GOLD BADGE',   title: 'PICKED BY AI',   desc: 'AI consistently recommends your product. Add this badge to your product page to signal AI-readiness to buyers.' };
-      if (s >= 61) return { tier: 'silver', color: '#C0C0C0', label: '✦ SILVER BADGE', title: 'SEEN BY AI',     desc: 'AI knows and sometimes recommends your product. A few improvements will push you to Gold.' };
-      if (s >= 36) return { tier: 'bronze', color: '#CD7F32', label: '✦ BRONZE BADGE', title: 'NOTICED BY AI', desc: 'AI is aware of your product. Apply the fixes above to climb to Silver or Gold.' };
+      if (s >= 66) return { tier: 'gold',   color: '#FFD700', label: '✦ GOLD BADGE',   title: 'PICKED BY AI',   desc: 'AI consistently recommends your product. Add this badge to your product page to signal AI-readiness to buyers.' };
+      if (s >= 50) return { tier: 'silver', color: '#C0C0C0', label: '✦ SILVER BADGE', title: 'SEEN BY AI',     desc: 'AI knows and sometimes recommends your product. A few improvements will push you to Gold.' };
+      if (s >= 30) return { tier: 'bronze', color: '#CD7F32', label: '✦ BRONZE BADGE', title: 'NOTICED BY AI', desc: 'AI is aware of your product. Apply the fixes above to climb to Silver or Gold.' };
       return null;
     }
 
@@ -1607,7 +1606,7 @@
       // Progress bar (10 blocks)
       const bar = document.getElementById('pbar');
       bar.innerHTML = '';
-      const filled = Math.round(score / 10);
+      const filled = Math.round(score / 82 * 10);
       for (let i = 0; i < 10; i++) {
         const b = document.createElement('div');
         b.className = 'pbar-block' + (i < filled ? ` on ${cls}` : '');

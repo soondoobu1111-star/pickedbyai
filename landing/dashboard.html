@@ -287,13 +287,13 @@
     const { score, results, product } = data
     document.getElementById('result-product').textContent = product
     document.getElementById('result-score').textContent = score
-    document.getElementById('result-bar').style.width = score + '%'
+    document.getElementById('result-bar').style.width = Math.round(score / 82 * 100) + '%'
 
     // Badge
     let badgeHtml = ''
-    if (score >= 81) badgeHtml = '<span class="badge-gold">PICKED BY AI</span>'
-    else if (score >= 61) badgeHtml = '<span class="badge-silver">SEEN BY AI</span>'
-    else if (score >= 36) badgeHtml = '<span class="badge-bronze">NOTICED BY AI</span>'
+    if (score >= 66) badgeHtml = '<span class="badge-gold">PICKED BY AI</span>'
+    else if (score >= 50) badgeHtml = '<span class="badge-silver">SEEN BY AI</span>'
+    else if (score >= 30) badgeHtml = '<span class="badge-bronze">NOTICED BY AI</span>'
     else badgeHtml = '<span class="badge-none">NOT VISIBLE</span>'
     document.getElementById('result-badge').innerHTML = badgeHtml
 
@@ -439,8 +439,8 @@
   // ── NEW-04: Badge Embed — copy embeddable HTML to clipboard ─
   function copyBadgeHtml(btn, score) {
     let color, bg, text
-    if (score >= 81)      { color = '#FFD700'; bg = '#1a1400'; text = 'PICKED BY AI ✓' }
-    else if (score >= 61) { color = '#C0C0C0'; bg = '#141414'; text = 'SEEN BY AI' }
+    if (score >= 66)      { color = '#FFD700'; bg = '#1a1400'; text = 'PICKED BY AI ✓' }
+    else if (score >= 50) { color = '#C0C0C0'; bg = '#141414'; text = 'SEEN BY AI' }
     else                  { color = '#CD7F32'; bg = '#1a0f00'; text = 'NOTICED BY AI' }
     const html = `<a href="https://pickedby.ai" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none;background:${bg};border:1.5px solid ${color};border-radius:6px;padding:5px 12px;font-family:sans-serif;"><span style="color:${color};font-size:11px;font-weight:700;letter-spacing:0.05em;">${text}</span></a>`
     navigator.clipboard.writeText(html).then(() => {
@@ -706,8 +706,7 @@
             position: 'bottom',
             labels: {
               color: '#888', font: { size: 11 },
-              padding: 12, usePointStyle: true, pointStyle: 'circle',
-              pointStyleWidth: 7,
+              padding: 12, boxWidth: 8, boxHeight: 8,
             }
           },
           tooltip: {

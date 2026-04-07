@@ -309,17 +309,11 @@ app.post('/v1/check', async (c) => {
     }
   }
 
-  // Compute AI Visibility Score (0-100)
-  // Each YES = 20 points. Rank bonus if category rank is high.
-  const totalFound = results.filter(r => r.found).length
-  let score = totalFound * 20
-
-  const rankResult = results[2] // CATEGORY_RANK
-  if (rankResult?.found && rankResult.rank !== null) {
-    if (rankResult.rank <= 3) score = Math.min(100, score + 10)
-    else if (rankResult.rank <= 5) score = Math.min(100, score + 5)
-  }
-  score = Math.min(100, score)
+  // Compute AI Visibility Score (0-82)
+  // Per-dimension weights: [direct(20), best-of(20), category(12), reviews(20), comparison(10)]
+  // Max = 82 when all 5 pass. direct+reviews = 40 ("Known but not recommended").
+  const WEIGHTS = [20, 20, 12, 20, 10]
+  const score = results.reduce((sum, r, i) => sum + (r.found ? WEIGHTS[i] : 0), 0)
 
   return c.json({ results, score, product: name })
 })
@@ -327,9 +321,9 @@ app.post('/v1/check', async (c) => {
 // ── FEAT-06: Welcome email via Brevo Transactional API ────────
 // Requires hello@pickedby.ai sender domain verified in Brevo (DNS: DKIM + SPF)
 async function sendWelcomeEmail(apiKey: string, email: string, product: string, score: number): Promise<void> {
-  const tier = score >= 81 ? 'Gold 🥇 PICKED BY AI'
-    : score >= 61 ? 'Silver 🥈 SEEN BY AI'
-    : score >= 36 ? 'Bronze 🥉 NOTICED BY AI'
+  const tier = score >= 66 ? 'Gold 🥇 PICKED BY AI'
+    : score >= 50 ? 'Silver 🥈 SEEN BY AI'
+    : score >= 30 ? 'Bronze 🥉 NOTICED BY AI'
     : '— Not yet visible'
   const html = `
 <div style="font-family:sans-serif;max-width:520px;margin:0 auto;background:#0a0a0a;color:#f5f5f5;padding:32px 24px;border-radius:8px;">
