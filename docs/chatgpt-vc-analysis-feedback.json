@@ -1,0 +1,148 @@
+{
+  "meta": {
+    "source": "ChatGPT (GPT-5.3) VC due diligence analysis of pickedby.ai",
+    "analyzed": "2026-04-07",
+    "context": "사용자가 ChatGPT에게 투자 관점 분석을 요청한 2차 결과. staging-0404.pickedby.ai 기반 분석.",
+    "severity": "이번 분석이 3개 AI 중 가장 냉정하고 현실적"
+  },
+
+  "chatgpt_vc_scores": {
+    "market": 8,
+    "problem": 7,
+    "product": 5,
+    "technology": 3,
+    "moat": 3,
+    "timing": 9,
+    "overall": 6,
+    "killer_quote": "현재는 회사라기보다 기능(feature) 수준"
+  },
+
+  "three_ai_cross_comparison": {
+    "unanimous_positive": [
+      "타이밍 최고 (9-10/10)",
+      "시장 기회 거대 (GEO = 2005년 SEO)",
+      "진단→처방 전환 필요"
+    ],
+    "unanimous_negative": [
+      "기술 진입장벽 낮음",
+      "대형 SEO 플랫폼 복제 리스크",
+      "AI 답변 변동성/비결정성"
+    ],
+    "gemini_unique": ["Creator Network 해자", "배지 바이럴 가치"],
+    "chatgpt1_unique": ["AI Sentiment Score", "Citation Tracker", "Knowledge Graph"],
+    "chatgpt2_unique": ["Feature vs Company 판정", "VC stage fit 분석", "GEO TAM $3-10B 추정"],
+    "all_missed": ["$0 운영비 구조", "크리에이터 무료 전략의 Cloudflare식 네트워크 효과"]
+  },
+
+  "critical_feedback": {
+    "feature_not_company": {
+      "chatgpt_said": "현재는 회사라기보다 기능 수준에 머물 가능성",
+      "our_verdict": "현재 MVP 기준 맞음. 점수 체크 1가지 기능만으로는 SaaS가 아님",
+      "what_makes_it_a_company": [
+        "T3 Verified Owner 대시보드 (지속 관계)",
+        "Creator Network (커뮤니티/네트워크 효과)",
+        "AI Vitals 업계 표준화 (Moz DA처럼)",
+        "배지 생태계 (외부 사이트에 임베드)",
+        "데이터 독점 (10만 체크 누적)"
+      ],
+      "action": "Phase 1 MVP에 최소 대시보드+이메일 리포트까지 포함해야 'company' 수준. 점수 체크만 출시하면 ChatGPT 말대로 feature로 끝남",
+      "priority": "CRITICAL"
+    },
+    "moat_score_3": {
+      "chatgpt_said": "기술 구현 비교적 간단, API 기반 데이터 수집, 복제 난이도 낮음",
+      "our_verdict": "코드 해자는 맞음. 하지만 3가지 비코드 해자를 ChatGPT가 놓침",
+      "non_code_moats": {
+        "data_moat": "누적 10만 체크 데이터 → 카테고리별 AI 추천 트렌드 독점",
+        "network_moat": "배지 500개 활성 → 외부 사이트에서 우리 브랜드 노출",
+        "community_moat": "Creator Network → 크리에이터 간 상호 추천 → AI 학습 데이터 풍부화"
+      },
+      "realistic_moat_timeline": {
+        "month_0_3": "moat 2/10 (코드만 있음)",
+        "month_3_6": "moat 4/10 (데이터 축적 시작)",
+        "month_6_12": "moat 6/10 (배지+네트워크 효과)",
+        "month_12_plus": "moat 8/10 (AI Vitals 표준화 + Creator Network)"
+      },
+      "action": "VC 피칭 시 '현재 moat'이 아닌 '12개월 moat 로드맵' 제시"
+    },
+    "product_score_5": {
+      "chatgpt_said": "진단만 있고 처방/실행 부재",
+      "upgrade_path": {
+        "5_to_6": "llms.txt + Schema.org 자동생성 (bizplan §3③)",
+        "6_to_7": "Fix-It Playbook + Owner 대시보드",
+        "7_to_8": "Creator Network + 경쟁자 추적",
+        "8_to_9": "멀티엔진 분석 + AI Sentiment + Citation Tracker"
+      },
+      "action": "Phase 1 MVP = 최소 6/10 수준으로 출시 (진단 + 기본 처방)"
+    },
+    "ai_answer_nondeterministic": {
+      "chatgpt_said": "AI 답변은 확률적 → SEO처럼 deterministic optimization 어려움",
+      "our_verdict": "3개 AI 분석 중 가장 근본적인 리스크 지적. 이건 GEO 산업 전체의 구조적 한계",
+      "our_response": {
+        "current": "3쿼리 통계적 점수 (bizplan §10)",
+        "needed": "30일 데이터 평균으로 변동성 평활화, 신뢰구간 표시 (예: '72 ± 8')"
+      },
+      "messaging": "점수 절대값보다 '추세(trend)'를 강조. '지난주 대비 +12' = 변동 내 상승 의미",
+      "action": "대시보드에 점수 변동 범위(confidence interval) 표시 검토"
+    }
+  },
+
+  "vc_due_diligence_prep": {
+    "chatgpt_questions": [
+      "현재 LTV / CAC 구조는?",
+      "확보한 SEO agency 고객 수는?",
+      "AI query dataset 규모는?",
+      "GEO ranking correlation 발견 여부?",
+      "AI answer 변동성 처리 방법?"
+    ],
+    "our_answers_draft": {
+      "ltv_cac": "Phase 1은 CAC≈$0 (무료 바이럴). LTV는 Creator $19×12개월=$228. 유료 전환 시작 전까지 이 질문은 premature",
+      "agency_customers": "우리 타겟은 에이전시가 아니라 개인 크리에이터. 질문 전제가 다름",
+      "query_dataset": "Phase 1 출시 후 측정. 목표: 3개월 내 10만 체크",
+      "geo_ranking_correlation": "아직 초기. 하지만 llms.txt/Schema 유무와 AI 언급 빈도 상관관계 데이터 수집 예정",
+      "answer_variability": "3쿼리 통계 + 30일 평균 + 신뢰구간 표시"
+    }
+  },
+
+  "geo_market_sizing": {
+    "chatgpt_estimate": {
+      "seo_market": "$70B",
+      "geo_tam_low": "$3B",
+      "geo_tam_high": "$10B"
+    },
+    "our_addressable": {
+      "note": "크리에이터 세그먼트 = GEO TAM의 극히 일부",
+      "creator_economy": "$191-254B (Goldman Sachs)",
+      "geo_creator_segment": "0개 도구 (bizplan §4)",
+      "our_sam_estimate": "$50-200M (크리에이터 200-300만 × $19-$49/yr의 5% 전환)"
+    }
+  },
+
+  "strategic_actions_from_this_analysis": [
+    {
+      "priority": "CRITICAL",
+      "action": "MVP에 대시보드+이메일 리포트 포함 (feature→company 탈출)",
+      "deadline": "Phase 1 출시 전",
+      "ref": "plan-sleek-inspired.json 트랙 C+D"
+    },
+    {
+      "priority": "HIGH",
+      "action": "랜딩에 크리에이터 포지셔닝 10배 강화 (3번째 AI도 B2B로 오분류)",
+      "deadline": "트랙 A 작업 시",
+      "ref": "chatgpt-analysis-feedback.json positioning_gap"
+    },
+    {
+      "priority": "HIGH",
+      "action": "VC 피칭 자료에 '12개월 moat 로드맵' 포함",
+      "deadline": "모두의 창업 지원서 제출 전 (2026-05-15)",
+      "ref": "이 문서 moat_score_3.realistic_moat_timeline"
+    },
+    {
+      "priority": "MEDIUM",
+      "action": "점수에 신뢰구간/변동 범위 표시 검토",
+      "deadline": "Phase 2",
+      "ref": "ai_answer_nondeterministic"
+    }
+  ],
+
+  "key_takeaway": "ChatGPT VC 분석의 핵심: 'Feature vs Company'. 우리가 점수 체크만 출시하면 기능(feature)으로 끝남. 대시보드+리포트+네트워크까지 Phase 1에 최소한으로라도 포함해야 '회사(company)'가 됨. 타이밍은 완벽하니 실행 속도가 관건."
+}
