@@ -221,8 +221,8 @@
       </div>
 
       <!-- Trend Chart (My Products only) -->
-      <div id="trend-chart-wrap" style="display:none;margin-bottom:1.5rem;">
-        <canvas id="trend-chart" height="120"></canvas>
+      <div id="trend-chart-wrap" style="display:none;margin-bottom:1.5rem;position:relative;height:180px;">
+        <canvas id="trend-chart"></canvas>
       </div>
 
       <div id="mine-loading" class="text-center py-8" style="color:#555;">
@@ -1277,6 +1277,7 @@
       data: { labels: allDays, datasets },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         layout: { padding: { top: 6, bottom: 2 } },
         plugins: {
           legend: {
