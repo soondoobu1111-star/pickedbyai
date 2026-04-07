@@ -12,7 +12,7 @@ export default {
       return new Response('Not found', { status: 404 })
     }
 
-    let body: { prompt?: string }
+    let body: { prompt?: string; useSearch?: boolean }
     try {
       body = await request.json()
     } catch {
@@ -23,10 +23,13 @@ export default {
       return new Response(JSON.stringify({ error: 'prompt required' }), { status: 400 })
     }
 
+    // useSearch defaults to true; set false when Tavily context already provided
+    const useSearch = body.useSearch !== false
+
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${env.GEMINI_API_KEY}`
     const geminiBody = {
       contents: [{ role: 'user', parts: [{ text: body.prompt }] }],
-      tools: [{ google_search: {} }],
+      ...(useSearch ? { tools: [{ google_search: {} }] } : {}),
       generationConfig: { maxOutputTokens: 150, temperature: 0.1, thinkingConfig: { thinkingBudget: 0 } },
     }
 

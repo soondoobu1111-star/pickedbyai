@@ -6,6 +6,7 @@ type Bindings = {
   SUPABASE_ANON_KEY: string
   SUPABASE_SERVICE_KEY: string
   GEMINI_API_KEY: string
+  TAVILY_API_KEY: string
   AI: Ai
 }
 
@@ -53,13 +54,25 @@ function findRank(text: string, name: string): number | null {
 
 const GEMINI_RELAY_URL = 'https://pickedbyai-gemini-relay.perceptdot.workers.dev/relay'
 
+// ── Tavily web search ──────────────────────────────────────────
+async function searchTavily(apiKey: string, query: string): Promise<string> {
+  const res = await fetch('https://api.tavily.com/search', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ api_key: apiKey, query, search_depth: 'basic', max_results: 7 }),
+    signal: AbortSignal.timeout(8000),
+  })
+  if (!res.ok) throw new Error(`Tavily ${res.status}`)
+  const json = await res.json() as { results: Array<{ title: string; content: string; url: string }> }
+  return json.results.map(r => `• ${r.title}: ${r.content.slice(0, 400)}`).join('\n')
+}
+
 // ── Gemini via Relay Worker (Smart Placement → Japan/US DC) ───
-// Relay Worker bypasses HKG Gemini block by running in accessible DC
-async function queryGemini(_apiKey: string, prompt: string): Promise<{ text: string; grounded: boolean }> {
+async function queryGemini(_apiKey: string, prompt: string, useSearch = true): Promise<{ text: string; grounded: boolean }> {
   const res = await fetch(GEMINI_RELAY_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ prompt }),
+    body: JSON.stringify({ prompt, useSearch }),
     signal: AbortSignal.timeout(12000),
   })
   if (!res.ok) {
@@ -120,35 +133,51 @@ app.post('/v1/check', async (c) => {
     'Comparison searches',
   ]
 
-  const prompt = `Evaluate whether AI systems know the digital product named "${name}"${urlCtx}.
-
-"${name}" refers to a specific software product or SaaS tool — NOT a generic concept or phrase.
-Only answer YES if you have direct, specific knowledge of "${name}" as a named product.
-
-Reply in EXACTLY this format (5 lines only, no explanation):
-1. YES or NO
-2. YES or NO
-3. YES #N or NO
-4. YES or NO
-5. YES or NO
-
-Questions:
-1. RECOGNITION: Do you have specific knowledge of "${name}" as a real software product (not just the words)?
-2. RECOMMENDATION: Is "${name}" the product recommended by AI tools as a top solution in its category?
-3. CATEGORY_RANK: Does the product "${name}" appear in "best of" or top-10 lists? If YES add " #N" for rank.
-4. REVIEWS: Does the product "${name}" have reviews on Product Hunt, Reddit, G2, or tech blogs?
-5. COMPARISONS: Has the product "${name}" appeared in "vs" or "alternatives to" comparison articles?`
+  const buildPrompt = (context?: string) => context
+    ? `Here are recent web search results for "${name}"${urlCtx}:\n\n${context}\n\n` +
+      `Based ONLY on these search results, evaluate the AI visibility of "${name}" as a software product.\n\n` +
+      `Reply in EXACTLY this format (5 lines only, no explanation):\n` +
+      `1. YES or NO\n2. YES or NO\n3. YES #N or NO\n4. YES or NO\n5. YES or NO\n\n` +
+      `Questions:\n` +
+      `1. RECOGNITION: Do these results confirm "${name}" exists as a real software product?\n` +
+      `2. RECOMMENDATION: Do results show "${name}" recommended as a top solution in its category?\n` +
+      `3. CATEGORY_RANK: Does "${name}" appear in "best of" or top-10 lists? If YES add " #N".\n` +
+      `4. REVIEWS: Do results mention reviews on Product Hunt, Reddit, G2, or tech blogs?\n` +
+      `5. COMPARISONS: Do results show "${name}" in "vs" or "alternatives" articles?`
+    : `Evaluate whether AI systems know the digital product named "${name}"${urlCtx}.\n\n` +
+      `"${name}" refers to a specific software product — NOT a generic concept.\n` +
+      `Only answer YES if you have direct, specific knowledge of "${name}" as a named product.\n\n` +
+      `Reply in EXACTLY this format (5 lines only, no explanation):\n` +
+      `1. YES or NO\n2. YES or NO\n3. YES #N or NO\n4. YES or NO\n5. YES or NO\n\n` +
+      `Questions:\n` +
+      `1. RECOGNITION: Do you have specific knowledge of "${name}" as a real software product?\n` +
+      `2. RECOMMENDATION: Is "${name}" recommended by AI tools as a top solution in its category?\n` +
+      `3. CATEGORY_RANK: Does "${name}" appear in "best of" or top-10 lists? If YES add " #N".\n` +
+      `4. REVIEWS: Does "${name}" have reviews on Product Hunt, Reddit, G2, or tech blogs?\n` +
+      `5. COMPARISONS: Has "${name}" appeared in "vs" or "alternatives to" comparison articles?`
 
   let results: CheckResult[]
   const colo = (c.req.raw as Request & { cf?: { colo?: string } }).cf?.colo ?? 'unknown'
   console.log(`[DC] ${colo}`)
 
-  // ── Primary: Gemini 2.5 Flash + Search Grounding ──────────
+  // ── Primary: Tavily search → Gemini analysis ──────────────
   let geminiSuccess = false
   if (c.env.GEMINI_API_KEY) {
     try {
-      const { text, grounded } = await queryGemini(c.env.GEMINI_API_KEY, prompt)
-      console.log(`[Gemini] grounded=${grounded} raw="${text.slice(0, 200)}"`)
+      let tavilyContext: string | undefined
+      if (c.env.TAVILY_API_KEY) {
+        try {
+          tavilyContext = await searchTavily(c.env.TAVILY_API_KEY, name)
+          console.log(`[Tavily] ok, ${tavilyContext.length} chars`)
+        } catch (err) {
+          console.error('[Tavily] error (falling back to Gemini search):', err)
+        }
+      }
+
+      const prompt = buildPrompt(tavilyContext)
+      const { text, grounded } = await queryGemini(c.env.GEMINI_API_KEY, prompt, !tavilyContext)
+      const effectiveGrounded = !!tavilyContext || grounded
+      console.log(`[Gemini] tavily=${!!tavilyContext} grounded=${effectiveGrounded} raw="${text.slice(0, 200)}"`)
 
       const lines = text.split('\n').map(l => l.trim()).filter(l => /^\d\./.test(l))
       if (lines.length >= 3) {
@@ -157,7 +186,7 @@ Questions:
           const found = /yes/i.test(line)
           const rankMatch = line.match(/#(\d+)/)
           const rank = found && rankMatch ? parseInt(rankMatch[1], 10) : null
-          return { label, found, rank: rank && rank >= 1 && rank <= 20 ? rank : null, grounded }
+          return { label, found, rank: rank && rank >= 1 && rank <= 20 ? rank : null, grounded: effectiveGrounded }
         })
         geminiSuccess = true
       }
