@@ -160,62 +160,77 @@ app.post('/v1/check', async (c) => {
   const colo = (c.req.raw as Request & { cf?: { colo?: string } }).cf?.colo ?? 'unknown'
   console.log(`[DC] ${colo}`)
 
-  // ── Primary: Tavily search → Gemini analysis ──────────────
-  let geminiSuccess = false
-  if (c.env.GEMINI_API_KEY) {
+  // ── Step 1: Tavily web search ─────────────────────────────
+  let tavilyContext: string | undefined
+  if (c.env.TAVILY_API_KEY) {
     try {
-      let tavilyContext: string | undefined
-      if (c.env.TAVILY_API_KEY) {
-        try {
-          tavilyContext = await searchTavily(c.env.TAVILY_API_KEY, name)
-          console.log(`[Tavily] ok, ${tavilyContext.length} chars`)
-        } catch (err) {
-          console.error('[Tavily] error (falling back to Gemini search):', err)
-        }
-      }
+      tavilyContext = await searchTavily(c.env.TAVILY_API_KEY, name)
+      console.log(`[Tavily] ok, ${tavilyContext.length} chars`)
+    } catch (err) {
+      console.error('[Tavily] error:', err)
+    }
+  }
 
+  const parseLines = (text: string, grounded: boolean): CheckResult[] => {
+    const lines = text.split('\n').map(l => l.trim()).filter(l => /^\d\./.test(l))
+    if (lines.length < 3) return []
+    return LABELS.map((label, i) => {
+      const line = lines[i] ?? ''
+      const found = /yes/i.test(line)
+      const rankMatch = line.match(/#(\d+)/)
+      const rank = found && rankMatch ? parseInt(rankMatch[1], 10) : null
+      return { label, found, rank: rank && rank >= 1 && rank <= 20 ? rank : null, grounded }
+    })
+  }
+
+  let success = false
+
+  // ── Step 2a: Tavily context → CF Workers AI (llama-3.1-8b) ─
+  // No geographic restriction, free, deterministic with provided context
+  if (tavilyContext && c.env.AI) {
+    try {
       const prompt = buildPrompt(tavilyContext)
-      const { text, grounded } = await queryGemini(c.env.GEMINI_API_KEY, prompt, !tavilyContext)
-      const effectiveGrounded = !!tavilyContext || grounded
-      console.log(`[Gemini] tavily=${!!tavilyContext} grounded=${effectiveGrounded} raw="${text.slice(0, 200)}"`)
+      const response = await c.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
+        messages: [{ role: 'user', content: prompt }],
+        max_tokens: 120,
+        temperature: 0,
+      }) as { response?: string }
+      const text = response.response ?? ''
+      console.log(`[llama+tavily] raw="${text.slice(0, 200)}"`)
+      const parsed = parseLines(text, true)
+      if (parsed.length) { results = parsed; success = true }
+    } catch (err) {
+      console.error('[llama+tavily] error:', err)
+    }
+  }
 
-      const lines = text.split('\n').map(l => l.trim()).filter(l => /^\d\./.test(l))
-      if (lines.length >= 3) {
-        results = LABELS.map((label, i) => {
-          const line = lines[i] ?? ''
-          const found = /yes/i.test(line)
-          const rankMatch = line.match(/#(\d+)/)
-          const rank = found && rankMatch ? parseInt(rankMatch[1], 10) : null
-          return { label, found, rank: rank && rank >= 1 && rank <= 20 ? rank : null, grounded: effectiveGrounded }
-        })
-        geminiSuccess = true
-      }
+  // ── Step 2b: Gemini + Search Grounding (no Tavily / llama failed) ─
+  if (!success && c.env.GEMINI_API_KEY) {
+    try {
+      const prompt = buildPrompt()
+      const { text, grounded } = await queryGemini(c.env.GEMINI_API_KEY, prompt, true)
+      console.log(`[Gemini] grounded=${grounded} raw="${text.slice(0, 200)}"`)
+      const parsed = parseLines(text, grounded)
+      if (parsed.length) { results = parsed; success = true }
     } catch (err) {
       console.error('[Gemini] error (falling back to llama):', err)
     }
   }
 
-  // ── Fallback: CF Workers AI (llama-3.2-3b) ───────────────
-  if (!geminiSuccess) {
+  // ── Step 2c: llama fallback (no context, last resort) ─────
+  if (!success) {
     try {
+      const prompt = buildPrompt()
       const response = await c.env.AI.run('@cf/meta/llama-3.2-3b-instruct', {
         messages: [{ role: 'user', content: prompt }],
         max_tokens: 60,
       }) as { response?: string }
-
       const text = response.response ?? ''
-      console.log(`[llama] raw="${text.slice(0, 200)}"`)
-
-      const lines = text.split('\n').map(l => l.trim()).filter(l => /^\d\./.test(l))
-      results = LABELS.map((label, i) => {
-        const line = lines[i] ?? ''
-        const found = /yes/i.test(line)
-        const rankMatch = line.match(/#(\d+)/)
-        const rank = found && rankMatch ? parseInt(rankMatch[1], 10) : null
-        return { label, found, rank: rank && rank >= 1 && rank <= 20 ? rank : null, grounded: false }
-      })
+      console.log(`[llama-fallback] raw="${text.slice(0, 200)}"`)
+      const parsed = parseLines(text, false)
+      results = parsed.length ? parsed : LABELS.map(label => ({ label, found: false, rank: null, grounded: false }))
     } catch (err) {
-      console.error('[llama] error:', err)
+      console.error('[llama-fallback] error:', err)
       results = LABELS.map(label => ({ label, found: false, rank: null, grounded: false }))
     }
   }
