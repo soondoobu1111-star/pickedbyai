@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How We Calculate Your AI Visibility Score — The Full Breakdown — pickedby.ai</title>
+  <meta name="description" content="A user asked us to explain how the score actually works. Here's the full answer — the 5 dimensions, real examples from 0 to 82, and why 'known by AI' and 'recommended by AI' are very different things." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pickedby.ai/blog/how-we-calculate-your-ai-visibility-score/" />
+  <meta property="og:title" content="How We Calculate Your AI Visibility Score — The Full Breakdown" />
+  <meta property="og:description" content="The 5 dimensions behind the score, real examples from 0 to 82, and why being known by AI and being recommended by AI are completely different things." />
+  <meta property="og:url" content="https://pickedby.ai/blog/how-we-calculate-your-ai-visibility-score/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://pickedby.ai/blog/how-we-calculate-your-ai-visibility-score/cover.jpg" />
+  <meta property="og:image:width" content="1280" />
+  <meta property="og:image:height" content="720" />
+  <meta property="article:published_time" content="2026-04-07" />
+  <meta property="article:author" content="pickedby.ai" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@pickedbyAI" />
+  <meta name="twitter:image" content="https://pickedby.ai/blog/how-we-calculate-your-ai-visibility-score/cover.jpg" />
+  <meta name="twitter:image:alt" content="AI Visibility Score spectrum: 0 Not found, 40 Known but not recommended, 82 Recommended" />
+  <meta name="twitter:title" content="How We Calculate Your AI Visibility Score — The Full Breakdown" />
+  <meta name="twitter:description" content="5 dimensions, real examples (0, 40, 82), and why AI knowing you ≠ AI recommending you." />
+  <meta name="keywords" content="AI visibility score, GEO generative engine optimization, ChatGPT recommendation score, AI search ranking, digital product AI discovery, how AI recommends products" />
+  <meta name="author" content="pickedby.ai" />
+  <meta property="og:site_name" content="pickedby.ai" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickedby.ai/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pickedby.ai/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "How We Calculate Your AI Visibility Score", "item": "https://pickedby.ai/blog/how-we-calculate-your-ai-visibility-score/" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "How We Calculate Your AI Visibility Score — The Full Breakdown",
+    "description": "A user asked us to explain how the score actually works. Here's the full answer — the 5 dimensions, real examples from 0 to 82, and why 'known by AI' and 'recommended by AI' are very different things.",
+    "datePublished": "2026-04-07",
+    "author": { "@type": "Organization", "name": "pickedby.ai", "url": "https://pickedby.ai" },
+    "publisher": { "@type": "Organization", "name": "pickedby.ai", "url": "https://pickedby.ai" },
+    "url": "https://pickedby.ai/blog/how-we-calculate-your-ai-visibility-score/",
+    "mainEntityOfPage": "https://pickedby.ai/blog/how-we-calculate-your-ai-visibility-score/",
+    "image": "https://pickedby.ai/blog/how-we-calculate-your-ai-visibility-score/cover.jpg"
+  }
+  </script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2H007YWM9F"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied' });
+    gtag('js', new Date());
+    gtag('config', 'G-2H007YWM9F');
+    if (localStorage.getItem('cookie_consent') === 'accepted') {
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #000; --bg2: #0d0d0d; --bg3: #161616;
+      --yellow: #FFD700; --yellow2: #b39700;
+      --text: #e8e8e8; --muted: #888; --border: #1f1f1f;
+    }
+    body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; line-height: 1.7; }
+    a { color: var(--yellow); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); max-width: 1280px; margin: 0 auto; }
+    .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: var(--yellow); text-decoration: none; }
+    .nav-links { display: flex; gap: 1.5rem; font-size: 0.95rem; }
+    .nav-links a { color: var(--muted); }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .article-wrap { max-width: 680px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+    .article-tag { font-family: 'Press Start 2P', monospace; font-size: 0.38rem; color: var(--yellow); letter-spacing: 0.1em; margin-bottom: 1.25rem; }
+    .article-tag a { color: var(--yellow); text-decoration: none; }
+    h1 { font-size: 1.9rem; font-weight: 800; line-height: 1.25; margin-bottom: 1.25rem; }
+    .article-meta { font-size: 0.78rem; color: #555; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .article-body h2 { font-size: 1.2rem; font-weight: 700; margin: 2.5rem 0 0.85rem; color: var(--text); }
+    .article-body p { font-size: 0.95rem; color: #ccc; margin-bottom: 1.15rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0.5rem 0 1.25rem 1.2rem; }
+    .article-body li { font-size: 0.95rem; color: #ccc; margin-bottom: 0.65rem; line-height: 1.75; }
+    .article-body strong { color: var(--text); }
+    .article-body em { color: var(--muted); font-style: normal; }
+    .article-body code { background: #1a1a1a; color: var(--yellow); padding: 0.1em 0.4em; font-size: 0.88em; border-radius: 2px; }
+    .callout { background: var(--bg2); border-left: 3px solid var(--yellow); padding: 1rem 1.25rem; margin: 1.75rem 0; }
+    .callout p { margin-bottom: 0; color: #bbb; font-size: 0.92rem; }
+    .score-box { background: var(--bg2); border: 1px solid #2a2a2a; padding: 1.5rem 2rem; margin: 1.75rem 0; display: flex; align-items: center; gap: 1.5rem; }
+    .score-num { font-family: 'Press Start 2P', monospace; font-size: 2rem; flex-shrink: 0; }
+    .score-num.gold { color: #FFD700; }
+    .score-num.bronze { color: #CD7F32; }
+    .score-num.zero { color: #555; }
+    .score-label { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .score-label strong { color: var(--text); display: block; margin-bottom: 0.25rem; }
+    .dimension-row { display: flex; gap: 1rem; align-items: flex-start; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+    .dimension-row:last-child { border-bottom: none; }
+    .dim-num { font-family: 'Press Start 2P', monospace; font-size: 0.6rem; color: var(--yellow); flex-shrink: 0; width: 1.5rem; padding-top: 0.2rem; }
+    .dim-body strong { display: block; color: var(--text); font-size: 0.9rem; margin-bottom: 0.3rem; }
+    .dim-body p { font-size: 0.85rem; color: var(--muted); margin: 0; line-height: 1.6; }
+    .dim-wrap { background: var(--bg2); border: 1px solid #2a2a2a; padding: 0.5rem 1.25rem; margin: 1.75rem 0; }
+    .prev-next { display: flex; gap: 1rem; margin: 3rem 0 0; padding-top: 2rem; border-top: 1px solid var(--border); font-size: 0.82rem; }
+    .prev-next a { color: var(--muted); flex: 1; }
+    .prev-next a:hover { color: var(--text); text-decoration: none; }
+    .prev-next .label { font-family: 'Press Start 2P', monospace; font-size: 0.35rem; color: #333; display: block; margin-bottom: 0.4rem; letter-spacing: 0.08em; }
+    .cta-box { background: var(--bg2); border: 1px solid #2a2a2a; padding: 2rem; margin: 3rem 0; text-align: center; }
+    .cta-box h3 { font-family: 'Press Start 2P', monospace; font-size: 0.55rem; color: var(--yellow); margin-bottom: 0.75rem; line-height: 1.7; }
+    .cta-box p { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.25rem; }
+    .btn-cta { display: inline-block; background: var(--yellow); color: #000; font-family: 'Press Start 2P', monospace; font-size: 0.42rem; padding: 0.75rem 1.5rem; box-shadow: 3px 3px 0 var(--yellow2); }
+    footer { border-top: 1px solid var(--border); padding: 1.5rem 2rem; text-align: center; font-size: 0.75rem; color: #444; }
+    footer a { color: #555; text-decoration: underline; }
+    @media (max-width: 600px) {
+      .nav { padding: 1rem; }
+      .article-wrap { padding: 2rem 1rem 4rem; }
+      h1 { font-size: 1.4rem; }
+      .score-box { flex-direction: column; gap: 0.75rem; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="/" class="nav-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+      <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+      <span><span style="color:var(--yellow);">picked</span><span style="color:#fff;">by</span><span style="color:var(--yellow);">.ai</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="/blog/">Blog</a>
+      <a href="/dashboard.html" style="color:var(--yellow);border:1px solid var(--yellow);padding:0.15rem 0.6rem;border-radius:4px;">Dashboard</a>
+    </div>
+  </nav>
+
+  <article class="article-wrap">
+
+    <div class="article-tag"><a href="/blog/">BLOG</a> &nbsp;·&nbsp; GEO · METHODOLOGY</div>
+    <h1>How We Calculate Your AI Visibility Score — The Full Breakdown</h1>
+    <div class="article-meta">April 7, 2026 &nbsp;·&nbsp; 6 min read &nbsp;·&nbsp; by pickedby.ai</div>
+
+    <img src="/blog/how-we-calculate-your-ai-visibility-score/cover.jpg" alt="AI Visibility Score spectrum: 0 Not found, 40 Known but not recommended, 82 Recommended" style="width:100%;border-radius:4px;margin-bottom:2rem;display:block;" />
+
+    <div class="article-body">
+
+      <p>A user on Reddit left a comment after checking their score:</p>
+
+      <div class="callout">
+        <p>"I'd like to know more about how the score is actually calculated. I see in the FAQs you've briefly outlined some metrics used, but I'd like a more thorough explanation. Perhaps worth doing a blog post?"</p>
+      </div>
+
+      <p>Fair ask. Here's the full answer.</p>
+
+      <h2>Why scoring AI visibility is different from Google rankings</h2>
+
+      <p>Google rankings are relatively transparent. You can check your position for a keyword, track backlinks, measure page speed. The rules are documented.</p>
+
+      <p>AI visibility doesn't work that way.</p>
+
+      <p>When someone asks ChatGPT <em>"what's the best Notion template for budgeting?"</em> — there's no ranked list, no position 1 through 10. There's just: does your product get mentioned, or not?</p>
+
+      <p>We had to build a scoring system that reflects this reality. The result is a 0–100 score built from five dimensions, each measuring a different layer of how AI systems perceive and surface your product.</p>
+
+      <h2>The 5 dimensions we measure</h2>
+
+      <div class="dim-wrap">
+        <div class="dimension-row">
+          <div class="dim-num">1</div>
+          <div class="dim-body">
+            <strong>Direct name recognition</strong>
+            <p>Does AI know your product exists when asked about it by name? This is the baseline. If you score zero here, you're invisible — AI has no record of you at all.</p>
+          </div>
+        </div>
+        <div class="dimension-row">
+          <div class="dim-num">2</div>
+          <div class="dim-body">
+            <strong>Best-of recommendation</strong>
+            <p>When someone asks <em>"what are the best tools for X?"</em> — does your product make the list? Being known and being recommended are very different things. This is the hardest dimension to crack.</p>
+          </div>
+        </div>
+        <div class="dimension-row">
+          <div class="dim-num">3</div>
+          <div class="dim-body">
+            <strong>Category ranking</strong>
+            <p>Does your product show up when AI lists tools in your category? <em>"Free Gumroad alternatives"</em>, <em>"best digital product platforms"</em> — does your name appear in that context?</p>
+          </div>
+        </div>
+        <div class="dimension-row">
+          <div class="dim-num">4</div>
+          <div class="dim-body">
+            <strong>Comparison search</strong>
+            <p>When someone asks AI to compare tools, does your product come up as a legitimate option? This requires being present enough in AI training data to be considered a peer to established names.</p>
+          </div>
+        </div>
+        <div class="dimension-row">
+          <div class="dim-num">5</div>
+          <div class="dim-body">
+            <strong>Reviews and external mentions</strong>
+            <p>Has AI absorbed external content about your product — reviews, directory listings, community discussions? This is the external signal layer that feeds all the others.</p>
+          </div>
+        </div>
+      </div>
+
+      <h2>What the scores actually look like</h2>
+
+      <p>In the Reddit thread where we launched, three real scores told three very different stories.</p>
+
+      <div class="score-box">
+        <div class="score-num zero">0</div>
+        <div class="score-label">
+          <strong>Not found</strong>
+          AI hasn't encountered this product in its training data yet. All five dimensions failing. This is a starting point, not a verdict — one solid external mention can move this within weeks.
+        </div>
+      </div>
+
+      <div class="score-box">
+        <div class="score-num bronze">40</div>
+        <div class="score-label">
+          <strong>Known but not recommended</strong>
+          Direct name search and reviews passing. Best-of recommendations, category ranking, and comparison searches all failing. The most common pattern we see: AI knows you exist, but rarely recommends you.
+        </div>
+      </div>
+
+      <div class="score-box">
+        <div class="score-num gold">82</div>
+        <div class="score-label">
+          <strong>Recommended</strong>
+          All five dimensions passing or partially passing. The result of consistent work — structured content, external mentions, showing up in the right contexts over time.
+        </div>
+      </div>
+
+      <h2>The gap nobody talks about</h2>
+
+      <p>The most important insight from building this tool:</p>
+
+      <p><strong>Being known by AI and being recommended by AI are not the same thing.</strong></p>
+
+      <p>Most creators assume that if they exist online, AI will find them and surface them. That's partially true — AI does index a lot. But AI doesn't recommend everything it knows. It recommends what it has seen described, compared, and discussed across multiple independent sources.</p>
+
+      <p>The bridge between those two states is external signal: other sources mentioning your product by name, in the context of recommendations. A directory listing. A Reddit thread. A comparison article. An honest review somewhere credible.</p>
+
+      <p>One or two of those can move a 40 to a 60. A handful of them, consistently, is how you reach 80+.</p>
+
+      <h2>How scores change over time</h2>
+
+      <p>AI systems update their training data. A product that scores 0 today can score 40 in a month if it gets listed in the right places. A product at 40 can reach 80 if it starts showing up in community discussions and comparison contexts.</p>
+
+      <p>This is why we built the dashboard — check once, make changes, come back and see if the number moved.</p>
+
+      <p>One of the users in our Reddit thread put it well: <em>"I'll come back in a few weeks to try again and see if the score improves."</em> That's exactly the right approach.</p>
+
+      <div class="cta-box">
+        <h3>CHECK YOUR SCORE — FREE</h3>
+        <p>No signup. No credit card. Results in 10 seconds.</p>
+        <a href="https://pickedby.ai" class="btn-cta">CHECK MY SCORE</a>
+      </div>
+
+    </div>
+
+    <div class="prev-next">
+      <a href="/blog/we-scored-0-on-our-own-tool/">
+        <span class="label">← PREVIOUS</span>
+        We Scored 0/100 on Our Own Tool
+      </a>
+      <a href="/blog/" style="text-align:right;">
+        <span class="label">ALL POSTS →</span>
+        Back to Blog
+      </a>
+    </div>
+
+  </article>
+
+  <footer>
+    <a href="/privacy.html">Privacy</a> &nbsp;·&nbsp; <a href="/terms.html">Terms</a> &nbsp;·&nbsp; <a href="/blog/">Blog</a> &nbsp;·&nbsp; © 2026 THUNOVA
+  </footer>
+
+</body>
+</html>
