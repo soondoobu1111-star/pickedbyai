@@ -11,6 +11,18 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash /Users/rb1009_auto/.claude/hooks/notify-prod-deploy.sh",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   }
 }
