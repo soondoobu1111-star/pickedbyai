@@ -1,0 +1,168 @@
+{
+  "meta": {
+    "source": "ChatGPT (GPT-5.3) deep analysis of pickedby.ai",
+    "analyzed": "2026-04-07",
+    "context": "사용자가 ChatGPT에게 pickedby.ai 종합 분석을 요청한 결과"
+  },
+
+  "chatgpt_scores": {
+    "idea": 9,
+    "technology": 6,
+    "competition_risk": 6,
+    "market_opportunity": 10,
+    "success_probability": 7
+  },
+
+  "critical_misunderstanding": {
+    "what_chatgpt_assumed": "B2B SaaS targeting SEO agencies and enterprises ($49-$1000+)",
+    "what_we_actually_are": "B2C creator tool, mostly free until preemption ($0-$49)",
+    "why_this_matters": "ChatGPT가 우리를 Otterly/Profound 동급으로 분류. 이는 외부에서 우리 차별점('크리에이터 전용, 무료, 무가입')이 전달되지 않고 있다는 강력한 신호",
+    "action_required": "랜딩 카피에서 'For Digital Creators' 포지셔닝을 더 명확하고 크게 표시. Hero 섹션에 'Not for agencies. Built for creators.' 류의 카피 추가 검토"
+  },
+
+  "where_chatgpt_is_wrong": [
+    {
+      "claim": "B2B SaaS model",
+      "reality": "B2C freemium, 크리에이터 개인 타겟",
+      "severity": "critical — 완전한 오분류"
+    },
+    {
+      "claim": "Pricing $49-$1000+",
+      "reality": "$0(Free) / $19(Creator) / $49(Pro). 선점 전까지 T3 Verified Owner도 무료",
+      "severity": "critical"
+    },
+    {
+      "claim": "Primary users: SEO agencies, marketing teams",
+      "reality": "Gumroad 셀러, Notion 템플릿 작가, AI 프롬프트 크리에이터",
+      "severity": "critical"
+    },
+    {
+      "claim": "Tech stack: Python/FastAPI/AWS/Next.js",
+      "reality": "TypeScript/Hono/CF Workers/정적HTML+Tailwind/Supabase",
+      "severity": "minor — 공개 정보 부재 때문, 큰 의미 없음"
+    },
+    {
+      "claim": "Direct competitors: Profound, Peec AI, AthenaHQ, Scrunch AI 등",
+      "reality": "이들은 전부 기업/에이전시 타겟. 크리에이터 GEO 도구는 0개 (우리 bizplan §4 확인)",
+      "severity": "high — ChatGPT가 우리의 핵심 해자(크리에이터 전용 빈 시장)를 인식 못 함"
+    }
+  ],
+
+  "where_chatgpt_is_right": [
+    {
+      "claim": "Market opportunity 10/10",
+      "our_verdict": "동의. Gemini도 '최상'. AI 검색 전환은 메가 트렌드",
+      "action": "없음 (이미 반영)"
+    },
+    {
+      "claim": "대형 SEO 플랫폼(Ahrefs/Semrush)이 GEO 기능 빠르게 복제 가능",
+      "our_verdict": "핵심 리스크. Gemini의 '낮은 기술 진입장벽'과 같은 맥락이지만 더 구체적",
+      "action": "이 리스크 대응: (1) 크리에이터 niche에 집중 (Ahrefs는 여기 안 옴), (2) 데이터+배지 네트워크 해자, (3) Creator Network(G2)",
+      "severity": "high"
+    },
+    {
+      "claim": "AI ranking timeline tracking",
+      "our_verdict": "이미 계획에 있음 (plan 트랙 D2: 7일 히스토리)",
+      "action": "없음"
+    },
+    {
+      "claim": "Competitor comparison dashboard",
+      "our_verdict": "이미 계획에 있음 (T3 Owner: 경쟁자 추적)",
+      "action": "없음"
+    },
+    {
+      "claim": "AI sentiment analysis",
+      "our_verdict": "새로운 아이디어. AI가 내 제품을 긍정/부정 어떤 톤으로 언급하는지",
+      "priority": "Phase 2",
+      "action": "Owner 대시보드에 sentiment 지표 추가 검토"
+    },
+    {
+      "claim": "AI citation tracking",
+      "our_verdict": "Gemini G2(Creator Network)와 결합하면 강력. AI가 인용하는 출처 추적 → 어디에 백링크 넣으면 AI 가시성 올라가는지 역추적",
+      "priority": "Phase 2-3",
+      "action": "plan 트랙 E에 추가"
+    },
+    {
+      "claim": "Knowledge graph monitoring",
+      "our_verdict": "새로운 아이디어. Google Knowledge Graph에 내 제품이 등록되어 있는지 체크",
+      "priority": "Phase 3",
+      "action": "장기 로드맵에 추가"
+    },
+    {
+      "claim": "Future Level 5: AI training data influence analytics",
+      "our_verdict": "매우 흥미로운 장기 비전. AI가 학습하는 데이터에 내 제품이 포함되는지 추적. 현재 기술적으로 불가능하지만 방향성은 맞음",
+      "priority": "Vision (2028+)",
+      "action": "bizplan 장기 비전에 기록"
+    },
+    {
+      "claim": "Integration targets: WordPress, Shopify, Google Search Console",
+      "our_verdict": "Gemini G1(브라우저 익스텐션)과 같은 맥락. Phase 2 이후",
+      "action": "이미 반영"
+    }
+  ],
+
+  "cross_reference_gemini_vs_chatgpt": {
+    "both_agree": [
+      "시장 기회 최상급",
+      "경쟁사 카피 리스크 존재",
+      "진단→처방 전환 필요",
+      "WordPress/플러그인 연동 가치 있음"
+    ],
+    "gemini_only": [
+      "Creator Network (G2) — ChatGPT는 완전히 놓침",
+      "배지 바이럴 루프의 전략적 가치"
+    ],
+    "chatgpt_only": [
+      "AI sentiment analysis — 톤/감정 분석",
+      "Knowledge graph monitoring",
+      "AI training data influence (Level 5 비전)",
+      "AI citation tracking — 출처 역추적",
+      "SEO 대기업 복제 리스크 구체적 언급 (Ahrefs/Semrush)"
+    ],
+    "contradictions": [
+      {
+        "topic": "타겟 고객",
+        "gemini": "크리에이터/소규모 팀 (맞음)",
+        "chatgpt": "SEO 에이전시/기업 (틀림)",
+        "verdict": "Gemini 맞음. ChatGPT가 기존 GEO 도구 틀에 끼워맞춤"
+      }
+    ]
+  },
+
+  "strategic_implications": {
+    "positioning_gap": {
+      "problem": "ChatGPT가 우리를 B2B 기업 도구로 오분류 = 외부에서 크리에이터 포지셔닝이 안 보인다",
+      "solutions": [
+        "랜딩 Hero에 'Built for creators, not agencies' 류 카피 추가",
+        "가격을 더 눈에 띄게: 'Free forever / $19 for pros' (vs 경쟁사 $500+)",
+        "타겟 유저 페르소나를 구체적으로 명시: 'Gumroad sellers, Notion creators, course builders'",
+        "Anti-enterprise 메시지: 'No team seats. No enterprise plans. Just you and your product.'"
+      ]
+    },
+    "new_features_to_consider": [
+      {
+        "feature": "AI Sentiment Score",
+        "source": "ChatGPT",
+        "description": "AI가 내 제품을 긍정/부정/중립 어떤 톤으로 언급하는지",
+        "phase": "Phase 2",
+        "fits_open_source_ethos": true
+      },
+      {
+        "feature": "AI Citation Tracker",
+        "source": "ChatGPT + Gemini G2 결합",
+        "description": "AI가 인용하는 출처 목록 → 어디에 콘텐츠 올리면 AI 가시성 상승하는지 역추적",
+        "phase": "Phase 2-3",
+        "fits_open_source_ethos": true
+      },
+      {
+        "feature": "Knowledge Graph Check",
+        "source": "ChatGPT",
+        "description": "Google Knowledge Graph에 내 제품 등록 여부 확인",
+        "phase": "Phase 3",
+        "fits_open_source_ethos": true
+      }
+    ]
+  },
+
+  "key_takeaway": "ChatGPT의 가장 큰 가치는 '우리가 외부에서 어떻게 보이는지' 거울 역할. B2B로 오분류된 것 = 크리에이터 포지셔닝을 랜딩에서 10배 더 명확하게 해야 한다는 시그널. 새 기능으로는 AI Sentiment Score와 Citation Tracker가 가장 가치 있음."
+}
