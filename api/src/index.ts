@@ -19,6 +19,8 @@ type CheckResult = {
   grounded: boolean
 }
 
+type TavilyResult = { title: string; content: string; url: string }
+
 // Block private/metadata IPs (SSRF prevention)
 function isBlockedUrl(url: string): boolean {
   try {
@@ -36,26 +38,15 @@ function isBlockedUrl(url: string): boolean {
   }
 }
 
-// Extract rank from AI response text (1-20 only, avoids years/large numbers)
-function findRank(text: string, name: string): number | null {
-  const lower = text.toLowerCase()
-  const nameLower = name.toLowerCase()
-  const lines = lower.split('\n')
-  for (const line of lines) {
-    if (!line.includes(nameLower)) continue
-    const m = line.match(/(\d+)/)
-    if (m) {
-      const n = parseInt(m[1], 10)
-      if (n >= 1 && n <= 20) return n
-    }
-  }
-  return null
+// Escape special regex characters in product name
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 const GEMINI_RELAY_URL = 'https://pickedbyai-gemini-relay.perceptdot.workers.dev/relay'
 
-// ── Tavily web search ──────────────────────────────────────────
-async function searchTavily(apiKey: string, query: string): Promise<string> {
+// ── Tavily web search (returns raw results) ───────────────────
+async function searchTavily(apiKey: string, query: string): Promise<TavilyResult[]> {
   const res = await fetch('https://api.tavily.com/search', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -63,8 +54,79 @@ async function searchTavily(apiKey: string, query: string): Promise<string> {
     signal: AbortSignal.timeout(8000),
   })
   if (!res.ok) throw new Error(`Tavily ${res.status}`)
-  const json = await res.json() as { results: Array<{ title: string; content: string; url: string }> }
-  return json.results.map(r => `• ${r.title}: ${r.content.slice(0, 400)}`).join('\n')
+  const json = await res.json() as { results: TavilyResult[] }
+  return json.results
+}
+
+// ── ENGINE-04: Pure pattern matching on Tavily results (no LLM) ──
+// 100% deterministic, zero LLM cost. Each dimension checked independently.
+function scoreFromTavily(results: TavilyResult[], name: string): CheckResult[] {
+  const LABELS = [
+    'Direct name search',
+    'Best-of recommendation',
+    'Category ranking',
+    'Reviews & mentions',
+    'Comparison searches',
+  ]
+
+  if (!results.length) {
+    return LABELS.map(label => ({ label, found: false, rank: null, grounded: true }))
+  }
+
+  const nameLower = name.toLowerCase()
+  const escaped = escapeRegex(nameLower)
+
+  // Combined text per result, lowercase
+  const texts = results.map(r => (r.title + ' ' + r.content).toLowerCase())
+  const urls = results.map(r => r.url.toLowerCase())
+
+  // 1. RECOGNITION — name appears in at least 1 result
+  const recognition = texts.some(t => t.includes(nameLower))
+
+  // 2. RECOMMENDATION — name + recommendation signal in same result
+  const recKw = /\b(best|top|recommended?|must.?have|popular|leading|great|excellent|award)\b/
+  const recommendation = texts.some(t => t.includes(nameLower) && recKw.test(t))
+
+  // 3. CATEGORY_RANK — name in a ranked list; extract position (1-20)
+  let rankFound = false
+  let rankNum: number | null = null
+  const rankCtxKw = /\b(top\s*\d+|best\s+\d+|#\d+|\d+\.\s|\d+\))/
+  for (const text of texts) {
+    if (!text.includes(nameLower) || !rankCtxKw.test(text)) continue
+    rankFound = true
+    // "#N ... name" or "name ... #N"
+    const m1 = text.match(new RegExp(`#(\\d+)[^\\d]*${escaped}|${escaped}[^\\d]*#(\\d+)`))
+    if (m1) {
+      const n = parseInt(m1[1] ?? m1[2], 10)
+      if (n >= 1 && n <= 20) { rankNum = n; break }
+    }
+    // "N. name" or "N) name" list position
+    const m2 = text.match(new RegExp(`\\b(\\d+)[.\\)][^\\n]{0,60}${escaped}`))
+    if (m2) {
+      const n = parseInt(m2[1], 10)
+      if (n >= 1 && n <= 20) { rankNum = n; break }
+    }
+    break
+  }
+
+  // 4. REVIEWS — review platforms or review language + name
+  const reviewKw = /\b(review|rating|rated|testimonial|feedback)\b/
+  const reviewUrls = /reddit\.com|producthunt\.com|g2\.com|capterra\.com|trustpilot\.com/
+  const reviews = texts.some((t, i) =>
+    t.includes(nameLower) && (reviewKw.test(t) || reviewUrls.test(urls[i]))
+  )
+
+  // 5. COMPARISONS — vs / alternatives + name
+  const compKw = /\b(vs\.?|versus|alternative|compared?\s+to|comparison)\b/
+  const comparisons = texts.some(t => t.includes(nameLower) && compKw.test(t))
+
+  return [
+    { label: LABELS[0], found: recognition,    rank: null,    grounded: true },
+    { label: LABELS[1], found: recommendation, rank: null,    grounded: true },
+    { label: LABELS[2], found: rankFound,       rank: rankNum, grounded: true },
+    { label: LABELS[3], found: reviews,         rank: null,    grounded: true },
+    { label: LABELS[4], found: comparisons,     rank: null,    grounded: true },
+  ]
 }
 
 // ── Gemini via Relay Worker (Smart Placement → Japan/US DC) ───
@@ -133,44 +195,38 @@ app.post('/v1/check', async (c) => {
     'Comparison searches',
   ]
 
-  const buildPrompt = (context?: string) => context
-    ? `Here are recent web search results for "${name}"${urlCtx}:\n\n${context}\n\n` +
-      `Based ONLY on these search results, evaluate the AI visibility of "${name}" as a software product.\n\n` +
-      `Reply in EXACTLY this format (5 lines only, no explanation):\n` +
-      `1. YES or NO\n2. YES or NO\n3. YES #N or NO\n4. YES or NO\n5. YES or NO\n\n` +
-      `Questions:\n` +
-      `1. RECOGNITION: Do these results confirm "${name}" exists as a real software product?\n` +
-      `2. RECOMMENDATION: Do results show "${name}" recommended as a top solution in its category?\n` +
-      `3. CATEGORY_RANK: Does "${name}" appear in "best of" or top-10 lists? If YES add " #N".\n` +
-      `4. REVIEWS: Do results mention reviews on Product Hunt, Reddit, G2, or tech blogs?\n` +
-      `5. COMPARISONS: Do results show "${name}" in "vs" or "alternatives" articles?`
-    : `Evaluate whether AI systems know the digital product named "${name}"${urlCtx}.\n\n` +
-      `"${name}" refers to a specific software product — NOT a generic concept.\n` +
-      `Only answer YES if you have direct, specific knowledge of "${name}" as a named product.\n\n` +
-      `Reply in EXACTLY this format (5 lines only, no explanation):\n` +
-      `1. YES or NO\n2. YES or NO\n3. YES #N or NO\n4. YES or NO\n5. YES or NO\n\n` +
-      `Questions:\n` +
-      `1. RECOGNITION: Do you have specific knowledge of "${name}" as a real software product?\n` +
-      `2. RECOMMENDATION: Is "${name}" recommended by AI tools as a top solution in its category?\n` +
-      `3. CATEGORY_RANK: Does "${name}" appear in "best of" or top-10 lists? If YES add " #N".\n` +
-      `4. REVIEWS: Does "${name}" have reviews on Product Hunt, Reddit, G2, or tech blogs?\n` +
-      `5. COMPARISONS: Has "${name}" appeared in "vs" or "alternatives to" comparison articles?`
+  // LLM fallback prompt (used only when Tavily unavailable — Steps 2b/2c)
+  const buildPrompt = () =>
+    `Evaluate whether AI systems know the digital product named "${name}"${urlCtx}.\n\n` +
+    `"${name}" refers to a specific software product — NOT a generic concept.\n` +
+    `Only answer YES if you have direct, specific knowledge of "${name}" as a named product.\n\n` +
+    `Reply in EXACTLY this format (5 lines only, no explanation):\n` +
+    `1. YES or NO\n2. YES or NO\n3. YES #N or NO\n4. YES or NO\n5. YES or NO\n\n` +
+    `Questions:\n` +
+    `1. RECOGNITION: Do you have specific knowledge of "${name}" as a real software product?\n` +
+    `2. RECOMMENDATION: Is "${name}" recommended by AI tools as a top solution in its category?\n` +
+    `3. CATEGORY_RANK: Does "${name}" appear in "best of" or top-10 lists? If YES add " #N".\n` +
+    `4. REVIEWS: Does "${name}" have reviews on Product Hunt, Reddit, G2, or tech blogs?\n` +
+    `5. COMPARISONS: Has "${name}" appeared in "vs" or "alternatives to" comparison articles?`
 
-  let results: CheckResult[]
+  let results: CheckResult[] = LABELS.map(label => ({ label, found: false, rank: null, grounded: false }))
   const colo = (c.req.raw as Request & { cf?: { colo?: string } }).cf?.colo ?? 'unknown'
   console.log(`[DC] ${colo}`)
 
   // ── Step 1: Tavily web search ─────────────────────────────
-  let tavilyContext: string | undefined
+  let tavilyResults: TavilyResult[] = []
   if (c.env.TAVILY_API_KEY) {
     try {
-      tavilyContext = await searchTavily(c.env.TAVILY_API_KEY, name)
-      console.log(`[Tavily] ok, ${tavilyContext.length} chars`)
+      // Enriched query: surfaces best-of lists, reviews, comparisons alongside recognition
+      const searchQuery = `${name} review best alternative comparison`
+      tavilyResults = await searchTavily(c.env.TAVILY_API_KEY, searchQuery)
+      console.log(`[Tavily] ok, ${tavilyResults.length} results`)
     } catch (err) {
       console.error('[Tavily] error:', err)
     }
   }
 
+  // parseLines: used only for LLM fallbacks (Step 2b/2c)
   const parseLines = (text: string, grounded: boolean): CheckResult[] => {
     const lines = text.split('\n').map(l => l.trim()).filter(l => /^\d\./.test(l))
     if (lines.length < 3) return []
@@ -185,26 +241,15 @@ app.post('/v1/check', async (c) => {
 
   let success = false
 
-  // ── Step 2a: Tavily context → CF Workers AI (llama-3.1-8b) ─
-  // No geographic restriction, free, deterministic with provided context
-  if (tavilyContext && c.env.AI) {
-    try {
-      const prompt = buildPrompt(tavilyContext)
-      const response = await c.env.AI.run('@cf/meta/llama-3.1-8b-instruct', {
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 120,
-        temperature: 0,
-      }) as { response?: string }
-      const text = response.response ?? ''
-      console.log(`[llama+tavily] raw="${text.slice(0, 200)}"`)
-      const parsed = parseLines(text, true)
-      if (parsed.length) { results = parsed; success = true }
-    } catch (err) {
-      console.error('[llama+tavily] error:', err)
-    }
+  // ── Step 2a: ENGINE-04 — Tavily pattern matching (no LLM) ──
+  // 100% deterministic. Runs whenever Tavily results are available.
+  if (tavilyResults.length) {
+    results = scoreFromTavily(tavilyResults, name)
+    console.log(`[ENGINE-04] pattern match: ${results.filter(r => r.found).length}/5 found`)
+    success = true
   }
 
-  // ── Step 2b: Gemini + Search Grounding (no Tavily / llama failed) ─
+  // ── Step 2b: Gemini + Search Grounding (Tavily unavailable) ─
   if (!success && c.env.GEMINI_API_KEY) {
     try {
       const prompt = buildPrompt()
@@ -217,7 +262,7 @@ app.post('/v1/check', async (c) => {
     }
   }
 
-  // ── Step 2c: llama fallback (no context, last resort) ─────
+  // ── Step 2c: llama fallback (last resort) ─────────────────
   if (!success) {
     try {
       const prompt = buildPrompt()
