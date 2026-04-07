@@ -83,7 +83,7 @@
       {
         "@type": "Question",
         "name": "How does the AI Visibility Score get calculated?",
-        "acceptedAnswer": { "@type": "Answer", "text": "The score is calculated across 5 dimensions: Recognition (does AI know your product exists), Recommendation (would AI recommend it as a top solution), Category Ranking (does it appear in best-of or top-10 lists), Reviews and Mentions (presence on Product Hunt, Reddit, G2), and Comparison Searches (appearance in vs or alternatives articles). Each dimension is worth 20 points, and a top-3 category rank adds a bonus." }
+        "acceptedAnswer": { "@type": "Answer", "text": "The score is calculated across 5 weighted dimensions: Recognition (20 pts), Recommendation (20 pts), Category Ranking (12 pts), Reviews and Mentions (20 pts), and Comparison Searches (10 pts). Maximum total is 82 points. Full methodology: pickedby.ai/blog/how-we-calculate-your-ai-visibility-score/" }
       },
       {
         "@type": "Question",
@@ -1306,7 +1306,7 @@
         <div class="faq-a">
           <p>Think of it like a <strong>Google Search Console — but for AI.</strong></p>
           <p style="margin-top:0.5rem;">When someone asks ChatGPT, Claude, or Perplexity <em>"what's a good Notion template for budgeting?"</em> — does your product show up?</p>
-          <p style="margin-top:0.5rem;">Most creators have no idea. pickedby.ai checks for you in <strong>10 seconds</strong> and gives you a score from 0 to 100 — your <strong>AI Visibility Score.</strong></p>
+          <p style="margin-top:0.5rem;">Most creators have no idea. pickedby.ai checks for you in <strong>10 seconds</strong> and gives you a score from 0 to 82 — your <strong>AI Visibility Score.</strong></p>
           <p style="margin-top:0.5rem;">No signup. No credit card. Completely free.</p>
         </div>
       </div>
@@ -1317,15 +1317,15 @@
           What is the AI Visibility Score? <span class="faq-icon">+</span>
         </button>
         <div class="faq-a">
-          <p>It's a number from <strong>0 to 100</strong> that tells you how well AI systems "know" your product.</p>
+          <p>It's a number from <strong>0 to 82</strong> that tells you how well AI systems "know" your product. It's calculated across 5 dimensions — each worth a different weight.</p>
           <div class="faq-badge-row" style="margin-top:0.75rem;">
-            <span class="faq-badge gold">81–100 · GOLD · PICKED BY AI</span>
-            <span class="faq-badge silver">61–80 · SILVER · SEEN BY AI</span>
-            <span class="faq-badge bronze">36–60 · BRONZE · NOTICED BY AI</span>
-            <span class="faq-badge none">0–35 · NO BADGE · Invisible</span>
+            <span class="faq-badge gold">66+ · GOLD · PICKED BY AI</span>
+            <span class="faq-badge silver">50–65 · SILVER · SEEN BY AI</span>
+            <span class="faq-badge bronze">30–49 · BRONZE · NOTICED BY AI</span>
+            <span class="faq-badge none">0–29 · NO BADGE · Invisible</span>
           </div>
-          <p style="margin-top:0.75rem;">A score of <strong>100</strong> means AI knows your product really well and is likely to mention it. A score of <strong>0</strong> means AI has basically never heard of you.</p>
-          <p style="margin-top:0.5rem;">Example: Figma scores 100. A brand-new unknown product scores 0.</p>
+          <p style="margin-top:0.75rem;">A score of <strong>82</strong> is the maximum — it means AI knows your product across every dimension. A score of <strong>0</strong> means AI has basically never heard of you.</p>
+          <p style="margin-top:0.5rem;">Example: Figma scores near the max. A brand-new unknown product scores 0.</p>
         </div>
       </div>
 
@@ -1367,13 +1367,13 @@
         <div class="faq-a">
           <p>We run your product through <strong>5 dimensions</strong> that reflect how AI systems actually discover and recommend products:</p>
           <ul>
-            <li><strong>Recognition</strong> — Does AI know your product exists as a specific named product?</li>
-            <li><strong>Recommendation</strong> — Would AI recommend it as a top solution in its category?</li>
-            <li><strong>Category Ranking</strong> — Does it appear in "best of" or top-10 lists?</li>
-            <li><strong>Reviews &amp; Mentions</strong> — Does it have a presence on Product Hunt, Reddit, G2?</li>
-            <li><strong>Comparison Searches</strong> — Has it appeared in "vs" or "alternatives to" articles?</li>
+            <li><strong>Recognition</strong> (20 pts) — Does AI know your product exists as a specific named product?</li>
+            <li><strong>Recommendation</strong> (20 pts) — Would AI recommend it as a top solution in its category?</li>
+            <li><strong>Category Ranking</strong> (12 pts) — Does it appear in "best of" or top-10 lists?</li>
+            <li><strong>Reviews &amp; Mentions</strong> (20 pts) — Does it have a presence on Product Hunt, Reddit, G2?</li>
+            <li><strong>Comparison Searches</strong> (10 pts) — Has it appeared in "vs" or "alternatives to" articles?</li>
           </ul>
-          <p style="margin-top:0.5rem;">Each dimension is worth 20 points. A top-3 category rank adds a bonus. The higher the score, the more consistently AI systems recognize and recommend your product.</p>
+          <p style="margin-top:0.5rem;">Total possible: <strong>82 points.</strong> The higher the score, the more consistently AI systems recognize and recommend your product. The full methodology is in our <a href="/blog/how-we-calculate-your-ai-visibility-score/" style="color:var(--yellow);">blog post</a>.</p>
         </div>
       </div>
 
@@ -1385,12 +1385,12 @@
         <div class="faq-a">
           <p>Badges are <strong>earned proof</strong> that AI systems recognize your product. Think of them like quality marks you can display on your store.</p>
           <div class="faq-badge-row" style="margin-top:0.6rem;">
-            <span class="faq-badge gold">GOLD — Score 81–100</span>
-            <span class="faq-badge silver">SILVER — Score 61–80</span>
-            <span class="faq-badge bronze">BRONZE — Score 36–60</span>
+            <span class="faq-badge gold">GOLD — Score 66+</span>
+            <span class="faq-badge silver">SILVER — Score 50–65</span>
+            <span class="faq-badge bronze">BRONZE — Score 30–49</span>
           </div>
-          <p style="margin-top:0.75rem;">Once you earn a badge, you'll get an <strong>embeddable snippet</strong> to add to your Gumroad, Etsy, or website. It tells buyers: <em>"This product is recognized by AI."</em></p>
-          <p style="margin-top:0.5rem;">Scores below 36 don't earn a badge — yet. That's when the tips we provide are most useful.</p>
+          <p style="margin-top:0.75rem;">Once you earn a badge, you'll get an <strong>embeddable HTML snippet</strong> to add to your Gumroad page, Etsy store, or website. It tells buyers: <em>"This product is recognized by AI."</em></p>
+          <p style="margin-top:0.5rem;">Scores below 30 don't earn a badge yet — that's where our improvement tips are most useful.</p>
         </div>
       </div>
 
@@ -1433,7 +1433,7 @@
           <ul>
             <li><strong>Write clear product copy</strong> — state exactly what your product does, who it's for, and when to use it</li>
             <li><strong>Get mentioned in context</strong> — Reddit threads, YouTube reviews, blog posts, comparison articles all feed AI training data</li>
-            <li><strong>Add an <code>llms.txt</code> file</strong> to your site — a simple text file AI crawlers can read (we'll generate this for you in Phase 2)</li>
+            <li><strong>Add an <code>llms.txt</code> file</strong> to your site — a simple text file that AI crawlers can read directly (auto-generation coming soon in the Dashboard)</li>
             <li><strong>Get on curated lists</strong> — "Best Notion templates for X" type roundups are gold for AI visibility</li>
             <li><strong>Consistent naming</strong> — use the same product name everywhere, so AI can connect the dots</li>
           </ul>
