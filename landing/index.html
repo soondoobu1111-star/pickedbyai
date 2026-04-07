@@ -19,7 +19,7 @@
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     // Default: block analytics until consent given (GDPR)
-    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied' });
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_personalization: 'denied' });
     gtag('js', new Date());
     gtag('config', 'G-2H007YWM9F');
     // Restore consent if already given
@@ -1129,7 +1129,7 @@
 
   <!-- Cookie Consent Banner -->
   <div id="cookieBanner" style="display:none;">
-    <p>We use cookies to analyze traffic (Google Analytics). No personal data is sold or shared. <a href="/privacy">Privacy Policy</a></p>
+    <p>We use Google Analytics (including Google Signals for aggregate cross-device statistics). Personalized advertising is disabled. No data is sold or shared with third parties. <a href="/privacy.html">Privacy Policy</a></p>
     <div class="cookie-btns">
       <button class="btn-cookie-accept" onclick="cookieAccept()">ACCEPT</button>
       <button class="btn-cookie-decline" onclick="cookieDecline()">DECLINE</button>
