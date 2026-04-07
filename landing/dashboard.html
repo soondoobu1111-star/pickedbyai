@@ -129,8 +129,6 @@
     <span><span style="color:#FFD700;">picked</span><span style="color:#fff;">by</span><span style="color:#FFD700;">.ai</span></span>
   </a>
   <div class="nav-links">
-    <a href="/blog/">Blog</a>
-    <a href="/llms-generator.html">Tools</a>
     <!-- Profile icon + dropdown (shown when logged in) -->
     <div id="nav-user" class="nav-profile" style="display:none;">
       <button class="nav-avatar-btn" onclick="toggleDropdown()" id="nav-avatar-btn">
@@ -327,8 +325,9 @@
             </div>
           </div>
 
-          <div id="badge-preview-wrap" style="margin-bottom:1rem;padding:0.75rem;background:#0a0a0a;border-radius:6px;border:1px solid #1e1e1e;min-height:48px;display:flex;align-items:center;justify-content:center;">
-            <div id="badge-preview-inner"></div>
+          <div id="badge-preview-wrap" style="margin-bottom:1rem;padding:0.75rem 1rem;background:#0a0a0a;border-radius:6px;border:1px solid #1e1e1e;">
+            <div style="font-size:0.65rem;color:#444;margin-bottom:0.6rem;text-transform:uppercase;letter-spacing:0.05em;">Preview</div>
+            <div id="badge-preview-inner" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-start;"></div>
           </div>
 
           <div id="badge-lock-notice" style="display:none;margin-bottom:0.75rem;padding:0.6rem 0.75rem;background:#0d0d0d;border:1px dashed #2a2a2a;border-radius:6px;font-size:0.75rem;color:#555;">
@@ -840,11 +839,21 @@
       copyBtn.style.cursor = hasVerified ? 'pointer' : 'not-allowed'
     }
 
-    const html = buildBadgeSnippet(effectiveTier, score, size, shape)
+    // Show GOLD / SILVER / BRONZE examples side by side
     const previewEl = document.getElementById('badge-preview-inner')
     const codeEl = document.getElementById('badge-code-display')
     if (!previewEl || !codeEl) return
-    previewEl.innerHTML = html
+    const tiers = ['gold', 'silver', 'bronze']
+    const exampleScores = { gold: 82, silver: 57, bronze: 40 }
+    previewEl.innerHTML = tiers.map(t => {
+      const exScore = t === effectiveTier ? score : exampleScores[t]
+      return `<div style="display:inline-flex;flex-direction:column;align-items:center;gap:0.35rem;">
+        ${buildBadgeSnippet(t, exScore, size, shape)}
+        <span style="font-size:0.6rem;color:#444;text-transform:uppercase;letter-spacing:0.04em;">${t}</span>
+      </div>`
+    }).join('')
+    // Copy HTML uses user's actual badge
+    const html = buildBadgeSnippet(effectiveTier, score, size, shape)
     codeEl.textContent = html
   }
 
@@ -908,7 +917,8 @@
         statusEl.innerHTML = '✓ Verified!'
         statusEl.style.color = '#4ade80'
         localStorage.setItem(`pba_verified_${block.dataset.product}`, '1')
-        block.querySelector('[data-verify-btn]').style.display = 'none'
+        block.style.display = 'none' // hide verify section entirely
+        updateBadgePreview() // unlock badge embed immediately
       } else {
         statusEl.textContent = '✗ Meta tag not found on page'
         statusEl.style.color = '#ef4444'
@@ -1146,8 +1156,8 @@
       </div>` : ''
 
     const verifySection = isMine && row.product_url ? `
-      <div id="verify-block-${idx}" data-verify-token="${verifyToken}" data-verify-url="${escHtml(row.product_url)}" data-product="${escHtml(row.product_name)}" style="margin-top:0.5rem;padding:0.6rem 0.8rem;background:#0d0d0d;border-radius:6px;border:1px ${isVerified?'solid #2a3a2a':'dashed #1e1e1e'};">
-        ${isVerified ? `<span style="font-size:0.7rem;color:#4ade80;">✓ Ownership verified</span>` : `
+      <div id="verify-block-${idx}" data-verify-token="${verifyToken}" data-verify-url="${escHtml(row.product_url)}" data-product="${escHtml(row.product_name)}" style="margin-top:0.5rem;padding:0.6rem 0.8rem;background:#0d0d0d;border-radius:6px;border:1px dashed #1e1e1e;${isVerified?'display:none;':''}">
+        ${isVerified ? '' : `
         <div style="font-size:0.7rem;color:#555;margin-bottom:0.4rem;">🔒 Verify ownership — add to your site's &lt;head&gt;:</div>
         <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;">
           <code style="flex:1;font-size:0.6rem;color:#777;background:#080808;padding:0.3rem 0.5rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">&lt;meta name="pickedby-site-verification" content="${verifyToken}"&gt;</code>
@@ -1442,6 +1452,11 @@
     </div>
   </div>
 </div>
+
+<!-- FOOTER -->
+<footer style="margin-top:3.5rem;text-align:center;padding:1.5rem 1rem 2rem;font-size:0.78rem;color:#333;border-top:1px solid #181818;">
+  <p>pickedby.ai &nbsp;·&nbsp; Built for digital creators &nbsp;·&nbsp; <a href="https://x.com/pickedbyAI" target="_blank" rel="noopener" style="color:#333;text-decoration:none;">X (Twitter)</a> &nbsp;·&nbsp; <a href="mailto:hello@pickedby.ai" style="color:#333;text-decoration:none;">hello@pickedby.ai</a> &nbsp;·&nbsp; <a href="/privacy" style="color:#333;text-decoration:none;">Privacy</a> &nbsp;·&nbsp; <a href="/terms" style="color:#333;text-decoration:none;">Terms</a></p>
+</footer>
 
 </body>
 </html>
