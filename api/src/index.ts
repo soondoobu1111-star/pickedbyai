@@ -295,6 +295,42 @@ app.post('/v1/check', async (c) => {
   return c.json({ results, score, product: name })
 })
 
+// ── FEAT-06: Welcome email via Brevo Transactional API ────────
+// Requires hello@pickedby.ai sender domain verified in Brevo (DNS: DKIM + SPF)
+async function sendWelcomeEmail(apiKey: string, email: string, product: string, score: number): Promise<void> {
+  const tier = score >= 81 ? 'Gold 🥇 PICKED BY AI'
+    : score >= 61 ? 'Silver 🥈 SEEN BY AI'
+    : score >= 36 ? 'Bronze 🥉 NOTICED BY AI'
+    : '— Not yet visible'
+  const html = `
+<div style="font-family:sans-serif;max-width:520px;margin:0 auto;background:#0a0a0a;color:#f5f5f5;padding:32px 24px;border-radius:8px;">
+  <div style="font-size:13px;font-weight:700;color:#FFD700;margin-bottom:20px;letter-spacing:0.05em;">pickedby.ai</div>
+  <h2 style="font-size:18px;margin:0 0 8px;color:#fff;">Your AI Visibility Score is in</h2>
+  <p style="color:#aaa;margin:0 0 20px;font-size:14px;">You checked <strong style="color:#fff;">${product}</strong>.</p>
+  <div style="background:#141414;border:1px solid #2a2a2a;border-radius:8px;padding:20px;text-align:center;margin-bottom:20px;">
+    <div style="font-size:48px;font-weight:800;color:#FFD700;">${score}</div>
+    <div style="font-size:13px;color:#888;">/ 100 · ${tier}</div>
+  </div>
+  <p style="font-size:13px;color:#888;margin:0 0 16px;">Sign in to your dashboard to track changes over time and get improvement tips.</p>
+  <a href="https://pickedby.ai/dashboard.html" style="display:inline-block;background:#FFD700;color:#0a0a0a;font-weight:700;font-size:14px;padding:10px 24px;border-radius:6px;text-decoration:none;">Open Dashboard →</a>
+  <p style="font-size:11px;color:#444;margin-top:24px;">You're receiving this because you checked a product on pickedby.ai. <a href="https://pickedby.ai/unsubscribe.html" style="color:#555;">Unsubscribe</a></p>
+</div>`
+
+  await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'api-key': apiKey },
+    body: JSON.stringify({
+      sender: { name: 'pickedby.ai', email: 'hello@pickedby.ai' },
+      to: [{ email }],
+      subject: `Your "${product}" AI Visibility Score: ${score}/100`,
+      htmlContent: html,
+    }),
+  }).then(async r => {
+    if (!r.ok) console.error('[Brevo SMTP] error:', r.status, await r.text())
+    else console.log('[Brevo SMTP] sent to', email)
+  }).catch(err => console.error('[Brevo SMTP] fetch error:', err))
+}
+
 // ── POST /v1/subscribe ────────────────────────────────────────
 // Adds email to Brevo contact list
 app.post('/v1/subscribe', async (c) => {
@@ -336,6 +372,9 @@ app.post('/v1/subscribe', async (c) => {
     return c.json({ error: 'Subscribe failed' }, 500)
   }
 
+  // Send welcome email (fire-and-forget — don't block response)
+  sendWelcomeEmail(c.env.BREVO_API_KEY, email, product ?? '', score ?? 0)
+
   // Save to Supabase (upsert — no duplicate emails, service key bypasses RLS)
   await fetch(`${SUPABASE_URL}/rest/v1/emails`, {
     method: 'POST',
@@ -354,6 +393,37 @@ app.post('/v1/subscribe', async (c) => {
   }).catch(err => console.error('Supabase error:', err))
 
   return c.json({ ok: true })
+})
+
+// ── POST /v1/verify ───────────────────────────────────────────
+// Checks product site for pickedby-site-verification meta tag
+app.post('/v1/verify', async (c) => {
+  let body: { url?: string; token?: string }
+  try { body = await c.req.json() } catch { return c.json({ error: 'Invalid JSON' }, 400) }
+
+  const { url, token } = body
+  if (!url || !token) return c.json({ error: 'url and token required' }, 400)
+  if (isBlockedUrl(url)) return c.json({ error: 'Invalid URL' }, 400)
+  if (!/^[a-zA-Z0-9]{8,24}$/.test(token)) return c.json({ error: 'Invalid token' }, 400)
+
+  try {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'pickedbyai-verify/1.0' },
+      signal: AbortSignal.timeout(5000),
+    })
+    if (!res.ok) return c.json({ verified: false })
+    const html = await res.text()
+    // Match both attribute orderings
+    const escaped = escapeRegex(token)
+    const p1 = new RegExp(`<meta[^>]+name=["']pickedby-site-verification["'][^>]+content=["']${escaped}["']`, 'i')
+    const p2 = new RegExp(`<meta[^>]+content=["']${escaped}["'][^>]+name=["']pickedby-site-verification["']`, 'i')
+    const verified = p1.test(html) || p2.test(html)
+    console.log(`[verify] url=${url} verified=${verified}`)
+    return c.json({ verified })
+  } catch (err) {
+    console.error('[verify] error:', err)
+    return c.json({ verified: false })
+  }
 })
 
 // ── POST /v1/unsubscribe ──────────────────────────────────────

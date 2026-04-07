@@ -49,7 +49,7 @@
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Web",
     "browserRequirements": "Requires JavaScript",
-    "featureList": "AI Visibility Score, Product recognition check, ChatGPT recommendation check, Perplexity recommendation check, Claude recommendation check, Embeddable AI badges, Score improvement tips",
+    "featureList": "AI Visibility Score, Product recognition check, Best-of recommendation check, Category ranking check, Reviews & mentions check, Comparison searches check, Embeddable AI badges, Score improvement tips",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "creator": { "@type": "Organization", "name": "THUNOVA", "email": "hello@pickedby.ai" }
   }
@@ -72,7 +72,7 @@
       {
         "@type": "Question",
         "name": "Which AI systems do you check?",
-        "acceptedAnswer": { "@type": "Answer", "text": "We use Gemini with Google Search Grounding to evaluate your product across 5 dimensions: AI recognition, best-of recommendations, category rankings, reviews and mentions, and comparison searches. Direct API queries to ChatGPT, Claude, and Perplexity are coming in Phase 2." }
+        "acceptedAnswer": { "@type": "Answer", "text": "We scan real-time web search results across 5 dimensions to calculate your score: AI recognition, best-of recommendations, category rankings, reviews and mentions, and comparison searches. These are the same signals that AI systems like ChatGPT, Claude, and Perplexity use when recommending products. Direct API queries to those platforms are coming in a future update." }
       },
       {
         "@type": "Question",
@@ -1316,15 +1316,15 @@
           Which AI systems do you check? <span class="faq-icon">+</span>
         </button>
         <div class="faq-a">
-          <p>We use <strong>Gemini with Google Search Grounding</strong> to evaluate your product across 5 dimensions:</p>
+          <p>We scan <strong>real-time web search results</strong> across 5 dimensions — the same signals AI systems use when deciding what to recommend:</p>
           <ul>
-            <li><strong>AI Recognition</strong> — does any AI system have specific knowledge of your product?</li>
-            <li><strong>Recommendation</strong> — is your product recommended as a top solution in its category?</li>
-            <li><strong>Category Ranking</strong> — do you appear in "best of" or top-10 lists?</li>
+            <li><strong>AI Recognition</strong> — does your product appear in search results as a real named product?</li>
+            <li><strong>Recommendation</strong> — is your product featured in "best of" or top solution lists?</li>
+            <li><strong>Category Ranking</strong> — do you appear in "top 10" or category rankings?</li>
             <li><strong>Reviews &amp; Mentions</strong> — are you on Product Hunt, Reddit, G2, or tech blogs?</li>
             <li><strong>Comparisons</strong> — do you appear in "vs" or "alternatives to" articles?</li>
           </ul>
-          <p style="margin-top:0.5rem;">Direct API queries to ChatGPT, Claude, and Perplexity are coming in the next update.</p>
+          <p style="margin-top:0.5rem;">Direct API queries to ChatGPT, Claude, and Perplexity are coming in a future update.</p>
         </div>
       </div>
 

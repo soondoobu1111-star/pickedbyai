@@ -423,6 +423,69 @@
     }
   }
 
+  // ── NEW-04: Badge Embed — copy embeddable HTML to clipboard ─
+  function copyBadgeHtml(btn, score) {
+    let color, bg, text
+    if (score >= 81)      { color = '#FFD700'; bg = '#1a1400'; text = 'PICKED BY AI ✓' }
+    else if (score >= 61) { color = '#C0C0C0'; bg = '#141414'; text = 'SEEN BY AI' }
+    else                  { color = '#CD7F32'; bg = '#1a0f00'; text = 'NOTICED BY AI' }
+    const html = `<a href="https://pickedby.ai" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none;background:${bg};border:1.5px solid ${color};border-radius:6px;padding:5px 12px;font-family:sans-serif;"><span style="color:${color};font-size:11px;font-weight:700;letter-spacing:0.05em;">${text}</span></a>`
+    navigator.clipboard.writeText(html).then(() => {
+      const orig = btn.textContent
+      btn.textContent = '✓ Copied!'
+      btn.style.color = '#4ade80'; btn.style.borderColor = '#4ade80'
+      setTimeout(() => { btn.textContent = orig; btn.style.color = '#FFD700'; btn.style.borderColor = '#FFD700' }, 2000)
+    }).catch(() => alert('Copy failed. Please select and copy manually.'))
+  }
+
+  // ── VERIFY-01: Ownership Verification ────────────────────
+  function genVerifyToken(userId, productName) {
+    const raw = (userId || '').slice(0, 8) + (productName || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 12)
+    return btoa(raw).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20).toLowerCase()
+  }
+
+  function copyVerifyTag(idx) {
+    const block = document.getElementById(`verify-block-${idx}`)
+    if (!block) return
+    const token = block.dataset.verifyToken
+    const tag = `<meta name="pickedby-site-verification" content="${token}">`
+    const btn = block.querySelector('[data-copy-verify]')
+    navigator.clipboard.writeText(tag).then(() => {
+      if (btn) { const o = btn.textContent; btn.textContent = '✓ Copied'; setTimeout(() => btn.textContent = o, 2000) }
+    }).catch(() => alert('Copy failed'))
+  }
+
+  async function runVerify(idx) {
+    const block = document.getElementById(`verify-block-${idx}`)
+    if (!block) return
+    const token = block.dataset.verifyToken
+    const url = block.dataset.verifyUrl
+    const statusEl = document.getElementById(`verify-status-${idx}`)
+    if (!statusEl) return
+    statusEl.textContent = 'Checking...'
+    statusEl.style.color = '#888'
+    try {
+      const res = await fetch(`${API_URL}/v1/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, token })
+      })
+      const data = await res.json()
+      if (data.verified) {
+        statusEl.innerHTML = '✓ Verified!'
+        statusEl.style.color = '#4ade80'
+        localStorage.setItem(`pba_verified_${block.dataset.product}`, '1')
+        block.querySelector('[data-verify-btn]').style.display = 'none'
+      } else {
+        statusEl.textContent = '✗ Meta tag not found on page'
+        statusEl.style.color = '#ef4444'
+      }
+    } catch {
+      statusEl.textContent = 'Error — check connection and try again'
+      statusEl.style.color = '#ef4444'
+    }
+  }
+
   // ── Share tweet for product list item ──────────────────────
   function shareTweetProduct(score, name) {
     let tier = score >= 81 ? '🥇 PICKED BY AI' : score >= 61 ? '🥈 SEEN BY AI' : score >= 36 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
@@ -477,6 +540,8 @@
 
       const results = row.results || []
       const hasUngrounded = results.some(r => !r.grounded)
+      const verifyToken = genVerifyToken(currentUser?.id || '', row.product_name)
+      const isVerified = localStorage.getItem(`pba_verified_${row.product_name}`) === '1'
       const dimsHtml = results.map(r => `
         <div style="display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0;border-bottom:1px solid #1a1a1a;">
           <span style="font-size:0.88rem;color:#aaa;">${escHtml(r.label || '')}</span>
@@ -511,6 +576,33 @@
             </div>
             ${dimsHtml}
             ${hasUngrounded ? `<p style="font-size:0.72rem;color:#555;margin-top:0.75rem;">ℹ️ Results based on AI training data only (real-time search unavailable in your region).</p>` : ''}
+
+            ${score >= 36 ? `
+            <div style="margin-top:0.85rem;padding:0.6rem 0.8rem;background:#0d0d0d;border-radius:6px;border:1px solid #1e1e1e;">
+              <div style="font-size:0.7rem;color:#555;margin-bottom:0.4rem;">📎 Embed this badge on your page</div>
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <code style="flex:1;font-size:0.62rem;color:#555;background:#080808;padding:0.3rem 0.5rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">&lt;a href="https://pickedby.ai"&gt;${score>=81?'PICKED BY AI ✓':score>=61?'SEEN BY AI':'NOTICED BY AI'}&lt;/a&gt;</code>
+                <button onclick="copyBadgeHtml(this,${score});event.stopPropagation()" style="flex-shrink:0;background:none;border:1px solid #FFD700;color:#FFD700;padding:0.3rem 0.65rem;border-radius:4px;cursor:pointer;font-size:0.7rem;font-family:inherit;white-space:nowrap;">Copy HTML</button>
+              </div>
+            </div>
+            ` : ''}
+
+            ${row.product_url ? `
+            <div id="verify-block-${idx}" data-verify-token="${verifyToken}" data-verify-url="${escHtml(row.product_url)}" data-product="${escHtml(row.product_name)}" style="margin-top:0.5rem;padding:0.6rem 0.8rem;background:#0d0d0d;border-radius:6px;border:1px ${isVerified?'solid #2a3a2a':'dashed #1e1e1e'};">
+              ${isVerified ? `<span style="font-size:0.7rem;color:#4ade80;">✓ Ownership verified</span>` : `
+              <div style="font-size:0.7rem;color:#555;margin-bottom:0.4rem;">🔒 Verify ownership — add to your site's &lt;head&gt;:</div>
+              <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;">
+                <code style="flex:1;font-size:0.6rem;color:#777;background:#080808;padding:0.3rem 0.5rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">&lt;meta name="pickedby-site-verification" content="${verifyToken}"&gt;</code>
+                <button data-copy-verify onclick="copyVerifyTag(${idx});event.stopPropagation()" style="flex-shrink:0;background:none;border:1px solid #444;color:#888;padding:0.3rem 0.6rem;border-radius:4px;cursor:pointer;font-size:0.68rem;font-family:inherit;white-space:nowrap;">Copy</button>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <button data-verify-btn onclick="runVerify(${idx});event.stopPropagation()" style="background:none;border:1px solid #4ade80;color:#4ade80;padding:0.3rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.7rem;font-family:inherit;">✓ I've added it — Verify Now</button>
+                <span id="verify-status-${idx}" style="font-size:0.7rem;"></span>
+              </div>
+              `}
+            </div>
+            ` : ''}
+
             <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;align-items:center;">
               <button id="refresh-btn-${idx}" onclick="refreshProduct('${escHtml(row.product_name).replace(/'/g,"\\'")}','${(row.product_url||'').replace(/'/g,"\\'")}','${row.created_at}',${idx})"
                 style="background:none;border:1px solid ${isToday?'#333':'#FFD700'};color:${isToday?'#444':'#FFD700'};padding:0.5rem 1rem;border-radius:0.375rem;cursor:${isToday?'not-allowed':'pointer'};font-size:0.82rem;font-family:inherit;"
