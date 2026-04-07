@@ -1154,7 +1154,7 @@
 
     return `
       <div style="border-bottom:1px solid #1f1f1f;">
-        <div onclick="toggleDetail(${idx})" style="cursor:pointer;${gridCols}align-items:center;padding:0.8rem 0;transition:background 0.15s;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
+        <div onclick="toggleDetail(${idx})" style="cursor:pointer;${gridCols}align-items:center;padding:0.8rem 1rem;transition:background 0.15s;border-radius:6px;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
           <div>
             <div style="font-size:0.95rem;font-weight:600;">${escHtml(row.product_name)}</div>
             ${row.product_url ? `<div style="font-size:0.75rem;color:#555;">${escHtml(row.product_url)}</div>` : ''}
