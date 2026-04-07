@@ -71,6 +71,26 @@
     .result-row:last-child { border-bottom: none; }
     .dot-yes { color: #4ade80; }
     .dot-no { color: #ef4444; }
+    /* Dimension tooltip */
+    .dim-tip {
+      display:inline-flex;align-items:center;justify-content:center;
+      width:13px;height:13px;border-radius:50%;
+      background:#1e1e1e;border:1px solid #333;
+      color:#444;font-size:8px;font-weight:700;line-height:1;
+      cursor:help;margin-left:5px;vertical-align:middle;
+      position:relative;flex-shrink:0;
+    }
+    .dim-tip::after {
+      content:attr(data-tip);
+      position:absolute;left:18px;top:50%;transform:translateY(-50%);
+      background:#141414;border:1px solid #2a2a2a;color:#bbb;
+      padding:8px 11px;border-radius:7px;font-size:11px;font-weight:400;
+      width:210px;white-space:normal;line-height:1.5;
+      opacity:0;pointer-events:none;z-index:200;
+      transition:opacity 0.15s;
+    }
+    .dim-tip:hover::after { opacity:1; }
+    .dim-no-hint { font-size:0.7rem;color:#444;margin-top:2px; }
   </style>
 </head>
 <body>
@@ -279,14 +299,7 @@
 
     // Dimensions
     const dims = document.getElementById('result-dimensions')
-    dims.innerHTML = (results || []).map(r => `
-      <div class="result-row">
-        <span style="font-size:0.82rem;color:#aaa;">${r.label}</span>
-        <span style="font-size:0.85rem;font-weight:600;" class="${r.found ? 'dot-yes' : 'dot-no'}">
-          ${r.found ? '✓ YES' : '✗ NO'}
-        </span>
-      </div>
-    `).join('')
+    dims.innerHTML = (results || []).map(r => renderDimRow(r, true)).join('')
 
     // Grounding note
     const hasUngrounded = (results || []).some(r => !r.grounded)
@@ -542,12 +555,7 @@
       const hasUngrounded = results.some(r => !r.grounded)
       const verifyToken = genVerifyToken(currentUser?.id || '', row.product_name)
       const isVerified = localStorage.getItem(`pba_verified_${row.product_name}`) === '1'
-      const dimsHtml = results.map(r => `
-        <div style="display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0;border-bottom:1px solid #1a1a1a;">
-          <span style="font-size:0.88rem;color:#aaa;">${escHtml(r.label || '')}</span>
-          <span style="font-size:0.88rem;font-weight:600;${r.found ? 'color:#4ade80;' : 'color:#ef4444;'}">${r.found ? '✓ YES' : '✗ NO'}</span>
-        </div>
-      `).join('')
+      const dimsHtml = results.map(r => renderDimRow(r, false)).join('')
 
       return `
         <div style="border-bottom:1px solid #1f1f1f;">
@@ -719,6 +727,57 @@
         },
       }
     })
+  }
+
+  // ── Dimension metadata ───────────────────────────────────────
+  const DIM_META = {
+    'Direct name search': {
+      tip: 'AI tools (ChatGPT, Claude, Gemini, Perplexity) recognize your product by name. The baseline — if AI doesn\'t know you exist, nothing else matters.',
+      hint: 'Add your product to directories, publish a blog post, or get mentioned on any indexed page.',
+    },
+    'Best-of recommendation': {
+      tip: 'Your product appears in AI-generated "best of" or "top recommended" lists for its category. This directly drives AI referral traffic.',
+      hint: 'Get listed on curated directories (AlternativeTo, SaaSHub, ProductHunt) and earn "best tool" mentions in review articles.',
+    },
+    'Category ranking': {
+      tip: 'Your product appears in numbered top-10 or ranked lists. High-rank citations increase your recommendation weight in AI responses.',
+      hint: 'Reach out for inclusion in "Top X tools for Y" roundup articles. Guest posts and PR mentions help too.',
+    },
+    'Reviews & mentions': {
+      tip: 'User reviews on Product Hunt, Reddit, G2, or tech blogs act as trust signals. More credible reviews = higher AI confidence in recommending you.',
+      hint: 'Encourage users to post on Product Hunt or Reddit. Even a few genuine reviews significantly boost this signal.',
+    },
+    'Comparison searches': {
+      tip: '"X vs Y" and "alternatives to X" articles signal market relevance. Being compared means AI treats your product as a legitimate category player.',
+      hint: 'Create comparison content on your own blog (e.g. "vs. competitors"). Getting listed on AlternativeTo helps immediately.',
+    },
+  }
+
+  function renderDimRow(r, compact = false) {
+    const meta = DIM_META[r.label] || {}
+    const tip = (meta.tip || '').replace(/'/g, '&#39;')
+    const hint = meta.hint || ''
+    const rankSuffix = (r.found && r.rank) ? ` <span style="color:#888;font-weight:400;font-size:0.78em;">#${r.rank}</span>` : ''
+    const labelStyle = compact
+      ? 'font-size:0.82rem;color:#aaa;display:flex;align-items:center;gap:2px;'
+      : 'font-size:0.88rem;color:#aaa;display:flex;align-items:center;gap:2px;'
+    const valStyle = compact
+      ? 'font-size:0.85rem;font-weight:600;'
+      : 'font-size:0.88rem;font-weight:600;'
+    const rowStyle = compact
+      ? 'display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid #1e1e1e;'
+      : 'display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0;border-bottom:1px solid #1a1a1a;'
+    return `
+      <div style="${rowStyle}">
+        <div>
+          <span style="${labelStyle}">
+            ${compact ? r.label : escHtml(r.label || '')}
+            ${tip ? `<span class="dim-tip" data-tip="${tip}">?</span>` : ''}
+          </span>
+          ${!r.found && hint ? `<div class="dim-no-hint">${hint}</div>` : ''}
+        </div>
+        <span style="${valStyle}${r.found ? 'color:#4ade80;' : 'color:#ef4444;'}">${r.found ? '✓ YES' : '✗ NO'}${rankSuffix}</span>
+      </div>`
   }
 
   function escHtml(s) {
