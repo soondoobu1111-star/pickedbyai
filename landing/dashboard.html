@@ -254,6 +254,7 @@
       const data = await res.json()
       showResult(data)
       lastCheckResult = { product, url: url || null, score: data.score, results: data.results }
+      await checkAlreadySaved(product)
     } catch (err) {
       alert('Check failed. Please try again.')
     } finally {
@@ -348,6 +349,19 @@
   // ── autoSave for Refresh Score (history panel only) ────────
   async function autoSave() {
     await saveHistory()
+  }
+
+  // ── Check if today's entry already exists (after runCheck) ──
+  async function checkAlreadySaved(product) {
+    if (!currentUser) return
+    const today = new Date().toISOString().split('T')[0]
+    const { data } = await sb
+      .from('scores').select('id')
+      .eq('user_id', currentUser.id)
+      .eq('product_name', product)
+      .gte('created_at', today + 'T00:00:00.000Z')
+      .limit(1)
+    if (data && data.length > 0) setSaved()
   }
 
   function setSaved() {
