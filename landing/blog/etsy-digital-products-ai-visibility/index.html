@@ -70,42 +70,51 @@
     a { color: var(--yellow); text-decoration: none; }
     a:hover { text-decoration: underline; }
     .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); max-width: 1280px; margin: 0 auto; }
-    .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: var(--yellow); text-decoration: none; }
+    .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: var(--yellow); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .nav-logo svg { flex-shrink: 0; }
     .nav-links { display: flex; gap: 1.5rem; font-size: 0.95rem; }
     .nav-links a { color: var(--muted); }
     .nav-links a:hover { color: var(--text); text-decoration: none; }
-    .nav-cta { font-family: 'Press Start 2P', monospace; font-size: 0.4rem; background: var(--yellow); color: #000; padding: 0.5rem 0.9rem; text-decoration: none; }
+    .dashboard-btn { color: #000 !important; background: var(--yellow) !important; border: none !important; padding: 0.45rem 1.1rem !important; border-radius: 6px !important; font-weight: 700 !important; font-size: 0.88rem !important; letter-spacing: 0.03em !important; text-decoration: none !important; box-shadow: 0 0 12px rgba(255,215,0,0.35) !important; }
     .article-wrap { max-width: 680px; margin: 0 auto; padding: 3rem 2rem 5rem; }
     .article-tag { font-family: 'Press Start 2P', monospace; font-size: 0.38rem; color: var(--yellow); letter-spacing: 0.1em; margin-bottom: 1.25rem; }
     .article-tag a { color: var(--yellow); text-decoration: none; }
-    h1 { font-size: 2.2rem; line-height: 1.25; margin-bottom: 1.5rem; font-weight: 800; letter-spacing: -0.5px; }
-    h2 { font-size: 1.6rem; margin-top: 2.5rem; margin-bottom: 1rem; font-weight: 700; }
-    h3 { font-size: 1.25rem; margin-top: 2rem; margin-bottom: 0.8rem; font-weight: 700; }
-    p { margin-bottom: 1.25rem; color: var(--text); }
-    ul, ol { margin-left: 2rem; margin-bottom: 1.25rem; }
-    li { margin-bottom: 0.5rem; }
-    strong { color: var(--yellow); font-weight: 600; }
+    .article-meta { font-size: 0.78rem; color: #555; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    h1 { font-size: 1.9rem; font-weight: 800; line-height: 1.25; margin-bottom: 1.25rem; }
+    h2 { font-size: 1.2rem; font-weight: 700; margin: 2.5rem 0 0.85rem; color: var(--text); }
+    h3 { font-size: 1rem; font-weight: 700; margin: 1.75rem 0 0.75rem; color: var(--text); }
+    p { font-size: 0.95rem; color: #ccc; margin-bottom: 1.15rem; line-height: 1.8; }
+    ul, ol { margin: 0.5rem 0 1.25rem 1.2rem; }
+    li { font-size: 0.95rem; color: #ccc; margin-bottom: 0.65rem; line-height: 1.75; }
+    strong { color: var(--text); }
+    em { color: var(--muted); font-style: normal; }
     code { background: var(--bg2); padding: 0.15rem 0.35rem; border-radius: 3px; font-family: monospace; font-size: 0.9em; }
-    .cta-btn { display: inline-block; background: var(--yellow); color: #000; padding: 0.75rem 1.5rem; margin-top: 1rem; font-weight: 600; text-decoration: none; border-radius: 4px; }
-    .cta-btn:hover { background: var(--yellow2); text-decoration: none; }
-    .footer { max-width: 1280px; margin: 0 auto; padding: 2rem; border-top: 1px solid var(--border); text-align: center; font-size: 0.85rem; color: var(--muted); }
+    .cta-btn { display: inline-block; background: var(--yellow); color: #000; font-family: 'Press Start 2P', monospace; font-size: 0.42rem; padding: 0.75rem 1.5rem; box-shadow: 3px 3px 0 var(--yellow2); text-decoration: none; }
+    .cta-btn:hover { text-decoration: none; }
+    footer { border-top: 1px solid var(--border); padding: 1.5rem 2rem; text-align: center; font-size: 0.75rem; color: #444; }
+    footer a { color: #555; text-decoration: underline; }
+    @media (max-width: 600px) {
+      .nav { padding: 1rem; }
+      .article-wrap { padding: 2rem 1rem 4rem; }
+      h1 { font-size: 1.4rem; }
+    }
   </style>
 </head>
 <body>
   <nav class="nav">
-    <a href="/" class="nav-logo">pickedby.ai</a>
+    <a href="/" class="nav-logo">
+      <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+      <span><span style="color:var(--yellow);">picked</span><span style="color:#fff;">by</span><span style="color:var(--yellow);">.ai</span></span>
+    </a>
     <div class="nav-links">
-      <a href="/">Home</a>
-      <a href="/blog/">Blog</a>
-      <a href="/">Dashboard</a>
+      <a href="/dashboard.html" class="dashboard-btn">Dashboard</a>
     </div>
   </nav>
 
   <div class="article-wrap">
-    <div class="article-tag"><a href="/blog/">← Back to Blog</a></div>
-
+    <div class="article-tag"><a href="/blog/">BLOG</a> · GEO · CREATOR</div>
     <h1>Etsy Digital Products AI Visibility</h1>
-    <p style="color: var(--muted); font-size: 0.95rem; margin-bottom: 2rem;">April 8, 2026 · 6 min read</p>
+    <div class="article-meta">April 8, 2026 · 6 min read · by pickedby.ai</div>
 
     <p>You design beautiful digital products. Your Etsy shop has stellar reviews and 4.9 stars. You're consistently in Etsy's \"Trending\" section. But here's what you're missing: <strong>When people ask AI what to buy, your designs aren't on the list.</strong></p>
 
