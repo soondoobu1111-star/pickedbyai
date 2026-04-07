@@ -246,7 +246,36 @@ app.post('/v1/check', async (c) => {
   if (tavilyResults.length) {
     results = scoreFromTavily(tavilyResults, name)
     console.log(`[ENGINE-04] pattern match: ${results.filter(r => r.found).length}/5 found`)
-    success = true
+
+    // If product not recognized in enriched query (unknown brand), retry with targeted query.
+    // Enriched query ("X review best alternative") biases toward popular products.
+    // Targeted query uses domain hint (e.g. "perceptdot perceptdot.com") to surface the actual site.
+    if (!results[0].found && c.env.TAVILY_API_KEY) {
+      try {
+        // Build targeted query: if URL provided, extract domain; else use name.com
+        let domain = ''
+        if (url) {
+          try { domain = new URL(url).hostname.replace(/^www\./, '') } catch {}
+        }
+        const targetedQuery = domain ? `${name} ${domain}` : `${name} ${name}.com`
+        const bareResults = await searchTavily(c.env.TAVILY_API_KEY, targetedQuery)
+        console.log(`[ENGINE-04] targeted retry "${targetedQuery}", ${bareResults.length} results`)
+        const bareScored = scoreFromTavily(bareResults, name)
+        if (bareScored[0].found) {
+          results = bareScored
+          console.log(`[ENGINE-04] targeted retry hit: ${bareScored.filter(r => r.found).length}/5`)
+        }
+      } catch (err) {
+        console.error('[ENGINE-04] targeted retry error:', err)
+      }
+    }
+
+    // Only mark success if product is recognized — otherwise fall through to Gemini
+    if (results[0].found) {
+      success = true
+    } else {
+      console.log(`[ENGINE-04] not recognized, falling through to Gemini`)
+    }
   }
 
   // ── Step 2b: Gemini + Search Grounding (Tavily unavailable) ─
