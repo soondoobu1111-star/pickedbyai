@@ -675,11 +675,12 @@
       borderColor: CHART_PALETTE[i],
       backgroundColor: 'transparent',
       pointBackgroundColor: CHART_PALETTE[i],
-      pointRadius: allDays.length < 8 ? 6 : 4,
-      pointHoverRadius: 8,
+      pointRadius: 3,
+      pointHoverRadius: 5,
       borderWidth: 2,
       tension: 0.3,
       spanGaps: false,
+      clip: false,
     }))
 
     wrap.style.display = 'block'
@@ -690,6 +691,7 @@
       data: { labels: allDays, datasets },
       options: {
         responsive: true,
+        layout: { padding: { top: 6, bottom: 2 } },
         plugins: {
           legend: {
             display: products.length > 1,
