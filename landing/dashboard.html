@@ -91,6 +91,26 @@
     }
     .dim-tip:hover::after { opacity:1; }
     .dim-no-hint { font-size:0.7rem;color:#444;margin-top:2px; }
+    /* 3탭 바 */
+    .dash-tabs-bar {
+      display: flex; gap: 2px; border-bottom: 1px solid #1f1f1f;
+      margin-bottom: 1.5rem;
+    }
+    .dash-tab {
+      background: none; border: none; border-bottom: 2px solid transparent;
+      padding: 0.65rem 1.25rem; font-size: 0.85rem; color: #666;
+      cursor: pointer; font-family: inherit; font-weight: 500;
+      transition: all 0.15s; margin-bottom: -1px;
+    }
+    .dash-tab:hover { color: #aaa; }
+    .dash-tab.active { color: #FFD700; border-bottom-color: #FFD700; }
+    /* 섹션 헤더 */
+    .section-header { margin-bottom: 1.5rem; }
+    .section-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .section-sub { font-size: 0.78rem; color: #555; }
+    /* 툴즈 카드 */
+    .tools-card { background: #0f0f0f; border: 1px solid #222; border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+    .coming-soon-badge { font-size: 0.65rem; color: #555; border: 1px solid #333; padding: 1px 6px; border-radius: 10px; }
   </style>
 </head>
 <body>
@@ -112,6 +132,8 @@
       <div class="nav-dropdown" id="nav-dropdown">
         <div class="nav-dropdown-email" id="nav-email"></div>
         <button onclick="signOut()">Sign out</button>
+        <div style="border-top:1px solid #2a2a2a;margin:4px 0;"></div>
+        <button onclick="deleteAccount()" style="color:#ef4444;">Delete Account</button>
       </div>
     </div>
   </div>
@@ -166,36 +188,178 @@
       <button class="btn-ghost" id="btn-share-tweet" onclick="shareTweet()" style="font-size:0.85rem;">
         𝕏 Share Score
       </button>
-      <button class="btn-ghost" id="btn-save-history" onclick="manualSave()" style="font-size:0.85rem;">
-        + Add to History
+      <button class="btn-ghost" id="btn-save-mine" onclick="saveToMine()" style="font-size:0.85rem;">
+        + Save to My Products
+      </button>
+      <button class="btn-ghost" id="btn-save-comp" onclick="saveToComp()" style="font-size:0.85rem;">
+        + Save as Competitor
       </button>
     </div>
   </div>
 
-  <!-- History -->
+  <!-- History card with 3-tab structure -->
   <div class="card">
-    <div class="flex items-center justify-between mb-4">
-      <h2 style="font-size:0.95rem;font-weight:700;">Score History</h2>
-      <span style="font-size:0.75rem;color:#555;">Last 30 days</span>
+
+    <!-- Tab bar -->
+    <div class="dash-tabs-bar">
+      <button class="dash-tab active" onclick="switchTab('mine')">My Products</button>
+      <button class="dash-tab" onclick="switchTab('comp')">Competitors</button>
+      <button class="dash-tab" onclick="switchTab('tools')">Tools</button>
     </div>
-    <!-- Trend Chart (visible when ≥2 data points) -->
-    <div id="trend-chart-wrap" style="display:none;margin-bottom:1.5rem;">
-      <canvas id="trend-chart" height="120"></canvas>
-    </div>
-    <div id="history-loading" class="text-center py-8" style="color:#555;">
-      <div class="spinner mx-auto mb-2"></div>
-      <p style="font-size:0.8rem;">Loading history...</p>
-    </div>
-    <div id="history-empty" style="display:none;text-align:center;padding:2rem 0;color:#555;">
-      <p style="font-size:0.85rem;">No checks yet. Run your first check above.</p>
-    </div>
-    <div id="history-table" style="display:none;">
-      <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid #2a2a2a;font-size:0.75rem;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
-        <span>Product</span><span style="text-align:center;">Score</span><span style="text-align:center;">Badge</span><span style="text-align:right;">Date</span>
+
+    <!-- ── Tab 1: My Products ── -->
+    <div id="tab-mine">
+      <div class="section-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">
+        <div>
+          <div class="section-title">My Products</div>
+          <div class="section-sub">Track and verify products you own</div>
+        </div>
+        <span id="mine-slot-count" style="font-size:0.75rem;color:#555;"></span>
       </div>
-      <div id="history-rows"></div>
+
+      <!-- Trend Chart (My Products only) -->
+      <div id="trend-chart-wrap" style="display:none;margin-bottom:1.5rem;">
+        <canvas id="trend-chart" height="120"></canvas>
+      </div>
+
+      <div id="mine-loading" class="text-center py-8" style="color:#555;">
+        <div class="spinner mx-auto mb-2"></div>
+        <p style="font-size:0.8rem;">Loading...</p>
+      </div>
+
+      <!-- Empty state -->
+      <div id="mine-empty" style="display:none;text-align:center;padding:3rem 1rem;">
+        <div style="font-size:2rem;margin-bottom:1rem;">🎯</div>
+        <div style="font-weight:700;margin-bottom:0.5rem;">Track your own products</div>
+        <p style="color:#666;font-size:0.85rem;margin-bottom:1.5rem;max-width:320px;margin-left:auto;margin-right:auto;">
+          Check your product's AI visibility, verify ownership, and embed a badge on your site.
+        </p>
+        <button class="btn-primary" onclick="document.getElementById('input-product').focus();window.scrollTo(0,0)">
+          + Add My First Product
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div id="mine-table" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid #2a2a2a;font-size:0.75rem;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+          <span>Product</span><span style="text-align:center;">Score</span><span style="text-align:center;">Badge</span><span style="text-align:center;">Status</span><span style="text-align:right;">Date</span>
+        </div>
+        <div id="mine-rows"></div>
+      </div>
     </div>
-  </div>
+
+    <!-- ── Tab 2: Competitors ── -->
+    <div id="tab-comp" style="display:none;">
+      <div class="section-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">
+        <div>
+          <div class="section-title">Competitors</div>
+          <div class="section-sub">Monitor competitor AI visibility</div>
+        </div>
+        <span id="comp-search-count" style="font-size:0.75rem;color:#555;"></span>
+      </div>
+
+      <div id="comp-loading" class="text-center py-8" style="color:#555;display:none;">
+        <div class="spinner mx-auto mb-2"></div>
+        <p style="font-size:0.8rem;">Loading...</p>
+      </div>
+
+      <!-- Empty state -->
+      <div id="comp-empty" style="display:none;text-align:center;padding:3rem 1rem;">
+        <div style="font-size:2rem;margin-bottom:1rem;">🔍</div>
+        <div style="font-weight:700;margin-bottom:0.5rem;">Monitor competitors</div>
+        <p style="color:#666;font-size:0.85rem;margin-bottom:1.5rem;max-width:320px;margin-left:auto;margin-right:auto;">
+          Check any competitor's product to compare AI visibility scores.
+        </p>
+        <button class="btn-primary" onclick="document.getElementById('input-product').focus();window.scrollTo(0,0)">
+          + Check a Competitor
+        </button>
+      </div>
+
+      <!-- Table -->
+      <div id="comp-table" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid #2a2a2a;font-size:0.75rem;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+          <span>Product</span><span style="text-align:center;">Score</span><span style="text-align:center;">Badge</span><span style="text-align:right;">Date</span>
+        </div>
+        <div id="comp-rows"></div>
+      </div>
+    </div>
+
+    <!-- ── Tab 3: Tools ── -->
+    <div id="tab-tools" style="display:none;">
+      <div class="section-header">
+        <div class="section-title">Tools</div>
+      </div>
+
+      <!-- Badge Embed -->
+      <div class="tools-card">
+        <div style="font-size:0.9rem;font-weight:700;margin-bottom:0.75rem;">Badge Embed</div>
+        <p style="font-size:0.8rem;color:#666;margin-bottom:1rem;">Copy the HTML badge to embed on your site. Based on your highest-scoring product.</p>
+
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+          <div>
+            <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Tier</div>
+            <select id="badge-tier-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
+              <option value="auto">Auto (from My Products)</option>
+              <option value="gold">Gold — Picked by AI</option>
+              <option value="silver">Silver — Seen by AI</option>
+              <option value="bronze">Bronze — Noticed by AI</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Size</div>
+            <select id="badge-size-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
+              <option value="L">Large</option>
+              <option value="M" selected>Medium</option>
+              <option value="S">Small</option>
+            </select>
+          </div>
+          <div>
+            <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Shape</div>
+            <select id="badge-shape-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
+              <option value="Rectangle" selected>Rectangle</option>
+              <option value="Square">Square</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Preview -->
+        <div id="badge-preview-wrap" style="margin-bottom:1rem;padding:0.75rem;background:#0a0a0a;border-radius:6px;border:1px solid #1e1e1e;min-height:48px;display:flex;align-items:center;justify-content:center;">
+          <div id="badge-preview-inner"></div>
+        </div>
+
+        <!-- Code box -->
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <code id="badge-code-display" style="flex:1;font-size:0.62rem;color:#555;background:#080808;padding:0.4rem 0.6rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;"></code>
+          <button onclick="copyBadgeEmbed(this)" style="flex-shrink:0;background:none;border:1px solid #FFD700;color:#FFD700;padding:0.35rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.75rem;font-family:inherit;white-space:nowrap;">Copy HTML</button>
+        </div>
+        <div style="margin-top:0.75rem;">
+          <a href="/badge-preview.html" style="font-size:0.75rem;color:#555;text-decoration:underline;">View all badge styles</a>
+        </div>
+      </div>
+
+      <!-- Coming Soon -->
+      <div class="tools-card">
+        <div style="font-size:0.9rem;font-weight:700;margin-bottom:0.75rem;">Coming Soon</div>
+        <div style="display:flex;flex-direction:column;gap:0.75rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:0.85rem;font-weight:600;color:#aaa;">llms.txt Generator</div>
+              <div style="font-size:0.75rem;color:#444;margin-top:2px;">Help AI crawlers understand your product</div>
+            </div>
+            <span class="coming-soon-badge">Soon</span>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:0.85rem;font-weight:600;color:#aaa;">Weekly Report Email</div>
+              <div style="font-size:0.75rem;color:#444;margin-top:2px;">AI visibility trends delivered to your inbox</div>
+            </div>
+            <span class="coming-soon-badge">Soon</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /card -->
 </div>
 
 <script>
@@ -216,6 +380,10 @@
 
   let currentUser = null
   let lastCheckResult = null
+  let activeTab = 'mine'
+  // All loaded history rows (latest per product)
+  let allProducts = []
+  let allHistoryData = []
 
   // ── Auth ───────────────────────────────────────────────────
   async function signInWithGoogle() {
@@ -232,6 +400,21 @@
     await sb.auth.signOut()
     currentUser = null
     showLogin()
+  }
+
+  async function deleteAccount() {
+    if (!confirm('Delete your account? This will permanently remove all your data and cannot be undone.')) return
+    if (!currentUser) return
+    // 1. Supabase에서 유저 scores 데이터 삭제
+    await sb.from('scores').delete().eq('user_id', currentUser.id)
+    // 2. 로컬 스토리지 정리
+    localStorage.removeItem('pba_mine')
+    localStorage.removeItem('pba_comp')
+    // 3. Sign out
+    await sb.auth.signOut()
+    // 4. 탈퇴 완료 알림 후 홈으로
+    alert('Account deleted. Thank you for using pickedby.ai.')
+    window.location.href = '/'
   }
 
   function showLogin() {
@@ -251,18 +434,63 @@
     loadHistory()
   }
 
+  // ── Rate Limit ─────────────────────────────────────────────
+  function checkRateLimit(productName, isMine) {
+    const today = new Date().toISOString().split('T')[0]
+
+    if (isMine) {
+      // My Products: 개별 제품당 3회/일 제한
+      const key = `pba_rl_${productName}_${today}`
+      const count = parseInt(localStorage.getItem(key) || '0')
+      const penaltyKey = `pba_penalty_${productName}`
+      const penaltyUntil = localStorage.getItem(penaltyKey)
+
+      if (penaltyUntil && new Date() < new Date(penaltyUntil)) {
+        const hrs = Math.ceil((new Date(penaltyUntil) - new Date()) / 3600000)
+        return { blocked: true, reason: `Too many checks. Cooldown for ${hrs} more hours.` }
+      }
+      if (count >= 3) {
+        const until = new Date(Date.now() + 48 * 3600 * 1000).toISOString()
+        localStorage.setItem(penaltyKey, until)
+        return { blocked: true, reason: 'Daily check limit reached. Cooldown for 48 hours.' }
+      }
+      localStorage.setItem(key, String(count + 1))
+      return { blocked: false }
+    } else {
+      // Competitors: 하루 100회 전체 제한
+      const key = `pba_comp_count_${today}`
+      const count = parseInt(localStorage.getItem(key) || '0')
+      if (count >= 100) {
+        return { blocked: true, reason: 'Daily limit reached (100 competitor searches/day). Resets at midnight.' }
+      }
+      localStorage.setItem(key, String(count + 1))
+      return { blocked: false }
+    }
+  }
+
   // ── Check ──────────────────────────────────────────────────
   async function runCheck() {
     const product = document.getElementById('input-product').value.trim()
     const url = document.getElementById('input-url').value.trim()
     if (!product) { document.getElementById('input-product').focus(); return }
 
+    // Rate limit: 로그인 상태일 때만 적용
+    if (currentUser) {
+      const isMine = activeTab === 'mine'
+      const rl = checkRateLimit(product, isMine)
+      if (rl.blocked) {
+        alert(rl.reason)
+        return
+      }
+      // comp 탭 카운터 업데이트
+      if (activeTab === 'comp') updateCompCounter()
+    }
+
     const btn = document.getElementById('btn-check')
     btn.disabled = true
     btn.innerHTML = '<span class="spinner"></span>'
     document.getElementById('check-result').style.display = 'none'
-    const sbtn = document.getElementById('btn-save-history')
-    if (sbtn) { sbtn.textContent = '+ Add to History'; sbtn.disabled = false; sbtn.style.color = ''; sbtn.style.borderColor = ''; }
+    resetSaveButtons()
     lastCheckResult = null
 
     try {
@@ -274,13 +502,19 @@
       const data = await res.json()
       showResult(data)
       lastCheckResult = { product, url: url || null, score: data.score, results: data.results }
-      await checkAlreadySaved(product)
     } catch (err) {
       alert('Check failed. Please try again.')
     } finally {
       btn.disabled = false
       btn.textContent = 'Check'
     }
+  }
+
+  function resetSaveButtons() {
+    const bm = document.getElementById('btn-save-mine')
+    const bc = document.getElementById('btn-save-comp')
+    if (bm) { bm.textContent = '+ Save to My Products'; bm.disabled = false; bm.style.color = ''; bm.style.borderColor = '' }
+    if (bc) { bc.textContent = '+ Save as Competitor'; bc.disabled = false; bc.style.color = ''; bc.style.borderColor = '' }
   }
 
   function showResult(data) {
@@ -308,20 +542,49 @@
     document.getElementById('check-result').style.display = 'block'
   }
 
-  // ── Manual Save (Add to History button) ────────────────────
-  async function manualSave() {
-    const btn = document.getElementById('btn-save-history')
-    if (!btn || btn.disabled) return
-    if (!lastCheckResult) return
+  // ── Save to My Products ────────────────────────────────────
+  async function saveToMine() {
+    const btn = document.getElementById('btn-save-mine')
+    if (!btn || btn.disabled || !lastCheckResult || !currentUser) return
+
+    // Mine 태그 localStorage
+    const mineSet = getMineSet()
+    mineSet.add(lastCheckResult.product)
+    saveMineSet(mineSet)
+
     btn.disabled = true
     btn.textContent = 'Saving…'
-    await saveHistory()
+    await saveHistory('mine')
   }
 
-  // ── Save to History (called by manualSave / refreshProduct) ─
-  async function saveHistory() {
+  // ── Save as Competitor ─────────────────────────────────────
+  async function saveToComp() {
+    const btn = document.getElementById('btn-save-comp')
+    if (!btn || btn.disabled || !lastCheckResult || !currentUser) return
+
+    // Comp 태그 localStorage
+    const compSet = getCompSet()
+    compSet.add(lastCheckResult.product)
+    saveCompSet(compSet)
+
+    btn.disabled = true
+    btn.textContent = 'Saving…'
+    await saveHistory('comp')
+  }
+
+  // ── localStorage Set helpers ───────────────────────────────
+  function getMineSet() {
+    try { return new Set(JSON.parse(localStorage.getItem('pba_mine') || '[]')) } catch { return new Set() }
+  }
+  function saveMineSet(s) { localStorage.setItem('pba_mine', JSON.stringify([...s])) }
+  function getCompSet() {
+    try { return new Set(JSON.parse(localStorage.getItem('pba_comp') || '[]')) } catch { return new Set() }
+  }
+  function saveCompSet(s) { localStorage.setItem('pba_comp', JSON.stringify([...s])) }
+
+  // ── Save to History (shared) ───────────────────────────────
+  async function saveHistory(tag) {
     if (!lastCheckResult || !currentUser) return
-    // 24h duplicate check
     const today = new Date().toISOString().split('T')[0]
     const { data: todayCheck } = await sb
       .from('scores').select('id')
@@ -330,16 +593,16 @@
       .gte('created_at', today + 'T00:00:00.000Z')
       .limit(1)
     if (todayCheck && todayCheck.length > 0) {
-      setSaved()
+      setSavedBtn(tag)
       loadHistory()
       return
     }
-    // Max 5 products check
+    // Max 5 total
     const { data: existing } = await sb.from('scores').select('product_name').eq('user_id', currentUser.id)
     const distinctProducts = [...new Set((existing || []).map(r => r.product_name))]
     if (!distinctProducts.includes(lastCheckResult.product) && distinctProducts.length >= 5) {
-      const btn = document.getElementById('btn-save-history')
-      if (btn) { btn.textContent = '+ Add to History'; btn.disabled = false; }
+      const btn = tag === 'mine' ? document.getElementById('btn-save-mine') : document.getElementById('btn-save-comp')
+      if (btn) { btn.textContent = tag === 'mine' ? '+ Save to My Products' : '+ Save as Competitor'; btn.disabled = false }
       alert('Maximum 5 products allowed. Delete an existing product to add a new one.')
       return
     }
@@ -351,45 +614,48 @@
       results: lastCheckResult.results,
     })
     if (!error) {
-      setSaved()
+      setSavedBtn(tag)
       loadHistory()
     } else {
-      const btn = document.getElementById('btn-save-history')
-      if (btn) { btn.textContent = '+ Add to History'; btn.disabled = false; }
+      const btn = tag === 'mine' ? document.getElementById('btn-save-mine') : document.getElementById('btn-save-comp')
+      if (btn) { btn.textContent = tag === 'mine' ? '+ Save to My Products' : '+ Save as Competitor'; btn.disabled = false }
     }
   }
 
-  // ── autoSave for Refresh Score (history panel only) ────────
-  async function autoSave() {
-    await saveHistory()
+  function setSavedBtn(tag) {
+    const btn = tag === 'mine' ? document.getElementById('btn-save-mine') : document.getElementById('btn-save-comp')
+    if (btn) { btn.textContent = '✓ Saved'; btn.disabled = true; btn.style.color = '#4ade80'; btn.style.borderColor = '#4ade80' }
   }
 
-  // ── Check today's entry; auto-update if new score is higher ─
-  async function checkAlreadySaved(product) {
-    if (!currentUser || !lastCheckResult) return
+  // ── autoSave for Refresh Score ─────────────────────────────
+  async function autoSave(tag) {
+    if (!lastCheckResult || !currentUser) return
     const today = new Date().toISOString().split('T')[0]
-    const { data } = await sb
+    const { data: todayCheck } = await sb
       .from('scores').select('id, score')
       .eq('user_id', currentUser.id)
-      .eq('product_name', product)
+      .eq('product_name', lastCheckResult.product)
       .gte('created_at', today + 'T00:00:00.000Z')
       .limit(1)
-    if (data && data.length > 0) {
-      const existing = data[0]
+    if (todayCheck && todayCheck.length > 0) {
+      const existing = todayCheck[0]
       if (lastCheckResult.score > existing.score) {
         await sb.from('scores').update({
           score: lastCheckResult.score,
           results: lastCheckResult.results,
         }).eq('id', existing.id)
-        await loadHistory()
       }
-      setSaved()
+      loadHistory()
+      return
     }
-  }
-
-  function setSaved() {
-    const btn = document.getElementById('btn-save-history')
-    if (btn) { btn.textContent = '이미 추가됨'; btn.disabled = true; btn.style.color = '#4ade80'; btn.style.borderColor = '#4ade80'; }
+    await sb.from('scores').insert({
+      user_id: currentUser.id,
+      product_name: lastCheckResult.product,
+      product_url: lastCheckResult.url,
+      score: lastCheckResult.score,
+      results: lastCheckResult.results,
+    })
+    loadHistory()
   }
 
   // ── Delete product (all history) ───────────────────────────
@@ -401,6 +667,9 @@
       .eq('user_id', currentUser.id)
       .eq('product_name', productName)
     if (error) { alert('Delete failed: ' + error.message); return }
+    // Also remove from localStorage tags
+    const mineSet = getMineSet(); mineSet.delete(productName); saveMineSet(mineSet)
+    const compSet = getCompSet(); compSet.delete(productName); saveCompSet(compSet)
     loadHistory()
   }
 
@@ -411,8 +680,8 @@
     el.style.display = el.style.display === 'none' ? 'block' : 'none'
   }
 
-  // ── Refresh product score (once per day) ────────────────────
-  async function refreshProduct(name, url, checkedAt, idx) {
+  // ── Refresh product score ───────────────────────────────────
+  async function refreshProduct(name, url, checkedAt, idx, tag) {
     const lastDate = new Date(checkedAt).toDateString()
     const today = new Date().toDateString()
     if (lastDate === today) {
@@ -429,14 +698,69 @@
       })
       const data = await res.json()
       lastCheckResult = { product: name, url: url || null, score: data.score, results: data.results }
-      await autoSave()
+      await autoSave(tag)
     } catch (err) {
       alert('Refresh failed. Please try again.')
       if (btn) { btn.disabled = false; btn.textContent = 'Refresh Score' }
     }
   }
 
-  // ── NEW-04: Badge Embed — copy embeddable HTML to clipboard ─
+  // ── Badge Embed (Tools tab) ────────────────────────────────
+  function getBadgeConfig() {
+    const tier = document.getElementById('badge-tier-select')?.value || 'auto'
+    const size = document.getElementById('badge-size-select')?.value || 'M'
+    const shape = document.getElementById('badge-shape-select')?.value || 'Rectangle'
+
+    let effectiveTier = tier
+    if (tier === 'auto') {
+      // highest score among mine
+      const mineSet = getMineSet()
+      const mineProducts = allProducts.filter(p => mineSet.has(p.product_name))
+      if (mineProducts.length > 0) {
+        const maxScore = Math.max(...mineProducts.map(p => p.score))
+        if (maxScore >= 66) effectiveTier = 'gold'
+        else if (maxScore >= 50) effectiveTier = 'silver'
+        else effectiveTier = 'bronze'
+      } else {
+        effectiveTier = 'gold' // default preview
+      }
+    }
+
+    const sizeMap = { L: { padding: '8px 18px', fontSize: '13px' }, M: { padding: '5px 12px', fontSize: '11px' }, S: { padding: '3px 8px', fontSize: '9px' } }
+    const tierMap = {
+      gold: { color: '#FFD700', bg: '#1a1400', text: 'PICKED BY AI ✓' },
+      silver: { color: '#C0C0C0', bg: '#141414', text: 'SEEN BY AI' },
+      bronze: { color: '#CD7F32', bg: '#1a0f00', text: 'NOTICED BY AI' },
+    }
+    const s = sizeMap[size] || sizeMap['M']
+    const t = tierMap[effectiveTier] || tierMap['gold']
+    const radius = shape === 'Square' ? '4px' : '6px'
+    return { ...s, ...t, radius }
+  }
+
+  function updateBadgePreview() {
+    const cfg = getBadgeConfig()
+    const previewEl = document.getElementById('badge-preview-inner')
+    const codeEl = document.getElementById('badge-code-display')
+    if (!previewEl || !codeEl) return
+
+    const html = `<a href="https://pickedby.ai" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none;background:${cfg.bg};border:1.5px solid ${cfg.color};border-radius:${cfg.radius};padding:${cfg.padding};font-family:sans-serif;"><span style="color:${cfg.color};font-size:${cfg.fontSize};font-weight:700;letter-spacing:0.05em;">${cfg.text}</span></a>`
+    previewEl.innerHTML = html
+    codeEl.textContent = html
+  }
+
+  function copyBadgeEmbed(btn) {
+    const codeEl = document.getElementById('badge-code-display')
+    if (!codeEl) return
+    navigator.clipboard.writeText(codeEl.textContent).then(() => {
+      const orig = btn.textContent
+      btn.textContent = '✓ Copied!'
+      btn.style.color = '#4ade80'; btn.style.borderColor = '#4ade80'
+      setTimeout(() => { btn.textContent = orig; btn.style.color = '#FFD700'; btn.style.borderColor = '#FFD700' }, 2000)
+    }).catch(() => alert('Copy failed. Please select and copy manually.'))
+  }
+
+  // badge embed in product expand panel (history rows)
   function copyBadgeHtml(btn, score) {
     let color, bg, text
     if (score >= 66)      { color = '#FFD700'; bg = '#1a1400'; text = 'PICKED BY AI ✓' }
@@ -506,11 +830,34 @@
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent('https://pickedby.ai')}`, '_blank', 'width=550,height=420')
   }
 
-  // ── History ────────────────────────────────────────────────
+  // ── Tab switching ──────────────────────────────────────────
+  function switchTab(tab) {
+    activeTab = tab
+    document.querySelectorAll('.dash-tab').forEach((btn, i) => {
+      btn.classList.toggle('active', ['mine','comp','tools'][i] === tab)
+    })
+    document.getElementById('tab-mine').style.display = tab === 'mine' ? 'block' : 'none'
+    document.getElementById('tab-comp').style.display = tab === 'comp' ? 'block' : 'none'
+    document.getElementById('tab-tools').style.display = tab === 'tools' ? 'block' : 'none'
+
+    if (tab === 'comp') updateCompCounter()
+    if (tab === 'tools') updateBadgePreview()
+  }
+
+  function updateCompCounter() {
+    const today = new Date().toISOString().split('T')[0]
+    const count = parseInt(localStorage.getItem(`pba_comp_count_${today}`) || '0')
+    const el = document.getElementById('comp-search-count')
+    if (el) el.textContent = `(${count}/100 searches today)`
+  }
+
+  // ── History (load all, filter by tag) ─────────────────────
   async function loadHistory() {
-    document.getElementById('history-loading').style.display = 'block'
-    document.getElementById('history-empty').style.display = 'none'
-    document.getElementById('history-table').style.display = 'none'
+    document.getElementById('mine-loading').style.display = 'block'
+    document.getElementById('mine-empty').style.display = 'none'
+    document.getElementById('mine-table').style.display = 'none'
+    document.getElementById('comp-empty').style.display = 'none'
+    document.getElementById('comp-table').style.display = 'none'
 
     const { data, error } = await sb
       .from('scores')
@@ -519,121 +866,189 @@
       .order('created_at', { ascending: false })
       .limit(200)
 
-    document.getElementById('history-loading').style.display = 'none'
+    document.getElementById('mine-loading').style.display = 'none'
 
     if (error || !data || data.length === 0) {
-      document.getElementById('history-empty').style.display = 'block'
+      document.getElementById('mine-empty').style.display = 'block'
+      document.getElementById('comp-empty').style.display = 'block'
       return
     }
+
+    allHistoryData = data
 
     // One row per product (latest check per product)
     const latestMap = {}
     for (const row of data) {
       if (!latestMap[row.product_name]) latestMap[row.product_name] = row
     }
-    const products = Object.values(latestMap)
+    allProducts = Object.values(latestMap)
 
-    const rows = products.map((row, idx) => {
-      const score = row.score
-      let badge = ''
-      if (score >= 81) badge = '<span class="badge-gold">PICKED</span>'
-      else if (score >= 61) badge = '<span class="badge-silver">SEEN</span>'
-      else if (score >= 36) badge = '<span class="badge-bronze">NOTICED</span>'
-      else badge = '<span class="badge-none">—</span>'
+    // Split by localStorage tags
+    const mineSet = getMineSet()
+    const compSet = getCompSet()
 
-      let badgeFull = ''
-      if (score >= 81) badgeFull = '<span class="badge-gold">PICKED BY AI</span>'
-      else if (score >= 61) badgeFull = '<span class="badge-silver">SEEN BY AI</span>'
-      else if (score >= 36) badgeFull = '<span class="badge-bronze">NOTICED BY AI</span>'
-      else badgeFull = '<span class="badge-none">NOT VISIBLE</span>'
+    // Products not yet tagged → default to mine for backwards compat
+    const mineProducts = allProducts.filter(p => mineSet.has(p.product_name) || (!compSet.has(p.product_name) && !mineSet.has(p.product_name)))
+    const compProducts = allProducts.filter(p => compSet.has(p.product_name) && !mineSet.has(p.product_name))
 
-      const date = new Date(row.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-      const barColor = score >= 81 ? '#FFD700' : score >= 61 ? '#C0C0C0' : score >= 36 ? '#CD7F32' : '#444'
-      const isToday = new Date(row.created_at).toDateString() === new Date().toDateString()
+    // Update slot counts
+    const slotEl = document.getElementById('mine-slot-count')
+    if (slotEl) slotEl.textContent = `(${mineProducts.length}/5)`
 
-      const results = row.results || []
-      const hasUngrounded = results.some(r => !r.grounded)
-      const verifyToken = genVerifyToken(currentUser?.id || '', row.product_name)
-      const isVerified = localStorage.getItem(`pba_verified_${row.product_name}`) === '1'
-      const dimsHtml = results.map(r => renderDimRow(r, false)).join('')
+    // Render Mine
+    renderMineTab(mineProducts, data)
 
-      return `
-        <div style="border-bottom:1px solid #1f1f1f;">
-          <div onclick="toggleDetail(${idx})" style="cursor:pointer;display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;align-items:center;padding:0.8rem 0;transition:background 0.15s;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
-            <div>
-              <div style="font-size:0.95rem;font-weight:600;">${escHtml(row.product_name)}</div>
-              ${row.product_url ? `<div style="font-size:0.75rem;color:#555;">${escHtml(row.product_url)}</div>` : ''}
-            </div>
-            <div style="text-align:center;"><span style="font-size:1.05rem;font-weight:700;color:${barColor};">${score}</span></div>
-            <div style="text-align:center;">${badge}</div>
-            <div style="text-align:right;font-size:0.8rem;color:#666;">${date}</div>
+    // Render Comp
+    renderCompTab(compProducts)
+
+    // Update tools badge preview
+    if (activeTab === 'tools') updateBadgePreview()
+
+    // Update comp counter display
+    updateCompCounter()
+  }
+
+  function renderMineTab(products, allData) {
+    if (products.length === 0) {
+      document.getElementById('mine-empty').style.display = 'block'
+      document.getElementById('mine-table').style.display = 'none'
+      document.getElementById('trend-chart-wrap').style.display = 'none'
+      return
+    }
+    document.getElementById('mine-empty').style.display = 'none'
+    document.getElementById('mine-table').style.display = 'block'
+
+    const rows = products.map((row, idx) => buildRowHtml(row, idx, 'mine'))
+    document.getElementById('mine-rows').innerHTML = rows.join('')
+
+    // Chart: mine products only
+    const mineNames = new Set(products.map(p => p.product_name))
+    const mineData = allData.filter(r => mineNames.has(r.product_name))
+    renderTrendChart(mineData)
+  }
+
+  function renderCompTab(products) {
+    if (products.length === 0) {
+      document.getElementById('comp-empty').style.display = 'block'
+      document.getElementById('comp-table').style.display = 'none'
+      return
+    }
+    document.getElementById('comp-empty').style.display = 'none'
+    document.getElementById('comp-table').style.display = 'block'
+
+    const rows = products.map((row, idx) => buildRowHtml(row, idx + 1000, 'comp'))
+    document.getElementById('comp-rows').innerHTML = rows.join('')
+  }
+
+  function buildRowHtml(row, idx, tag) {
+    const score = row.score
+    let badge = ''
+    if (score >= 81) badge = '<span class="badge-gold">PICKED</span>'
+    else if (score >= 61) badge = '<span class="badge-silver">SEEN</span>'
+    else if (score >= 36) badge = '<span class="badge-bronze">NOTICED</span>'
+    else badge = '<span class="badge-none">—</span>'
+
+    let badgeFull = ''
+    if (score >= 81) badgeFull = '<span class="badge-gold">PICKED BY AI</span>'
+    else if (score >= 61) badgeFull = '<span class="badge-silver">SEEN BY AI</span>'
+    else if (score >= 36) badgeFull = '<span class="badge-bronze">NOTICED BY AI</span>'
+    else badgeFull = '<span class="badge-none">NOT VISIBLE</span>'
+
+    const date = new Date(row.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    const barColor = score >= 81 ? '#FFD700' : score >= 61 ? '#C0C0C0' : score >= 36 ? '#CD7F32' : '#444'
+    const isToday = new Date(row.created_at).toDateString() === new Date().toDateString()
+
+    const results = row.results || []
+    const hasUngrounded = results.some(r => !r.grounded)
+    const verifyToken = genVerifyToken(currentUser?.id || '', row.product_name)
+    const isVerified = localStorage.getItem(`pba_verified_${row.product_name}`) === '1'
+    const dimsHtml = results.map(r => renderDimRow(r, false)).join('')
+
+    const isMine = tag === 'mine'
+
+    // Status column (mine only)
+    const statusHtml = isMine ? `
+      <div style="text-align:center;font-size:0.72rem;">
+        ${isVerified ? '<span style="color:#4ade80;">✓ Verified</span>' : (row.product_url ? '<span style="color:#555;">Unverified</span>' : '<span style="color:#333;">—</span>')}
+      </div>` : ''
+
+    // Grid columns differ by tab
+    const gridCols = isMine
+      ? 'display:grid;grid-template-columns:1fr auto auto auto auto;gap:0.5rem;'
+      : 'display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;'
+
+    // Expand panel detail: comp tab omits verify + badge embed sections
+    const embedSection = isMine && score >= 36 ? `
+      <div style="margin-top:0.85rem;padding:0.6rem 0.8rem;background:#0d0d0d;border-radius:6px;border:1px solid #1e1e1e;">
+        <div style="font-size:0.7rem;color:#555;margin-bottom:0.4rem;">📎 Embed this badge on your page</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <code style="flex:1;font-size:0.62rem;color:#555;background:#080808;padding:0.3rem 0.5rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">&lt;a href="https://pickedby.ai"&gt;${score>=81?'PICKED BY AI ✓':score>=61?'SEEN BY AI':'NOTICED BY AI'}&lt;/a&gt;</code>
+          <button onclick="copyBadgeHtml(this,${score});event.stopPropagation()" style="flex-shrink:0;background:none;border:1px solid #FFD700;color:#FFD700;padding:0.3rem 0.65rem;border-radius:4px;cursor:pointer;font-size:0.7rem;font-family:inherit;white-space:nowrap;">Copy HTML</button>
+        </div>
+      </div>` : ''
+
+    const verifySection = isMine && row.product_url ? `
+      <div id="verify-block-${idx}" data-verify-token="${verifyToken}" data-verify-url="${escHtml(row.product_url)}" data-product="${escHtml(row.product_name)}" style="margin-top:0.5rem;padding:0.6rem 0.8rem;background:#0d0d0d;border-radius:6px;border:1px ${isVerified?'solid #2a3a2a':'dashed #1e1e1e'};">
+        ${isVerified ? `<span style="font-size:0.7rem;color:#4ade80;">✓ Ownership verified</span>` : `
+        <div style="font-size:0.7rem;color:#555;margin-bottom:0.4rem;">🔒 Verify ownership — add to your site's &lt;head&gt;:</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;">
+          <code style="flex:1;font-size:0.6rem;color:#777;background:#080808;padding:0.3rem 0.5rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">&lt;meta name="pickedby-site-verification" content="${verifyToken}"&gt;</code>
+          <button data-copy-verify onclick="copyVerifyTag(${idx});event.stopPropagation()" style="flex-shrink:0;background:none;border:1px solid #444;color:#888;padding:0.3rem 0.6rem;border-radius:4px;cursor:pointer;font-size:0.68rem;font-family:inherit;white-space:nowrap;">Copy</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <button data-verify-btn onclick="runVerify(${idx});event.stopPropagation()" style="background:none;border:1px solid #4ade80;color:#4ade80;padding:0.3rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.7rem;font-family:inherit;">✓ I've added it — Verify Now</button>
+          <span id="verify-status-${idx}" style="font-size:0.7rem;"></span>
+        </div>`}
+      </div>` : ''
+
+    return `
+      <div style="border-bottom:1px solid #1f1f1f;">
+        <div onclick="toggleDetail(${idx})" style="cursor:pointer;${gridCols}align-items:center;padding:0.8rem 0;transition:background 0.15s;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
+          <div>
+            <div style="font-size:0.95rem;font-weight:600;">${escHtml(row.product_name)}</div>
+            ${row.product_url ? `<div style="font-size:0.75rem;color:#555;">${escHtml(row.product_url)}</div>` : ''}
           </div>
-          <div id="prod-detail-${idx}" style="display:none;background:#0f0f0f;border-radius:0.5rem;padding:1.25rem;margin-bottom:0.75rem;">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
-              <div>
-                <span style="font-size:1rem;font-weight:700;">${escHtml(row.product_name)}</span>
-                <span style="margin-left:8px;">${badgeFull}</span>
-              </div>
-              <div style="text-align:right;">
-                <span style="font-size:2rem;font-weight:800;color:${barColor};">${score}</span>
-                <span style="color:#555;font-size:0.8rem;">/100</span>
-              </div>
+          <div style="text-align:center;"><span style="font-size:1.05rem;font-weight:700;color:${barColor};">${score}</span></div>
+          <div style="text-align:center;">${badge}</div>
+          ${statusHtml}
+          <div style="text-align:right;font-size:0.8rem;color:#666;">${date}</div>
+        </div>
+        <div id="prod-detail-${idx}" style="display:none;background:#0f0f0f;border-radius:0.5rem;padding:1.25rem;margin-bottom:0.75rem;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
+            <div>
+              <span style="font-size:1rem;font-weight:700;">${escHtml(row.product_name)}</span>
+              <span style="margin-left:8px;">${badgeFull}</span>
             </div>
-            <div class="score-bar-bg" style="margin-bottom:1rem;">
-              <div class="score-bar-fill" style="width:${score}%;background:${barColor};"></div>
+            <div style="text-align:right;">
+              <span style="font-size:2rem;font-weight:800;color:${barColor};">${score}</span>
+              <span style="color:#555;font-size:0.8rem;">/100</span>
             </div>
-            ${dimsHtml}
-            ${hasUngrounded ? `<p style="font-size:0.72rem;color:#555;margin-top:0.75rem;">ℹ️ Results based on AI training data only (real-time search unavailable in your region).</p>` : ''}
-
-            ${score >= 36 ? `
-            <div style="margin-top:0.85rem;padding:0.6rem 0.8rem;background:#0d0d0d;border-radius:6px;border:1px solid #1e1e1e;">
-              <div style="font-size:0.7rem;color:#555;margin-bottom:0.4rem;">📎 Embed this badge on your page</div>
-              <div style="display:flex;align-items:center;gap:0.5rem;">
-                <code style="flex:1;font-size:0.62rem;color:#555;background:#080808;padding:0.3rem 0.5rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">&lt;a href="https://pickedby.ai"&gt;${score>=81?'PICKED BY AI ✓':score>=61?'SEEN BY AI':'NOTICED BY AI'}&lt;/a&gt;</code>
-                <button onclick="copyBadgeHtml(this,${score});event.stopPropagation()" style="flex-shrink:0;background:none;border:1px solid #FFD700;color:#FFD700;padding:0.3rem 0.65rem;border-radius:4px;cursor:pointer;font-size:0.7rem;font-family:inherit;white-space:nowrap;">Copy HTML</button>
-              </div>
-            </div>
-            ` : ''}
-
-            ${row.product_url ? `
-            <div id="verify-block-${idx}" data-verify-token="${verifyToken}" data-verify-url="${escHtml(row.product_url)}" data-product="${escHtml(row.product_name)}" style="margin-top:0.5rem;padding:0.6rem 0.8rem;background:#0d0d0d;border-radius:6px;border:1px ${isVerified?'solid #2a3a2a':'dashed #1e1e1e'};">
-              ${isVerified ? `<span style="font-size:0.7rem;color:#4ade80;">✓ Ownership verified</span>` : `
-              <div style="font-size:0.7rem;color:#555;margin-bottom:0.4rem;">🔒 Verify ownership — add to your site's &lt;head&gt;:</div>
-              <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;">
-                <code style="flex:1;font-size:0.6rem;color:#777;background:#080808;padding:0.3rem 0.5rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">&lt;meta name="pickedby-site-verification" content="${verifyToken}"&gt;</code>
-                <button data-copy-verify onclick="copyVerifyTag(${idx});event.stopPropagation()" style="flex-shrink:0;background:none;border:1px solid #444;color:#888;padding:0.3rem 0.6rem;border-radius:4px;cursor:pointer;font-size:0.68rem;font-family:inherit;white-space:nowrap;">Copy</button>
-              </div>
-              <div style="display:flex;align-items:center;gap:0.75rem;">
-                <button data-verify-btn onclick="runVerify(${idx});event.stopPropagation()" style="background:none;border:1px solid #4ade80;color:#4ade80;padding:0.3rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.7rem;font-family:inherit;">✓ I've added it — Verify Now</button>
-                <span id="verify-status-${idx}" style="font-size:0.7rem;"></span>
-              </div>
-              `}
-            </div>
-            ` : ''}
-
-            <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;align-items:center;">
-              <button id="refresh-btn-${idx}" onclick="refreshProduct('${escHtml(row.product_name).replace(/'/g,"\\'")}','${(row.product_url||'').replace(/'/g,"\\'")}','${row.created_at}',${idx})"
-                style="background:none;border:1px solid ${isToday?'#333':'#FFD700'};color:${isToday?'#444':'#FFD700'};padding:0.5rem 1rem;border-radius:0.375rem;cursor:${isToday?'not-allowed':'pointer'};font-size:0.82rem;font-family:inherit;"
-                ${isToday ? 'disabled title="Already refreshed today"' : ''}>
-                ${isToday ? '✓ Refreshed today' : '↻ Refresh Score'}
-              </button>
-              <button onclick="shareTweetProduct(${score},'${escHtml(row.product_name).replace(/'/g,"\\'")}');event.stopPropagation()"
-                style="background:none;border:1px solid #FFD700;color:#FFD700;padding:0.5rem 1rem;border-radius:0.375rem;cursor:pointer;font-size:0.82rem;font-family:inherit;">
-                𝕏 Share Score
-              </button>
-              <button onclick="deleteProduct('${escHtml(row.product_name).replace(/'/g,"\\'")}');event.stopPropagation()"
-                style="background:none;border:none;cursor:pointer;color:#444;font-size:0.82rem;margin-left:auto;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#444'">
-                Delete product
-              </button>
-            </div>
+          </div>
+          <div class="score-bar-bg" style="margin-bottom:1rem;">
+            <div class="score-bar-fill" style="width:${score}%;background:${barColor};"></div>
+          </div>
+          ${dimsHtml}
+          ${hasUngrounded ? `<p style="font-size:0.72rem;color:#555;margin-top:0.75rem;">ℹ️ Results based on AI training data only (real-time search unavailable in your region).</p>` : ''}
+          ${embedSection}
+          ${verifySection}
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;align-items:center;">
+            <button id="refresh-btn-${idx}" onclick="refreshProduct('${escHtml(row.product_name).replace(/'/g,"\\'")}','${(row.product_url||'').replace(/'/g,"\\'")}','${row.created_at}',${idx},'${tag}')"
+              style="background:none;border:1px solid ${isToday?'#333':'#FFD700'};color:${isToday?'#444':'#FFD700'};padding:0.5rem 1rem;border-radius:0.375rem;cursor:${isToday?'not-allowed':'pointer'};font-size:0.82rem;font-family:inherit;"
+              ${isToday ? 'disabled title="Already refreshed today"' : ''}>
+              ${isToday ? '✓ Refreshed today' : '↻ Refresh Score'}
+            </button>
+            <button onclick="shareTweetProduct(${score},'${escHtml(row.product_name).replace(/'/g,"\\'")}');event.stopPropagation()"
+              style="background:none;border:1px solid #FFD700;color:#FFD700;padding:0.5rem 1rem;border-radius:0.375rem;cursor:pointer;font-size:0.82rem;font-family:inherit;">
+              𝕏 Share Score
+            </button>
+            <button onclick="deleteProduct('${escHtml(row.product_name).replace(/'/g,"\\'")}');event.stopPropagation()"
+              style="background:none;border:none;cursor:pointer;color:#444;font-size:0.82rem;margin-left:auto;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#444'">
+              Delete product
+            </button>
           </div>
         </div>
-      `
-    }).join('')
-
-    document.getElementById('history-rows').innerHTML = rows
-    document.getElementById('history-table').style.display = 'block'
-    renderTrendChart(data)
+      </div>
+    `
   }
 
   // ── NEW-01: Share Tweet ────────────────────────────────────
@@ -655,10 +1070,8 @@
     const wrap = document.getElementById('trend-chart-wrap')
     if (!data || data.length < 2) { wrap.style.display = 'none'; return }
 
-    // Group by product_name — keep latest score per (product, day)
-    // data is ordered desc by created_at, so first occurrence per day = latest
-    const productDayMap = {}   // { name: { 'Apr 6': score } }
-    const seenOrder = []       // insertion order = most-recently-checked first
+    const productDayMap = {}
+    const seenOrder = []
     for (const row of data) {
       const name = row.product_name
       const day = new Date(row.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
@@ -666,17 +1079,14 @@
       if (productDayMap[name][day] === undefined) productDayMap[name][day] = row.score
     }
 
-    // Max 5 most-recently-active products
     const products = seenOrder.slice(0, 5)
 
-    // All unique days in chronological order
     const daySet = new Set()
     ;[...data].reverse().forEach(r =>
       daySet.add(new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))
     )
     const allDays = [...daySet]
 
-    // Build datasets — null where no data (Chart.js will gap)
     const datasets = products.map((name, i) => ({
       label: name.length > 24 ? name.slice(0, 22) + '…' : name,
       data: allDays.map(day => productDayMap[name]?.[day] ?? null),
