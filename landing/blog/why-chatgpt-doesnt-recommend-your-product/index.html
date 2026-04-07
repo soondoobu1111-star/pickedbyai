@@ -88,6 +88,12 @@
     .article-body em { color: var(--muted); font-style: normal; }
     .callout { background: var(--bg2); border-left: 3px solid var(--yellow); padding: 1rem 1.25rem; margin: 1.75rem 0; }
     .callout p { margin-bottom: 0; color: #bbb; font-size: 0.92rem; }
+    .share-section { margin: 2.5rem 0 0; padding: 1.5rem 0; border-top: 1px solid var(--border); }
+    .share-label { font-family: 'Press Start 2P', monospace; font-size: 0.38rem; color: #444; letter-spacing: 0.1em; margin-bottom: 0.85rem; }
+    .share-buttons { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .share-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1.1rem; font-size: 0.82rem; border-radius: 4px; cursor: pointer; text-decoration: none; border: 1px solid #2a2a2a; background: var(--bg2); color: var(--text); transition: border-color 0.2s, color 0.2s; font-family: inherit; }
+    .share-btn:hover { border-color: #444; color: #fff; text-decoration: none; }
+    .copy-done { color: var(--yellow) !important; border-color: var(--yellow) !important; }
     .cta-box { background: var(--bg2); border: 1px solid #2a2a2a; padding: 2rem; margin: 3rem 0; text-align: center; }
     .cta-box h3 { font-family: 'Press Start 2P', monospace; font-size: 0.55rem; color: var(--yellow); margin-bottom: 0.75rem; line-height: 1.7; }
     .cta-box p { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.25rem; }
@@ -205,7 +211,26 @@
 
     </div>
 
+    <div class="share-section">
+      <div class="share-label">SHARE THIS POST</div>
+      <div class="share-buttons">
+        <a class="share-btn share-x" href="https://x.com/intent/tweet?text=Why%20ChatGPT%20Doesn%27t%20Recommend%20Your%20Product%20(And%20How%20to%20Fix%20It)%20%E2%80%94%20%40pickedbyAI&url=https%3A%2F%2Fpickedby.ai%2Fblog%2Fwhy-chatgpt-doesnt-recommend-your-product%2F" target="_blank" rel="noopener">𝕏 Share on X</a>
+        <button class="share-btn share-copy" onclick="copyLink()">🔗 Copy link</button>
+      </div>
+    </div>
+
   </article>
+
+  <script>
+    function copyLink() {
+      navigator.clipboard.writeText('https://pickedby.ai/blog/why-chatgpt-doesnt-recommend-your-product/').then(function() {
+        var btn = document.querySelector('.share-copy');
+        btn.textContent = '✓ Copied!';
+        btn.classList.add('copy-done');
+        setTimeout(function() { btn.textContent = '🔗 Copy link'; btn.classList.remove('copy-done'); }, 2000);
+      });
+    }
+  </script>
 
   <footer>
     <p>pickedby.ai &nbsp;·&nbsp; <a href="/">Check your AI score free</a> &nbsp;·&nbsp; <a href="/blog/">More articles</a> &nbsp;·&nbsp; <a href="https://x.com/pickedbyAI" target="_blank" rel="noopener">X (Twitter)</a> &nbsp;·&nbsp; <a href="mailto:hello@pickedby.ai">hello@pickedby.ai</a> &nbsp;·&nbsp; <a href="/privacy">Privacy</a> &nbsp;·&nbsp; <a href="/terms">Terms</a></p>
