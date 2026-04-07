@@ -111,6 +111,13 @@
     /* 툴즈 카드 */
     .tools-card { background: #0f0f0f; border: 1px solid #222; border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
     .coming-soon-badge { font-size: 0.65rem; color: #555; border: 1px solid #333; padding: 1px 6px; border-radius: 10px; }
+    .tool-tab { background:none; border:1px solid #333; color:#888; padding:0.3rem 0.85rem; border-radius:6px; cursor:pointer; font-size:0.78rem; font-family:inherit; transition:all 0.15s; }
+    .tool-tab.active { border-color:#FFD700; color:#FFD700; background:rgba(255,215,0,0.05); }
+    .lt-input { background:#1a1a1a; border:1px solid #333; color:#f5f5f5; padding:0.55rem 0.7rem; border-radius:6px; width:100%; box-sizing:border-box; font-size:0.82rem; outline:none; font-family:inherit; }
+    .lt-input:focus { border-color:#FFD700; }
+    .lt-textarea { background:#1a1a1a; border:1px solid #333; color:#f5f5f5; padding:0.55rem 0.7rem; border-radius:6px; width:100%; box-sizing:border-box; font-size:0.82rem; outline:none; font-family:inherit; resize:vertical; min-height:78px; line-height:1.5; }
+    .lt-textarea:focus { border-color:#FFD700; }
+    .lt-label { font-size:0.72rem; color:#666; display:block; margin-bottom:0.3rem; }
   </style>
 </head>
 <body>
@@ -290,64 +297,61 @@
         <div class="section-title">Tools</div>
       </div>
 
-      <!-- Badge Embed -->
-      <div class="tools-card">
-        <div style="font-size:0.9rem;font-weight:700;margin-bottom:0.75rem;">Badge Embed</div>
-        <p style="font-size:0.8rem;color:#666;margin-bottom:1rem;">Copy the HTML badge to embed on your site. Based on your highest-scoring product.</p>
-
-        <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
-          <div>
-            <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Tier</div>
-            <select id="badge-tier-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
-              <option value="auto">Auto (from My Products)</option>
-              <option value="gold">Gold — Picked by AI</option>
-              <option value="silver">Silver — Seen by AI</option>
-              <option value="bronze">Bronze — Noticed by AI</option>
-            </select>
-          </div>
-          <div>
-            <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Size</div>
-            <select id="badge-size-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
-              <option value="L">Large</option>
-              <option value="M" selected>Medium</option>
-              <option value="S">Small</option>
-            </select>
-          </div>
-          <div>
-            <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Shape</div>
-            <select id="badge-shape-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
-              <option value="Rectangle" selected>Rectangle</option>
-              <option value="Square">Square</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Preview -->
-        <div id="badge-preview-wrap" style="margin-bottom:1rem;padding:0.75rem;background:#0a0a0a;border-radius:6px;border:1px solid #1e1e1e;min-height:48px;display:flex;align-items:center;justify-content:center;">
-          <div id="badge-preview-inner"></div>
-        </div>
-
-        <!-- Code box -->
-        <div style="display:flex;align-items:center;gap:0.5rem;">
-          <code id="badge-code-display" style="flex:1;font-size:0.62rem;color:#555;background:#080808;padding:0.4rem 0.6rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;"></code>
-          <button onclick="copyBadgeEmbed(this)" style="flex-shrink:0;background:none;border:1px solid #FFD700;color:#FFD700;padding:0.35rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.75rem;font-family:inherit;white-space:nowrap;">Copy HTML</button>
-        </div>
-        <div style="margin-top:0.75rem;">
-          <a href="/badge-preview.html" style="font-size:0.75rem;color:#555;text-decoration:underline;">View all badge styles</a>
-        </div>
+      <!-- Tool sub-nav -->
+      <div style="display:flex;gap:0.5rem;margin-bottom:1.25rem;">
+        <button id="tool-tab-badge" class="tool-tab active" onclick="switchTool('badge')">Badge Embed</button>
+        <button id="tool-tab-llms" class="tool-tab" onclick="switchTool('llms')">llms.txt Generator</button>
       </div>
 
-      <!-- Coming Soon -->
-      <div class="tools-card">
-        <div style="font-size:0.9rem;font-weight:700;margin-bottom:0.75rem;">Coming Soon</div>
-        <div style="display:flex;flex-direction:column;gap:0.75rem;">
-          <div style="display:flex;align-items:center;justify-content:space-between;">
+      <!-- ── Panel: Badge Embed ── -->
+      <div id="tool-panel-badge">
+        <div class="tools-card">
+          <div style="font-size:0.9rem;font-weight:700;margin-bottom:0.5rem;">Badge Embed</div>
+          <p style="font-size:0.8rem;color:#666;margin-bottom:1rem;">Copy the HTML badge to embed on your site. Based on your highest-scoring product.</p>
+
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
             <div>
-              <div style="font-size:0.85rem;font-weight:600;color:#aaa;">llms.txt Generator</div>
-              <div style="font-size:0.75rem;color:#444;margin-top:2px;">Help AI crawlers understand your product</div>
+              <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Tier</div>
+              <select id="badge-tier-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
+                <option value="auto">Auto (from My Products)</option>
+                <option value="gold">Gold — Picked by AI</option>
+                <option value="silver">Silver — Seen by AI</option>
+                <option value="bronze">Bronze — Noticed by AI</option>
+              </select>
             </div>
-            <span class="coming-soon-badge">Soon</span>
+            <div>
+              <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Size</div>
+              <select id="badge-size-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
+                <option value="L">Large</option>
+                <option value="M" selected>Medium</option>
+                <option value="S">Small</option>
+              </select>
+            </div>
+            <div>
+              <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Shape</div>
+              <select id="badge-shape-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
+                <option value="Rectangle" selected>Rectangle</option>
+                <option value="Square">Square</option>
+              </select>
+            </div>
           </div>
+
+          <div id="badge-preview-wrap" style="margin-bottom:1rem;padding:0.75rem;background:#0a0a0a;border-radius:6px;border:1px solid #1e1e1e;min-height:48px;display:flex;align-items:center;justify-content:center;">
+            <div id="badge-preview-inner"></div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:0.5rem;">
+            <code id="badge-code-display" style="flex:1;font-size:0.62rem;color:#555;background:#080808;padding:0.4rem 0.6rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;"></code>
+            <button onclick="copyBadgeEmbed(this)" style="flex-shrink:0;background:none;border:1px solid #FFD700;color:#FFD700;padding:0.35rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.75rem;font-family:inherit;white-space:nowrap;">Copy HTML</button>
+          </div>
+          <div style="margin-top:0.75rem;">
+            <a href="/badge-preview.html" style="font-size:0.75rem;color:#555;text-decoration:underline;">View all badge styles</a>
+          </div>
+        </div>
+
+        <!-- Coming Soon (badge panel only) -->
+        <div class="tools-card">
+          <div style="font-size:0.9rem;font-weight:700;margin-bottom:0.75rem;">Coming Soon</div>
           <div style="display:flex;align-items:center;justify-content:space-between;">
             <div>
               <div style="font-size:0.85rem;font-weight:600;color:#aaa;">Weekly Report Email</div>
@@ -357,6 +361,91 @@
           </div>
         </div>
       </div>
+
+      <!-- ── Panel: llms.txt Generator ── -->
+      <div id="tool-panel-llms" style="display:none;">
+        <div class="tools-card">
+          <div style="font-size:0.9rem;font-weight:700;margin-bottom:0.5rem;">llms.txt Generator</div>
+          <p style="font-size:0.8rem;color:#666;margin-bottom:1.25rem;">Tell AI systems exactly what your product is — so they can discover and recommend it. One file. 10 seconds. Free.</p>
+
+          <div style="display:flex;flex-direction:column;gap:0.85rem;">
+            <div>
+              <label class="lt-label">Product name <span style="color:#FFD700;">*</span></label>
+              <input id="lt-name" class="lt-input" placeholder="e.g. Notion Budget Tracker" />
+            </div>
+            <div>
+              <label class="lt-label">Product URL <span style="color:#FFD700;">*</span></label>
+              <input id="lt-url" class="lt-input" placeholder="e.g. https://gumroad.com/l/budget-tracker" />
+            </div>
+            <div>
+              <label class="lt-label">One-line description <span style="color:#FFD700;">*</span></label>
+              <input id="lt-tagline" class="lt-input" placeholder="e.g. A Notion template that tracks monthly budgets for freelancers" />
+            </div>
+            <div>
+              <label class="lt-label">Category</label>
+              <input id="lt-category" class="lt-input" placeholder="e.g. Notion template, Procreate brush, Canva template…" />
+            </div>
+            <div>
+              <label class="lt-label">Target audience</label>
+              <input id="lt-audience" class="lt-input" placeholder="e.g. Freelancers, side-hustlers, small business owners" />
+            </div>
+            <div>
+              <label class="lt-label">Key features (one per line)</label>
+              <textarea id="lt-features" class="lt-textarea" placeholder="e.g.&#10;Monthly budget overview&#10;Income vs expense tracker&#10;Automated category totals"></textarea>
+            </div>
+            <div>
+              <label class="lt-label">Creator / Author name</label>
+              <input id="lt-author" class="lt-input" placeholder="e.g. Jane Smith" />
+            </div>
+          </div>
+
+          <button onclick="generateLlmsTool()" style="margin-top:1.1rem;width:100%;background:#FFD700;color:#0a0a0a;font-weight:700;padding:0.65rem 1.2rem;border-radius:6px;border:none;cursor:pointer;font-size:0.88rem;font-family:inherit;">Generate llms.txt →</button>
+        </div>
+
+        <!-- Output -->
+        <div id="lt-output-section" class="tools-card" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem;">
+            <div style="font-size:0.9rem;font-weight:700;">Your llms.txt</div>
+            <div style="display:flex;gap:0.5rem;">
+              <button onclick="copyLlmsTool(this)" style="background:none;border:1px solid #FFD700;color:#FFD700;padding:0.3rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.75rem;font-family:inherit;">Copy</button>
+              <button onclick="downloadLlmsTool()" style="background:none;border:1px solid #555;color:#aaa;padding:0.3rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.75rem;font-family:inherit;">Download</button>
+            </div>
+          </div>
+          <pre id="lt-output" style="background:#0d0d0d;border:1px solid #222;border-radius:6px;padding:1rem;font-size:0.75rem;line-height:1.7;color:#aaa;white-space:pre-wrap;word-break:break-all;max-height:340px;overflow-y:auto;margin:0;font-family:'Courier New',monospace;"></pre>
+        </div>
+
+        <!-- How to add it -->
+        <div id="lt-howto-section" class="tools-card" style="display:none;">
+          <div style="font-size:0.9rem;font-weight:700;margin-bottom:1rem;">Where to add it</div>
+          <div style="display:flex;flex-direction:column;gap:0.9rem;">
+            <div style="display:flex;gap:0.75rem;">
+              <div style="flex-shrink:0;width:22px;height:22px;background:#FFD700;color:#0a0a0a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:800;">A</div>
+              <div>
+                <div style="font-weight:600;font-size:0.82rem;margin-bottom:0.2rem;">Gumroad / Lemon Squeezy / Payhip</div>
+                <div style="font-size:0.77rem;color:#888;">Paste into your <strong style="color:#f5f5f5;">product description</strong> or About section. AI crawlers index public pages.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.75rem;">
+              <div style="flex-shrink:0;width:22px;height:22px;background:#FFD700;color:#0a0a0a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:800;">B</div>
+              <div>
+                <div style="font-weight:600;font-size:0.82rem;margin-bottom:0.2rem;">Personal website / blog</div>
+                <div style="font-size:0.77rem;color:#888;">Upload as <code style="background:#1a1a1a;padding:1px 4px;border-radius:3px;font-size:0.72rem;">llms.txt</code> to your root — e.g. <code style="background:#1a1a1a;padding:1px 4px;border-radius:3px;font-size:0.72rem;">yourdomain.com/llms.txt</code></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.75rem;">
+              <div style="flex-shrink:0;width:22px;height:22px;background:#FFD700;color:#0a0a0a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:800;">C</div>
+              <div>
+                <div style="font-weight:600;font-size:0.82rem;margin-bottom:0.2rem;">Etsy / Creative Market</div>
+                <div style="font-size:0.77rem;color:#888;">Add key details to your <strong style="color:#f5f5f5;">shop About</strong> and listing descriptions.</div>
+              </div>
+            </div>
+            <div style="background:#1a1000;border:1px solid #3a2800;border-radius:6px;padding:0.75rem;">
+              <p style="font-size:0.77rem;color:#aaa;margin:0;">💡 <strong style="color:#FFD700;">Tip:</strong> After adding, check your AI Visibility Score again — most products see improvement within 1–2 weeks.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </div><!-- /card -->
@@ -828,6 +917,68 @@
     let tier = score >= 81 ? '🥇 PICKED BY AI' : score >= 61 ? '🥈 SEEN BY AI' : score >= 36 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
     const text = `I just checked "${name}" on @pickedbyAI\n\nAI Visibility Score: ${score}/100 — ${tier}\n\nCheck yours free (10 seconds, no signup):`
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent('https://pickedby.ai')}`, '_blank', 'width=550,height=420')
+  }
+
+  // ── Tool sub-nav switching ─────────────────────────────────
+  function switchTool(tool) {
+    document.getElementById('tool-panel-badge').style.display = tool === 'badge' ? 'block' : 'none'
+    document.getElementById('tool-panel-llms').style.display = tool === 'llms' ? 'block' : 'none'
+    document.getElementById('tool-tab-badge').classList.toggle('active', tool === 'badge')
+    document.getElementById('tool-tab-llms').classList.toggle('active', tool === 'llms')
+    if (tool === 'badge') updateBadgePreview()
+  }
+
+  // ── llms.txt Generator (Tools tab) ────────────────────────
+  let llmsGeneratedText = ''
+
+  function generateLlmsTool() {
+    const name = document.getElementById('lt-name').value.trim()
+    const url = document.getElementById('lt-url').value.trim()
+    const tagline = document.getElementById('lt-tagline').value.trim()
+    const category = document.getElementById('lt-category').value.trim()
+    const audience = document.getElementById('lt-audience').value.trim()
+    const featuresRaw = document.getElementById('lt-features').value.trim()
+    const author = document.getElementById('lt-author').value.trim()
+
+    if (!name || !tagline) { alert('Product name and Description are required.'); return }
+
+    const features = featuresRaw ? featuresRaw.split('\n').map(f => f.trim()).filter(Boolean) : []
+    const today = new Date().toISOString().split('T')[0]
+    const lines = []
+    lines.push(`# ${name}`, ``, `> ${tagline}`, ``)
+    if (url) lines.push(`## Product URL`, `- ${url}`, ``)
+    if (category) lines.push(`## Category`, `- ${category}`, ``)
+    if (audience) lines.push(`## Target Audience`, `- ${audience}`, ``)
+    if (features.length > 0) { lines.push(`## Key Features`); features.forEach(f => lines.push(`- ${f}`)); lines.push(``) }
+    if (author) lines.push(`## Creator`, `- ${author}`, ``)
+    lines.push(`## About This File`, `- Format: llms.txt — standard for AI discoverability`, `- Purpose: Help AI systems (ChatGPT, Claude, Perplexity, Gemini) accurately describe and recommend this product`, `- Generated: ${today} via pickedby.ai`)
+
+    llmsGeneratedText = lines.join('\n')
+    document.getElementById('lt-output').textContent = llmsGeneratedText
+    document.getElementById('lt-output-section').style.display = 'block'
+    document.getElementById('lt-howto-section').style.display = 'block'
+    document.getElementById('lt-output-section').scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function copyLlmsTool(btn) {
+    if (!llmsGeneratedText) return
+    navigator.clipboard.writeText(llmsGeneratedText).then(() => {
+      const orig = btn.textContent
+      btn.textContent = '✓ Copied!'
+      btn.style.color = '#4ade80'; btn.style.borderColor = '#4ade80'
+      setTimeout(() => { btn.textContent = orig; btn.style.color = '#FFD700'; btn.style.borderColor = '#FFD700' }, 2000)
+    })
+  }
+
+  function downloadLlmsTool() {
+    if (!llmsGeneratedText) return
+    const name = document.getElementById('lt-name').value.trim().replace(/[^a-z0-9]/gi, '-').toLowerCase() || 'product'
+    const blob = new Blob([llmsGeneratedText], { type: 'text/plain' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = 'llms.txt'
+    a.click()
+    URL.revokeObjectURL(a.href)
   }
 
   // ── Tab switching ──────────────────────────────────────────
