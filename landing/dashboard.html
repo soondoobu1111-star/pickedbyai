@@ -139,8 +139,6 @@
       <div class="nav-dropdown" id="nav-dropdown">
         <div class="nav-dropdown-email" id="nav-email"></div>
         <button onclick="signOut()">Sign out</button>
-        <div style="border-top:1px solid #2a2a2a;margin:4px 0;"></div>
-        <button onclick="deleteAccount()" style="color:#ef4444;">Delete Account</button>
       </div>
     </div>
   </div>
@@ -309,16 +307,9 @@
           <div style="font-size:0.9rem;font-weight:700;margin-bottom:0.5rem;">Badge Embed</div>
           <p style="font-size:0.8rem;color:#666;margin-bottom:1rem;">Copy the HTML badge to embed on your site. Based on your highest-scoring product.</p>
 
+          <!-- Tier is always auto — tier is determined by actual score, not user choice -->
+          <input type="hidden" id="badge-tier-select" value="auto">
           <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
-            <div>
-              <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Tier</div>
-              <select id="badge-tier-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
-                <option value="auto">Auto (from My Products)</option>
-                <option value="gold">Gold — Picked by AI</option>
-                <option value="silver">Silver — Seen by AI</option>
-                <option value="bronze">Bronze — Noticed by AI</option>
-              </select>
-            </div>
             <div>
               <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Size</div>
               <select id="badge-size-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
@@ -340,9 +331,12 @@
             <div id="badge-preview-inner"></div>
           </div>
 
+          <div id="badge-lock-notice" style="display:none;margin-bottom:0.75rem;padding:0.6rem 0.75rem;background:#0d0d0d;border:1px dashed #2a2a2a;border-radius:6px;font-size:0.75rem;color:#555;">
+            🔒 Verify ownership of at least one product in <b style="color:#888;">My Products</b> to unlock badge embed.
+          </div>
           <div style="display:flex;align-items:center;gap:0.5rem;">
             <code id="badge-code-display" style="flex:1;font-size:0.62rem;color:#555;background:#080808;padding:0.4rem 0.6rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;"></code>
-            <button onclick="copyBadgeEmbed(this)" style="flex-shrink:0;background:none;border:1px solid #FFD700;color:#FFD700;padding:0.35rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.75rem;font-family:inherit;white-space:nowrap;">Copy HTML</button>
+            <button id="badge-copy-btn" onclick="copyBadgeEmbed(this)" style="flex-shrink:0;background:none;border:1px solid #FFD700;color:#FFD700;padding:0.35rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.75rem;font-family:inherit;white-space:nowrap;">Copy HTML</button>
           </div>
           <div style="margin-top:0.75rem;">
             <a href="/badge-preview.html" style="font-size:0.75rem;color:#555;text-decoration:underline;">View all badge styles</a>
@@ -644,6 +638,9 @@
     btn.disabled = true
     btn.textContent = 'Saving…'
     await saveHistory('mine')
+    // Show verification reminder popup
+    const isVerified = localStorage.getItem(`pba_verified_${lastCheckResult.product}`) === '1'
+    if (!isVerified) showVerifyPopup(lastCheckResult.product, lastCheckResult.url)
   }
 
   // ── Save as Competitor ─────────────────────────────────────
@@ -795,45 +792,58 @@
   }
 
   // ── Badge Embed (Tools tab) ────────────────────────────────
-  function getBadgeConfig() {
-    const tier = document.getElementById('badge-tier-select')?.value || 'auto'
-    const size = document.getElementById('badge-size-select')?.value || 'M'
-    const shape = document.getElementById('badge-shape-select')?.value || 'Rectangle'
+  function buildBadgeSnippet(tier, score, size, shape) {
+    const crownPath = '<rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/>'
+    const tierMap = {
+      gold:   { color: '#FFD700', bg: '#0d0a00', border: '#FFD700', label: 'PICKED BY AI ✓', tierName: 'GOLD', pulse: 'animation:pba-pulse 2.5s ease infinite;' },
+      silver: { color: '#C0C0C0', bg: '#0a0a0a', border: '#C0C0C0', label: 'SEEN BY AI',     tierName: 'SILVER', pulse: '' },
+      bronze: { color: '#CD7F32', bg: '#0d0800', border: '#CD7F32', label: 'NOTICED BY AI',  tierName: 'BRONZE', pulse: '' },
+    }
+    const sizeMap = {
+      S: { pad: '8px 14px',  cw: 14, ch: 11, titlePx: 10, subPx: 7,  gap: 9  },
+      M: { pad: '12px 18px', cw: 18, ch: 14, titlePx: 12, subPx: 8,  gap: 11 },
+      L: { pad: '15px 22px', cw: 22, ch: 18, titlePx: 14, subPx: 9,  gap: 13 },
+    }
+    const t = tierMap[tier] || tierMap.gold
+    const s = sizeMap[size] || sizeMap.M
+    const radius = shape === 'Square' ? '6px' : '9px'
+    const scoreText = (score != null && score > 0) ? `${score} · ` : ''
+    const subText = `${scoreText}${t.tierName} · pickedby.ai`
+    const crownSvg = `<svg width="${s.cw}" height="${s.ch}" viewBox="0 0 20 16" fill="${t.color}" xmlns="http://www.w3.org/2000/svg">${crownPath}</svg>`
+    return `<style>@keyframes pba-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0)}50%{box-shadow:0 0 14px 4px rgba(255,215,0,0.25)}}</style><a href="https://pickedby.ai" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:${s.gap}px;text-decoration:none;background:${t.bg};border:2px solid ${t.border};border-radius:${radius};padding:${s.pad};font-family:monospace;box-sizing:border-box;${t.pulse}">${crownSvg}<div style="display:flex;flex-direction:column;gap:2px;"><span style="color:${t.color};font-size:${s.titlePx}px;font-weight:800;letter-spacing:0.08em;white-space:nowrap;">${t.label}</span><span style="color:${t.color};opacity:0.55;font-size:${s.subPx}px;font-weight:600;letter-spacing:0.1em;white-space:nowrap;">${subText}</span></div></a>`
+  }
 
-    let effectiveTier = tier
-    if (tier === 'auto') {
-      // highest score among mine
+  function updateBadgePreview() {
+    const tierSel = document.getElementById('badge-tier-select')?.value || 'auto'
+    const size    = document.getElementById('badge-size-select')?.value || 'M'
+    const shape   = document.getElementById('badge-shape-select')?.value || 'Rectangle'
+    let effectiveTier = tierSel
+    let score = null
+    if (tierSel === 'auto') {
       const mineSet = getMineSet()
       const mineProducts = allProducts.filter(p => mineSet.has(p.product_name))
       if (mineProducts.length > 0) {
         const maxScore = Math.max(...mineProducts.map(p => p.score))
-        if (maxScore >= 66) effectiveTier = 'gold'
-        else if (maxScore >= 50) effectiveTier = 'silver'
-        else effectiveTier = 'bronze'
-      } else {
-        effectiveTier = 'gold' // default preview
-      }
+        score = maxScore
+        effectiveTier = maxScore >= 66 ? 'gold' : maxScore >= 50 ? 'silver' : 'bronze'
+      } else { effectiveTier = 'gold'; score = 82 }
+    }
+    // Lock badge embed unless at least one My Products product is verified
+    const mineSetV = getMineSet()
+    const hasVerified = [...mineSetV].some(p => localStorage.getItem(`pba_verified_${p}`) === '1')
+    const lockNotice = document.getElementById('badge-lock-notice')
+    const copyBtn = document.getElementById('badge-copy-btn')
+    if (lockNotice) lockNotice.style.display = hasVerified ? 'none' : 'block'
+    if (copyBtn) {
+      copyBtn.disabled = !hasVerified
+      copyBtn.style.opacity = hasVerified ? '1' : '0.35'
+      copyBtn.style.cursor = hasVerified ? 'pointer' : 'not-allowed'
     }
 
-    const sizeMap = { L: { padding: '8px 18px', fontSize: '13px' }, M: { padding: '5px 12px', fontSize: '11px' }, S: { padding: '3px 8px', fontSize: '9px' } }
-    const tierMap = {
-      gold: { color: '#FFD700', bg: '#1a1400', text: 'PICKED BY AI ✓' },
-      silver: { color: '#C0C0C0', bg: '#141414', text: 'SEEN BY AI' },
-      bronze: { color: '#CD7F32', bg: '#1a0f00', text: 'NOTICED BY AI' },
-    }
-    const s = sizeMap[size] || sizeMap['M']
-    const t = tierMap[effectiveTier] || tierMap['gold']
-    const radius = shape === 'Square' ? '4px' : '6px'
-    return { ...s, ...t, radius }
-  }
-
-  function updateBadgePreview() {
-    const cfg = getBadgeConfig()
+    const html = buildBadgeSnippet(effectiveTier, score, size, shape)
     const previewEl = document.getElementById('badge-preview-inner')
     const codeEl = document.getElementById('badge-code-display')
     if (!previewEl || !codeEl) return
-
-    const html = `<a href="https://pickedby.ai" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none;background:${cfg.bg};border:1.5px solid ${cfg.color};border-radius:${cfg.radius};padding:${cfg.padding};font-family:sans-serif;"><span style="color:${cfg.color};font-size:${cfg.fontSize};font-weight:700;letter-spacing:0.05em;">${cfg.text}</span></a>`
     previewEl.innerHTML = html
     codeEl.textContent = html
   }
@@ -851,11 +861,8 @@
 
   // badge embed in product expand panel (history rows)
   function copyBadgeHtml(btn, score) {
-    let color, bg, text
-    if (score >= 66)      { color = '#FFD700'; bg = '#1a1400'; text = 'PICKED BY AI ✓' }
-    else if (score >= 50) { color = '#C0C0C0'; bg = '#141414'; text = 'SEEN BY AI' }
-    else                  { color = '#CD7F32'; bg = '#1a0f00'; text = 'NOTICED BY AI' }
-    const html = `<a href="https://pickedby.ai" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;text-decoration:none;background:${bg};border:1.5px solid ${color};border-radius:6px;padding:5px 12px;font-family:sans-serif;"><span style="color:${color};font-size:11px;font-weight:700;letter-spacing:0.05em;">${text}</span></a>`
+    const tier = score >= 66 ? 'gold' : score >= 50 ? 'silver' : 'bronze'
+    const html = buildBadgeSnippet(tier, score, 'M', 'Rectangle')
     navigator.clipboard.writeText(html).then(() => {
       const orig = btn.textContent
       btn.textContent = '✓ Copied!'
@@ -914,8 +921,8 @@
 
   // ── Share tweet for product list item ──────────────────────
   function shareTweetProduct(score, name) {
-    let tier = score >= 81 ? '🥇 PICKED BY AI' : score >= 61 ? '🥈 SEEN BY AI' : score >= 36 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
-    const text = `I just checked "${name}" on @pickedbyAI\n\nAI Visibility Score: ${score}/100 — ${tier}\n\nCheck yours free (10 seconds, no signup):`
+    let tier = score >= 66 ? '🥇 PICKED BY AI' : score >= 50 ? '🥈 SEEN BY AI' : score >= 30 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
+    const text = `I just checked "${name}" on @pickedbyAI\n\nAI Visibility Score: ${score}/82 — ${tier}\n\nCheck yours free (10 seconds, no signup):`
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent('https://pickedby.ai')}`, '_blank', 'width=550,height=420')
   }
 
@@ -1100,13 +1107,13 @@
     else badge = '<span class="badge-none">—</span>'
 
     let badgeFull = ''
-    if (score >= 81) badgeFull = '<span class="badge-gold">PICKED BY AI</span>'
-    else if (score >= 61) badgeFull = '<span class="badge-silver">SEEN BY AI</span>'
-    else if (score >= 36) badgeFull = '<span class="badge-bronze">NOTICED BY AI</span>'
+    if (score >= 66) badgeFull = '<span class="badge-gold">PICKED BY AI</span>'
+    else if (score >= 50) badgeFull = '<span class="badge-silver">SEEN BY AI</span>'
+    else if (score >= 30) badgeFull = '<span class="badge-bronze">NOTICED BY AI</span>'
     else badgeFull = '<span class="badge-none">NOT VISIBLE</span>'
 
     const date = new Date(row.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    const barColor = score >= 81 ? '#FFD700' : score >= 61 ? '#C0C0C0' : score >= 36 ? '#CD7F32' : '#444'
+    const barColor = score >= 66 ? '#FFD700' : score >= 50 ? '#C0C0C0' : score >= 30 ? '#CD7F32' : '#444'
     const isToday = new Date(row.created_at).toDateString() === new Date().toDateString()
 
     const results = row.results || []
@@ -1129,7 +1136,7 @@
       : 'display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;'
 
     // Expand panel detail: comp tab omits verify + badge embed sections
-    const embedSection = isMine && score >= 36 ? `
+    const embedSection = isMine && score >= 30 ? `
       <div style="margin-top:0.85rem;padding:0.6rem 0.8rem;background:#0d0d0d;border-radius:6px;border:1px solid #1e1e1e;">
         <div style="font-size:0.7rem;color:#555;margin-bottom:0.4rem;">📎 Embed this badge on your page</div>
         <div style="display:flex;align-items:center;gap:0.5rem;">
@@ -1154,7 +1161,7 @@
 
     return `
       <div style="border-bottom:1px solid #1f1f1f;">
-        <div onclick="toggleDetail(${idx})" style="cursor:pointer;${gridCols}align-items:center;padding:0.8rem 1rem;transition:background 0.15s;border-radius:6px;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
+        <div onclick="toggleDetail(${idx})" style="cursor:pointer;${gridCols}align-items:center;padding:0.8rem 0;transition:background 0.15s;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
           <div>
             <div style="font-size:0.95rem;font-weight:600;">${escHtml(row.product_name)}</div>
             ${row.product_url ? `<div style="font-size:0.75rem;color:#555;">${escHtml(row.product_url)}</div>` : ''}
@@ -1207,8 +1214,8 @@
     if (!lastCheckResult) return
     const score = lastCheckResult.score
     const name = lastCheckResult.product
-    let tier = score >= 81 ? '🥇 PICKED BY AI' : score >= 61 ? '🥈 SEEN BY AI' : score >= 36 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
-    const text = `I just checked "${name}" on @pickedbyAI\n\nAI Visibility Score: ${score}/100 — ${tier}\n\nCheck yours free (10 seconds, no signup):`
+    let tier = score >= 66 ? '🥇 PICKED BY AI' : score >= 50 ? '🥈 SEEN BY AI' : score >= 30 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
+    const text = `I just checked "${name}" on @pickedbyAI\n\nAI Visibility Score: ${score}/82 — ${tier}\n\nCheck yours free (10 seconds, no signup):`
     const url = 'https://pickedby.ai'
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank', 'width=550,height=420')
   }
@@ -1357,6 +1364,34 @@
     }
   })
 
+  // ── Verify Ownership Popup ────────────────────────────────
+  let _verifyPopupToken = ''
+
+  function showVerifyPopup(product, url) {
+    if (!currentUser) return
+    _verifyPopupToken = `<meta name="pickedby-site-verification" content="${genVerifyToken(currentUser.id, product)}">`
+    const el = document.getElementById('verify-popup-token-code')
+    if (el) el.textContent = _verifyPopupToken
+    const titleEl = document.getElementById('verify-popup-product-name')
+    if (titleEl) titleEl.textContent = `"${product}"`
+    document.getElementById('verify-popup').style.display = 'flex'
+  }
+
+  function closeVerifyPopup() {
+    document.getElementById('verify-popup').style.display = 'none'
+  }
+
+  function copyVerifyPopupToken() {
+    if (!_verifyPopupToken) return
+    navigator.clipboard.writeText(_verifyPopupToken).then(() => {
+      const btn = document.getElementById('verify-popup-copy-btn')
+      if (!btn) return
+      btn.textContent = '✓ Copied!'
+      btn.style.color = '#4ade80'; btn.style.borderColor = '#4ade80'
+      setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = '#888'; btn.style.borderColor = '#444' }, 2000)
+    })
+  }
+
   // ── Enter key on inputs ────────────────────────────────────
   document.addEventListener('DOMContentLoaded', () => {
     ['input-product', 'input-url'].forEach(id => {
@@ -1376,5 +1411,37 @@
     }
   })
 </script>
+
+<!-- ── Verify Ownership Popup ─────────────────────────── -->
+<div id="verify-popup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9000;align-items:center;justify-content:center;padding:1.25rem;">
+  <div style="background:#111;border:1px solid #2a2a2a;border-radius:14px;padding:2rem;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+      <span style="font-size:1.4rem;">✓</span>
+      <div style="font-size:1rem;font-weight:700;">Saved to My Products!</div>
+    </div>
+    <div style="font-size:0.82rem;color:#666;margin-bottom:1.5rem;line-height:1.6;">
+      Verify ownership within <span style="color:#FFD700;font-weight:700;">48 hours</span> or this product will be automatically removed.
+    </div>
+
+    <div style="background:#0a0a0a;border:1px solid #1e1e1e;border-radius:8px;padding:1rem 1.1rem;margin-bottom:1.25rem;">
+      <div style="font-size:0.78rem;font-weight:600;color:#aaa;margin-bottom:0.75rem;">How to verify ownership</div>
+      <div style="font-size:0.75rem;color:#555;margin-bottom:0.4rem;">1. Add this tag inside your site's <code style="color:#888;">&lt;head&gt;</code>:</div>
+      <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
+        <code id="verify-popup-token-code" style="flex:1;font-size:0.62rem;color:#777;background:#080808;padding:0.4rem 0.6rem;border-radius:5px;border:1px solid #1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;"></code>
+        <button id="verify-popup-copy-btn" onclick="copyVerifyPopupToken()" style="flex-shrink:0;background:none;border:1px solid #444;color:#888;padding:0.35rem 0.7rem;border-radius:5px;cursor:pointer;font-size:0.72rem;font-family:inherit;white-space:nowrap;transition:all 0.1s;">Copy</button>
+      </div>
+      <div style="font-size:0.75rem;color:#555;">2. Go to <b style="color:#aaa;">My Products</b> tab → expand the product → click <b style="color:#aaa;">"Verify Now"</b></div>
+      <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid #1a1a1a;font-size:0.7rem;color:#444;">Works with any site — Gumroad, Etsy, Notion, your own domain, etc.</div>
+    </div>
+
+    <div id="verify-popup-product-name" style="font-size:0.72rem;color:#444;margin-bottom:1.25rem;"></div>
+
+    <div style="display:flex;gap:0.75rem;justify-content:flex-end;">
+      <button onclick="closeVerifyPopup()" style="background:none;border:1px solid #2a2a2a;color:#666;padding:0.5rem 1.25rem;border-radius:7px;cursor:pointer;font-size:0.82rem;font-family:inherit;">Later</button>
+      <button onclick="closeVerifyPopup();switchTab('mine')" style="background:#FFD700;color:#000;border:none;padding:0.5rem 1.4rem;border-radius:7px;cursor:pointer;font-size:0.82rem;font-weight:700;font-family:inherit;">Go to My Products →</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

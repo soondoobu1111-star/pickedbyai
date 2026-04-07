@@ -1,5 +1,6 @@
 # pickedby.ai (PBA) 사업계획서
-> 최종 업데이트: 2026-04-06 (CPO 전면 재정렬) | 기반: pickedby_ai_full_report.json (10회 딥리서치)
+> 최종 업데이트: 2026-04-07 (5AI 피드백 + Moat 전략 반영) | 기반: pickedby_ai_full_report.json + whitepaper.md
+> **전략 상위 문서**: `pickedbyAI/docs/whitepaper.md` (Moat 전략, 시장 래더, 가설 검증 포함)
 
 ---
 
@@ -81,18 +82,22 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 
 ## 7. 수익 모델
 
-| 플랜 | 가격 | 기능 |
-|------|------|------|
-| Free | $0 | AI Visibility Score (월 3회), 배지 |
-| Creator | $19/월 | 무제한 체크, 주간 리포트, llms.txt/Schema 자동생성, 3개 AI 엔진 |
-| Pro | $49/월 | 경쟁자 추적, API 접근, 다국어 최적화 |
+| 플랜 | 가격 | 핵심 기능 | 전환 포인트 |
+|------|------|-----------|-----------|
+| Free | $0 | 1회 체크, 배지 | 즉각 Aha moment |
+| Creator | $19/월 | 무제한 체크, 추이 차트, llms.txt, 주간 리포트 | "추이가 보고 싶다" |
+| Pro | $49/월 | 경쟁사 추적, API, 다국어 최적화 | "경쟁사보다 앞서고 싶다" |
+| Agency | $99+/월 | 화이트라벨 리포트, 10 클라이언트 관리 | "이걸 고객에게 팔고 싶다" |
 
 **전략**: 지금은 돈보다 선점. 무료로 깔고, 유료는 가치 증명 후.
+**유료 전환 핵심 후크**: llms.txt 자동생성 + 점수 추이 차트 + 경쟁사 비교
 **결제 인프라**: DodoPay + Wise USD 계좌 (Bank Verification 승인 대기, 2026-04-06 제출)
 
 ---
 
 ## 8. 성장 전략
+
+> 상세 Moat 전략·시장 래더·가설 검증: `whitepaper.md` 참조
 
 ### Phase 1 (0-1개월): 바이럴 훅 ✅ 완료
 - 무료 AI Visibility Score 배포 ✅
@@ -106,24 +111,36 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 - Indie Hackers 빌딩 인 퍼블릭
 - 목표: 이메일 1,000개
 
-### Phase 2 (1-3개월): 핵심 제품 확장 — 전체 무료 운영 (CEO 확정)
+### Phase 2 (1-3개월): 핵심 제품 확장 + Moat Layer 1
+- **MOAT-01 Score Tracker**: 주간 자동 체크 + 추이 차트 (시계열 Lock-in)
+- **MOAT-02 SDK v0.1**: dynamic badge + impression 카운트 (코드 임베딩 전환비용)
+- LLM-01~04 인사이트 (점수 해석, 경쟁사 비교, llms.txt 생성, 개선 조언)
 - DEEP-01 딥링크 생성/추적 (bit.ly 패턴 — 데이터 해자)
 - NOTIF-01 AI 추천 알림 (Linktree 패턴 — 불가능했던 가치)
-- FEAT-05 대시보드 (로그인 + 히스토리)
 - GA4-01/02 Google OAuth2 + GA4 AI 채널 트래픽 연동
 - FEAT-01/02 llms.txt/Schema.org 자동 생성 (무료)
 - FEAT-03 주간 리포트 이메일 (GA4 데이터 포함)
-- INT-01 Gumroad API 연동
-- PAY-01 DodoPay 결제 연동 (Phase 2 후반)
+- PAY-01 DodoPay 결제 연동 + Creator $19 플랜 공개
 - 목표: MRR $1,900
 
-### Phase 3 (3-12개월): 플랫폼화
-- INT-02/03/04 LemonSqueezy, Etsy, Shopify API
-- INT-05 Zapier/Make (100개 직접 연동 대신)
+### Phase 3 (3-12개월): 플랫폼화 + Moat Layer 2~3
+- **MOAT-03 SDK v0.2**: 클릭 추적 + 전환 correlation → 벤치마크 데이터
+- **MOAT-04 Creator Graph**: 카테고리 벤치마크 리포트 발행
+- **AGENCY-01 Agency $99+ 화이트라벨 플랜**
+- INT-01~04 Gumroad/LemonSqueezy/Etsy/Shopify API
+- INT-05 Zapier/Make 통합
+- FEAT-07 직접 AI API 쿼리 (ChatGPT/Claude/Perplexity)
 - MCP 서버 (AI 에이전트가 직접 쿼리)
 - 다국어 최적화 (영어→일본어/스페인어)
-- AI 광고 (프리미엄 크리에이터 우선 노출)
 - 목표: MRR $19,000+, 시드 펀딩 준비
+
+### 시장 래더 (확정)
+```
+1단계 (지금~6개월): 인디 크리에이터 → PMF 증명 + 배지 네트워크 씨앗
+2단계 (6~12개월): Micro-SaaS / Indie Hacker → ARPU $19~49
+3단계 (12개월+): SMB / SEO Agency → ARPU $99~299
+절대 금지: Enterprise (Profound 영역)
+```
 
 ---
 
@@ -158,13 +175,18 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 
 ## 11. 리스크 & 대응
 
-| 리스크 | 확률 | 대응 |
-|--------|------|------|
-| ~~Gemini HKG DC 차단~~ | **해결됨** | CF Workers AI 전환으로 구조적 해결 (2026-04-06) |
-| AI 답변 변동성 | 낮음 | YES/NO 구조화 쿼리 + 5차원 통계적 점수 |
-| Otterly 크리에이터 플랜 출시 | 중간 | 속도 선점 + 크리에이터 전용 UX 깊이 |
-| ROI 증명 어려움 | 높음 | GA4 연동 + 딥링크 클릭 데이터로 AEO 측정 |
-| 자동 치료 한계 | 확실 | 과장 금지, "인프라 제공"으로 정직하게 커뮤니케이션 |
+| 리스크 | 확률 | 영향 | 대응 |
+|--------|------|------|------|
+| ~~Gemini HKG DC 차단~~ | **해결됨** | — | CF Workers AI 전환 (2026-04-06) |
+| Semrush/Ahrefs GEO 기능 출시 | 높음 | 높음 | 배지 네트워크 선점 속도 경쟁. 크리에이터 채널 없는 그들의 약점 활용 |
+| 크리에이터 지불의향 낮음 | 중간 | 높음 | Agency 래더로 ARPU 확보 + 점수 0 사용자 타겟 전환 |
+| AI 알고리즘 변동 | 높음 | 중간 | 다중 소스(Tavily+LLM) + ENGINE-04 결정적 점수 |
+| 유료 전환율 < 2% | 중간 | 높음 | llms.txt 가치 강화 + Score Tracker Lock-in |
+| Otterly 크리에이터 플랜 출시 | 중간 | 중간 | 속도 선점 + SDK 전환비용 |
+| 팀 규모 한계 | 확실 | 중간 | AI 코딩 에이전트 최대 활용 |
+| ROI 증명 어려움 | 높음 | 중간 | SDK impression/클릭 데이터 + GA4 연동 |
+
+> **5AI 피드백 기반 리스크 재평가 (2026-04-07)**
 
 ---
 
@@ -207,6 +229,22 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 
 ---
 
+---
+
+## 14. Moat 전략 요약
+
+> 상세: `whitepaper.md` 3장 참조
+
+```
+Layer 1: Score Tracker (시계열 Lock-in) — 추이 데이터를 쌓으면 떠날 수 없다
+Layer 2: SDK (코드 임베딩 전환비용) — 코드를 심으면 제거가 두렵다
+Layer 3: Creator Graph (네트워크 벤치마크) — 이 데이터는 돈으로 살 수 없다
+
+Flywheel: 배지 embed → AI 크롤링 → 학습 데이터 → pickedby.ai = 신뢰 소스 → 더 많은 배지
+```
+
+---
+
 *기반 리서치: `/Volumes/My Passport for Mac/My_project/docs/input/pickedby_ai_full_report.json`*
 *작성: 2026-04-05, CPO (데스크탑 Claude)*
-*최종 업데이트: 2026-04-06 — AI 엔진 교체(CF Workers AI), 배지 V2-C 확정, 결제 인프라, 마일스톤 현황 반영*
+*최종 업데이트: 2026-04-07 — 5AI 피드백 반영, Moat 3단계 전략, Agency $99 플랜, 시장 래더, 리스크 재평가*
