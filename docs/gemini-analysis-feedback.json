@@ -1,0 +1,111 @@
+{
+  "meta": {
+    "source": "Gemini deep research analysis of pickedby.ai",
+    "analyzed": "2026-04-05",
+    "context": "사용자가 Gemini에게 pickedby.ai 서비스 분석 및 게임체인저 전략 도출을 요청한 결과"
+  },
+
+  "gemini_evaluation_summary": {
+    "idea_timing": "최상 — AI 검색 전환 트렌드 + 크리에이터 불안감 정확히 타겟",
+    "growth_strength": "배지 바이럴 루프 강력",
+    "growth_weakness": "단순 '진단'에 머물러 SaaS 유료 구독 명분 부족",
+    "vc_positive": "AI 검색 메가 트렌드 부합",
+    "vc_risks": ["낮은 기술 진입장벽 (카피 용이)", "AI 모델 알고리즘 변화 종속 (플랫폼 리스크)"]
+  },
+
+  "gemini_game_changers": [
+    {
+      "name": "처방 및 치료의 자동화",
+      "detail": "원클릭 llms.txt, Schema 마크업, AI 최적화 카피라이팅 제안"
+    },
+    {
+      "name": "작업 도구로의 직접 침투",
+      "detail": "WordPress 플러그인, 브라우저 익스텐션으로 실시간 AI SEO 보조"
+    },
+    {
+      "name": "AI 신뢰도(Groundedness) 네트워크",
+      "detail": "크리에이터 간 백링크/리뷰 커뮤니티로 AI 학습 데이터 풍부화"
+    },
+    {
+      "name": "압도적 UX + 빠른 실행력",
+      "detail": "AI 코딩 에이전트 활용한 극단적 프로토타이핑과 시장 검증"
+    }
+  ],
+
+  "our_feedback": {
+    "already_planned": {
+      "note": "Gemini가 지적한 것 중 이미 우리 계획에 반영된 것들",
+      "items": [
+        {
+          "gemini_point": "llms.txt/Schema 자동생성",
+          "our_plan": "bizplan §3③ + plan-sleek-inspired.json 트랙 B3 + E Owner features"
+        },
+        {
+          "gemini_point": "배지 바이럴 루프",
+          "our_plan": "bizplan §3⑤ + 선점 기준 C (활성 배지 500개)"
+        },
+        {
+          "gemini_point": "빠른 실행력",
+          "our_plan": "bizplan §12 바이브코딩 + Phase 1 $0 운영"
+        },
+        {
+          "gemini_point": "유료 구독 명분 부족",
+          "our_plan": "plan-sleek-inspired.json 트랙 E: Fix-It Playbook, AI Query Explorer, 경쟁자 추적"
+        }
+      ]
+    },
+
+    "new_insights_to_adopt": [
+      {
+        "id": "G1",
+        "name": "브라우저 익스텐션 / WordPress 플러그인",
+        "gemini_said": "사용자가 찾아오게 하지 말고, 사용자의 작업 도구 안으로 들어가라",
+        "our_verdict": "동의하되 Phase 2 이후. MVP 단계에서 하면 산만해짐",
+        "priority": "Phase 2 (MRR $1,900 이후)",
+        "rationale": "익스텐션은 유지보수 비용 높고, 웹 MVP 완성도가 먼저. 단, 설계 시 API-first로 만들어두면 나중에 익스텐션에서 API 호출만 하면 됨"
+      },
+      {
+        "id": "G2",
+        "name": "AI 신뢰도(Groundedness) 네트워크",
+        "gemini_said": "크리에이터 간 백링크/리뷰 생성 커뮤니티로 AI 학습 데이터 풍부화",
+        "our_verdict": "가장 가치 높은 인사이트. 진지하게 검토 필요",
+        "priority": "Phase 2-3 핵심 전략",
+        "rationale": "이게 실현되면 '데이터 네트워크 효과'가 발생. Verified Owner끼리 서로 리뷰/추천 → AI가 더 많이 학습 → 더 많이 추천 → 더 많은 Owner 가입. 이건 경쟁사가 카피 못 하는 진짜 해자",
+        "implementation_idea": "Verified Owner 대시보드에 'Creator Network' 탭 추가. 같은 카테고리 크리에이터끼리 상호 리뷰/백링크 교환 매칭. 예: 'Notion 템플릿 A 작가 ↔ B 작가' 서로 블로그에서 언급 → 둘 다 AI 가시성 상승"
+      },
+      {
+        "id": "G3",
+        "name": "플랫폼 리스크 대응 강화",
+        "gemini_said": "AI 모델 알고리즘 변화에 종속",
+        "our_verdict": "bizplan §10에 있지만 더 근본적 대응 필요",
+        "priority": "상시",
+        "rationale": "현재 Gemini 1개 엔진 의존. 멀티 엔진(Gemini+Claude+GPT+Perplexity) 병렬 체크가 리스크 분산이자 유료 차별화",
+        "action": "Creator 플랜에서 3개 AI 엔진 체크를 무료 T3까지 확대 검토 (선점 전략과 맞음)"
+      }
+    ],
+
+    "disagreements": [
+      {
+        "gemini_point": "낮은 기술 진입장벽 = 카피 용이",
+        "our_counter": "코드 카피는 쉽지만 3가지는 카피 못 함: (1) 누적 데이터 10만 체크, (2) 임베드 배지 네트워크 500개, (3) 'AI Vitals' 용어 표준화. 선점 = 기술이 아니라 데이터+브랜드 해자",
+        "action": "이 반박을 VC 피칭 자료에 명시적으로 포함시킬 것"
+      }
+    ],
+
+    "key_takeaway": "Gemini의 핵심 지적은 '진단→처방 전환'이고, 우리는 이미 계획에 있음. 진짜 새로운 건 G2(크리에이터 네트워크). 이건 Phase 2-3의 핵심 전략으로 격상시켜야 함."
+  },
+
+  "plan_updates_needed": {
+    "plan_sleek_inspired_json": {
+      "tracks_E_owner_features_add": [
+        "Creator Network 탭 (상호 리뷰/백링크 매칭)",
+        "브라우저 익스텐션 (Phase 2)"
+      ],
+      "open_source_ethos_update": "T3 무료에 멀티 엔진(3개) 체크 포함 검토"
+    },
+    "bizplan_md": {
+      "section_10_risks_add": "플랫폼 리스크 대응: 멀티 엔진 병렬 + 자체 데이터 네트워크로 AI 종속 탈피",
+      "section_8_phase3_add": "Creator Network (크리에이터 간 상호 추천 커뮤니티)"
+    }
+  }
+}
