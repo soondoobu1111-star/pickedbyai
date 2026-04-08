@@ -689,7 +689,7 @@ async function sendWelcomeEmail(apiKey: string, email: string): Promise<void> {
       </tr>
       <tr>
         <td style="padding:6px 0;font-size:13px;color:#ccc;vertical-align:top;">🔍</td>
-        <td style="padding:6px 0 6px 10px;font-size:13px;color:#ccc;"><strong style="color:#fff;">5-dimension breakdown</strong> — Direct search, Best-of lists, Category ranking, Reviews, Comparisons</td>
+        <td style="padding:6px 0 6px 10px;font-size:13px;color:#ccc;"><strong style="color:#fff;">5-dimension breakdown</strong> — Web Presence, Source Authority, Recommendations, Community, Competition</td>
       </tr>
       <tr>
         <td style="padding:6px 0;font-size:13px;color:#ccc;vertical-align:top;">💡</td>

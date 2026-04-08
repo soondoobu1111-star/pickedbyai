@@ -51,7 +51,7 @@
     "applicationCategory": "BusinessApplication",
     "operatingSystem": "Web",
     "browserRequirements": "Requires JavaScript",
-    "featureList": "AI Visibility Score, Product recognition check, Best-of recommendation check, Category ranking check, Reviews & mentions check, Comparison searches check, Embeddable AI badges, Score improvement tips",
+    "featureList": "AI Visibility Score, Web Presence check, Source Authority check, Recommendation Signals check, Community Validation check, Competitive Context check, Embeddable AI badges, Score improvement tips",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
     "creator": { "@type": "Organization", "name": "THUNOVA", "email": "hello@pickedby.ai" }
   }
@@ -64,17 +64,17 @@
       {
         "@type": "Question",
         "name": "What is pickedby.ai?",
-        "acceptedAnswer": { "@type": "Answer", "text": "pickedby.ai is a free tool that checks how visible your digital product is to AI assistants like ChatGPT, Claude, and Perplexity. Enter your product name and get an AI Visibility Score from 0 to 82 in about 10 seconds. No signup required." }
+        "acceptedAnswer": { "@type": "Answer", "text": "pickedby.ai is a free tool that checks how visible your digital product is to AI assistants like ChatGPT, Claude, and Perplexity. Enter your product name and get an AI Visibility Score from 0 to 100 in about 10 seconds. No signup required." }
       },
       {
         "@type": "Question",
         "name": "What is the AI Visibility Score?",
-        "acceptedAnswer": { "@type": "Answer", "text": "The AI Visibility Score is a number from 0 to 82 that measures how well AI systems know and recommend your product. Gold (66+) means AI consistently recommends you. Silver (50–65) means AI recognizes you sometimes. Bronze (30–49) means AI is aware but rarely recommends. Below 30 means AI has little to no knowledge of your product." }
+        "acceptedAnswer": { "@type": "Answer", "text": "The AI Visibility Score is a number from 0 to 100 that measures how well AI systems know and recommend your product. Gold (75+) means AI consistently recommends you. Silver (50–74) means AI recognizes you sometimes. Bronze (25–49) means AI is aware but rarely recommends. Below 25 means AI has little to no knowledge of your product." }
       },
       {
         "@type": "Question",
         "name": "Which AI systems do you check?",
-        "acceptedAnswer": { "@type": "Answer", "text": "We scan real-time web search results across 5 dimensions to calculate your score: AI recognition, best-of recommendations, category rankings, reviews and mentions, and comparison searches. These are the same signals that AI systems like ChatGPT, Claude, and Perplexity use when recommending products. Direct API queries to those platforms are coming in a future update." }
+        "acceptedAnswer": { "@type": "Answer", "text": "We scan real-time web search results across 5 dimensions: Web Presence, Source Authority, Recommendation Signals, Community Validation, and Competitive Context. These are the same signals that AI systems like ChatGPT, Claude, and Perplexity use when recommending products. We also directly query Perplexity and GPT for additional AI recognition signals." }
       },
       {
         "@type": "Question",
@@ -84,7 +84,7 @@
       {
         "@type": "Question",
         "name": "How does the AI Visibility Score get calculated?",
-        "acceptedAnswer": { "@type": "Answer", "text": "The score is calculated across 5 weighted dimensions: Recognition (20 pts), Recommendation (20 pts), Category Ranking (12 pts), Reviews and Mentions (20 pts), and Comparison Searches (10 pts). Maximum total is 82 points. Full methodology: pickedby.ai/blog/how-we-calculate-your-ai-visibility-score/" }
+        "acceptedAnswer": { "@type": "Answer", "text": "The score is calculated across 5 weighted dimensions: Web Presence (25 pts), Source Authority (20 pts), Recommendation Signals (20 pts), Community Validation (20 pts), and Competitive Context (15 pts). Maximum total is 100 points. Full methodology: pickedby.ai/blog/how-we-calculate-your-ai-visibility-score/" }
       },
       {
         "@type": "Question",
@@ -1281,7 +1281,7 @@
           <span class="how-icon">🤖</span>
           <span class="how-num">02</span>
           <div class="how-title">AI scans 5 ways</div>
-          <div class="how-desc">Direct · Best-of · Problem-solution · Reviews · Comparisons</div>
+          <div class="how-desc">Web Presence · Source Authority · Recommendations · Community · Competition</div>
         </div>
         <div class="how-arrow">→</div>
         <div class="how-step">
@@ -1305,7 +1305,7 @@
         <div class="faq-a">
           <p>Think of it like a <strong>Google Search Console — but for AI.</strong></p>
           <p style="margin-top:0.5rem;">When someone asks ChatGPT, Claude, or Perplexity <em>"what's a good Notion template for budgeting?"</em> — does your product show up?</p>
-          <p style="margin-top:0.5rem;">Most creators have no idea. pickedby.ai checks for you in <strong>10 seconds</strong> and gives you a score from 0 to 82 — your <strong>AI Visibility Score.</strong></p>
+          <p style="margin-top:0.5rem;">Most creators have no idea. pickedby.ai checks for you in <strong>10 seconds</strong> and gives you a score from 0 to 100 — your <strong>AI Visibility Score.</strong></p>
           <p style="margin-top:0.5rem;">No signup. No credit card. Completely free.</p>
         </div>
       </div>
@@ -1316,14 +1316,14 @@
           What is the AI Visibility Score? <span class="faq-icon">+</span>
         </button>
         <div class="faq-a">
-          <p>It's a number from <strong>0 to 82</strong> that tells you how well AI systems "know" your product. It's calculated across 5 dimensions — each worth a different weight.</p>
+          <p>It's a number from <strong>0 to 100</strong> that tells you how well AI systems "know" your product. It's calculated across 5 dimensions — each worth a different weight.</p>
           <div class="faq-badge-row" style="margin-top:0.75rem;">
-            <span class="faq-badge gold">66+ · GOLD · PICKED BY AI</span>
-            <span class="faq-badge silver">50–65 · SILVER · SEEN BY AI</span>
-            <span class="faq-badge bronze">30–49 · BRONZE · NOTICED BY AI</span>
-            <span class="faq-badge none">0–29 · NO BADGE · Invisible</span>
+            <span class="faq-badge gold">75+ · GOLD · PICKED BY AI</span>
+            <span class="faq-badge silver">50–74 · SILVER · SEEN BY AI</span>
+            <span class="faq-badge bronze">25–49 · BRONZE · NOTICED BY AI</span>
+            <span class="faq-badge none">0–24 · NO BADGE · Invisible</span>
           </div>
-          <p style="margin-top:0.75rem;">A score of <strong>82</strong> is the maximum — it means AI knows your product across every dimension. A score of <strong>0</strong> means AI has basically never heard of you.</p>
+          <p style="margin-top:0.75rem;">A score of <strong>100</strong> is the maximum — it means AI knows your product across every dimension. A score of <strong>0</strong> means AI has basically never heard of you.</p>
           <p style="margin-top:0.5rem;">Example: Figma scores near the max. A brand-new unknown product scores 0.</p>
         </div>
       </div>
@@ -1591,9 +1591,9 @@
 
     // ── Badge tier ───────────────────────────────────────────
     function getBadgeTier(s) {
-      if (s >= 66) return { tier: 'gold',   color: '#FFD700', label: '✦ GOLD BADGE',   title: 'PICKED BY AI',   desc: 'AI consistently recommends your product. Add this badge to your product page to signal AI-readiness to buyers.' };
+      if (s >= 75) return { tier: 'gold',   color: '#FFD700', label: '✦ GOLD BADGE',   title: 'PICKED BY AI',   desc: 'AI consistently recommends your product. Add this badge to your product page to signal AI-readiness to buyers.' };
       if (s >= 50) return { tier: 'silver', color: '#C0C0C0', label: '✦ SILVER BADGE', title: 'SEEN BY AI',     desc: 'AI knows and sometimes recommends your product. A few improvements will push you to Gold.' };
-      if (s >= 30) return { tier: 'bronze', color: '#CD7F32', label: '✦ BRONZE BADGE', title: 'NOTICED BY AI', desc: 'AI is aware of your product. Apply the fixes above to climb to Silver or Gold.' };
+      if (s >= 25) return { tier: 'bronze', color: '#CD7F32', label: '✦ BRONZE BADGE', title: 'NOTICED BY AI', desc: 'AI is aware of your product. Apply the fixes above to climb to Silver or Gold.' };
       return null;
     }
 
@@ -1637,7 +1637,7 @@
       // Progress bar (10 blocks)
       const bar = document.getElementById('pbar');
       bar.innerHTML = '';
-      const filled = Math.round(score / 82 * 10);
+      const filled = Math.round(score / 100 * 10);
       for (let i = 0; i < 10; i++) {
         const b = document.createElement('div');
         b.className = 'pbar-block' + (i < filled ? ` on ${cls}` : '');
