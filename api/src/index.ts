@@ -344,7 +344,7 @@ async function sendWelcomeEmail(apiKey: string, email: string, product: string, 
     body: JSON.stringify({
       sender: { name: 'pickedby.ai', email: 'hello@pickedby.ai' },
       to: [{ email }],
-      subject: `Your "${product}" AI Visibility Score: ${score}/100`,
+      subject: `Your "${product}" AI Visibility Score: ${score}/82`,
       htmlContent: html,
     }),
   }).then(async r => {
