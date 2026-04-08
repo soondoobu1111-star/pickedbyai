@@ -151,12 +151,13 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 | FE | 정적 HTML + Tailwind CDN | CF Pages 무료 |
 | BE | TypeScript + Hono + CF Workers | perceptdot 스택 재활용 |
 | DB | Supabase PostgreSQL | 이메일/스코어 저장, 무료 티어 |
-| AI | **CF Workers AI (llama-3.2-3b-instruct)** | **지역 제한 없음, ~4초, 추가 API 키 불필요** |
+| AI (ENGINE-04) | CF Workers AI (llama-3.2-3b) + Tavily 웹검색 | 패턴매칭, ~4초 |
+| AI Probe (ENGINE-05) | **Perplexity Sonar + GPT-4o-mini + Gemini** | **직접 AI 쿼리, 2026-04-08 실증** |
 | 이메일 | Brevo | 무료 300통/일 |
 | 결제 | DodoPay | Phase 2, Wise USD 계좌 연결 완료 |
 | 배포 | CF Pages + CF Workers | pickedby.ai / api.pickedby.ai |
 
-**월 운영비**: Phase 1 ~$0, Phase 2 ~$55
+**월 운영비**: Phase 1 ~$0, Phase 1.5 ~$5 (Perplexity/GPT API), Phase 2 ~$55
 
 ---
 

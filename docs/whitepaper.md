@@ -335,22 +335,60 @@ AI 답변은 확률적 → 절대값보다 추세(trend) 강조
 
 ## 9. 기술 방향
 
-### 현재 (Phase 1.5, 검증됨 — 진행률 70%)
+### 현재 (Phase 1.5, ENGINE-04 가동 중)
 ```
-Tavily 웹검색 → llama-3.1-8b 패턴매칭 → 100% 결정적 점수
+Tavily 웹검색 → 패턴매칭 → 100% 결정적 점수
 월 비용: ~$0 (CF Workers 무료 티어)
 ```
 
-**스코어 구조 (ENGINE-04, 2026-04-07 확정)**
+**스코어 구조 (ENGINE-04 → ENGINE-05 전환 예정)**
 ```
-차원별 가중치:
+ENGINE-04 (현재):
   direct(20) + best-of(20) + category(12) + reviews(20) + comparison(10) = max 82
+  등급: Gold ≥66 / Silver ≥50 / Bronze ≥30
 
-등급 임계값:
-  Gold   ≥ 66
-  Silver ≥ 50
-  Bronze ≥ 30
-  None   < 30
+ENGINE-05 (2026-04-08 설계 완료, 구현 예정):
+  Web Presence(25) + Source Authority(20) + Recommendations(20)
+  + Community(20) + Competitive Context(15) = max 100
+  등급: Gold ≥75 / Silver ≥50 / Bronze ≥25
+
+  핵심 변경: 다중 쿼리 3회, 소스 Tier 등급, 자기참조 차단, 그라데이션 점수
+```
+
+**AI Probe (2026-04-08 실증 완료, 즉시 도입 확정)**
+```
+Phase 3에서 앞당김 (제1원칙 분석: 키만 등록하면 즉시 가능)
+
+Perplexity Sonar: 실시간 웹 기반 AI 인지 + citations 반환 (~$0.001/쿼리)
+GPT-4o-mini: 학습 데이터 기반 인지 (~$0.001/쿼리)
+Gemini + Search Grounding: Google 생태계 인지 (기존 Relay Worker 재활용)
+
+실험 결과 (2026-04-08):
+- Perplexity: pickedby.ai 상세 인지 (점수체계·5차원·타겟까지 정확 설명)
+- GPT: pickedby.ai 모름 (학습데이터 cutoff 한계)
+- 카테고리 추천: GPT=전통SEO, Perplexity=GEO전문도구 (겹침 0%)
+→ "어떤 AI에서 보이고 어떤 AI에서 안 보이는지" 자체가 핵심 가치
+```
+
+**아키텍처 (ENGINE-05 + AI Probe)**
+```
+병렬 실행:
+  Tavily → Web Presence Score (웹 근거 분석)
+  Perplexity Probe → AI Knowledge Check (실시간 AI 인지 + citations)
+  GPT Probe → Training Data Check (학습 데이터 인지)
+
+결합 → AI Visibility Score + Mention Feed
+```
+
+**멘션 피드 (제품 핵심 전환)**
+```
+AS-IS: 점수 계산기 (체크→점수→끝)
+TO-BE: AI Search Console (멘션 피드→추이→행동→결과 루프)
+
+- Tavily URL + Perplexity citations → mentions 테이블 저장
+- 주간 diff: NEW / SEEN / LOST 감지
+- Dashboard: 피드 + 추이 차트 + AI별 인지 현황
+- 이메일: "이번 주 새 멘션 N건" → 재방문 트리거
 ```
 
 **배지 디자인 (2026-04-07 개편)**
@@ -364,19 +402,21 @@ Tavily 웹검색 → llama-3.1-8b 패턴매칭 → 100% 결정적 점수
 Tab 1: My Products  — 최대 5개, Refresh 48h 쿨다운, 소유권 인증
 Tab 2: Competitors  — 하루 100회 검색 카운터
 Tab 3: Tools        — Badge Embed + llms.txt Generator (인라인)
+(Phase 2 추가: Mention Feed 탭 or My Products 내 피드 섹션)
 ```
 
 ### Phase 2 추가
 ```
-+ 주간 자동 체크 (Score Tracker)
++ 멘션 피드 (Tavily + Perplexity citations 기반)
++ 주간 자동 체크 (Cron Worker) + 멘션 diff
 + llms.txt 자동생성 (LLM-03)
 + SDK v0.1 (dynamic badge + impression 카운트)
-+ 점수 변동 사유 해석 (LLM-01)
++ 점수 변동 사유 = 멘션 diff 기반 (LLM 해석 불필요)
 ```
 
 ### Phase 3 추가
 ```
-+ 직접 AI API 쿼리 (ChatGPT, Claude, Perplexity)
++ ~~직접 AI API 쿼리~~ → Phase 1.5로 앞당김 완료
 + Gumroad/LemonSqueezy API 연동
 + 카테고리 벤치마크 DB
 + Agency 화이트라벨
@@ -386,6 +426,7 @@ Tab 3: Tools        — Badge Embed + llms.txt Generator (인라인)
 ```
 점수 = 코드 (증거 기반, 결정적)
 LLM = 해석 · 조언 · 생성만
+AI Probe = ground truth 보조 (프록시가 아닌 직접 확인)
 ```
 
 ---
