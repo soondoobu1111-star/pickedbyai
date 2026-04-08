@@ -320,8 +320,8 @@ app.post('/v1/check', async (c) => {
 const LOGO_HEADER = `
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
   <tr><td>
-    <a href="https://pickedby.ai" style="text-decoration:none;display:inline-block;font-family:Arial,sans-serif;font-size:13px;font-weight:700;letter-spacing:0.04em;">
-      <span style="color:#FFD700;">picked</span><span style="color:#ffffff;">by</span><span style="color:#FFD700;">.ai</span>
+    <a href="https://pickedby.ai" style="text-decoration:none;display:inline-block;">
+      <img src="https://pickedby.ai/logo-email.png" alt="pickedby.ai" height="30" style="display:block;height:30px;" />
     </a>
   </td></tr>
 </table>`
