@@ -1442,7 +1442,7 @@
       currentUser = session.user
       showDashboard(session.user)
       if (_event === 'SIGNED_IN' && !localStorage.getItem('pba_consent_shown')) {
-        showConsentModal()
+        setTimeout(() => showConsentModal(), 0)
       }
     } else {
       showLogin()
