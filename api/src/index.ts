@@ -82,9 +82,15 @@ function scoreFromTavily(results: TavilyResult[], name: string): CheckResult[] {
   // 1. RECOGNITION — name appears in at least 1 result
   const recognition = texts.some(t => t.includes(nameLower))
 
-  // 2. RECOMMENDATION — name + recommendation signal in same result
+  // 2. RECOMMENDATION — name + recommendation signal in a THIRD-PARTY result
+  // Exclude own-site URLs (e.g. pickedby.ai result mentioning itself) to prevent false positives
   const recKw = /\b(best|top|recommended?|must.?have|popular|leading|great|excellent|award)\b/
-  const recommendation = texts.some(t => t.includes(nameLower) && recKw.test(t))
+  const ownDomain = nameLower.replace(/\s+/g, '').replace(/[^a-z0-9]/g, '')
+  const recommendation = texts.some((t, i) => {
+    const url = urls[i]
+    const isOwnSite = ownDomain.length > 3 && url.includes(ownDomain)
+    return !isOwnSite && t.includes(nameLower) && recKw.test(t)
+  })
 
   // 3. CATEGORY_RANK — name in a ranked list; extract position (1-20)
   let rankFound = false
@@ -217,7 +223,8 @@ app.post('/v1/check', async (c) => {
   if (c.env.TAVILY_API_KEY) {
     try {
       // Enriched query: surfaces best-of lists, reviews, comparisons alongside recognition
-      const searchQuery = `${name} review best alternative comparison`
+      // NOTE: "best" removed from query to avoid biasing recommendation signal
+      const searchQuery = `${name} review alternative comparison`
       tavilyResults = await searchTavily(c.env.TAVILY_API_KEY, searchQuery)
       console.log(`[Tavily] ok, ${tavilyResults.length} results`)
     } catch (err) {
