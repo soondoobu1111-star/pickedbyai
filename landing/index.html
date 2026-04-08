@@ -1153,16 +1153,14 @@
     </div>
   </div>
 
-  <!-- Floating Waitlist Bar -->
+  <!-- Floating CTA Bar -->
   <div id="floatBar">
     <div class="float-text">
-      <strong>🚀 EARLY ACCESS</strong>
-      <span>pickedby.ai is in beta — join the waitlist for free early access.</span>
+      <strong>🚀 FREE</strong>
+      <span>Check your AI Visibility Score — no credit card needed.</span>
     </div>
     <div class="float-inputs">
-      <input type="email" id="floatEmail" placeholder="your@email.com" />
-      <button class="btn-float-join" onclick="submitFloatEmail()">JOIN ▶</button>
-      <span id="floatOk">✅ You're in!</span>
+      <button class="btn-float-join" onclick="window.location.href='/dashboard.html'">CHECK FREE ▶</button>
     </div>
     <button id="floatClose" onclick="dismissFloat()" title="Close">✕</button>
   </div>
@@ -1763,7 +1761,7 @@
 
     // ── Share on X ───────────────────────────────────────────
     function shareX() {
-      const text = `My "${_product}" AI Visibility Score: ${_score}/100\n\nDoes AI recommend YOUR product? Check free → pickedby.ai`;
+      const text = `My "${_product}" AI Visibility Score: ${_score}/82\n\nDoes AI recommend YOUR product? Check free → pickedby.ai`;
       window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
     }
 
@@ -1837,20 +1835,7 @@
       document.getElementById('floatBar').classList.remove('show');
     }
 
-    // ── Email submit (floating bar) ───────────────────────────
-    async function submitFloatEmail() {
-      const email = document.getElementById('floatEmail').value.trim();
-      if (!email || !email.includes('@')) {
-        document.getElementById('floatEmail').focus();
-        return;
-      }
-      await doSubscribe(email, 'pickedby.ai-float');
-      document.getElementById('floatOk').style.display = 'inline';
-      document.getElementById('floatEmail').disabled = true;
-      document.querySelector('.btn-float-join').disabled = true;
-      localStorage.setItem('float_joined', '1');
-      setTimeout(() => document.getElementById('floatBar').classList.remove('show'), 3000);
-    }
+
 
     // ── Enter key (text/url inputs only — not select or email) ──
     document.addEventListener('keydown', e => {
