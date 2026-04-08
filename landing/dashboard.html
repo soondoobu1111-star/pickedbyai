@@ -178,13 +178,14 @@
       </div>
       <div style="text-align:right;">
         <span id="result-score" style="font-size:2rem;font-weight:800;color:#FFD700;"></span>
-        <span style="color:#555;font-size:0.8rem;">/82</span>
+        <span style="color:#555;font-size:0.8rem;">/100</span>
       </div>
     </div>
     <div class="score-bar-bg mb-4">
       <div id="result-bar" class="score-bar-fill" style="width:0%;background:#FFD700;"></div>
     </div>
     <div id="result-dimensions"></div>
+    <div id="result-ai-probe" style="display:none;"></div>
     <p id="result-grounded-note" style="font-size:0.72rem;color:#555;margin-top:0.75rem;display:none;">
       ℹ️ Results based on AI training data only (real-time search unavailable in your region).
     </p>
@@ -601,28 +602,85 @@
   }
 
   function showResult(data) {
-    const { score, results, product } = data
+    const { score, results, product, dimensions, aiProbe, sources } = data
     document.getElementById('result-product').textContent = product
     document.getElementById('result-score').textContent = score
-    document.getElementById('result-bar').style.width = Math.round(score / 82 * 100) + '%'
+    document.getElementById('result-bar').style.width = Math.round(Math.min(score, 100)) + '%'
 
     // Badge
     let badgeHtml = ''
-    if (score >= 66) badgeHtml = '<span class="badge-gold">PICKED BY AI</span>'
+    if (score >= 75) badgeHtml = '<span class="badge-gold">PICKED BY AI</span>'
     else if (score >= 50) badgeHtml = '<span class="badge-silver">SEEN BY AI</span>'
-    else if (score >= 30) badgeHtml = '<span class="badge-bronze">NOTICED BY AI</span>'
+    else if (score >= 25) badgeHtml = '<span class="badge-bronze">NOTICED BY AI</span>'
     else badgeHtml = '<span class="badge-none">NOT VISIBLE</span>'
     document.getElementById('result-badge').innerHTML = badgeHtml
 
-    // Dimensions
+    // Dimensions — prefer ENGINE-05 `dimensions` (with scores), fall back to `results`
     const dims = document.getElementById('result-dimensions')
-    dims.innerHTML = (results || []).map(r => renderDimRow(r, true)).join('')
+    if (dimensions && dimensions.length) {
+      dims.innerHTML = dimensions.map(d => renderDimRowV5(d)).join('')
+    } else {
+      dims.innerHTML = (results || []).map(r => renderDimRow(r, true)).join('')
+    }
+
+    // AI Probe — show which AIs recognize the product
+    const probeContainer = document.getElementById('result-ai-probe')
+    if (probeContainer && aiProbe && aiProbe.length) {
+      const probeLabels = { perplexity: 'Perplexity', gpt: 'ChatGPT', gemini: 'Gemini' }
+      probeContainer.innerHTML = `
+        <div style="margin-top:1rem;padding:0.75rem 1rem;background:#111;border:1px solid #222;border-radius:8px;">
+          <div style="font-size:0.7rem;color:#555;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;">AI Recognition</div>
+          ${aiProbe.map(p => {
+            const name = probeLabels[p.ai] || p.ai
+            const icon = p.recognized ? (p.recommended ? '●' : '◐') : '○'
+            const color = p.recognized ? (p.recommended ? '#4ade80' : '#FFD700') : '#555'
+            const label = p.recognized ? (p.recommended ? 'Recommended' : 'Known') : 'Unknown'
+            return `<div style="display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0;">
+              <span style="color:${color};font-size:1rem;">${icon}</span>
+              <span style="color:#ccc;font-size:0.82rem;min-width:80px;">${name}</span>
+              <span style="color:${color};font-size:0.75rem;font-weight:600;">${label}</span>
+            </div>`
+          }).join('')}
+        </div>`
+      probeContainer.style.display = 'block'
+    } else if (probeContainer) {
+      probeContainer.style.display = 'none'
+    }
 
     // Grounding note
     const hasUngrounded = (results || []).some(r => !r.grounded)
     document.getElementById('result-grounded-note').style.display = hasUngrounded ? 'block' : 'none'
 
     document.getElementById('check-result').style.display = 'block'
+  }
+
+  // ENGINE-05 dimension row with score bar
+  function renderDimRowV5(d) {
+    const maxScores = { 'Web Presence': 25, 'Source Authority': 20, 'Recommendation Signals': 20, 'Community Validation': 20, 'Competitive Context': 15 }
+    const max = maxScores[d.label] || 20
+    const pct = Math.round(d.score / max * 100)
+    const color = d.found ? '#4ade80' : '#e05252'
+    const tips = {
+      'Web Presence': 'Get mentioned on directories, blogs, and tech sites. Each independent domain strengthens your signal.',
+      'Source Authority': 'Aim for coverage on high-authority sites like Product Hunt, G2, TechCrunch, or major tech blogs.',
+      'Recommendation Signals': 'Get listed in "best tools" roundups and earn explicit recommendations from reviewers.',
+      'Community Validation': 'Build presence on Reddit, Product Hunt, Indie Hackers. Genuine reviews and discussions matter most.',
+      'Competitive Context': 'Create comparison content or get listed on AlternativeTo. "vs" articles boost this signal.',
+    }
+    const tip = tips[d.label] || ''
+    const tipHtml = !d.found && tip ? `<div style="font-size:0.72rem;color:#555;padding:0.25rem 0 0.5rem;">${tip}</div>` : ''
+    const metaHtml = d.meta ? `<span style="color:#444;font-size:0.7rem;margin-left:0.5rem;">${d.meta}</span>` : ''
+    return `
+      <div style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.82rem;color:#ccc;">${d.label}${metaHtml}</span>
+          <span style="font-size:0.75rem;font-weight:700;color:${color};">${d.score}/${max}</span>
+        </div>
+        <div style="margin-top:0.3rem;height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${d.found ? '#4ade80' : '#333'};border-radius:2px;transition:width 0.6s;"></div>
+        </div>
+        ${tipHtml}
+      </div>`
   }
 
   // ── Save to My Products ────────────────────────────────────
@@ -871,7 +929,7 @@
 
   // badge embed in product expand panel (history rows)
   function copyBadgeHtml(btn, score) {
-    const tier = score >= 66 ? 'gold' : score >= 50 ? 'silver' : 'bronze'
+    const tier = score >= 75 ? 'gold' : score >= 50 ? 'silver' : 'bronze'
     const html = buildBadgeSnippet(tier, score, 'M', 'Rectangle')
     navigator.clipboard.writeText(html).then(() => {
       const orig = btn.textContent
@@ -932,8 +990,8 @@
 
   // ── Share tweet for product list item ──────────────────────
   function shareTweetProduct(score, name) {
-    let tier = score >= 66 ? '🥇 PICKED BY AI' : score >= 50 ? '🥈 SEEN BY AI' : score >= 30 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
-    const text = `I just checked "${name}" on @pickedbyAI\n\nAI Visibility Score: ${score}/82 — ${tier}\n\nCheck yours free (10 seconds, no signup):`
+    let tier = score >= 75 ? '🥇 PICKED BY AI' : score >= 50 ? '🥈 SEEN BY AI' : score >= 25 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
+    const text = `I just checked "${name}" on @pickedbyAI\n\nAI Visibility Score: ${score}/100 — ${tier}\n\nCheck yours free (10 seconds, no signup):`
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent('https://pickedby.ai')}`, '_blank', 'width=550,height=420')
   }
 
@@ -1118,13 +1176,13 @@
     else badge = '<span class="badge-none">—</span>'
 
     let badgeFull = ''
-    if (score >= 66) badgeFull = '<span class="badge-gold">PICKED BY AI</span>'
+    if (score >= 75) badgeFull = '<span class="badge-gold">PICKED BY AI</span>'
     else if (score >= 50) badgeFull = '<span class="badge-silver">SEEN BY AI</span>'
-    else if (score >= 30) badgeFull = '<span class="badge-bronze">NOTICED BY AI</span>'
+    else if (score >= 25) badgeFull = '<span class="badge-bronze">NOTICED BY AI</span>'
     else badgeFull = '<span class="badge-none">NOT VISIBLE</span>'
 
     const date = new Date(row.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    const barColor = score >= 66 ? '#FFD700' : score >= 50 ? '#C0C0C0' : score >= 30 ? '#CD7F32' : '#444'
+    const barColor = score >= 75 ? '#FFD700' : score >= 50 ? '#C0C0C0' : score >= 25 ? '#CD7F32' : '#444'
     const isToday = new Date(row.created_at).toDateString() === new Date().toDateString()
 
     const results = row.results || []
@@ -1147,11 +1205,11 @@
       : 'display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;'
 
     // Expand panel detail: comp tab omits verify + badge embed sections
-    const embedSection = isMine && score >= 30 ? `
+    const embedSection = isMine && score >= 25 ? `
       <div style="margin-top:0.85rem;padding:0.6rem 0.8rem;background:#0d0d0d;border-radius:6px;border:1px solid #1e1e1e;">
         <div style="font-size:0.7rem;color:#555;margin-bottom:0.4rem;">📎 Embed this badge on your page</div>
         <div style="display:flex;align-items:center;gap:0.5rem;">
-          <code style="flex:1;font-size:0.62rem;color:#555;background:#080808;padding:0.3rem 0.5rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">&lt;a href="https://pickedby.ai"&gt;${score>=81?'PICKED BY AI ✓':score>=61?'SEEN BY AI':'NOTICED BY AI'}&lt;/a&gt;</code>
+          <code style="flex:1;font-size:0.62rem;color:#555;background:#080808;padding:0.3rem 0.5rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">&lt;a href="https://pickedby.ai"&gt;${score>=75?'PICKED BY AI ✓':score>=50?'SEEN BY AI':'NOTICED BY AI'}&lt;/a&gt;</code>
           <button onclick="copyBadgeHtml(this,${score});event.stopPropagation()" style="flex-shrink:0;background:none;border:1px solid #FFD700;color:#FFD700;padding:0.3rem 0.65rem;border-radius:4px;cursor:pointer;font-size:0.7rem;font-family:inherit;white-space:nowrap;">Copy HTML</button>
         </div>
       </div>` : ''
@@ -1190,11 +1248,11 @@
             </div>
             <div style="text-align:right;">
               <span style="font-size:2rem;font-weight:800;color:${barColor};">${score}</span>
-              <span style="color:#555;font-size:0.8rem;">/82</span>
+              <span style="color:#555;font-size:0.8rem;">/100</span>
             </div>
           </div>
           <div class="score-bar-bg" style="margin-bottom:1rem;">
-            <div class="score-bar-fill" style="width:${Math.round(score/82*100)}%;background:${barColor};"></div>
+            <div class="score-bar-fill" style="width:${Math.round(score/100*100)}%;background:${barColor};"></div>
           </div>
           ${dimsHtml}
           ${hasUngrounded ? `<p style="font-size:0.72rem;color:#555;margin-top:0.75rem;">ℹ️ Results based on AI training data only (real-time search unavailable in your region).</p>` : ''}
@@ -1225,8 +1283,8 @@
     if (!lastCheckResult) return
     const score = lastCheckResult.score
     const name = lastCheckResult.product
-    let tier = score >= 66 ? '🥇 PICKED BY AI' : score >= 50 ? '🥈 SEEN BY AI' : score >= 30 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
-    const text = `I just checked "${name}" on @pickedbyAI\n\nAI Visibility Score: ${score}/82 — ${tier}\n\nCheck yours free (10 seconds, no signup):`
+    let tier = score >= 75 ? '🥇 PICKED BY AI' : score >= 50 ? '🥈 SEEN BY AI' : score >= 25 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
+    const text = `I just checked "${name}" on @pickedbyAI\n\nAI Visibility Score: ${score}/100 — ${tier}\n\nCheck yours free (10 seconds, no signup):`
     const url = 'https://pickedby.ai'
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank', 'width=550,height=420')
   }
@@ -1292,7 +1350,7 @@
           tooltip: {
             callbacks: {
               label: ctx => ctx.parsed.y !== null
-                ? ` ${ctx.dataset.label}: ${ctx.parsed.y}/82`
+                ? ` ${ctx.dataset.label}: ${ctx.parsed.y}/100`
                 : null
             }
           }
@@ -1300,7 +1358,7 @@
         scales: {
           x: { ticks: { color: '#555', font: { size: 10 } }, grid: { color: '#1a1a1a' } },
           y: {
-            min: 0, max: 82,
+            min: 0, max: 100,
             ticks: { color: '#555', font: { size: 10 }, stepSize: 20 },
             grid: { color: '#1a1a1a' },
           },
