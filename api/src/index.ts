@@ -5,7 +5,6 @@ type Bindings = {
   BREVO_API_KEY: string
   SUPABASE_ANON_KEY: string
   SUPABASE_SERVICE_KEY: string
-  GEMINI_API_KEY: string
   TAVILY_API_KEY: string
   AI: Ai
 }
@@ -130,7 +129,7 @@ function scoreFromTavily(results: TavilyResult[], name: string): CheckResult[] {
 }
 
 // ── Gemini via Relay Worker (Smart Placement → Japan/US DC) ───
-async function queryGemini(_apiKey: string, prompt: string, useSearch = true): Promise<{ text: string; grounded: boolean }> {
+async function queryGemini(prompt: string, useSearch = true): Promise<{ text: string; grounded: boolean }> {
   const res = await fetch(GEMINI_RELAY_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -279,10 +278,10 @@ app.post('/v1/check', async (c) => {
   }
 
   // ── Step 2b: Gemini + Search Grounding (Tavily unavailable) ─
-  if (!success && c.env.GEMINI_API_KEY) {
+  if (!success) {
     try {
       const prompt = buildPrompt()
-      const { text, grounded } = await queryGemini(c.env.GEMINI_API_KEY, prompt, true)
+      const { text, grounded } = await queryGemini(prompt, true)
       console.log(`[Gemini] grounded=${grounded} raw="${text.slice(0, 200)}"`)
       const parsed = parseLines(text, grounded)
       if (parsed.length) { results = parsed; success = true }
@@ -332,7 +331,7 @@ async function sendWelcomeEmail(apiKey: string, email: string, product: string, 
   <p style="color:#aaa;margin:0 0 20px;font-size:14px;">You checked <strong style="color:#fff;">${product}</strong>.</p>
   <div style="background:#141414;border:1px solid #2a2a2a;border-radius:8px;padding:20px;text-align:center;margin-bottom:20px;">
     <div style="font-size:48px;font-weight:800;color:#FFD700;">${score}</div>
-    <div style="font-size:13px;color:#888;">/ 100 · ${tier}</div>
+    <div style="font-size:13px;color:#888;">/ 82 · ${tier}</div>
   </div>
   <p style="font-size:13px;color:#888;margin:0 0 16px;">Sign in to your dashboard to track changes over time and get improvement tips.</p>
   <a href="https://pickedby.ai/dashboard.html" style="display:inline-block;background:#FFD700;color:#0a0a0a;font-weight:700;font-size:14px;padding:10px 24px;border-radius:6px;text-decoration:none;">Open Dashboard →</a>

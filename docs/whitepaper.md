@@ -1,5 +1,5 @@
 # pickedby.ai White Paper
-> **버전:** 1.1 | **작성일:** 2026-04-07 | **최종 갱신:** 2026-04-07 (6AI 피드백 통합 — Creator Network, 선점 전략, 포지셔닝)
+> **버전:** 1.2 | **작성일:** 2026-04-07 | **최종 갱신:** 2026-04-08 (스코어 max 82 확정, 등급 임계값, llms.txt 출시, Dashboard 3탭, Paddle 결제, BLOG-SEO Wave 1 완료)
 > **갱신 주기:** 매 Phase 전환 시 + 전략적 피벗 시
 > **목적:** 사업 방향성의 단일 진실 소스. 왜 이 사업을 하는가, 어디로 가는가, 어떻게 방어하는가.
 
@@ -45,7 +45,7 @@ pickedby.ai는 이 공백을 채운다.
 
 | AI 지적 | 실제 | 교정 |
 |---------|------|------|
-| "수익 모델 없음" | Free/$19/$49 확정, DodoPay 결제 대기중 | 가격 페이지 외부 노출 필요 |
+| "수익 모델 없음" | Free/$19/$49 확정, Paddle 결제 인프라 완료 | 가격 페이지 외부 노출 필요 |
 | "Training data only" | Tavily 실시간 웹검색 기반 | 기술 아키텍처 커뮤니케이션 필요 |
 | "트랙션 제로" | Reddit 4.7K뷰, PH 제출, 디렉토리 4개 | 스테이징 URL 노출이 오해 원인 |
 
@@ -239,7 +239,7 @@ Cloudflare가 수백만 사이트에 깔린 후 유료 플랜 출시 — 동일 
 선점 전 무료를 유지하되, Founding Creator 100 브릿지 병행:
 - 선착순 100명 대상 Creator 플랜 평생 $9 (정가 $19)
 - 이건 페이월이 아님 — "원하는 사람만" 자발적 구조
-- 목적: 결제 의향 데이터 + DodoPay 인프라 테스트 + 모두의 창업 "초기 유료 유저" 기재
+- 목적: 결제 의향 데이터 + Paddle 인프라 테스트 + 모두의 창업 "초기 유료 유저" 기재
 ```
 
 ### 선점 후 약속 (신뢰 자본 유지)
@@ -335,10 +335,35 @@ AI 답변은 확률적 → 절대값보다 추세(trend) 강조
 
 ## 9. 기술 방향
 
-### 현재 (Phase 1.5, 검증됨)
+### 현재 (Phase 1.5, 검증됨 — 진행률 70%)
 ```
 Tavily 웹검색 → llama-3.1-8b 패턴매칭 → 100% 결정적 점수
 월 비용: ~$0 (CF Workers 무료 티어)
+```
+
+**스코어 구조 (ENGINE-04, 2026-04-07 확정)**
+```
+차원별 가중치:
+  direct(20) + best-of(20) + category(12) + reviews(20) + comparison(10) = max 82
+
+등급 임계값:
+  Gold   ≥ 66
+  Silver ≥ 50
+  Bronze ≥ 30
+  None   < 30
+```
+
+**배지 디자인 (2026-04-07 개편)**
+```
+크라운 아이콘 + 티어 라벨 + 스코어 숫자 + pickedby.ai 브랜딩
+배지는 Verified Owner(소유권 인증)한 제품에만 잠금 해제
+```
+
+**Dashboard 3탭 구조 (2026-04-07 확정)**
+```
+Tab 1: My Products  — 최대 5개, Refresh 48h 쿨다운, 소유권 인증
+Tab 2: Competitors  — 하루 100회 검색 카운터
+Tab 3: Tools        — Badge Embed + llms.txt Generator (인라인)
 ```
 
 ### Phase 2 추가
@@ -394,9 +419,10 @@ LLM = 해석 · 조언 · 생성만
 
 | 시기 | 마일스톤 | Moat 기여 |
 |------|---------|-----------|
-| **2026-04 W2** | Product Hunt 런칭 + llms.txt MVP | 브랜드 인지 |
-| **2026-04 W3~4** | Score Tracker (주간 자동체크 + 추이 차트) | Layer 1: 시계열 Lock-in |
-| **2026-05** | Creator $19 유료 플랜 공개 + DodoPay 결제 | 수익 시작 |
+| **2026-04 W2** | Product Hunt 런칭 (4/14) + ✅ llms.txt 출시 완료 (Tools 탭 인라인) | 브랜드 인지 |
+| **2026-04 W2** | ✅ BLOG-SEO Wave 1 완료 (4개 포스트, 6,400단어, 48개 키워드) | SEO 트래픽 기반 |
+| **2026-04 W3~4** | Score Tracker (주간 자동체크 + 추이 차트) + BLOG-SEO Wave 2 | Layer 1: 시계열 Lock-in |
+| **2026-05** | Creator $19 유료 플랜 공개 + Paddle 결제 | 수익 시작 |
 | **2026-06** | SDK v0.1 (dynamic badge + impression) | Layer 2: 코드 임베딩 |
 | **2026-07** | Agency $99 화이트라벨 + 경쟁사 비교 | 시장 래더 3단계 |
 | **2026-08** | SDK v0.2 (클릭 추적 + 전환 correlation) | 데이터 Moat 시작 |
@@ -440,3 +466,4 @@ LLM = 해석 · 조언 · 생성만
 
 *[CPO] 작성 — 2026-04-07 (데스크탑 Claude)*
 *기반: 5AI 피드백 종합 분석 + CEO Moat 전략 토론*
+*[PO] v1.2 갱신 — 2026-04-08: 스코어 max 82·등급 임계값·Dashboard 3탭·llms.txt 출시·BLOG-SEO Wave 1·Paddle 전환 (데스크탑 Claude)*
