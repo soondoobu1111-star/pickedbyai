@@ -1534,6 +1534,7 @@
     const API_BASE = 'https://api.pickedby.ai';
     let _score   = 0;
     let _product = '';
+    let _results = [];
 
     function toggleFaq(btn) {
       const item = btn.closest('.faq-item');
@@ -1728,8 +1729,9 @@
         clearInterval(stepTimer);
         document.getElementById('loading').style.display = 'none';
 
-        _score = data.score ?? 0;
-        renderResult(_score, data.results ?? []);
+        _score   = data.score ?? 0;
+        _results = data.results ?? [];
+        renderResult(_score, _results);
 
         // GA4: check_completed event
         if (typeof gtag === 'function') {
@@ -1817,7 +1819,7 @@
       await fetch(`${API_BASE}/v1/subscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, product: _product, score: _score, source }),
+        body: JSON.stringify({ email, product: _product, score: _score, source, results: _results }),
       }).catch(() => {});
     }
 

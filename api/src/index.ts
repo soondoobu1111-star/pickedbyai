@@ -317,37 +317,90 @@ app.post('/v1/check', async (c) => {
   return c.json({ results, score, product: name })
 })
 
-// ── Logo header (shared across emails) ───────────────────────
 const LOGO_HEADER = `
 <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
-  <tr>
-    <td>
-      <a href="https://pickedby.ai" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
-        <img src="https://pickedby.ai/logo-512.png" alt="pickedby.ai" width="28" height="22" style="display:inline-block;vertical-align:middle;" />
-        <span style="font-family:monospace;font-size:15px;font-weight:700;letter-spacing:0.04em;color:#FFD700;vertical-align:middle;"><span style="color:#FFD700;">picked</span><span style="color:#fff;">by</span><span style="color:#FFD700;">.ai</span></span>
-      </a>
-    </td>
-  </tr>
+  <tr><td>
+    <a href="https://pickedby.ai" style="text-decoration:none;display:inline-block;">
+      <img src="https://pickedby.ai/logo-email.png" alt="pickedby.ai" height="36" style="display:block;" />
+    </a>
+  </td></tr>
 </table>`
 
+const DIM_TIPS: Record<string, string> = {
+  'Direct name search':      'Add your product to directories, publish a blog post, or get mentioned on any indexed page.',
+  'Best-of recommendation':  'Get listed on curated directories and earn best tool mentions in review articles.',
+  'Category ranking':        'Reach out for inclusion in Top X tools roundup articles. Guest posts and PR mentions help too.',
+  'Reviews & mentions':      'Collect reviews on Product Hunt, Reddit, or G2 to build credibility with AI systems.',
+  'Comparison searches':     'Create comparison articles or reach out for \'vs\' and \'alternatives\' mentions.',
+}
+
 // ── FEAT-06: Score result email via Brevo ─────────────────────
-async function sendScoreEmail(apiKey: string, email: string, product: string, score: number): Promise<void> {
-  const tier = score >= 66 ? 'Gold 🥇 PICKED BY AI'
-    : score >= 50 ? 'Silver 🥈 SEEN BY AI'
-    : score >= 30 ? 'Bronze 🥉 NOTICED BY AI'
-    : '— Not yet visible'
+async function sendScoreEmail(
+  apiKey: string,
+  email: string,
+  product: string,
+  score: number,
+  results?: Array<{ label: string; found: boolean }>,
+): Promise<void> {
+  const tierLabel = score >= 66 ? 'PICKED BY AI'
+    : score >= 50 ? 'SEEN BY AI'
+    : score >= 30 ? 'NOTICED BY AI'
+    : 'NOT YET VISIBLE'
+  const tierColor = score >= 66 ? '#FFD700'
+    : score >= 50 ? '#C0C0C0'
+    : score >= 30 ? '#CD7F32'
+    : '#555'
+  const pct = Math.round(score / 82 * 100)
+
+  const noCount = results ? results.filter(r => !r.found).length : 0
+  const ctaLine = noCount > 0
+    ? `<p style="font-size:12px;color:#555;margin:0 0 20px;">${noCount} area${noCount > 1 ? 's' : ''} need improvement. <a href="https://pickedby.ai/dashboard.html" style="color:#FFD700;text-decoration:none;">Open your dashboard to see the full action plan →</a></p>`
+    : `<p style="font-size:12px;color:#555;margin:0 0 20px;"><a href="https://pickedby.ai/dashboard.html" style="color:#FFD700;text-decoration:none;">Open your dashboard to track changes over time →</a></p>`
+
+  let breakdownRows = ''
+  if (results && results.length) {
+    const headerRow = `<tr><td colspan="2" style="font-size:11px;color:#555;font-weight:700;letter-spacing:0.08em;padding-bottom:10px;text-transform:uppercase;">Breakdown</td></tr>`
+    const rows = results.map(r => {
+      const statusColor = r.found ? '#4ade80' : '#e05252'
+      const statusText = r.found ? '✓ YES' : '✕ NO'
+      const tipRow = !r.found && DIM_TIPS[r.label]
+        ? `<tr><td colspan="2" style="padding-bottom:10px;font-size:11px;color:transparent;text-shadow:0 0 6px #666;user-select:none;">${DIM_TIPS[r.label]}</td></tr>`
+        : ''
+      return `
+        <tr style="border-bottom:1px solid #1a1a1a;">
+          <td style="padding:10px 0 ${r.found ? '10px' : '4px'};font-size:13px;color:#ccc;">${r.label}</td>
+          <td style="padding:10px 0 ${r.found ? '10px' : '4px'};text-align:right;font-size:12px;font-weight:700;color:${statusColor};">${statusText}</td>
+        </tr>${tipRow}`
+    }).join('')
+    breakdownRows = `<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:16px;">${headerRow}${rows}</table>`
+  }
+
   const html = `
-<div style="font-family:sans-serif;max-width:520px;margin:0 auto;background:#0a0a0a;color:#f5f5f5;padding:32px 24px;border-radius:8px;">
+<div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;background:#0a0a0a;color:#f5f5f5;padding:32px 24px;border-radius:8px;">
   ${LOGO_HEADER}
-  <h2 style="font-size:18px;margin:0 0 8px;color:#fff;">Your AI Visibility Score is in</h2>
-  <p style="color:#aaa;margin:0 0 20px;font-size:14px;">You checked <strong style="color:#fff;">${product}</strong>.</p>
-  <div style="background:#141414;border:1px solid #2a2a2a;border-radius:8px;padding:20px;text-align:center;margin-bottom:20px;">
-    <div style="font-size:48px;font-weight:800;color:#FFD700;">${score}</div>
-    <div style="font-size:13px;color:#888;">/ 82 · ${tier}</div>
+  <h2 style="font-size:20px;margin:0 0 6px;color:#fff;font-weight:700;">Your AI Visibility Score is in</h2>
+  <p style="color:#888;margin:0 0 24px;font-size:14px;">Here's how AI sees <strong style="color:#fff;">${product}</strong> right now.</p>
+  <div style="background:#111;border:1px solid #2a2a2a;border-radius:8px;padding:20px 24px;margin-bottom:16px;">
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="vertical-align:middle;">
+          <div style="font-size:13px;color:#888;margin-bottom:4px;">AI Visibility Score</div>
+          <div style="display:inline-block;background:${tierColor};color:#000;font-size:11px;font-weight:700;padding:3px 8px;border-radius:4px;letter-spacing:0.05em;">${tierLabel}</div>
+        </td>
+        <td style="text-align:right;vertical-align:middle;">
+          <span style="font-size:44px;font-weight:800;color:${tierColor};">${score}</span>
+          <span style="font-size:14px;color:#555;">/ 82</span>
+        </td>
+      </tr>
+    </table>
   </div>
-  <p style="font-size:13px;color:#888;margin:0 0 16px;">Open your dashboard to track changes over time and get improvement tips.</p>
-  <a href="https://pickedby.ai/dashboard.html" style="display:inline-block;background:#FFD700;color:#0a0a0a;font-weight:700;font-size:14px;padding:10px 24px;border-radius:6px;text-decoration:none;">Open Dashboard →</a>
-  <p style="font-size:11px;color:#444;margin-top:24px;">You're receiving this because you signed up on pickedby.ai. <a href="https://pickedby.ai/unsubscribe.html" style="color:#555;">Unsubscribe</a></p>
+  <div style="background:#1a1a1a;border-radius:4px;height:6px;margin-bottom:24px;overflow:hidden;">
+    <div style="background:${tierColor};height:6px;width:${pct}%;border-radius:4px;"></div>
+  </div>
+  ${breakdownRows}
+  ${ctaLine}
+  <a href="https://pickedby.ai/dashboard.html" style="display:inline-block;background:#FFD700;color:#0a0a0a;font-weight:700;font-size:14px;padding:11px 28px;border-radius:6px;text-decoration:none;">Open Dashboard →</a>
+  <p style="font-size:11px;color:#333;margin-top:28px;">You're receiving this because you signed up on pickedby.ai. <a href="https://pickedby.ai/unsubscribe.html" style="color:#444;">Unsubscribe</a></p>
 </div>`
 
   await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -368,13 +421,31 @@ async function sendScoreEmail(apiKey: string, email: string, product: string, sc
 // ── Welcome email (Google sign-up, no score) ─────────────────
 async function sendWelcomeEmail(apiKey: string, email: string): Promise<void> {
   const html = `
-<div style="font-family:sans-serif;max-width:520px;margin:0 auto;background:#0a0a0a;color:#f5f5f5;padding:32px 24px;border-radius:8px;">
+<div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;background:#0a0a0a;color:#f5f5f5;padding:32px 24px;border-radius:8px;">
   ${LOGO_HEADER}
-  <h2 style="font-size:18px;margin:0 0 8px;color:#fff;">Welcome to pickedby.ai 👋</h2>
-  <p style="color:#aaa;margin:0 0 20px;font-size:14px;">You're signed up for free weekly AI Visibility reports. We'll let you know whenever your score changes.</p>
-  <p style="color:#aaa;margin:0 0 20px;font-size:14px;">Start by checking your first product — it takes 10 seconds.</p>
-  <a href="https://pickedby.ai/dashboard.html" style="display:inline-block;background:#FFD700;color:#0a0a0a;font-weight:700;font-size:14px;padding:10px 24px;border-radius:6px;text-decoration:none;">Check My Score →</a>
-  <p style="font-size:11px;color:#444;margin-top:24px;">You're receiving this because you signed up on pickedby.ai. <a href="https://pickedby.ai/unsubscribe.html" style="color:#555;">Unsubscribe</a></p>
+  <h2 style="font-size:20px;margin:0 0 6px;color:#fff;font-weight:700;">Welcome 👋 You're all set.</h2>
+  <p style="color:#888;margin:0 0 24px;font-size:14px;">You're now signed up for free weekly AI Visibility reports.</p>
+  <div style="background:#111;border:1px solid #2a2a2a;border-radius:8px;padding:20px 24px;margin-bottom:24px;">
+    <div style="font-size:11px;color:#555;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:14px;">What you'll receive</div>
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="padding:6px 0;font-size:13px;color:#ccc;vertical-align:top;width:20px;">📊</td>
+        <td style="padding:6px 0 6px 10px;font-size:13px;color:#ccc;"><strong style="color:#fff;">Weekly AI Visibility Score</strong> — how AI systems see your product, updated every week</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;font-size:13px;color:#ccc;vertical-align:top;">🔍</td>
+        <td style="padding:6px 0 6px 10px;font-size:13px;color:#ccc;"><strong style="color:#fff;">5-dimension breakdown</strong> — Direct search, Best-of lists, Category ranking, Reviews, Comparisons</td>
+      </tr>
+      <tr>
+        <td style="padding:6px 0;font-size:13px;color:#ccc;vertical-align:top;">💡</td>
+        <td style="padding:6px 0 6px 10px;font-size:13px;color:#ccc;"><strong style="color:#fff;">Actionable tips</strong> — specific steps to improve your score each week</td>
+      </tr>
+    </table>
+  </div>
+  <p style="font-size:13px;color:#888;margin:0 0 8px;line-height:1.6;">When someone asks ChatGPT <em style="color:#ccc;">"best Notion templates for freelancers"</em> — AI picks 2–3 products and ignores the rest. Your score tells you if you're in that shortlist.</p>
+  <p style="font-size:13px;color:#888;margin:0 0 24px;line-height:1.6;">Check your first product now — results in 10 seconds, free.</p>
+  <a href="https://pickedby.ai/dashboard.html" style="display:inline-block;background:#FFD700;color:#0a0a0a;font-weight:700;font-size:14px;padding:11px 28px;border-radius:6px;text-decoration:none;">Check My Score →</a>
+  <p style="font-size:11px;color:#333;margin-top:28px;">You're receiving this because you signed up on pickedby.ai. <a href="https://pickedby.ai/unsubscribe.html" style="color:#444;">Unsubscribe</a></p>
 </div>`
 
   await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -395,7 +466,7 @@ async function sendWelcomeEmail(apiKey: string, email: string): Promise<void> {
 // ── POST /v1/subscribe ────────────────────────────────────────
 // Adds email to Brevo contact list
 app.post('/v1/subscribe', async (c) => {
-  let body: { email?: string; product?: string; score?: number; source?: string }
+  let body: { email?: string; product?: string; score?: number; source?: string; results?: Array<{ label: string; found: boolean }> }
 
   try {
     body = await c.req.json()
@@ -403,7 +474,7 @@ app.post('/v1/subscribe', async (c) => {
     return c.json({ error: 'Invalid JSON' }, 400)
   }
 
-  const { email, product, score, source } = body
+  const { email, product, score, source, results } = body
 
   if (!email || !email.includes('@')) {
     return c.json({ error: 'Invalid email' }, 400)
@@ -437,7 +508,7 @@ app.post('/v1/subscribe', async (c) => {
   if (source === 'google-signup') {
     sendWelcomeEmail(c.env.BREVO_API_KEY, email)
   } else {
-    sendScoreEmail(c.env.BREVO_API_KEY, email, product ?? '', score ?? 0)
+    sendScoreEmail(c.env.BREVO_API_KEY, email, product ?? '', score ?? 0, results)
   }
 
   // Save to Supabase (upsert — no duplicate emails, service key bypasses RLS)
