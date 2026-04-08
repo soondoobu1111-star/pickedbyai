@@ -6,6 +6,8 @@ type Bindings = {
   SUPABASE_ANON_KEY: string
   SUPABASE_SERVICE_KEY: string
   TAVILY_API_KEY: string
+  OPENAI_API_KEY: string
+  PERPLEXITY_API_KEY: string
   AI: Ai
 }
 
@@ -18,7 +20,54 @@ type CheckResult = {
   grounded: boolean
 }
 
-type TavilyResult = { title: string; content: string; url: string }
+type TavilyResult = { title: string; content: string; url: string; score?: number }
+
+type SourceInfo = {
+  url: string
+  title: string
+  snippet: string
+  tier: number        // 1, 2, 3
+  isOwn: boolean
+}
+
+type AIProbeResult = {
+  ai: string            // 'perplexity' | 'gpt' | 'gemini'
+  recognized: boolean
+  recommended: boolean
+  snippet: string       // first 300 chars of AI response
+  citations: string[]   // Perplexity only
+}
+
+// ── Source Authority Tiers ───────────────────────────────────
+const TIER1_DOMAINS = /techcrunch\.com|wired\.com|theverge\.com|arstechnica\.com|producthunt\.com|g2\.com|capterra\.com|trustpilot\.com|forbes\.com|bloomberg\.com|nytimes\.com|zapier\.com/
+const TIER2_DOMAINS = /medium\.com|dev\.to|hackernoon\.com|alternativeto\.com|slant\.co|reddit\.com|news\.ycombinator\.com|indiehackers\.com|github\.com|stackshare\.io|sourceforge\.net/
+
+function classifyTier(url: string): number {
+  const lower = url.toLowerCase()
+  if (TIER1_DOMAINS.test(lower)) return 1
+  if (TIER2_DOMAINS.test(lower)) return 2
+  return 3
+}
+
+// ── Own-domain detection (prevents self-referential scoring) ─
+function isOwnDomain(url: string, productName: string, productUrl?: string): boolean {
+  try {
+    const hostname = new URL(url).hostname.replace(/^www\./, '').toLowerCase()
+    // Check against user-provided URL
+    if (productUrl) {
+      try {
+        const ownHost = new URL(productUrl).hostname.replace(/^www\./, '').toLowerCase()
+        if (hostname === ownHost) return true
+      } catch { /* invalid productUrl, skip */ }
+    }
+    // Infer domain from product name (pickedby.ai → pickedby)
+    const normalized = productName.toLowerCase().replace(/\s+/g, '').replace(/[^a-z0-9]/g, '')
+    if (normalized.length > 3 && hostname.includes(normalized)) return true
+    return false
+  } catch {
+    return false
+  }
+}
 
 // Block private/metadata IPs (SSRF prevention)
 function isBlockedUrl(url: string): boolean {
@@ -57,81 +106,168 @@ async function searchTavily(apiKey: string, query: string): Promise<TavilyResult
   return json.results
 }
 
-// ── ENGINE-04: Pure pattern matching on Tavily results (no LLM) ──
-// 100% deterministic, zero LLM cost. Each dimension checked independently.
-function scoreFromTavily(results: TavilyResult[], name: string): CheckResult[] {
+// ── ENGINE-05: Graduated scoring with source tiers + self-referential filter ──
+// 0-100 scale. Each dimension returns a sub-score, not binary YES/NO.
+// Sources are classified by tier and self-referential results are excluded.
+
+type DimensionResult = {
+  label: string
+  found: boolean
+  score: number      // per-dimension score (0 to weight max)
+  rank: number | null
+  grounded: boolean
+  meta?: string      // optional detail (e.g. "4 unique domains")
+}
+
+function scoreFromTavilyV5(
+  allResults: TavilyResult[],
+  name: string,
+  productUrl?: string,
+): { dimensions: DimensionResult[]; sources: SourceInfo[] } {
   const LABELS = [
-    'Direct name search',
-    'Best-of recommendation',
-    'Category ranking',
-    'Reviews & mentions',
-    'Comparison searches',
+    'Web Presence',
+    'Source Authority',
+    'Recommendation Signals',
+    'Community Validation',
+    'Competitive Context',
   ]
 
-  if (!results.length) {
-    return LABELS.map(label => ({ label, found: false, rank: null, grounded: true }))
+  const emptyDims = LABELS.map(label => ({
+    label, found: false, score: 0, rank: null, grounded: true,
+  }))
+
+  if (!allResults.length) {
+    return { dimensions: emptyDims, sources: [] }
   }
 
   const nameLower = name.toLowerCase()
   const escaped = escapeRegex(nameLower)
 
-  // Combined text per result, lowercase
-  const texts = results.map(r => (r.title + ' ' + r.content).toLowerCase())
-  const urls = results.map(r => r.url.toLowerCase())
+  // Build sources with tier + own-domain filter
+  const sources: SourceInfo[] = allResults.map(r => ({
+    url: r.url,
+    title: r.title,
+    snippet: r.content.slice(0, 200),
+    tier: classifyTier(r.url),
+    isOwn: isOwnDomain(r.url, name, productUrl),
+  }))
 
-  // 1. RECOGNITION — name appears in at least 1 result
-  const recognition = texts.some(t => t.includes(nameLower))
+  const texts = allResults.map(r => (r.title + ' ' + r.content).toLowerCase())
+  const urls = allResults.map(r => r.url.toLowerCase())
 
-  // 2. RECOMMENDATION — name + recommendation signal in a THIRD-PARTY result
-  // Exclude own-site URLs (e.g. pickedby.ai result mentioning itself) to prevent false positives
-  const recKw = /\b(best|top|recommended?|must.?have|popular|leading|great|excellent|award)\b/
-  const ownDomain = nameLower.replace(/\s+/g, '').replace(/[^a-z0-9]/g, '')
-  const recommendation = texts.some((t, i) => {
-    const url = urls[i]
-    const isOwnSite = ownDomain.length > 3 && url.includes(ownDomain)
-    return !isOwnSite && t.includes(nameLower) && recKw.test(t)
+  // ── 1. WEB PRESENCE (0-25) — unique third-party domains mentioning product ──
+  const seenDomains = new Set<string>()
+  texts.forEach((t, i) => {
+    if (!t.includes(nameLower)) return
+    if (sources[i].isOwn) return
+    try {
+      const host = new URL(allResults[i].url).hostname.replace(/^www\./, '').toLowerCase()
+      seenDomains.add(host)
+    } catch { /* skip invalid urls */ }
   })
+  const domainCount = seenDomains.size
+  const wpScore = domainCount >= 5 ? 25 : domainCount >= 4 ? 20 : domainCount >= 3 ? 15
+    : domainCount >= 2 ? 10 : domainCount >= 1 ? 5 : 0
 
-  // 3. CATEGORY_RANK — name in a ranked list; extract position (1-20)
-  let rankFound = false
+  // ── 2. SOURCE AUTHORITY (0-20) — weighted by tier of mentioning sources ──
+  let saScore = 0
+  let t1Count = 0, t2Count = 0, t3Count = 0
+  texts.forEach((t, i) => {
+    if (!t.includes(nameLower) || sources[i].isOwn) return
+    const tier = sources[i].tier
+    if (tier === 1 && t1Count < 2) { saScore += 8; t1Count++ }
+    else if (tier === 2 && t2Count < 3) { saScore += 4; t2Count++ }
+    else if (tier === 3 && t3Count < 2) { saScore += 2; t3Count++ }
+  })
+  saScore = Math.min(saScore, 20)
+
+  // ── 3. RECOMMENDATION SIGNALS (0-20) — explicit third-party recommendations ──
+  const recExplicit = /\b(recommended?|must.?have|editor.?s?\s+choice|top\s+pick|our\s+favorite|award.?winning)\b/
+  const recList = /\b(best|top\s+\d+)\b/
+  const recSentiment = /\b(great|excellent|popular|leading|love[ds]?)\b/
+
+  let rsA = 0, rsB = 0, rsC = 0
+  texts.forEach((t, i) => {
+    if (!t.includes(nameLower) || sources[i].isOwn) return
+    if (recExplicit.test(t)) rsA = 10
+    if (recList.test(allResults[i].title.toLowerCase()) && t.includes(nameLower)) {
+      // Check rank position
+      const m = t.match(new RegExp(`#(\\d+)[^\\d]*${escaped}|${escaped}[^\\d]*#(\\d+)|\\b(\\d+)[.)][^\\n]{0,60}${escaped}`))
+      if (m) {
+        const n = parseInt(m[1] ?? m[2] ?? m[3], 10)
+        rsB = (n >= 1 && n <= 3) ? 7 : (n >= 4 && n <= 7) ? 5 : 3
+      } else {
+        rsB = Math.max(rsB, 4) // mentioned in list but position unclear
+      }
+    }
+    if (recSentiment.test(t) && sources[i].tier <= 2) rsC = 3
+  })
+  const rsScore = Math.min(rsA + rsB + rsC, 20)
+
+  // ── 4. COMMUNITY VALIDATION (0-20) — review platforms + community forums ──
+  const reviewPlatforms = /producthunt\.com|g2\.com|capterra\.com|trustpilot\.com/
+  const communityForums = /reddit\.com|news\.ycombinator\.com|indiehackers\.com/
+  const reviewKw = /\b(review|rating|rated|testimonial|experience\s+with|feedback)\b/
+
+  let cvPlatform = 0, cvCommunity = 0, cvLanguage = 0
+  texts.forEach((t, i) => {
+    if (!t.includes(nameLower) || sources[i].isOwn) return
+    const u = urls[i]
+    if (reviewPlatforms.test(u)) cvPlatform = Math.min(cvPlatform + 5, 10)
+    if (communityForums.test(u)) {
+      if (/reddit\.com/.test(u)) cvCommunity = Math.min(cvCommunity + 4, 10)
+      else if (/news\.ycombinator\.com/.test(u)) cvCommunity = Math.min(cvCommunity + 4, 10)
+      else cvCommunity = Math.min(cvCommunity + 3, 10)
+    }
+    if (reviewKw.test(t)) cvLanguage = Math.min(cvLanguage + 2, 3)
+  })
+  const cvScore = Math.min(cvPlatform + cvCommunity + cvLanguage, 20)
+
+  // ── 5. COMPETITIVE CONTEXT (0-15) — comparison/alternative content ──
+  const compKw = /\b(vs\.?|versus|compared?\s+to|comparison)\b/
+  const altKw = /\b(alternative\s+to|alternatives|similar\s+to)\b/
+  const altToUrl = /alternativeto\.com/
+
+  let ccComp = 0, ccAlt = 0
+  const compDomains = new Set<string>()
+  texts.forEach((t, i) => {
+    if (!t.includes(nameLower) || sources[i].isOwn) return
+    if (compKw.test(t)) {
+      try {
+        compDomains.add(new URL(allResults[i].url).hostname)
+      } catch { /* skip */ }
+    }
+    if (altToUrl.test(urls[i])) ccAlt = 5
+    else if (altKw.test(t)) ccAlt = Math.max(ccAlt, 3)
+  })
+  ccComp = compDomains.size >= 2 ? 8 : compDomains.size === 1 ? 4 : 0
+  const ccScore = Math.min(ccComp + ccAlt, 15)
+
+  // Extract rank from recommendation analysis
   let rankNum: number | null = null
-  const rankCtxKw = /\b(top\s*\d+|best\s+\d+|#\d+|\d+\.\s|\d+\))/
   for (const text of texts) {
-    if (!text.includes(nameLower) || !rankCtxKw.test(text)) continue
-    rankFound = true
-    // "#N ... name" or "name ... #N"
+    if (!text.includes(nameLower)) continue
     const m1 = text.match(new RegExp(`#(\\d+)[^\\d]*${escaped}|${escaped}[^\\d]*#(\\d+)`))
     if (m1) {
       const n = parseInt(m1[1] ?? m1[2], 10)
       if (n >= 1 && n <= 20) { rankNum = n; break }
     }
-    // "N. name" or "N) name" list position
     const m2 = text.match(new RegExp(`\\b(\\d+)[.\\)][^\\n]{0,60}${escaped}`))
     if (m2) {
       const n = parseInt(m2[1], 10)
       if (n >= 1 && n <= 20) { rankNum = n; break }
     }
-    break
   }
 
-  // 4. REVIEWS — review platforms or review language + name
-  const reviewKw = /\b(review|rating|rated|testimonial|feedback)\b/
-  const reviewUrls = /reddit\.com|producthunt\.com|g2\.com|capterra\.com|trustpilot\.com/
-  const reviews = texts.some((t, i) =>
-    t.includes(nameLower) && (reviewKw.test(t) || reviewUrls.test(urls[i]))
-  )
-
-  // 5. COMPARISONS — vs / alternatives + name
-  const compKw = /\b(vs\.?|versus|alternative|compared?\s+to|comparison)\b/
-  const comparisons = texts.some(t => t.includes(nameLower) && compKw.test(t))
-
-  return [
-    { label: LABELS[0], found: recognition,    rank: null,    grounded: true },
-    { label: LABELS[1], found: recommendation, rank: null,    grounded: true },
-    { label: LABELS[2], found: rankFound,       rank: rankNum, grounded: true },
-    { label: LABELS[3], found: reviews,         rank: null,    grounded: true },
-    { label: LABELS[4], found: comparisons,     rank: null,    grounded: true },
+  const dimensions: DimensionResult[] = [
+    { label: LABELS[0], found: wpScore > 0, score: wpScore, rank: null, grounded: true, meta: `${domainCount} unique domain${domainCount !== 1 ? 's' : ''}` },
+    { label: LABELS[1], found: saScore > 0, score: saScore, rank: null, grounded: true, meta: `${t1Count} Tier-1, ${t2Count} Tier-2` },
+    { label: LABELS[2], found: rsScore > 0, score: rsScore, rank: rankNum, grounded: true },
+    { label: LABELS[3], found: cvScore > 0, score: cvScore, rank: null, grounded: true },
+    { label: LABELS[4], found: ccScore > 0, score: ccScore, rank: null, grounded: true },
   ]
+
+  return { dimensions, sources: sources.filter(s => !s.isOwn) }
 }
 
 // ── Gemini via Relay Worker (Smart Placement → Japan/US DC) ───
@@ -148,6 +284,89 @@ async function queryGemini(prompt: string, useSearch = true): Promise<{ text: st
   }
   const json = await res.json() as { text: string; grounded: boolean }
   return { text: json.text, grounded: json.grounded }
+}
+
+// ── AI Probe: Direct query to AI systems ─────────────────────
+async function probePerplexity(apiKey: string, name: string): Promise<AIProbeResult> {
+  const res = await fetch('https://api.perplexity.ai/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'sonar',
+      messages: [{
+        role: 'user',
+        content: `Do you know about "${name}"? What does it do, and would you recommend it? Be honest if you don't know it. Keep it under 150 words.`,
+      }],
+      max_tokens: 250,
+      temperature: 0.3,
+    }),
+    signal: AbortSignal.timeout(12000),
+  })
+  if (!res.ok) throw new Error(`Perplexity ${res.status}`)
+  const json = await res.json() as {
+    choices: Array<{ message: { content: string } }>
+    citations?: string[]
+  }
+  const text = json.choices?.[0]?.message?.content ?? ''
+  const textLower = text.toLowerCase()
+  const nameLower = name.toLowerCase()
+
+  // Determine if AI recognizes and recommends the product
+  const dontKnow = /don.?t (have|know)|not aware|no specific|cannot find|not familiar|i.?m not sure/i
+  const recognized = textLower.includes(nameLower) && !dontKnow.test(text)
+  const recSignals = /recommend|worth (trying|using|checking)|great (tool|option|choice)|useful|helpful|solid/i
+  const recommended = recognized && recSignals.test(text)
+
+  return {
+    ai: 'perplexity',
+    recognized,
+    recommended,
+    snippet: text.slice(0, 300),
+    citations: (json.citations ?? []).slice(0, 10),
+  }
+}
+
+async function probeGPT(apiKey: string, name: string): Promise<AIProbeResult> {
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: [{
+        role: 'user',
+        content: `Do you know about "${name}"? What does it do, and would you recommend it? Be honest if you don't know it. Keep it under 150 words.`,
+      }],
+      max_tokens: 250,
+      temperature: 0.3,
+    }),
+    signal: AbortSignal.timeout(12000),
+  })
+  if (!res.ok) throw new Error(`OpenAI ${res.status}`)
+  const json = await res.json() as {
+    choices: Array<{ message: { content: string } }>
+  }
+  const text = json.choices?.[0]?.message?.content ?? ''
+  const textLower = text.toLowerCase()
+  const nameLower = name.toLowerCase()
+
+  const dontKnow = /don.?t (have|know)|not aware|no specific|cannot find|not familiar|i.?m not sure|as of my last/i
+  const recognized = textLower.includes(nameLower) && !dontKnow.test(text)
+  const recSignals = /recommend|worth (trying|using|checking)|great (tool|option|choice)|useful|helpful|solid/i
+  const recommended = recognized && recSignals.test(text)
+
+  return {
+    ai: 'gpt',
+    recognized,
+    recommended,
+    snippet: text.slice(0, 300),
+    citations: [],
+  }
 }
 
 const app = new Hono<{ Bindings: Bindings }>()
@@ -169,7 +388,7 @@ app.use('*', cors({
 app.get('/', (c) => c.json({ ok: true, service: 'pickedbyai-api' }))
 
 // ── POST /v1/check ────────────────────────────────────────────
-// Single Workers AI query evaluating 5 dimensions, returns AI visibility results
+// ENGINE-05: Multi-query Tavily + AI Probe. Returns 0-100 score + sources + aiProbe.
 app.post('/v1/check', async (c) => {
   let body: { product?: string; url?: string; category?: string; keywords?: string }
 
@@ -190,138 +409,161 @@ app.post('/v1/check', async (c) => {
   }
 
   const name = product.trim()
-  const urlCtx = url ? ` (website: ${url})` : ''
-
-  const LABELS = [
-    'Direct name search',
-    'Best-of recommendation',
-    'Category ranking',
-    'Reviews & mentions',
-    'Comparison searches',
-  ]
-
-  // LLM fallback prompt (used only when Tavily unavailable — Steps 2b/2c)
-  const buildPrompt = () =>
-    `Evaluate whether AI systems know the digital product named "${name}"${urlCtx}.\n\n` +
-    `"${name}" refers to a specific software product — NOT a generic concept.\n` +
-    `Only answer YES if you have direct, specific knowledge of "${name}" as a named product.\n\n` +
-    `Reply in EXACTLY this format (5 lines only, no explanation):\n` +
-    `1. YES or NO\n2. YES or NO\n3. YES #N or NO\n4. YES or NO\n5. YES or NO\n\n` +
-    `Questions:\n` +
-    `1. RECOGNITION: Do you have specific knowledge of "${name}" as a real software product?\n` +
-    `2. RECOMMENDATION: Is "${name}" recommended by AI tools as a top solution in its category?\n` +
-    `3. CATEGORY_RANK: Does "${name}" appear in "best of" or top-10 lists? If YES add " #N".\n` +
-    `4. REVIEWS: Does "${name}" have reviews on Product Hunt, Reddit, G2, or tech blogs?\n` +
-    `5. COMPARISONS: Has "${name}" appeared in "vs" or "alternatives to" comparison articles?`
-
-  let results: CheckResult[] = LABELS.map(label => ({ label, found: false, rank: null, grounded: false }))
   const colo = (c.req.raw as Request & { cf?: { colo?: string } }).cf?.colo ?? 'unknown'
   console.log(`[DC] ${colo}`)
 
-  // ── Step 1: Tavily web search ─────────────────────────────
-  let tavilyResults: TavilyResult[] = []
+  // ── Step 1: Parallel — Tavily multi-query + AI Probes ─────
+  // 3 Tavily queries (dimension-optimized) + 2 AI probes, all in parallel
+  const tavilyPromises: Promise<TavilyResult[]>[] = []
   if (c.env.TAVILY_API_KEY) {
-    try {
-      // Enriched query: surfaces best-of lists, reviews, comparisons alongside recognition
-      // NOTE: "best" removed from query to avoid biasing recommendation signal
-      const searchQuery = `${name} review alternative comparison`
-      tavilyResults = await searchTavily(c.env.TAVILY_API_KEY, searchQuery)
-      console.log(`[Tavily] ok, ${tavilyResults.length} results`)
-    } catch (err) {
-      console.error('[Tavily] error:', err)
+    // Q1: Pure brand search (Web Presence + Source Authority)
+    tavilyPromises.push(
+      searchTavily(c.env.TAVILY_API_KEY, `"${name}"`).catch(() => [])
+    )
+    // Q2: Review/recommendation context
+    tavilyPromises.push(
+      searchTavily(c.env.TAVILY_API_KEY, `${name} review recommended tool`).catch(() => [])
+    )
+    // Q3: Competitive context
+    tavilyPromises.push(
+      searchTavily(c.env.TAVILY_API_KEY, `${name} vs alternative comparison`).catch(() => [])
+    )
+  }
+
+  // AI Probes (fire in parallel, non-blocking)
+  const probePromises: Promise<AIProbeResult>[] = []
+  if (c.env.PERPLEXITY_API_KEY) {
+    probePromises.push(
+      probePerplexity(c.env.PERPLEXITY_API_KEY, name).catch(err => {
+        console.error('[Probe:Perplexity] error:', err)
+        return { ai: 'perplexity', recognized: false, recommended: false, snippet: '', citations: [] } as AIProbeResult
+      })
+    )
+  }
+  if (c.env.OPENAI_API_KEY) {
+    probePromises.push(
+      probeGPT(c.env.OPENAI_API_KEY, name).catch(err => {
+        console.error('[Probe:GPT] error:', err)
+        return { ai: 'gpt', recognized: false, recommended: false, snippet: '', citations: [] } as AIProbeResult
+      })
+    )
+  }
+
+  // Await all in parallel
+  const [tavilyArrays, aiProbes] = await Promise.all([
+    Promise.all(tavilyPromises),
+    Promise.all(probePromises),
+  ])
+
+  // Merge & deduplicate Tavily results by URL
+  const seenUrls = new Set<string>()
+  const allTavilyResults: TavilyResult[] = []
+  for (const batch of tavilyArrays) {
+    for (const r of batch) {
+      if (!seenUrls.has(r.url)) {
+        seenUrls.add(r.url)
+        allTavilyResults.push(r)
+      }
     }
   }
+  console.log(`[ENGINE-05] ${tavilyArrays.length} queries, ${allTavilyResults.length} unique results`)
 
-  // parseLines: used only for LLM fallbacks (Step 2b/2c)
-  const parseLines = (text: string, grounded: boolean): CheckResult[] => {
-    const lines = text.split('\n').map(l => l.trim()).filter(l => /^\d\./.test(l))
-    if (lines.length < 3) return []
-    return LABELS.map((label, i) => {
-      const line = lines[i] ?? ''
-      const found = /yes/i.test(line)
-      const rankMatch = line.match(/#(\d+)/)
-      const rank = found && rankMatch ? parseInt(rankMatch[1], 10) : null
-      return { label, found, rank: rank && rank >= 1 && rank <= 20 ? rank : null, grounded }
-    })
-  }
+  // ── Step 2: ENGINE-05 scoring ─────────────────────────────
+  let dimensions: DimensionResult[]
+  let sources: SourceInfo[]
 
-  let success = false
+  if (allTavilyResults.length) {
+    const scored = scoreFromTavilyV5(allTavilyResults, name, url)
+    dimensions = scored.dimensions
+    sources = scored.sources
 
-  // ── Step 2a: ENGINE-04 — Tavily pattern matching (no LLM) ──
-  // 100% deterministic. Runs whenever Tavily results are available.
-  if (tavilyResults.length) {
-    results = scoreFromTavily(tavilyResults, name)
-    console.log(`[ENGINE-04] pattern match: ${results.filter(r => r.found).length}/5 found`)
-
-    // If product not recognized in enriched query, retry targeted for RECOGNITION ONLY.
-    // Key: only update dimension[0]. Other 4 dimensions stay from enriched results.
-    // Prevents AlternativeTo/Reddit profile from inflating REVIEWS & COMPARISONS scores.
-    if (!results[0].found && c.env.TAVILY_API_KEY) {
+    // If not recognized in any result, targeted retry
+    if (!dimensions[0].found && c.env.TAVILY_API_KEY) {
       try {
         let domain = ''
         if (url) {
           try { domain = new URL(url).hostname.replace(/^www\./, '') } catch {}
         }
-        const targetedQuery = domain ? `${name} ${domain}` : `${name} ${name}.com`
+        const targetedQuery = domain ? `${name} ${domain}` : `${name} site:${name.toLowerCase().replace(/\s+/g, '')}.com`
         const targetedResults = await searchTavily(c.env.TAVILY_API_KEY, targetedQuery)
-        console.log(`[ENGINE-04] targeted retry "${targetedQuery}", ${targetedResults.length} results`)
-        const targetedScored = scoreFromTavily(targetedResults, name)
-        if (targetedScored[0].found) {
-          // Only promote RECOGNITION; keep other 4 dims from enriched (all false = honest)
-          results[0] = { ...results[0], found: true }
-          console.log(`[ENGINE-04] targeted recognition hit (other dims stay from enriched)`)
+        console.log(`[ENGINE-05] targeted retry, ${targetedResults.length} results`)
+        const targeted = scoreFromTavilyV5(targetedResults, name, url)
+        if (targeted.dimensions[0].found) {
+          dimensions[0] = targeted.dimensions[0]
+          // Merge new sources
+          for (const s of targeted.sources) {
+            if (!sources.some(existing => existing.url === s.url)) {
+              sources.push(s)
+            }
+          }
         }
       } catch (err) {
-        console.error('[ENGINE-04] targeted retry error:', err)
+        console.error('[ENGINE-05] targeted retry error:', err)
       }
     }
+  } else {
+    // Tavily unavailable — fallback to Gemini/llama for basic check
+    dimensions = [
+      'Web Presence', 'Source Authority', 'Recommendation Signals',
+      'Community Validation', 'Competitive Context',
+    ].map(label => ({ label, found: false, score: 0, rank: null, grounded: false }))
+    sources = []
 
-    // Mark success if recognized — unrecognized products fall through to Gemini
-    if (results[0].found) {
-      success = true
-    } else {
-      console.log(`[ENGINE-04] not recognized, falling through to Gemini`)
-    }
-  }
-
-  // ── Step 2b: Gemini + Search Grounding (Tavily unavailable) ─
-  if (!success) {
+    // Try Gemini fallback
     try {
-      const prompt = buildPrompt()
-      const { text, grounded } = await queryGemini(prompt, true)
-      console.log(`[Gemini] grounded=${grounded} raw="${text.slice(0, 200)}"`)
-      const parsed = parseLines(text, grounded)
-      if (parsed.length) { results = parsed; success = true }
+      const prompt = `Do you know "${name}"? Is it recommended in its category? Reply: YES_KNOWN or NO_UNKNOWN`
+      const { text } = await queryGemini(prompt, true)
+      if (/yes.?known/i.test(text)) {
+        dimensions[0] = { ...dimensions[0], found: true, score: 5, grounded: true }
+      }
     } catch (err) {
-      console.error('[Gemini] error (falling back to llama):', err)
+      console.error('[ENGINE-05] Gemini fallback error:', err)
     }
   }
 
-  // ── Step 2c: llama fallback (last resort) ─────────────────
-  if (!success) {
-    try {
-      const prompt = buildPrompt()
-      const response = await c.env.AI.run('@cf/meta/llama-3.2-3b-instruct', {
-        messages: [{ role: 'user', content: prompt }],
-        max_tokens: 60,
-      }) as { response?: string }
-      const text = response.response ?? ''
-      console.log(`[llama-fallback] raw="${text.slice(0, 200)}"`)
-      const parsed = parseLines(text, false)
-      results = parsed.length ? parsed : LABELS.map(label => ({ label, found: false, rank: null, grounded: false }))
-    } catch (err) {
-      console.error('[llama-fallback] error:', err)
-      results = LABELS.map(label => ({ label, found: false, rank: null, grounded: false }))
+  // Add Perplexity citations to sources
+  for (const probe of aiProbes) {
+    if (probe.ai === 'perplexity' && probe.citations.length) {
+      for (const citUrl of probe.citations) {
+        if (!sources.some(s => s.url === citUrl) && !isOwnDomain(citUrl, name, url)) {
+          sources.push({
+            url: citUrl,
+            title: '',
+            snippet: '(cited by Perplexity)',
+            tier: classifyTier(citUrl),
+            isOwn: false,
+          })
+        }
+      }
     }
   }
 
-  // Compute AI Visibility Score (0-82)
-  // Per-dimension weights: [direct(20), best-of(20), category(12), reviews(20), comparison(10)]
-  // Max = 82 when all 5 pass. direct+reviews = 40 ("Known but not recommended").
-  const WEIGHTS = [20, 20, 12, 20, 10]
-  const score = results.reduce((sum, r, i) => sum + (r.found ? WEIGHTS[i] : 0), 0)
+  // ── Step 3: Compute score (0-100) ─────────────────────────
+  const score = dimensions.reduce((sum, d) => sum + d.score, 0)
 
-  return c.json({ results, score, product: name })
+  // Backward-compatible results array (for existing dashboard)
+  const results: CheckResult[] = dimensions.map(d => ({
+    label: d.label,
+    found: d.found,
+    rank: d.rank,
+    grounded: d.grounded,
+  }))
+
+  console.log(`[ENGINE-05] score=${score}/100, dims=${dimensions.map(d => d.score).join('+')}`)
+  for (const p of aiProbes) {
+    console.log(`[Probe:${p.ai}] recognized=${p.recognized} recommended=${p.recommended}`)
+  }
+
+  return c.json({
+    results,
+    score,
+    maxScore: 100,
+    product: name,
+    // ENGINE-05 extended fields
+    dimensions,
+    sources: sources.slice(0, 15), // cap at 15
+    aiProbe: aiProbes,
+  })
 })
 
 const LOGO_HEADER = `
@@ -334,11 +576,17 @@ const LOGO_HEADER = `
 </table>`
 
 const DIM_TIPS: Record<string, string> = {
-  'Direct name search':      'Add your product to directories, publish a blog post, or get mentioned on any indexed page.',
-  'Best-of recommendation':  'Get listed on curated directories and earn best tool mentions in review articles.',
-  'Category ranking':        'Reach out for inclusion in Top X tools roundup articles. Guest posts and PR mentions help too.',
-  'Reviews & mentions':      'Collect reviews on Product Hunt, Reddit, or G2 to build credibility with AI systems.',
-  'Comparison searches':     'Create comparison articles or reach out for \'vs\' and \'alternatives\' mentions.',
+  'Web Presence':             'Get mentioned on directories, blogs, and tech sites. Each independent domain strengthens your signal.',
+  'Source Authority':         'Aim for coverage on high-authority sites like Product Hunt, G2, TechCrunch, or major tech blogs.',
+  'Recommendation Signals':   'Get listed in "best tools" roundups and earn explicit recommendations from reviewers.',
+  'Community Validation':     'Build presence on Reddit, Product Hunt, Indie Hackers. Genuine reviews and discussions matter most.',
+  'Competitive Context':      'Create comparison content or get listed on AlternativeTo. "vs" articles boost this signal.',
+  // Legacy labels (backward compat for old stored results)
+  'Direct name search':      'Get mentioned on directories, blogs, and tech sites.',
+  'Best-of recommendation':  'Get listed in "best tools" roundups.',
+  'Category ranking':        'Reach out for inclusion in Top X tools roundup articles.',
+  'Reviews & mentions':      'Collect reviews on Product Hunt, Reddit, or G2.',
+  'Comparison searches':     'Create comparison content or get listed on AlternativeTo.',
 }
 
 // ── FEAT-06: Score result email via Brevo ─────────────────────
@@ -349,15 +597,15 @@ async function sendScoreEmail(
   score: number,
   results?: Array<{ label: string; found: boolean }>,
 ): Promise<void> {
-  const tierLabel = score >= 66 ? 'PICKED BY AI'
+  const tierLabel = score >= 75 ? 'PICKED BY AI'
     : score >= 50 ? 'SEEN BY AI'
-    : score >= 30 ? 'NOTICED BY AI'
+    : score >= 25 ? 'NOTICED BY AI'
     : 'NOT YET VISIBLE'
-  const tierColor = score >= 66 ? '#FFD700'
+  const tierColor = score >= 75 ? '#FFD700'
     : score >= 50 ? '#C0C0C0'
-    : score >= 30 ? '#CD7F32'
+    : score >= 25 ? '#CD7F32'
     : '#555'
-  const pct = Math.round(score / 82 * 100)
+  const pct = Math.min(score, 100)
 
   const noCount = results ? results.filter(r => !r.found).length : 0
   const ctaLine = noCount > 0
@@ -396,7 +644,7 @@ async function sendScoreEmail(
         </td>
         <td style="text-align:right;vertical-align:middle;">
           <span style="font-size:44px;font-weight:800;color:${tierColor};">${score}</span>
-          <span style="font-size:14px;color:#555;">/ 82</span>
+          <span style="font-size:14px;color:#555;">/ 100</span>
         </td>
       </tr>
     </table>
@@ -416,7 +664,7 @@ async function sendScoreEmail(
     body: JSON.stringify({
       sender: { name: 'pickedby.ai', email: 'hello@pickedby.ai' },
       to: [{ email }],
-      subject: `Your "${product}" AI Visibility Score: ${score}/82`,
+      subject: `Your "${product}" AI Visibility Score: ${score}/100`,
       htmlContent: html,
     }),
   }).then(async r => {

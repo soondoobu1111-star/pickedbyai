@@ -269,6 +269,33 @@ AI가 우리를 B2B로 오분류 = 사람도 헷갈린다는 신호.
 "For Gumroad sellers · Notion creators · Course builders"
 ```
 
+### Yahoo 패러독스 (2026-04-08 CEO 인사이트)
+
+```
+Yahoo는 웹 존재감 만점이지만 "검색엔진 추천해줘"에 답하는 AI는 없다.
+유명함 ≠ AI 추천. 웹 존재감만으로 점수 매기면 틀린다.
+
+→ Tavily(웹 근거)만으로는 부족. AI Probe(직접 쿼리)가 필수.
+→ 실증: ENGINE-04가 Typefully(82) > Notion(70) → 현실 괴리 확인.
+```
+
+### AI Pulse — 점수에서 맥박으로 (2026-04-08 CEO 확정)
+
+```
+점수 = 첫 만남의 훅 (10초 무료 체크)
+Pulse = 두 번째 방문의 이유 (살아있는 데이터)
+
+GA4에 "사이트 점수 73점"은 없다. 그래프가 있다.
+Search Console에 "SEO 점수 81점"은 없다. 추이가 있다.
+pickedby.ai도 동일 — 점수는 입구, Pulse가 거실.
+
+AI Pulse 구성:
+  - 방향: ↑ rising / → stable / ↓ declining
+  - AI별 인지: GPT ○ / Perplexity ● / Gemini ◐
+  - 멘션 피드: NEW / SEEN / LOST
+  - 30일 추이 그래프
+```
+
 ### 점수 변동성 커뮤니케이션
 
 ```
