@@ -317,25 +317,37 @@ app.post('/v1/check', async (c) => {
   return c.json({ results, score, product: name })
 })
 
-// ── FEAT-06: Welcome email via Brevo Transactional API ────────
-// Requires hello@pickedby.ai sender domain verified in Brevo (DNS: DKIM + SPF)
-async function sendWelcomeEmail(apiKey: string, email: string, product: string, score: number): Promise<void> {
+// ── Logo header (shared across emails) ───────────────────────
+const LOGO_HEADER = `
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+  <tr>
+    <td>
+      <a href="https://pickedby.ai" style="text-decoration:none;display:inline-flex;align-items:center;gap:8px;">
+        <img src="https://pickedby.ai/logo-512.png" alt="pickedby.ai" width="28" height="22" style="display:inline-block;vertical-align:middle;" />
+        <span style="font-family:monospace;font-size:15px;font-weight:700;letter-spacing:0.04em;color:#FFD700;vertical-align:middle;"><span style="color:#FFD700;">picked</span><span style="color:#fff;">by</span><span style="color:#FFD700;">.ai</span></span>
+      </a>
+    </td>
+  </tr>
+</table>`
+
+// ── FEAT-06: Score result email via Brevo ─────────────────────
+async function sendScoreEmail(apiKey: string, email: string, product: string, score: number): Promise<void> {
   const tier = score >= 66 ? 'Gold 🥇 PICKED BY AI'
     : score >= 50 ? 'Silver 🥈 SEEN BY AI'
     : score >= 30 ? 'Bronze 🥉 NOTICED BY AI'
     : '— Not yet visible'
   const html = `
 <div style="font-family:sans-serif;max-width:520px;margin:0 auto;background:#0a0a0a;color:#f5f5f5;padding:32px 24px;border-radius:8px;">
-  <div style="font-size:13px;font-weight:700;color:#FFD700;margin-bottom:20px;letter-spacing:0.05em;">pickedby.ai</div>
+  ${LOGO_HEADER}
   <h2 style="font-size:18px;margin:0 0 8px;color:#fff;">Your AI Visibility Score is in</h2>
   <p style="color:#aaa;margin:0 0 20px;font-size:14px;">You checked <strong style="color:#fff;">${product}</strong>.</p>
   <div style="background:#141414;border:1px solid #2a2a2a;border-radius:8px;padding:20px;text-align:center;margin-bottom:20px;">
     <div style="font-size:48px;font-weight:800;color:#FFD700;">${score}</div>
     <div style="font-size:13px;color:#888;">/ 82 · ${tier}</div>
   </div>
-  <p style="font-size:13px;color:#888;margin:0 0 16px;">Sign in to your dashboard to track changes over time and get improvement tips.</p>
+  <p style="font-size:13px;color:#888;margin:0 0 16px;">Open your dashboard to track changes over time and get improvement tips.</p>
   <a href="https://pickedby.ai/dashboard.html" style="display:inline-block;background:#FFD700;color:#0a0a0a;font-weight:700;font-size:14px;padding:10px 24px;border-radius:6px;text-decoration:none;">Open Dashboard →</a>
-  <p style="font-size:11px;color:#444;margin-top:24px;">You're receiving this because you checked a product on pickedby.ai. <a href="https://pickedby.ai/unsubscribe.html" style="color:#555;">Unsubscribe</a></p>
+  <p style="font-size:11px;color:#444;margin-top:24px;">You're receiving this because you signed up on pickedby.ai. <a href="https://pickedby.ai/unsubscribe.html" style="color:#555;">Unsubscribe</a></p>
 </div>`
 
   await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -351,6 +363,33 @@ async function sendWelcomeEmail(apiKey: string, email: string, product: string, 
     if (!r.ok) console.error('[Brevo SMTP] error:', r.status, await r.text())
     else console.log('[Brevo SMTP] sent to', email)
   }).catch(err => console.error('[Brevo SMTP] fetch error:', err))
+}
+
+// ── Welcome email (Google sign-up, no score) ─────────────────
+async function sendWelcomeEmail(apiKey: string, email: string): Promise<void> {
+  const html = `
+<div style="font-family:sans-serif;max-width:520px;margin:0 auto;background:#0a0a0a;color:#f5f5f5;padding:32px 24px;border-radius:8px;">
+  ${LOGO_HEADER}
+  <h2 style="font-size:18px;margin:0 0 8px;color:#fff;">Welcome to pickedby.ai 👋</h2>
+  <p style="color:#aaa;margin:0 0 20px;font-size:14px;">You're signed up for free weekly AI Visibility reports. We'll let you know whenever your score changes.</p>
+  <p style="color:#aaa;margin:0 0 20px;font-size:14px;">Start by checking your first product — it takes 10 seconds.</p>
+  <a href="https://pickedby.ai/dashboard.html" style="display:inline-block;background:#FFD700;color:#0a0a0a;font-weight:700;font-size:14px;padding:10px 24px;border-radius:6px;text-decoration:none;">Check My Score →</a>
+  <p style="font-size:11px;color:#444;margin-top:24px;">You're receiving this because you signed up on pickedby.ai. <a href="https://pickedby.ai/unsubscribe.html" style="color:#555;">Unsubscribe</a></p>
+</div>`
+
+  await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'api-key': apiKey },
+    body: JSON.stringify({
+      sender: { name: 'pickedby.ai', email: 'hello@pickedby.ai' },
+      to: [{ email }],
+      subject: 'Welcome to pickedby.ai — your AI Visibility reports are set up',
+      htmlContent: html,
+    }),
+  }).then(async r => {
+    if (!r.ok) console.error('[Brevo SMTP welcome] error:', r.status, await r.text())
+    else console.log('[Brevo SMTP welcome] sent to', email)
+  }).catch(err => console.error('[Brevo SMTP welcome] fetch error:', err))
 }
 
 // ── POST /v1/subscribe ────────────────────────────────────────
@@ -394,8 +433,12 @@ app.post('/v1/subscribe', async (c) => {
     return c.json({ error: 'Subscribe failed' }, 500)
   }
 
-  // Send welcome email (fire-and-forget — don't block response)
-  sendWelcomeEmail(c.env.BREVO_API_KEY, email, product ?? '', score ?? 0)
+  // Send email (fire-and-forget — don't block response)
+  if (source === 'google-signup') {
+    sendWelcomeEmail(c.env.BREVO_API_KEY, email)
+  } else {
+    sendScoreEmail(c.env.BREVO_API_KEY, email, product ?? '', score ?? 0)
+  }
 
   // Save to Supabase (upsert — no duplicate emails, service key bypasses RLS)
   await fetch(`${SUPABASE_URL}/rest/v1/emails`, {
