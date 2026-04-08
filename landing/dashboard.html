@@ -1335,7 +1335,7 @@
 
   function renderDimRow(r, compact = false) {
     const meta = DIM_META[r.label] || {}
-    const tip = (meta.tip || '').replace(/'/g, '&#39;')
+    const tip = (meta.tip || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;')
     const hint = meta.hint || ''
     const rankSuffix = (r.found && r.rank) ? ` <span style="color:#888;font-weight:400;font-size:0.78em;">#${r.rank}</span>` : ''
     const labelStyle = compact
