@@ -1582,6 +1582,10 @@
       ],
     };
 
+    function escHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
     function getSuggestions(s) {
       if (s <= 35) return SUGGESTIONS.low;
       if (s <= 60) return SUGGESTIONS.mid;
