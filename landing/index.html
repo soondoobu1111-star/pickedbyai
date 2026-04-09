@@ -1815,12 +1815,16 @@
       }
     });
 
+    // ── Detect ?ref=beta for beta tester tagging ───────────────
+    const _isBeta = new URLSearchParams(window.location.search).get('ref') === 'beta';
+
     // ── Shared subscribe logic ────────────────────────────────
     async function doSubscribe(email, source) {
+      const finalSource = _isBeta ? 'beta-100' : source;
       await fetch(`${API_BASE}/v1/subscribe`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, product: _product, score: _score, source, results: _results }),
+        body: JSON.stringify({ email, product: _product, score: _score, source: finalSource, results: _results }),
       }).catch(() => {});
     }
 

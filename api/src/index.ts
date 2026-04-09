@@ -786,6 +786,30 @@ app.post('/v1/subscribe', async (c) => {
   return c.json({ ok: true })
 })
 
+// ── GET /v1/beta-count ────────────────────────────────────────
+// Returns current beta tester count (source = 'beta-100')
+app.get('/v1/beta-count', async (c) => {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/emails?source=eq.beta-100&select=email`,
+      {
+        headers: {
+          'apikey': c.env.SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+          'Prefer': 'count=exact',
+          'Range': '0-0',
+        },
+      }
+    )
+    const range = res.headers.get('content-range') // e.g. "0-0/37"
+    const count = range ? parseInt(range.split('/')[1]) || 0 : 0
+    return c.json({ count })
+  } catch (err) {
+    console.error('[beta-count] error:', err)
+    return c.json({ count: 0 })
+  }
+})
+
 // ── POST /v1/verify ───────────────────────────────────────────
 // Checks product site for pickedby-site-verification meta tag
 app.post('/v1/verify', async (c) => {
