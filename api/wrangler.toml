@@ -28,6 +28,11 @@ binding = "AI"
 # - BREVO_API_KEY
 # - SUPABASE_ANON_KEY
 # - SUPABASE_SERVICE_KEY
+# - TAVILY_API_KEY
+# - PERPLEXITY_API_KEY   (kw-key.sh load perplexity)
+# - OPENAI_API_KEY       (kw-key.sh load openai)
+# - GEMINI_API_KEY       (kw-key.sh load pickedbyai)
+# - GROQ_API_KEY
 
 # Custom domain: api.pickedby.ai
 # → CF Dashboard > Workers > pickedbyai-api > Settings > Domains & Routes > Add Custom Domain

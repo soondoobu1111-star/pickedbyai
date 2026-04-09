@@ -363,7 +363,7 @@ async function probePerplexity(apiKey: string, name: string): Promise<AIProbeRes
   const nameLower = name.toLowerCase()
 
   // Determine if AI recognizes and recommends the product
-  const dontKnow = /don.?t (have|know)|not aware|no specific|cannot find|not familiar|i.?m not sure/i
+  const dontKnow = /don.?t (have|know)|do not (know|have)|not aware|no specific|cannot find|not familiar|i.?m not sure|unfamiliar|no information|no record/i
   const recognized = textLower.includes(nameLower) && !dontKnow.test(text)
   const recSignals = /recommend|worth (trying|using|checking)|great (tool|option|choice)|useful|helpful|solid/i
   const recommended = recognized && recSignals.test(text)
@@ -404,7 +404,7 @@ async function probeGPT(apiKey: string, name: string): Promise<AIProbeResult> {
   const textLower = text.toLowerCase()
   const nameLower = name.toLowerCase()
 
-  const dontKnow = /don.?t (have|know)|not aware|no specific|cannot find|not familiar|i.?m not sure|as of my last/i
+  const dontKnow = /don.?t (have|know)|do not (know|have)|not aware|no specific|cannot find|not familiar|i.?m not sure|unfamiliar|no information|no record|as of my last/i
   const recognized = textLower.includes(nameLower) && !dontKnow.test(text)
   const recSignals = /recommend|worth (trying|using|checking)|great (tool|option|choice)|useful|helpful|solid/i
   const recommended = recognized && recSignals.test(text)
