@@ -5,6 +5,7 @@
   <meta name="pickedby-site-verification" content="ngeyntm4zgjwawnrzwri" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://api.pickedby.ai https://*.supabase.co https://www.google-analytics.com; img-src 'self' data: https:; frame-src 'none'; object-src 'none';" />
   <title>Dashboard — pickedby.ai</title>
   <meta name="robots" content="noindex, nofollow" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -631,7 +632,7 @@
         <div style="margin-top:1rem;padding:0.75rem 1rem;background:#111;border:1px solid #222;border-radius:8px;">
           <div style="font-size:0.7rem;color:#555;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;">AI Recognition</div>
           ${aiProbe.map(p => {
-            const name = probeLabels[p.ai] || p.ai
+            const name = escHtml(probeLabels[p.ai] || p.ai)
             const icon = p.recognized ? (p.recommended ? '●' : '◐') : '○'
             const color = p.recognized ? (p.recommended ? '#4ade80' : '#FFD700') : '#555'
             const label = p.recognized ? (p.recommended ? 'Recommended' : 'Known') : 'Unknown'
@@ -668,12 +669,12 @@
       'Competitive Context': 'Create comparison content or get listed on AlternativeTo. "vs" articles boost this signal.',
     }
     const tip = tips[d.label] || ''
-    const tipHtml = !d.found && tip ? `<div style="font-size:0.72rem;color:#555;padding:0.25rem 0 0.5rem;">${tip}</div>` : ''
-    const metaHtml = d.meta ? `<span style="color:#444;font-size:0.7rem;margin-left:0.5rem;">${d.meta}</span>` : ''
+    const tipHtml = !d.found && tip ? `<div style="font-size:0.72rem;color:#555;padding:0.25rem 0 0.5rem;">${escHtml(tip)}</div>` : ''
+    const metaHtml = d.meta ? `<span style="color:#444;font-size:0.7rem;margin-left:0.5rem;">${escHtml(d.meta)}</span>` : ''
     return `
       <div style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;">
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <span style="font-size:0.82rem;color:#ccc;">${d.label}${metaHtml}</span>
+          <span style="font-size:0.82rem;color:#ccc;">${escHtml(d.label)}${metaHtml}</span>
           <span style="font-size:0.75rem;font-weight:700;color:${color};">${d.score}/${max}</span>
         </div>
         <div style="margin-top:0.3rem;height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden;">
@@ -1409,10 +1410,10 @@
       <div style="${rowStyle}">
         <div>
           <span style="${labelStyle}">
-            ${compact ? r.label : escHtml(r.label || '')}
+            ${escHtml(r.label || '')}
             ${tip ? `<span class="dim-tip" data-tip="${tip}">?</span>` : ''}
           </span>
-          ${!r.found && hint ? `<div class="dim-no-hint">${hint}</div>` : ''}
+          ${!r.found && hint ? `<div class="dim-no-hint">${escHtml(hint)}</div>` : ''}
         </div>
         <span style="${valStyle}${r.found ? 'color:#4ade80;' : 'color:#ef4444;'}">${r.found ? '✓ YES' : '✗ NO'}${rankSuffix}</span>
       </div>`

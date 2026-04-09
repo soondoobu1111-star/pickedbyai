@@ -41,9 +41,8 @@ export default {
     })
 
     if (!res.ok) {
-      const err = await res.text()
       return new Response(
-        JSON.stringify({ error: `Gemini ${res.status}`, detail: err.slice(0, 200) }),
+        JSON.stringify({ error: `Gemini ${res.status}` }),
         { status: res.status }
       )
     }

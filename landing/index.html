@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://api.pickedby.ai https://*.supabase.co https://www.google-analytics.com; img-src 'self' data: https:; frame-src 'none'; object-src 'none';" />
   <title>pickedby.ai — AI Visibility Score for Digital Creators</title>
   <meta name="description" content="Does AI recommend your product? Free AI Visibility Score in 10 seconds. For Gumroad sellers, Notion template creators, and digital creators." />
   <meta name="pickedby-site-verification" content="ngeyntm4zgjwawnrzwri" />
@@ -1656,8 +1657,8 @@
         div.className = 'qitem';
         div.innerHTML = `
           <span class="qitem-icon">${r.found ? '✅' : '❌'}</span>
-          <span class="qitem-text">"${r.label}"</span>
-          ${r.rank ? `<span class="qitem-rank">#${r.rank}</span>` : ''}
+          <span class="qitem-text">"${escHtml(r.label)}"</span>
+          ${r.rank ? `<span class="qitem-rank">#${escHtml(String(r.rank))}</span>` : ''}
         `;
         qList.appendChild(div);
       });
@@ -1668,7 +1669,7 @@
       getSuggestions(score).forEach((s, i) => {
         const div = document.createElement('div');
         div.className = 'sitem';
-        div.innerHTML = `<span class="sitem-n">0${i+1}</span><span>${s}</span>`;
+        div.innerHTML = `<span class="sitem-n">0${i+1}</span><span>${escHtml(s)}</span>`;
         sList.appendChild(div);
       });
 
