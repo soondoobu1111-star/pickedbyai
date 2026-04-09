@@ -110,6 +110,14 @@ function checkRateLimit(ip: string, path: string): boolean {
   if (!limit) return false  // no limit for this path
   const key = `${ip}:${path}`
   const now = Date.now()
+
+  // Lazy cleanup: purge stale entries when map grows large
+  if (rateLimitMap.size > 1000) {
+    for (const [k, v] of rateLimitMap) {
+      if (now > v.resetAt) rateLimitMap.delete(k)
+    }
+  }
+
   const entry = rateLimitMap.get(key)
   if (!entry || now > entry.resetAt) {
     rateLimitMap.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
@@ -119,14 +127,6 @@ function checkRateLimit(ip: string, path: string): boolean {
   if (entry.count > limit) return true  // blocked
   return false
 }
-
-// Cleanup stale entries every 5 minutes (prevent memory leak)
-setInterval(() => {
-  const now = Date.now()
-  for (const [key, entry] of rateLimitMap) {
-    if (now > entry.resetAt) rateLimitMap.delete(key)
-  }
-}, 300_000)
 
 // ── Tavily web search (returns raw results) ───────────────────
 async function searchTavily(apiKey: string, query: string): Promise<TavilyResult[]> {
