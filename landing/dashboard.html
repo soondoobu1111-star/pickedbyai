@@ -201,6 +201,11 @@
         + Save as Competitor
       </button>
     </div>
+    <!-- MLP-CTA: Track score over time nudge -->
+    <div id="mlp-track-cta" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#0d0d0d;border:1px dashed #FFD70044;border-radius:8px;text-align:center;">
+      <div style="font-size:0.78rem;color:#FFD700;font-weight:600;margin-bottom:0.25rem;">📈 Track how your score changes over time</div>
+      <div style="font-size:0.72rem;color:#555;">Save to My Products → check again tomorrow → see your trend</div>
+    </div>
   </div>
 
   <!-- History card with 3-tab structure -->
@@ -653,6 +658,9 @@
     document.getElementById('result-grounded-note').style.display = hasUngrounded ? 'block' : 'none'
 
     document.getElementById('check-result').style.display = 'block'
+    // Show track CTA only when not logged in
+    const ctaEl = document.getElementById('mlp-track-cta')
+    if (ctaEl) ctaEl.style.display = currentUser ? 'none' : 'block'
   }
 
   // ENGINE-05 dimension row with score bar
@@ -757,6 +765,8 @@
       product_url: lastCheckResult.url,
       score: lastCheckResult.score,
       results: lastCheckResult.results,
+      dimensions: lastCheckResult.dimensions || null,
+      ai_probe: lastCheckResult.aiProbe || null,
     })
     if (!error) {
       setSavedBtn(tag)
@@ -788,6 +798,8 @@
         await sb.from('scores').update({
           score: lastCheckResult.score,
           results: lastCheckResult.results,
+          dimensions: lastCheckResult.dimensions || null,
+          ai_probe: lastCheckResult.aiProbe || null,
         }).eq('id', existing.id)
       }
       loadHistory()
@@ -799,6 +811,8 @@
       product_url: lastCheckResult.url,
       score: lastCheckResult.score,
       results: lastCheckResult.results,
+      dimensions: lastCheckResult.dimensions || null,
+      ai_probe: lastCheckResult.aiProbe || null,
     })
     loadHistory()
   }
@@ -842,7 +856,7 @@
         body: JSON.stringify({ product: name, url: url || undefined }),
       })
       const data = await res.json()
-      lastCheckResult = { product: name, url: url || null, score: data.score, results: data.results }
+      lastCheckResult = { product: name, url: url || null, score: data.score, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null }
       await autoSave(tag)
     } catch (err) {
       alert('Refresh failed. Please try again.')
@@ -1190,7 +1204,24 @@
     const hasUngrounded = results.some(r => !r.grounded)
     const verifyToken = genVerifyToken(currentUser?.id || '', row.product_name)
     const isVerified = localStorage.getItem(`pba_verified_${row.product_name}`) === '1'
-    const dimsHtml = results.map(r => renderDimRow(r, false)).join('')
+    // Use ENGINE-05 dimensions (with scores) if available, fallback to legacy results
+    const dims = row.dimensions
+    const dimsHtml = dims && dims.length
+      ? dims.map(d => renderDimRowV5(d)).join('')
+      : results.map(r => renderDimRow(r, false)).join('')
+    // Momentum: compare latest vs previous check for this product
+    const productHistory = allHistoryData
+      .filter(r => r.product_name === row.product_name)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    let momentumHtml = ''
+    if (productHistory.length >= 2) {
+      const prev = productHistory[1].score
+      const diff = score - prev
+      const pct = prev > 0 ? Math.abs(Math.round((diff / prev) * 100)) : 0
+      if (diff > 0) momentumHtml = `<span style="color:#4ade80;font-size:0.7rem;font-weight:700;margin-left:4px;">↑${pct}%</span>`
+      else if (diff < 0) momentumHtml = `<span style="color:#ef4444;font-size:0.7rem;font-weight:700;margin-left:4px;">↓${pct}%</span>`
+      else momentumHtml = `<span style="color:#555;font-size:0.7rem;margin-left:4px;">→</span>`
+    }
 
     const isMine = tag === 'mine'
 
@@ -1236,7 +1267,7 @@
             <div style="font-size:0.95rem;font-weight:600;">${escHtml(row.product_name)}</div>
             ${row.product_url ? `<div style="font-size:0.75rem;color:#555;">${escHtml(row.product_url)}</div>` : ''}
           </div>
-          <div style="text-align:center;"><span style="font-size:1.05rem;font-weight:700;color:${barColor};">${score}</span></div>
+          <div style="text-align:center;line-height:1.2;"><span style="font-size:1.05rem;font-weight:700;color:${barColor};">${score}</span>${momentumHtml}</div>
           <div style="text-align:center;">${badge}</div>
           ${statusHtml}
           <div style="text-align:right;font-size:0.8rem;color:#666;">${date}</div>
@@ -1250,6 +1281,7 @@
             <div style="text-align:right;">
               <span style="font-size:2rem;font-weight:800;color:${barColor};">${score}</span>
               <span style="color:#555;font-size:0.8rem;">/100</span>
+              ${momentumHtml ? `<div style="margin-top:2px;">${momentumHtml.replace('margin-left:4px', 'margin-left:0')}<span style="color:#444;font-size:0.68rem;margin-left:4px;">vs last check</span></div>` : (productHistory.length === 1 ? '<div style="color:#555;font-size:0.68rem;margin-top:2px;">First check</div>' : '')}
             </div>
           </div>
           <div class="score-bar-bg" style="margin-bottom:1rem;">
@@ -1296,7 +1328,19 @@
 
   function renderTrendChart(data) {
     const wrap = document.getElementById('trend-chart-wrap')
-    if (!data || data.length < 2) { wrap.style.display = 'none'; return }
+    if (!data || data.length < 2) {
+      // Show "Check again" nudge if there's exactly 1 data point
+      if (data && data.length === 1) {
+        wrap.style.display = 'block'
+        wrap.style.height = 'auto'
+        wrap.innerHTML = '<p style="color:#444;font-size:0.78rem;text-align:center;padding:1rem 0;">📈 Check again tomorrow to see your trend appear</p>'
+      } else {
+        wrap.style.display = 'none'
+      }
+      return
+    }
+    wrap.style.height = '180px'
+    wrap.innerHTML = '<canvas id="trend-chart"></canvas>'
 
     const productDayMap = {}
     const seenOrder = []
