@@ -120,6 +120,37 @@
     .lt-textarea { background:#1a1a1a; border:1px solid #333; color:#f5f5f5; padding:0.55rem 0.7rem; border-radius:6px; width:100%; box-sizing:border-box; font-size:0.82rem; outline:none; font-family:inherit; resize:vertical; min-height:78px; line-height:1.5; }
     .lt-textarea:focus { border-color:#FFD700; }
     .lt-label { font-size:0.72rem; color:#666; display:block; margin-bottom:0.3rem; }
+    /* Settings Modal */
+    .settings-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9998;align-items:center;justify-content:center;padding:1.25rem; }
+    .settings-overlay.open { display:flex; }
+    .settings-box { background:#111;border:1px solid #2a2a2a;border-radius:14px;padding:2rem;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);max-height:90vh;overflow-y:auto; }
+    .settings-title { font-size:1rem;font-weight:700;margin-bottom:1.75rem;display:flex;align-items:center;justify-content:space-between; }
+    .settings-close { background:none;border:none;color:#555;cursor:pointer;font-size:1.2rem;padding:0;line-height:1; }
+    .settings-close:hover { color:#fff; }
+    .settings-section { margin-bottom:1.75rem;padding-bottom:1.75rem;border-bottom:1px solid #1f1f1f; }
+    .settings-section:last-child { margin-bottom:0;padding-bottom:0;border-bottom:none; }
+    .settings-section-label { font-size:0.65rem;font-family:'Press Start 2P',monospace;color:#444;letter-spacing:0.1em;margin-bottom:1rem; }
+    .settings-row { display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem; }
+    .settings-row-label { font-size:0.85rem;color:#ccc; }
+    .settings-row-value { font-size:0.8rem;color:#555;word-break:break-all;text-align:right;max-width:180px; }
+    /* Toggle */
+    .toggle-wrap { display:flex;align-items:center;gap:0.6rem; }
+    .toggle { position:relative;width:40px;height:22px;flex-shrink:0; }
+    .toggle input { opacity:0;width:0;height:0; }
+    .toggle-track { position:absolute;inset:0;background:#2a2a2a;border-radius:22px;cursor:pointer;transition:background 0.2s; }
+    .toggle input:checked + .toggle-track { background:#FFD700; }
+    .toggle-thumb { position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:#888;border-radius:50%;transition:transform 0.2s,background 0.2s; }
+    .toggle input:checked ~ .toggle-thumb { transform:translateX(18px);background:#000; }
+    .toggle-label { font-size:0.82rem;color:#888; }
+    /* Delete zone */
+    .danger-btn { width:100%;background:none;border:1px solid #3a1a1a;color:#ef4444;padding:0.65rem;border-radius:8px;cursor:pointer;font-size:0.85rem;font-family:inherit;transition:all 0.15s; }
+    .danger-btn:hover { background:#1a0000;border-color:#ef4444; }
+    .delete-confirm-wrap { display:none;margin-top:1rem; }
+    .delete-confirm-wrap.show { display:block; }
+    .delete-confirm-input { background:#1a1a1a;border:1px solid #3a1a1a;color:#f5f5f5;padding:0.55rem 0.7rem;border-radius:6px;width:100%;box-sizing:border-box;font-size:0.82rem;outline:none;font-family:inherit;margin:0.5rem 0 0.75rem; }
+    .delete-confirm-input:focus { border-color:#ef4444; }
+    .delete-final-btn { width:100%;background:#ef4444;color:#fff;border:none;padding:0.65rem;border-radius:8px;cursor:pointer;font-size:0.85rem;font-weight:700;font-family:inherit;opacity:0.4;transition:opacity 0.15s; }
+    .delete-final-btn.ready { opacity:1; }
   </style>
 </head>
 <body>
@@ -138,6 +169,7 @@
       </button>
       <div class="nav-dropdown" id="nav-dropdown">
         <div class="nav-dropdown-email" id="nav-email"></div>
+        <button onclick="openSettings()">Settings</button>
         <button onclick="signOut()">Sign out</button>
       </div>
     </div>
@@ -505,6 +537,83 @@
     // 4. 탈퇴 완료 알림 후 홈으로
     alert('Account deleted. Thank you for using pickedby.ai.')
     window.location.href = '/'
+  }
+
+  // ── Settings Modal ─────────────────────────────────────────
+  function openSettings() {
+    document.getElementById('nav-dropdown').classList.remove('open')
+    // 마케팅 동의 상태 로드
+    const consent = localStorage.getItem('pba_marketing_consent')
+    const toggle = document.getElementById('settings-marketing-toggle')
+    toggle.checked = consent === '1'
+    document.getElementById('settings-marketing-label').textContent = consent === '1' ? 'On' : 'Off'
+    // 이메일 표시
+    document.getElementById('settings-email').textContent = currentUser?.email || ''
+    // 탈퇴 confirm 초기화
+    document.getElementById('delete-confirm-wrap').classList.remove('show')
+    document.getElementById('delete-confirm-input').value = ''
+    document.getElementById('delete-final-btn').classList.remove('ready')
+    document.getElementById('settings-overlay').classList.add('open')
+  }
+
+  function closeSettings() {
+    document.getElementById('settings-overlay').classList.remove('open')
+  }
+
+  async function toggleMarketing() {
+    const toggle = document.getElementById('settings-marketing-toggle')
+    const isOn = toggle.checked
+    const labelEl = document.getElementById('settings-marketing-label')
+    labelEl.textContent = isOn ? 'On' : 'Off'
+    localStorage.setItem('pba_marketing_consent', isOn ? '1' : '0')
+    if (!currentUser?.email) return
+    try {
+      await fetch(`${API_URL}/v1/${isOn ? 'subscribe' : 'unsubscribe'}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: currentUser.email, source: 'settings' }),
+      })
+    } catch (_) {}
+  }
+
+  function exportCSV() {
+    if (!allHistoryData || allHistoryData.length === 0) {
+      alert('No score history to export yet.')
+      return
+    }
+    const rows = [['Product', 'Score', 'Date']]
+    allHistoryData
+      .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+      .forEach(r => {
+        rows.push([
+          `"${(r.product_name || '').replace(/"/g, '""')}"`,
+          r.score,
+          new Date(r.created_at).toISOString().split('T')[0],
+        ])
+      })
+    const csv = rows.map(r => r.join(',')).join('\n')
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = `pickedbyai-scores-${new Date().toISOString().split('T')[0]}.csv`
+    a.click()
+  }
+
+  function showDeleteConfirm() {
+    document.getElementById('delete-confirm-wrap').classList.add('show')
+    document.getElementById('delete-confirm-input').focus()
+  }
+
+  function checkDeleteInput() {
+    const val = document.getElementById('delete-confirm-input').value.trim()
+    const btn = document.getElementById('delete-final-btn')
+    btn.classList.toggle('ready', val === 'DELETE')
+  }
+
+  async function confirmDeleteAccount() {
+    const val = document.getElementById('delete-confirm-input').value.trim()
+    if (val !== 'DELETE') return
+    await deleteAccount()
   }
 
   function showLogin() {
@@ -1552,11 +1661,13 @@
       }).catch(() => {})
     }
     localStorage.setItem('pba_consent_shown', '1')
+    localStorage.setItem('pba_marketing_consent', checked ? '1' : '0')
     document.getElementById('consent-modal').style.display = 'none'
   }
 
   function handleConsentSkip() {
     localStorage.setItem('pba_consent_shown', '1')
+    localStorage.setItem('pba_marketing_consent', '0')
     document.getElementById('consent-modal').style.display = 'none'
   }
 
@@ -1573,6 +1684,70 @@
     }
   })
 </script>
+
+<!-- ── Settings Modal ───────────────────────────────── -->
+<div id="settings-overlay" class="settings-overlay" onclick="if(event.target===this)closeSettings()">
+  <div class="settings-box">
+    <div class="settings-title">
+      <span>Settings</span>
+      <button class="settings-close" onclick="closeSettings()">×</button>
+    </div>
+
+    <!-- Account -->
+    <div class="settings-section">
+      <div class="settings-section-label">ACCOUNT</div>
+      <div class="settings-row">
+        <span class="settings-row-label">Email</span>
+        <span class="settings-row-value" id="settings-email"></span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-row-label">Plan</span>
+        <span class="settings-row-value" style="color:#FFD700;">Free</span>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="settings-section">
+      <div class="settings-section-label">NOTIFICATIONS</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Marketing emails</div>
+          <div style="font-size:0.75rem;color:#555;margin-top:2px;">Weekly AI visibility reports &amp; product updates</div>
+        </div>
+        <div class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" id="settings-marketing-toggle" onchange="toggleMarketing()">
+            <span class="toggle-track"></span>
+            <span class="toggle-thumb"></span>
+          </label>
+          <span class="toggle-label" id="settings-marketing-label">Off</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data -->
+    <div class="settings-section">
+      <div class="settings-section-label">DATA &amp; PRIVACY</div>
+      <button onclick="exportCSV()" style="width:100%;background:none;border:1px solid #2a2a2a;color:#ccc;padding:0.65rem;border-radius:8px;cursor:pointer;font-size:0.85rem;font-family:inherit;text-align:left;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#444'" onmouseout="this.style.borderColor='#2a2a2a'">
+        Export score history (CSV) →
+      </button>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="settings-section">
+      <div class="settings-section-label" style="color:#3a1a1a;">DANGER ZONE</div>
+      <button class="danger-btn" onclick="showDeleteConfirm()">Delete account</button>
+      <div class="delete-confirm-wrap" id="delete-confirm-wrap">
+        <div style="font-size:0.8rem;color:#888;margin-top:0.75rem;line-height:1.6;">
+          This will permanently delete all your score history and cannot be undone.<br>
+          Type <strong style="color:#ef4444;">DELETE</strong> to confirm.
+        </div>
+        <input type="text" class="delete-confirm-input" id="delete-confirm-input" placeholder="Type DELETE" oninput="checkDeleteInput()" autocomplete="off" />
+        <button class="delete-final-btn" id="delete-final-btn" onclick="confirmDeleteAccount()">Permanently delete my account</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ── Marketing Consent Modal ────────────────────────── -->
 <div id="consent-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;align-items:center;justify-content:center;padding:1.25rem;">
