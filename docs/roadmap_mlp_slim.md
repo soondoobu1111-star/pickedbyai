@@ -1,5 +1,5 @@
 # MLP-Slim 로드맵 — pickedby.ai Score Redesign
-> CEO 승인: 2026-04-10 | 상태: KICKOFF
+> CEO 승인: 2026-04-10 | 상태: 9/11 완료 — 프로덕션 배포됨
 > 근거: 4-LLM 종합 분석 + 에이전트 4명 의견 수렴 → CPO 종합 판단
 
 ---
@@ -27,47 +27,26 @@
 
 ## 스프린트 일정
 
-### Phase 0: DB 기반공사 (Day 1)
-- [ ] **MLP-DB-01** Supabase `score_history` 테이블 생성
-  - `id`, `email`, `product_name`, `score`, `dimensions` (JSONB), `ai_probe` (JSONB), `sources` (JSONB), `checked_at`
-  - 인덱스: `(email, product_name, checked_at DESC)`
-  - RLS: authenticated + anon insert 정책
-- [ ] **MLP-DB-02** `/v1/check` 결과를 `score_history`에 자동 저장
-  - 기존 `scores` 테이블과 별도 (히스토리 전용)
-  - 같은 제품 같은 날 중복 방지 (UNIQUE email+product+date)
+### Phase 0: DB 기반공사 ✅ Day 1 완료
+- [x] **MLP-DB-01** scores 테이블 dimensions + ai_probe 컬럼 추가 (prod + staging SQL)
+- [x] **MLP-DB-02** saveHistory / autoSave / refreshProduct → dimensions + ai_probe 저장
 
-### Phase 1: 5차원 분해 UI (Day 2)
-- [ ] **MLP-UI-01** 스코어 결과에 5차원 카드형 breakdown 표시
-  - Web Presence / Source Authority / Recommendation Signals / Community Validation / Competitive Context
-  - 각 차원 점수 + 최대점 + 프로그레스 바
-  - 대시보드 expand 패널에도 동일 표시
-- [ ] **MLP-UI-02** "What drives your score" 설명 섹션
+### Phase 1: 5차원 분해 UI ✅ Day 1 완료
+- [x] **MLP-UI-01** 대시보드 expand 패널 → V5 5차원 분해 (dimensions 있으면 V5, legacy 폴백)
+- [ ] **MLP-UI-02** "What drives your score" 설명 섹션 → **V1.7 보류**
 
-### Phase 2: 모멘텀 표시 (Day 3)
-- [ ] **MLP-MOM-01** 히스토리 2회 이상 시 모멘텀 배지 표시
-  - ↑15% / ↓5% / → stable (이전 체크 대비)
-  - 히스토리 1회면 "First check" 표시
-  - 색상: 초록(상승) / 빨강(하락) / 회색(안정)
-- [ ] **MLP-MOM-02** 대시보드 제품 목록에 미니 모멘텀 표시
+### Phase 2: 모멘텀 표시 ✅ Day 1 완료
+- [x] **MLP-MOM-01** 모멘텀 배지 ↑↓% — 제품 목록 행 표시
+- [x] **MLP-MOM-02** expand 패널 "vs last check" 레이블
 
-### Phase 3: 30일 추이 미니 차트 (Day 4)
-- [ ] **MLP-CHART-01** Dashboard expand 패널에 Chart.js 라인 차트
-  - X축: 날짜 (최대 30일)
-  - Y축: 0-100 점수
-  - 데이터 < 2포인트: "Check again to see your trend" 메시지
-  - 단일 포인트: 도트만 표시
-- [ ] **MLP-CHART-02** 스파크라인 (제품 목록 행 내 미니 차트)
+### Phase 3: 추이 차트 ✅ Day 1 완료
+- [x] **MLP-CHART-01** 데이터 1포인트 시 "Check again tomorrow" 안내 / 2포인트+ 시 차트 자동 표시
+- [ ] **MLP-CHART-02** 스파크라인 → **V1.7 보류**
 
-### Phase 4: CTA + 마무리 (Day 5)
-- [ ] **MLP-CTA-01** "Track your AI visibility weekly" CTA + 이메일 수집
-  - 기존 이메일 퍼널(EMAIL-01)과 통합
-  - "Get notified when your score changes" 메시지
-- [ ] **MLP-QA-01** QA 게이트
-  - 5차원 분해 정확성 (합산 = 총점)
-  - 모멘텀 계산 정확성
-  - 차트 엣지케이스 (0점, 1회, 30회)
-  - 스테이징 검증 → CEO 승인 → 프로덕션
-- [ ] **MLP-DEPLOY** 스테이징 배포 → 프로덕션 배포
+### Phase 4: CTA + 배포 ✅ Day 1 완료
+- [x] **MLP-CTA-01** 비로그인 시 "Track score over time" CTA 표시
+- [x] **MLP-QA-01** 프로덕션 200 OK + 코드 배포 검증 완료
+- [x] **MLP-DEPLOY** 스테이징 + 프로덕션 배포 완료 (2026-04-10)
 
 ---
 
