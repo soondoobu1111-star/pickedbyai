@@ -64,6 +64,19 @@
     .nav-links { display: flex; align-items: center; gap: 1.5rem; font-size: 0.95rem; }
     .nav-links a { text-decoration: none; color: #888; }
     .nav-links a:hover { color: #fff; }
+  
+/* Mobile nav */
+.nav-burger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; color: #FFD700; font-size: 1.4rem; line-height: 1; }
+.nav-mobile { display: none; flex-direction: column; gap: 0; border-bottom: 1px solid #1f1f1f; background: #0d0d0d; max-width: 1280px; margin: 0 auto; }
+.nav-mobile.open { display: flex; }
+.nav-mobile a { padding: 0.85rem 2rem; color: #888; text-decoration: none; font-size: 0.9rem; border-top: 1px solid #1f1f1f; }
+.nav-mobile a:hover { color: #fff; background: #161616; }
+@media (max-width: 767px) {
+  .nav { padding: 0.85rem 1rem; }
+  .nav-logo { font-size: 0.7rem; }
+  .nav-links > a { display: none !important; }
+  .nav-burger { display: block; }
+}
   </style>
 </head>
 <body>
@@ -75,9 +88,17 @@
     <span><span style="color:#FFD700;">picked</span><span style="color:#fff;">by</span><span style="color:#FFD700;">.ai</span></span>
   </a>
   <div class="nav-links">
-    <a href="/blog/">Blog</a>    <a href="/dashboard.html" style="color:#FFD700;border:1px solid #FFD700;padding:0.15rem 0.6rem;border-radius:4px;">Dashboard</a>
+    <a href="/blog/">Blog</a>
+      <a href="/methodology/" style="color:#888;font-size:0.9rem;text-decoration:none;">How We Score</a>
+      <a href="/dashboard.html" style="color:#FFD700;border:1px solid #FFD700;padding:0.15rem 0.6rem;border-radius:4px;">Dashboard</a>
+      <button class="nav-burger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">&#9776;</button>
   </div>
 </nav>
+  <div class="nav-mobile">
+    <a href="/blog/">Blog</a>
+    <a href="/methodology/">How We Score</a>
+    <a href="/dashboard.html">Dashboard</a>
+  </div>
 
 <main class="max-w-4xl mx-auto px-6 py-10">
 
