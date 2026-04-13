@@ -1174,7 +1174,27 @@
       flex: 1;
       font-size: 0.82rem;
       color: #888;
+      display: flex;
+      align-items: center;
+      gap: 4px;
     }
+    .demo-tip {
+      display:inline-flex;align-items:center;justify-content:center;
+      width:13px;height:13px;border-radius:50%;
+      background:#1e1e1e;border:1px solid #333;
+      color:#444;font-size:8px;font-weight:700;line-height:1;
+      cursor:help;flex-shrink:0;position:relative;
+    }
+    .demo-tip::after {
+      content:attr(data-tip);
+      position:absolute;left:18px;top:50%;transform:translateY(-50%);
+      background:#141414;border:1px solid #2a2a2a;color:#bbb;
+      padding:8px 11px;border-radius:7px;font-size:11px;font-weight:400;
+      width:210px;white-space:normal;line-height:1.5;
+      opacity:0;pointer-events:none;z-index:200;
+      transition:opacity 0.15s;
+    }
+    .demo-tip:hover::after { opacity:1; }
     .demo-dim-bar {
       width: 100px;
       height: 6px;
@@ -1576,11 +1596,11 @@
           </div>
         </div>
         <div class="demo-dims">
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Web Presence</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:20%;background:var(--red);"></div></div><span class="demo-dim-pts">5 / 25</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Source Authority</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:10%;background:var(--red);"></div></div><span class="demo-dim-pts">2 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Recommendation Signals</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:5%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Community Validation</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:25%;background:var(--orange);"></div></div><span class="demo-dim-pts">5 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Competitive Context</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 15</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Web Presence<span class="demo-tip" data-tip="Get mentioned on directories, blogs, and tech sites. Each independent domain strengthens your signal.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:20%;background:var(--red);"></div></div><span class="demo-dim-pts">5 / 25</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Source Authority<span class="demo-tip" data-tip="Aim for coverage on high-authority sites like Product Hunt, G2, TechCrunch, or major tech blogs.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:10%;background:var(--red);"></div></div><span class="demo-dim-pts">2 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Recommendation Signals<span class="demo-tip" data-tip="Get listed in &quot;best tools&quot; roundups and earn explicit recommendations from reviewers.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:5%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Community Validation<span class="demo-tip" data-tip="Build presence on Reddit, Product Hunt, Indie Hackers. Genuine reviews and discussions matter most.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:25%;background:var(--orange);"></div></div><span class="demo-dim-pts">5 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Competitive Context<span class="demo-tip" data-tip="Create comparison content or get listed on AlternativeTo. &quot;vs&quot; articles boost this signal.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 15</span></div>
         </div>
         <div class="demo-probe">
           <div class="demo-probe-label">AI PROBE — DIRECT QUERY</div>
@@ -1593,29 +1613,29 @@
         </div>
       </div>
 
-      <!-- Panel 1: Notion (high score example) -->
+      <!-- Panel 1: Notion (real scan data — 70/100) -->
       <div class="demo-panel" id="demoPanel1">
         <div class="demo-score-row">
-          <div class="demo-score-big" style="color:var(--green);">91</div>
+          <div class="demo-score-big" style="color:var(--green);">70</div>
           <div class="demo-score-meta">
             <div class="demo-product-name">Notion <span style="font-weight:400;color:#555;font-size:0.78rem;">— productivity tool</span></div>
-            <div class="demo-verdict">AI consistently picks this product first.</div>
+            <div class="demo-verdict">Strong AI presence, but room to grow.</div>
           </div>
         </div>
         <div class="demo-dims">
-          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Web Presence</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">25 / 25</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Source Authority</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">20 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Recommendation Signals</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:85%;background:var(--green);"></div></div><span class="demo-dim-pts">17 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Community Validation</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:85%;background:var(--green);"></div></div><span class="demo-dim-pts">17 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Competitive Context</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:80%;background:var(--green);"></div></div><span class="demo-dim-pts">12 / 15</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Web Presence<span class="demo-tip" data-tip="Get mentioned on directories, blogs, and tech sites. Each independent domain strengthens your signal.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">25 / 25</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Source Authority<span class="demo-tip" data-tip="Aim for coverage on high-authority sites like Product Hunt, G2, TechCrunch, or major tech blogs.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">20 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">⚠️</span><span class="demo-dim-name">Recommendation Signals<span class="demo-tip" data-tip="Get listed in &quot;best tools&quot; roundups and earn explicit recommendations from reviewers.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:35%;background:var(--yellow);"></div></div><span class="demo-dim-pts">7 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">⚠️</span><span class="demo-dim-name">Community Validation<span class="demo-tip" data-tip="Build presence on Reddit, Product Hunt, Indie Hackers. Genuine reviews and discussions matter most.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:35%;background:var(--yellow);"></div></div><span class="demo-dim-pts">7 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Competitive Context<span class="demo-tip" data-tip="Create comparison content or get listed on AlternativeTo. &quot;vs&quot; articles boost this signal.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:73%;background:var(--green);"></div></div><span class="demo-dim-pts">11 / 15</span></div>
         </div>
         <div class="demo-probe">
           <div class="demo-probe-label">AI PROBE — DIRECT QUERY</div>
           <div class="demo-probe-row"><span class="demo-probe-status known">KNOWN</span><span style="color:#888;">Perplexity recommends Notion as a top productivity tool</span></div>
-          <div class="demo-probe-row"><span class="demo-probe-status known">KNOWN</span><span style="color:#888;">GPT consistently mentions Notion in recommendations</span></div>
+          <div class="demo-probe-row"><span class="demo-probe-status known">KNOWN</span><span style="color:#888;">GPT recognizes Notion but doesn't always recommend it</span></div>
         </div>
         <div class="demo-cta">
-          <div class="demo-cta-text">This is what <em>high AI visibility</em> looks like. Where does your product stand?</div>
+          <div class="demo-cta-text">Even Notion only scores <em>70 out of 100.</em> Where does your product stand?</div>
           <button class="hero-cta" onclick="window.location.href='/dashboard.html'" style="font-size:0.45rem;padding:0.55rem 1rem;">CHECK MY SCORE FREE ▶▶</button>
         </div>
       </div>
@@ -1630,11 +1650,11 @@
           </div>
         </div>
         <div class="demo-dims">
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Web Presence</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 25</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Source Authority</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Recommendation Signals</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Community Validation</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Competitive Context</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 15</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Web Presence<span class="demo-tip" data-tip="Get mentioned on directories, blogs, and tech sites. Each independent domain strengthens your signal.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 25</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Source Authority<span class="demo-tip" data-tip="Aim for coverage on high-authority sites like Product Hunt, G2, TechCrunch, or major tech blogs.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Recommendation Signals<span class="demo-tip" data-tip="Get listed in &quot;best tools&quot; roundups and earn explicit recommendations from reviewers.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Community Validation<span class="demo-tip" data-tip="Build presence on Reddit, Product Hunt, Indie Hackers. Genuine reviews and discussions matter most.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Competitive Context<span class="demo-tip" data-tip="Create comparison content or get listed on AlternativeTo. &quot;vs&quot; articles boost this signal.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 15</span></div>
         </div>
         <div class="demo-probe">
           <div class="demo-probe-label">AI PROBE — DIRECT QUERY</div>
