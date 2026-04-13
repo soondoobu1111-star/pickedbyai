@@ -1857,10 +1857,13 @@
     });
 
     // ── Entrance animations (IntersectionObserver) ────────────
+    const fadeEls = document.querySelectorAll('.fade-up');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-    }, { threshold: 0.12 });
-    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+    }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
+    fadeEls.forEach(el => observer.observe(el));
+    // Fallback: force-show all sections after 1.5s to prevent blackout
+    setTimeout(() => { fadeEls.forEach(el => el.classList.add('visible')); }, 1500);
 
     // ── AI Query ticker — real examples of how people query AI ──
     (function() {
