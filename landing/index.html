@@ -1083,6 +1083,175 @@
       .btn-primary { font-size: 0.55rem; }
     }
 
+    /* ── DEMO RESULT ── */
+    .demo-section {
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      padding: 1.5rem 1.25rem 1.25rem;
+      position: relative;
+    }
+    .demo-section::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px;
+      width: 10px; height: 10px;
+      background: var(--yellow);
+    }
+    .demo-head {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.4rem;
+      color: var(--yellow);
+      letter-spacing: 0.12em;
+      margin-bottom: 1.25rem;
+      opacity: .6;
+    }
+    .demo-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .demo-tab {
+      background: none;
+      border: none;
+      color: #555;
+      font-size: 0.82rem;
+      padding: 0.65rem 1rem;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color 0.15s, border-color 0.15s;
+      font-weight: 600;
+    }
+    .demo-tab.active {
+      color: var(--yellow);
+      border-bottom-color: var(--yellow);
+    }
+    .demo-tab:hover:not(.active) { color: #888; }
+    .demo-panel { display: none; }
+    .demo-panel.active { display: block; }
+
+    .demo-score-row {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .demo-score-big {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+    .demo-score-meta {
+      flex: 1;
+    }
+    .demo-product-name {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+    .demo-verdict {
+      font-size: 0.82rem;
+      color: #666;
+    }
+
+    .demo-dims {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+    .demo-dim {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #181818;
+    }
+    .demo-dim:last-child { border-bottom: none; }
+    .demo-dim-icon { flex-shrink: 0; font-size: 0.85rem; }
+    .demo-dim-name {
+      flex: 1;
+      font-size: 0.82rem;
+      color: #888;
+    }
+    .demo-dim-bar {
+      width: 100px;
+      height: 6px;
+      background: #1a1a1a;
+      border-radius: 0;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .demo-dim-fill {
+      height: 100%;
+      transition: width 1.2s ease;
+    }
+    .demo-dim-pts {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.35rem;
+      color: #555;
+      width: 3.5rem;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .demo-probe {
+      background: #080808;
+      border: 1px solid #1a1a1a;
+      padding: 0.85rem 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .demo-probe-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.32rem;
+      color: #555;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+    .demo-probe-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.82rem;
+      padding: 0.35rem 0;
+    }
+    .demo-probe-status {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.35rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 0;
+    }
+    .demo-probe-status.unknown {
+      background: #1a0808;
+      color: var(--red);
+      border: 1px solid #3a1010;
+    }
+    .demo-probe-status.known {
+      background: #081a08;
+      color: var(--green);
+      border: 1px solid #103a10;
+    }
+
+    .demo-cta {
+      text-align: center;
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+    .demo-cta-text {
+      font-size: 0.85rem;
+      color: #666;
+      margin-bottom: 0.75rem;
+    }
+    .demo-cta-text em { color: var(--yellow); font-style: normal; }
+
+    @media (max-width: 767px) {
+      .demo-score-big { font-size: 2rem; }
+      .demo-dim-bar { width: 60px; }
+      .demo-tabs { overflow-x: auto; }
+    }
+
     /* ── FAQ ── */
     .faq-section {
       margin-bottom: 1.25rem;
@@ -1387,6 +1556,98 @@
       </div>
     </div>
 
+    <!-- DEMO RESULT -->
+    <div class="demo-section fade-up">
+      <div class="demo-head">EXAMPLE RESULTS — REAL SCANS</div>
+
+      <div class="demo-tabs">
+        <button class="demo-tab active" onclick="showDemo(0)">pickedby.ai</button>
+        <button class="demo-tab" onclick="showDemo(1)">Notion</button>
+        <button class="demo-tab" onclick="showDemo(2)">A New Product</button>
+      </div>
+
+      <!-- Panel 0: pickedby.ai -->
+      <div class="demo-panel active" id="demoPanel0">
+        <div class="demo-score-row">
+          <div class="demo-score-big" style="color:var(--red);">12</div>
+          <div class="demo-score-meta">
+            <div class="demo-product-name">pickedby.ai <span style="font-weight:400;color:#555;font-size:0.78rem;">— our own product</span></div>
+            <div class="demo-verdict">AI has no idea this product exists.</div>
+          </div>
+        </div>
+        <div class="demo-dims">
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Web Presence</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:20%;background:var(--red);"></div></div><span class="demo-dim-pts">5 / 25</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Source Authority</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:10%;background:var(--red);"></div></div><span class="demo-dim-pts">2 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Recommendation Signals</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:5%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Community Validation</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:25%;background:var(--orange);"></div></div><span class="demo-dim-pts">5 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Competitive Context</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 15</span></div>
+        </div>
+        <div class="demo-probe">
+          <div class="demo-probe-label">AI PROBE — DIRECT QUERY</div>
+          <div class="demo-probe-row"><span class="demo-probe-status unknown">UNKNOWN</span><span style="color:#888;">Perplexity has never heard of pickedby.ai</span></div>
+          <div class="demo-probe-row"><span class="demo-probe-status unknown">UNKNOWN</span><span style="color:#888;">GPT does not recognize this product</span></div>
+        </div>
+        <div class="demo-cta">
+          <div class="demo-cta-text">Yes, <em>we scored 12 on our own tool.</em> We're documenting the journey to fix it.</div>
+          <a href="/blog/we-scored-12-on-our-own-tool/" style="color:var(--yellow);font-size:0.82rem;">Read the full story →</a>
+        </div>
+      </div>
+
+      <!-- Panel 1: Notion (high score example) -->
+      <div class="demo-panel" id="demoPanel1">
+        <div class="demo-score-row">
+          <div class="demo-score-big" style="color:var(--green);">91</div>
+          <div class="demo-score-meta">
+            <div class="demo-product-name">Notion <span style="font-weight:400;color:#555;font-size:0.78rem;">— productivity tool</span></div>
+            <div class="demo-verdict">AI consistently picks this product first.</div>
+          </div>
+        </div>
+        <div class="demo-dims">
+          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Web Presence</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">25 / 25</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Source Authority</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">20 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Recommendation Signals</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:85%;background:var(--green);"></div></div><span class="demo-dim-pts">17 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Community Validation</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:85%;background:var(--green);"></div></div><span class="demo-dim-pts">17 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Competitive Context</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:80%;background:var(--green);"></div></div><span class="demo-dim-pts">12 / 15</span></div>
+        </div>
+        <div class="demo-probe">
+          <div class="demo-probe-label">AI PROBE — DIRECT QUERY</div>
+          <div class="demo-probe-row"><span class="demo-probe-status known">KNOWN</span><span style="color:#888;">Perplexity recommends Notion as a top productivity tool</span></div>
+          <div class="demo-probe-row"><span class="demo-probe-status known">KNOWN</span><span style="color:#888;">GPT consistently mentions Notion in recommendations</span></div>
+        </div>
+        <div class="demo-cta">
+          <div class="demo-cta-text">This is what <em>high AI visibility</em> looks like. Where does your product stand?</div>
+          <button class="hero-cta" onclick="window.location.href='/dashboard.html'" style="font-size:0.45rem;padding:0.55rem 1rem;">CHECK MY SCORE FREE ▶▶</button>
+        </div>
+      </div>
+
+      <!-- Panel 2: Unknown product -->
+      <div class="demo-panel" id="demoPanel2">
+        <div class="demo-score-row">
+          <div class="demo-score-big" style="color:var(--red);">0</div>
+          <div class="demo-score-meta">
+            <div class="demo-product-name">MyAwesomeTemplate <span style="font-weight:400;color:#555;font-size:0.78rem;">— a brand new product</span></div>
+            <div class="demo-verdict">AI has no idea this product exists.</div>
+          </div>
+        </div>
+        <div class="demo-dims">
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Web Presence</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 25</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Source Authority</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Recommendation Signals</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Community Validation</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Competitive Context</span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 15</span></div>
+        </div>
+        <div class="demo-probe">
+          <div class="demo-probe-label">AI PROBE — DIRECT QUERY</div>
+          <div class="demo-probe-row"><span class="demo-probe-status unknown">UNKNOWN</span><span style="color:#888;">Perplexity returns no results</span></div>
+          <div class="demo-probe-row"><span class="demo-probe-status unknown">UNKNOWN</span><span style="color:#888;">GPT has no knowledge of this product</span></div>
+        </div>
+        <div class="demo-cta">
+          <div class="demo-cta-text">Most new products start at <em>zero.</em> The question is — what are you doing about it?</div>
+          <button class="hero-cta" onclick="window.location.href='/dashboard.html'" style="font-size:0.45rem;padding:0.55rem 1rem;">CHECK MY SCORE FREE ▶▶</button>
+        </div>
+      </div>
+    </div>
+
     <!-- FAQ -->
     <div class="faq-section fade-up">
       <div class="faq-head">FAQ — FREQUENTLY ASKED QUESTIONS</div>
@@ -1632,6 +1893,12 @@
     let _score   = 0;
     let _product = '';
     let _results = [];
+
+    // ── Demo tabs ─────────────────────────────────────────
+    function showDemo(idx) {
+      document.querySelectorAll('.demo-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
+      document.querySelectorAll('.demo-panel').forEach((p, i) => p.classList.toggle('active', i === idx));
+    }
 
     function toggleFaq(btn) {
       const item = btn.closest('.faq-item');
