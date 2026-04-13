@@ -151,6 +151,13 @@
     .nav-links a { text-decoration: none; color: #888; }
     .nav-links a:hover { color: #fff; }
 
+    /* ── HAMBURGER ── */
+    .nav-burger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; color: var(--yellow); font-size: 1.4rem; line-height: 1; }
+    .nav-mobile { display: none; flex-direction: column; gap: 0; border-bottom: 1px solid var(--border); background: var(--bg2); max-width: 1280px; margin: 0 auto; }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a { padding: 0.85rem 2rem; color: #888; text-decoration: none; font-size: 0.9rem; border-top: 1px solid var(--border); }
+    .nav-mobile a:hover { color: #fff; background: var(--bg3); }
+
     .badge-chip {
       font-size: 0.65rem;
       color: var(--yellow);
@@ -1119,6 +1126,8 @@
     @media (max-width: 767px) {
       body { padding: 0 0.75rem 5rem; }
       .container { padding-top: 1.5rem; }
+      .nav-links .nav-blog-link { display: none; }
+      .nav-burger { display: block; }
       .how-steps { grid-template-columns: 1fr; gap: 1rem; }
       .how-arrow { display: none; }
       .uth-grid { grid-template-columns: 1fr; }
@@ -1506,8 +1515,14 @@
       <a href="/blog/" class="nav-blog-link">BLOG</a>
       <a href="/methodology/" class="nav-blog-link">HOW WE SCORE</a>
       <a href="/dashboard.html" style="color:#000;background:var(--yellow);border:none;padding:0.45rem 1.1rem;border-radius:6px;font-weight:700;font-size:0.88rem;letter-spacing:0.03em;text-decoration:none;box-shadow:0 0 12px rgba(255,215,0,0.35);transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 0 20px rgba(255,215,0,0.6)'" onmouseout="this.style.boxShadow='0 0 12px rgba(255,215,0,0.35)'">Dashboard</a>
+      <button class="nav-burger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">☰</button>
     </div>
   </nav>
+  <div class="nav-mobile">
+    <a href="/blog/">Blog</a>
+    <a href="/methodology/">How We Score</a>
+    <a href="/dashboard.html">Dashboard</a>
+  </div>
 
   <div class="container">
 
