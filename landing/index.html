@@ -1046,6 +1046,71 @@
     .how-title { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.35rem; }
     .how-desc { font-size: 0.76rem; color: #666; line-height: 1.55; }
 
+    /* ── UNDER THE HOOD ── */
+    .uth-section {
+      margin-bottom: 2rem;
+      border: 1px solid var(--border);
+      padding: 1.5rem 1.25rem 1.25rem;
+      background: var(--bg2);
+    }
+    .uth-head {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.4rem;
+      color: var(--yellow);
+      letter-spacing: 0.12em;
+      margin-bottom: 0.5rem;
+      opacity: .6;
+    }
+    .uth-sub {
+      font-size: 0.88rem;
+      color: #888;
+      margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+    .uth-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .uth-card {
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      padding: 1.1rem 1rem;
+      position: relative;
+    }
+    .uth-card::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px;
+      width: 5px; height: 5px;
+      background: var(--yellow);
+      opacity: .5;
+    }
+    .uth-card-icon { font-size: 1.2rem; margin-bottom: 0.5rem; display: block; }
+    .uth-card-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: #fff;
+    }
+    .uth-card-desc {
+      font-size: 0.76rem;
+      color: #888;
+      line-height: 1.55;
+    }
+    .uth-card-desc strong { color: #ccc; }
+    .uth-link {
+      display: block;
+      text-align: center;
+      margin-top: 1.25rem;
+      color: var(--yellow);
+      font-size: 0.78rem;
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.15s;
+    }
+    .uth-link:hover { opacity: 1; }
+
     /* ── CONSENT ── */
     .consent-note { font-size: 0.68rem; color: #444; margin-top: 0.5rem; line-height: 1.4; }
     .consent-note a { color: #555; text-decoration: underline; }
@@ -1056,6 +1121,7 @@
       .container { padding-top: 1.5rem; }
       .how-steps { grid-template-columns: 1fr; gap: 1rem; }
       .how-arrow { display: none; }
+      .uth-grid { grid-template-columns: 1fr; }
       .hero h1 { font-size: 2rem; }
       .hero p { font-size: 0.95rem; }
       .score-num { font-size: 3rem; }
@@ -1446,9 +1512,9 @@
     <!-- HERO -->
     <div class="hero">
       <div class="hero-eyebrow">▶ Free AI Visibility Check</div>
-      <h1>Does AI <em>recommend</em><br>your product?</h1>
-      <p class="hero-for">For: <span>Gumroad sellers</span> · <span>Notion creators</span> · <span>Course builders</span></p>
-      <p>When someone asks ChatGPT <em style="color:#ccc;font-style:normal">"best Notion templates for freelancers"</em> — is your product on the list? Find out free in 10 seconds.</p>
+      <h1>Does <em>ChatGPT</em> recommend<br>your product?</h1>
+      <p class="hero-for">For: <span>Gumroad sellers</span> · <span>Notion creators</span> · <span>Etsy digital shops</span></p>
+      <p>When someone asks ChatGPT <em style="color:#ccc;font-style:normal">"best Notion templates for freelancers"</em> — is your product on the list?<br>Also checks <strong style="color:#888;">Perplexity</strong> and <strong style="color:#888;">Gemini</strong>. Free in 10 seconds.</p>
       <div class="hero-tagline">IF AI DOESN'T KNOW YOU · YOU DON'T EXIST</div>
       <button class="hero-cta" onclick="window.location.href='/dashboard.html'">CHECK MY SCORE FREE ▶▶</button>
       <p class="hero-disclaimer">Not for agencies. Built for creators.</p>
@@ -1574,6 +1640,35 @@
           <div class="how-desc">0–100 + 3 specific fixes to climb higher</div>
         </div>
       </div>
+    </div>
+
+    <!-- UNDER THE HOOD -->
+    <div class="uth-section fade-up">
+      <div class="uth-head">UNDER THE HOOD — WHY TRUST THIS SCORE</div>
+      <div class="uth-sub">Most AI visibility tools just count web mentions. We go further.</div>
+      <div class="uth-grid">
+        <div class="uth-card">
+          <span class="uth-card-icon">🎯</span>
+          <div class="uth-card-title">We Ask AI Directly</div>
+          <div class="uth-card-desc">We literally ask <strong>ChatGPT</strong> and <strong>Perplexity</strong>: <em>"Do you know this product? Would you recommend it?"</em> — not web scraping. You see what real users see when they ask AI.</div>
+        </div>
+        <div class="uth-card">
+          <span class="uth-card-icon">⚡</span>
+          <div class="uth-card-title">Real-Time Web Data</div>
+          <div class="uth-card-desc">We scan the <strong>live web right now</strong> — not cached results from weeks ago. Your score reflects what AI knows about you <strong>today</strong>, not what it learned last month.</div>
+        </div>
+        <div class="uth-card">
+          <span class="uth-card-icon">🔍</span>
+          <div class="uth-card-title">Transparent 5-Dimension Breakdown</div>
+          <div class="uth-card-desc">No mystery numbers. See exactly <strong>where each point comes from</strong>: Web Presence, Source Authority, Recommendation Signals, Community Validation, Competitive Context.</div>
+        </div>
+        <div class="uth-card">
+          <span class="uth-card-icon">🔒</span>
+          <div class="uth-card-title">Same Input = Same Score</div>
+          <div class="uth-card-desc">Our scoring is <strong>100% deterministic</strong>. Check twice, get the same result. No randomness. No AI hallucination in the score itself.</div>
+        </div>
+      </div>
+      <a href="/methodology" class="uth-link">Read our full scoring methodology →</a>
     </div>
 
     <!-- DEMO RESULT -->
