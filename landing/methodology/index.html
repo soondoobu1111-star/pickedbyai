@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>How We Calculate Your AI Visibility Score — pickedby.ai</title>
+  <meta name="description" content="Full scoring methodology: 5 dimensions, AI Probe direct queries, real-time web data, and deterministic scoring. Transparent by design." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pickedby.ai/methodology/" />
+  <meta property="og:title" content="How We Calculate Your AI Visibility Score — pickedby.ai" />
+  <meta property="og:description" content="Full scoring methodology: 5 dimensions, AI Probe, real-time data. No black box." />
+  <meta property="og:url" content="https://pickedby.ai/methodology/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://pickedby.ai/og-v2.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@pickedbyAI" />
+  <meta name="twitter:title" content="How We Calculate Your AI Visibility Score" />
+  <meta name="twitter:description" content="5 dimensions + AI Probe. No black box. Full methodology." />
+  <meta name="keywords" content="AI visibility score methodology, how AI visibility score works, GEO scoring, AI Probe, Perplexity probe, ChatGPT recommendation check" />
+  <meta name="author" content="pickedby.ai" />
+  <meta property="og:site_name" content="pickedby.ai" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "headline": "How We Calculate Your AI Visibility Score",
+    "description": "Full scoring methodology: 5 dimensions, AI Probe direct queries, real-time web data, deterministic scoring.",
+    "datePublished": "2026-04-13",
+    "dateModified": "2026-04-13",
+    "author": { "@type": "Organization", "name": "pickedby.ai", "url": "https://pickedby.ai" },
+    "publisher": { "@type": "Organization", "name": "pickedby.ai", "url": "https://pickedby.ai" },
+    "url": "https://pickedby.ai/methodology/"
+  }
+  </script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2H007YWM9F"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_personalization: 'denied' });
+    gtag('js', new Date());
+    gtag('config', 'G-2H007YWM9F');
+    if (localStorage.getItem('cookie_consent') === 'accepted') {
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+    }
+  </script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #000; --bg2: #0d0d0d; --bg3: #161616;
+      --yellow: #FFD700; --yellow2: #b39700;
+      --text: #e8e8e8; --muted: #888; --border: #1f1f1f;
+      --green: #00E676; --red: #FF3D3D; --orange: #FF9100;
+    }
+    body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; line-height: 1.7; }
+    a { color: var(--yellow); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); max-width: 1280px; margin: 0 auto; }
+    .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: var(--yellow); text-decoration: none; }
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; }
+    .nav-links a { color: var(--muted); font-size: 0.9rem; }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .article-wrap { max-width: 720px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+    .article-tag { font-family: 'Press Start 2P', monospace; font-size: 0.38rem; color: var(--yellow); letter-spacing: 0.1em; margin-bottom: 1.25rem; }
+    .article-tag a { color: var(--yellow); text-decoration: none; }
+    h1 { font-size: 1.9rem; font-weight: 800; line-height: 1.25; margin-bottom: 1.25rem; }
+    .article-meta { font-size: 0.78rem; color: #555; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .article-body h2 { font-size: 1.2rem; font-weight: 700; margin: 2.5rem 0 0.85rem; color: var(--text); }
+    .article-body h3 { font-size: 1rem; font-weight: 600; margin: 1.75rem 0 0.65rem; color: #ccc; }
+    .article-body p { font-size: 0.95rem; color: #ccc; margin-bottom: 1.15rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0.5rem 0 1.25rem 1.2rem; }
+    .article-body li { font-size: 0.95rem; color: #ccc; margin-bottom: 0.65rem; line-height: 1.75; }
+    .article-body strong { color: var(--text); }
+    .article-body em { color: var(--muted); font-style: italic; }
+    .dim-table { width: 100%; border-collapse: collapse; margin: 1.25rem 0 1.75rem; }
+    .dim-table th { font-family: 'Press Start 2P', monospace; font-size: 0.32rem; color: var(--yellow); letter-spacing: 0.08em; text-align: left; padding: 0.6rem 0.75rem; border-bottom: 1px solid #333; opacity: 0.7; }
+    .dim-table td { padding: 0.75rem; border-bottom: 1px solid var(--border); font-size: 0.88rem; color: #ccc; vertical-align: top; }
+    .dim-table td:first-child { font-weight: 600; color: var(--text); white-space: nowrap; }
+    .dim-table td:nth-child(2) { font-family: 'Press Start 2P', monospace; font-size: 0.45rem; color: var(--yellow); text-align: center; }
+    .callout { background: var(--bg2); border-left: 3px solid var(--yellow); padding: 1rem 1.25rem; margin: 1.75rem 0; }
+    .callout p { margin-bottom: 0; color: #bbb; font-size: 0.92rem; }
+    .callout.green { border-left-color: var(--green); }
+    .callout.red { border-left-color: var(--red); }
+    .arch-box { background: var(--bg3); border: 1px solid var(--border); padding: 1.25rem 1.5rem; margin: 1.75rem 0; font-family: 'Courier New', monospace; font-size: 0.82rem; color: #999; line-height: 1.8; white-space: pre-wrap; }
+    .arch-label { font-family: 'Press Start 2P', monospace; font-size: 0.32rem; color: #444; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; }
+    .probe-card { display: flex; gap: 1.25rem; margin: 1.25rem 0; }
+    .probe-item { flex: 1; background: var(--bg2); border: 1px solid var(--border); padding: 1rem; }
+    .probe-name { font-weight: 600; margin-bottom: 0.35rem; }
+    .probe-desc { font-size: 0.82rem; color: #888; line-height: 1.55; }
+    .cta-box { background: var(--bg2); border: 1px solid #2a2a2a; padding: 2rem; margin: 3rem 0; text-align: center; }
+    .cta-box h3 { font-family: 'Press Start 2P', monospace; font-size: 0.55rem; color: var(--yellow); margin-bottom: 0.75rem; line-height: 1.7; }
+    .cta-box p { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.25rem; }
+    .btn-cta { display: inline-block; background: var(--yellow); color: #000; font-family: 'Press Start 2P', monospace; font-size: 0.42rem; padding: 0.75rem 1.5rem; box-shadow: 3px 3px 0 var(--yellow2); text-decoration: none; }
+    .btn-cta:hover { text-decoration: none; opacity: 0.9; }
+    @media (max-width: 600px) {
+      .article-wrap { padding: 2rem 1rem 4rem; }
+      h1 { font-size: 1.4rem; }
+      .probe-card { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="/" class="nav-logo">pickedby.ai</a>
+    <div class="nav-links">
+      <a href="/blog/">Blog</a>
+      <a href="/methodology/" style="color:var(--yellow);">How We Score</a>
+      <a href="/dashboard.html">Dashboard</a>
+    </div>
+  </nav>
+
+  <div class="article-wrap">
+    <div class="article-tag"><a href="/">Home</a> / <a href="/methodology/">Methodology</a></div>
+
+    <h1>How We Calculate Your AI Visibility Score</h1>
+    <div class="article-meta">Last updated: April 13, 2026 · Transparent by design</div>
+
+    <div class="article-body">
+
+      <p>Your AI Visibility Score (0–100) measures one thing: <strong>how likely AI assistants are to recommend your product when someone asks about your category.</strong></p>
+
+      <p>We believe scoring should be transparent, not a black box. Here's exactly how it works.</p>
+
+      <h2>Two Layers Working Together</h2>
+
+      <p>Most AI visibility tools only do one thing — they search the web and count mentions. We do that <em>and</em> something no one else does:</p>
+
+      <div class="callout green">
+        <p><strong>Layer 1 — Real-time Web Scan:</strong> We search the live web for your product and analyze what signals AI systems can find about you.</p>
+      </div>
+      <div class="callout green">
+        <p><strong>Layer 2 — AI Probe (Direct Query):</strong> We literally ask ChatGPT and Perplexity: <em>"Do you know [your product]? Would you recommend it?"</em> — and show you the raw response. This is what real users see.</p>
+      </div>
+
+      <h2>Layer 1: The 5 Dimensions (0–100 points)</h2>
+
+      <p>Your score comes from 5 weighted dimensions. Each measures a different signal that AI systems use when deciding what to recommend:</p>
+
+      <table class="dim-table">
+        <thead>
+          <tr><th>DIMENSION</th><th>POINTS</th><th>WHAT IT MEASURES</th><th>HOW TO IMPROVE</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Web Presence</td>
+            <td>25</td>
+            <td>How many third-party sites mention your product by name? More independent domains = stronger signal.</td>
+            <td>Get listed on directories, blogs, review sites. Each new domain counts.</td>
+          </tr>
+          <tr>
+            <td>Source Authority</td>
+            <td>20</td>
+            <td>Are you mentioned on sites that AI trusts most? (TechCrunch, Product Hunt, G2, Forbes, etc.)</td>
+            <td>Get featured on high-authority publications. Even a single mention matters.</td>
+          </tr>
+          <tr>
+            <td>Recommendation Signals</td>
+            <td>20</td>
+            <td>Do "best of" lists, roundups, or reviews explicitly recommend you?</td>
+            <td>Get included in "Top 10 [category]" articles. Pitch bloggers and reviewers.</td>
+          </tr>
+          <tr>
+            <td>Community Validation</td>
+            <td>20</td>
+            <td>Do real people talk about you on Reddit, Product Hunt, Indie Hackers, or forums?</td>
+            <td>Build genuine community presence. Real discussions beat manufactured mentions.</td>
+          </tr>
+          <tr>
+            <td>Competitive Context</td>
+            <td>15</td>
+            <td>Do you appear in "vs" comparisons, "alternatives to" articles, or competitive lists?</td>
+            <td>Create comparison content. Get listed on AlternativeTo. Write "vs" blog posts.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Why these weights?</h3>
+
+      <p>Web Presence gets the most points (25) because it's the foundation — AI can't recommend what it can't find. Competitive Context gets the least (15) because it's a secondary signal; being compared to others helps, but being known at all matters more.</p>
+
+      <p>These weights are based on our analysis of what correlates with actual AI recommendations across hundreds of product checks. We adjust them as we learn more.</p>
+
+      <h2>Layer 2: AI Probe — We Ask AI Directly</h2>
+
+      <p>This is what makes us different from every other GEO tool.</p>
+
+      <p>After calculating your web-based score, we send real queries to AI systems and ask them about your product directly:</p>
+
+      <div class="probe-card">
+        <div class="probe-item">
+          <div class="probe-name">Perplexity Probe</div>
+          <div class="probe-desc">We ask Perplexity AI: <em>"What is [your product]? Would you recommend it?"</em> Perplexity searches the web in real-time and cites sources — this shows whether AI can find and understand your product right now.</div>
+        </div>
+        <div class="probe-item">
+          <div class="probe-name">GPT Probe</div>
+          <div class="probe-desc">We ask ChatGPT the same question. GPT relies more on its training data — this shows whether your product has enough web presence to have been "learned" by the model.</div>
+        </div>
+      </div>
+
+      <p>The AI Probe doesn't add to your numeric score — it gives you a separate <strong>KNOWN / UNKNOWN</strong> status for each AI system. Combined with your 5-dimension score, you get the full picture.</p>
+
+      <h2>Data Sources</h2>
+
+      <div class="arch-box">
+        <span class="arch-label">SCORING PIPELINE</span>
+[Input] Product name + URL
+    ↓
+[Step 1] Tavily Web Search API — real-time search, 7+ results
+    ↓
+[Step 2] Pattern matching + source classification
+         → Tier 1 sources (TechCrunch, Forbes, G2...)
+         → Tier 2 sources (blogs, review sites)
+         → Community signals (Reddit, PH, forums)
+         → Competitive signals ("vs", "alternative to")
+    ↓
+[Step 3] Deterministic scoring (temp=0, same input → same score)
+    ↓
+[Step 4] AI Probe — Perplexity API + OpenAI API
+    ↓
+[Output] Score (0-100) + 5 dimension breakdown + AI Probe status</div>
+
+      <p><strong>Key technical details:</strong></p>
+      <ul>
+        <li><strong>Real-time data</strong> — We query the live web every time you check. No cached results from weeks ago.</li>
+        <li><strong>Deterministic scoring</strong> — Same product name → same score. We use temperature=0 and pattern matching to eliminate randomness.</li>
+        <li><strong>Self-reference filtering</strong> — We automatically exclude your own website from scoring. Getting mentioned on your own site doesn't count.</li>
+        <li><strong>3-layer fallback</strong> — If our primary data source is unavailable, we fall back to secondary and tertiary sources to ensure you always get a result.</li>
+      </ul>
+
+      <h2>What We Don't Do</h2>
+
+      <ul>
+        <li><strong>We don't guarantee higher AI visibility.</strong> We measure it. Improving it requires real work: getting mentioned, building community presence, earning reviews.</li>
+        <li><strong>We don't manipulate AI systems.</strong> Your score reflects what AI sees right now. We don't inject data or game the system.</li>
+        <li><strong>We don't share your data.</strong> Your product checks are private. We don't publish scores without your consent.</li>
+      </ul>
+
+      <h2>Known Limitations (We're Honest About These)</h2>
+
+      <div class="callout red">
+        <p><strong>Sample size:</strong> Our web scan analyzes the top 7+ search results. This is a representative sample, not an exhaustive crawl of the entire internet. Products with very niche naming may get fewer relevant results.</p>
+      </div>
+
+      <p><strong>AI visibility is a lag indicator.</strong> When you publish a blog post or get mentioned on Reddit today, it takes 2–6 weeks for that signal to fully propagate through AI systems. Your score today reflects actions taken weeks ago.</p>
+
+      <p><strong>We're early.</strong> pickedby.ai launched April 5, 2026. Our methodology improves with every product we scan. We update our scoring algorithm based on what actually correlates with real AI recommendations.</p>
+
+      <h2>Our Own Score: 12 out of 100</h2>
+
+      <p>We don't hide behind our own tool. We ran pickedby.ai through our own scoring engine:</p>
+
+      <ul>
+        <li><strong>Score: 12/100</strong> — AI has almost no idea we exist</li>
+        <li><strong>Perplexity:</strong> UNKNOWN — has never heard of us</li>
+        <li><strong>ChatGPT:</strong> UNKNOWN — does not recognize us</li>
+      </ul>
+
+      <p>We're documenting the journey from 12 to (hopefully) much higher. <a href="/blog/we-scored-12-on-our-own-tool/">Read the Day 0 story →</a></p>
+
+      <div class="cta-box">
+        <h3>CHECK YOUR OWN SCORE</h3>
+        <p>Free. No signup. 10 seconds.</p>
+        <a href="/dashboard.html" class="btn-cta">CHECK MY SCORE ▶▶</a>
+      </div>
+
+      <h2>Questions?</h2>
+
+      <p>If you have questions about our methodology, data sources, or scoring — reach out at <a href="mailto:hello@pickedby.ai">hello@pickedby.ai</a> or <a href="https://x.com/pickedbyAI">@pickedbyAI on X</a>.</p>
+
+      <p>We believe in transparency. If you think our scoring should work differently, we want to hear about it.</p>
+
+    </div>
+  </div>
+</body>
+</html>
