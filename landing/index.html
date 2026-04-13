@@ -130,6 +130,7 @@
       color: var(--text);
       min-height: 100vh;
       padding: 0 1rem 5rem;
+      overflow-x: hidden;
     }
 
     /* ── INTERACTIVE BG CANVAS ── */
@@ -1126,7 +1127,11 @@
     @media (max-width: 767px) {
       body { padding: 0 0.75rem 5rem; }
       .container { padding-top: 1.5rem; }
-      .nav-links .nav-blog-link { display: none; }
+      .nav { padding: 1rem 1rem; }
+      .nav-logo { font-size: 0.7rem; }
+      .nav { padding: 1rem 1rem; }
+      .nav-logo { font-size: 0.7rem; }
+      .nav-links > a { display: none !important; }
       .nav-burger { display: block; }
       .how-steps { grid-template-columns: 1fr; gap: 1rem; }
       .how-arrow { display: none; }
