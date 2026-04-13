@@ -182,7 +182,6 @@
   <div class="nav-links">
       <a href="/blog/" style="color:#888;font-size:0.9rem;text-decoration:none;">Blog</a>
       <a href="/methodology/" style="color:#888;font-size:0.9rem;text-decoration:none;">How We Score</a>
-      <button class="nav-burger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">&#9776;</button>
     <!-- Profile icon + dropdown (shown when logged in) -->
     <div id="nav-user" class="nav-profile" style="display:none;">
       <button class="nav-avatar-btn" onclick="toggleDropdown()" id="nav-avatar-btn">
@@ -194,6 +193,7 @@
         <button onclick="signOut()">Sign out</button>
       </div>
     </div>
+      <button class="nav-burger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">&#9776;</button>
   </div>
 </nav>
   <div class="nav-mobile">
