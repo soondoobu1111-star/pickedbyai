@@ -778,36 +778,122 @@ async function sendWelcomeEmail(apiKey: string, email: string): Promise<void> {
   }).catch(err => console.error('[Brevo SMTP welcome] fetch error:', err))
 }
 
-// ── AI Visibility Guide email ─────────────────────────────────
-async function sendGuideEmail(apiKey: string, email: string): Promise<void> {
+// ── AI Visibility Guide email (personalized) ─────────────────
+async function sendGuideEmail(
+  apiKey: string,
+  email: string,
+  product?: string,
+  score?: number,
+  results?: Array<{ label: string; found: boolean }>,
+): Promise<void> {
+  const hasData = !!(product && results && results.length)
+
+  const GUIDE_TIPS: Record<string, { title: string; body: string }> = {
+    'Web Presence':           { title: 'Build your Web Presence', body: 'Get mentioned on directories, blogs, and tech sites. Each independent domain that names your product strengthens the signal AI picks up.' },
+    'Source Authority':       { title: 'Earn Source Authority', body: 'Aim for coverage on high-authority sites like Product Hunt, G2, TechCrunch, or major tech blogs. A single mention there outweighs dozens of low-authority links.' },
+    'Recommendation Signals': { title: 'Collect Recommendation Signals', body: 'Get listed in "best tools for X" roundups and earn explicit recommendations from reviewers. AI relies heavily on these when shortlisting products.' },
+    'Community Validation':   { title: 'Grow Community Validation', body: 'Build presence on Reddit, Product Hunt, Indie Hackers. Genuine discussions and reviews signal to AI that real users trust your product.' },
+    'Competitive Context':    { title: 'Add Competitive Context', body: 'Create comparison content ("X vs Y") or get listed on AlternativeTo. AI uses "vs" and "alternative" queries to build its recommendation shortlists.' },
+  }
+
+  let subjectProduct = product || 'your product'
+  let scoreLabel = ''
+  if (typeof score === 'number') {
+    const tier = score >= 75 ? 'PICKED BY AI' : score >= 50 ? 'SEEN BY AI' : score >= 25 ? 'NOTICED BY AI' : 'NOT YET VISIBLE'
+    scoreLabel = ` — ${score}/100 (${tier})`
+  }
+
+  let bodyContent = ''
+
+  if (hasData && results) {
+    const failed = results.filter(r => !r.found)
+    const passed = results.filter(r => r.found)
+    const tierColor = (typeof score === 'number') ? (score >= 75 ? '#FFD700' : score >= 50 ? '#C0C0C0' : score >= 25 ? '#CD7F32' : '#555') : '#555'
+    const pct = typeof score === 'number' ? Math.min(score, 100) : 0
+
+    // Score badge
+    bodyContent += `
+  <div style="background:#111;border:1px solid #2a2a2a;border-radius:8px;padding:16px 20px;margin-bottom:16px;">
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td style="vertical-align:middle;font-size:13px;color:#888;">Current score for <strong style="color:#fff;">${product}</strong></td>
+        <td style="text-align:right;vertical-align:middle;">
+          <span style="font-size:36px;font-weight:800;color:${tierColor};">${score ?? '–'}</span>
+          <span style="font-size:13px;color:#555;">/100</span>
+        </td>
+      </tr>
+    </table>
+    <div style="background:#1a1a1a;border-radius:4px;height:5px;margin-top:10px;overflow:hidden;">
+      <div style="background:${tierColor};height:5px;width:${pct}%;border-radius:4px;"></div>
+    </div>
+  </div>`
+
+    // Failed dimensions — specific actions
+    if (failed.length > 0) {
+      bodyContent += `<div style="font-size:11px;color:#555;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">Areas to improve (${failed.length})</div>`
+      bodyContent += `<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:20px;">`
+      failed.forEach((r, i) => {
+        const tip = GUIDE_TIPS[r.label]
+        const isLast = i === failed.length - 1
+        bodyContent += `
+    <tr><td style="padding:12px 0;${isLast ? '' : 'border-bottom:1px solid #1a1a1a;'}">
+      <div style="font-size:13px;color:#e05252;font-weight:700;margin-bottom:4px;">✕ ${tip?.title ?? r.label}</div>
+      <div style="font-size:12px;color:#888;line-height:1.6;">${tip?.body ?? ''}</div>
+    </td></tr>`
+      })
+      bodyContent += `</table>`
+    }
+
+    // Passed dimensions — brief acknowledgement
+    if (passed.length > 0) {
+      bodyContent += `<div style="font-size:11px;color:#555;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:8px;">Already working (${passed.length})</div>`
+      bodyContent += `<div style="background:#0d1a0d;border:1px solid #1a2e1a;border-radius:6px;padding:10px 14px;margin-bottom:20px;">`
+      passed.forEach(r => {
+        bodyContent += `<div style="font-size:12px;color:#4ade80;padding:3px 0;">✓ ${r.label}</div>`
+      })
+      bodyContent += `</div>`
+    }
+
+    bodyContent += `<p style="font-size:12px;color:#555;margin:0 0 20px;line-height:1.6;">Apply these changes and re-check in 2–4 weeks — AI indexes update gradually.</p>`
+
+  } else {
+    // Fallback: generic guide when no score data
+    bodyContent += `
+  <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+    <tr><td style="padding:12px 0;border-bottom:1px solid #1a1a1a;">
+      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">1. Build Web Presence</div>
+      <div style="font-size:12px;color:#888;line-height:1.5;">Get mentioned on directories, blogs, and tech sites.</div>
+    </td></tr>
+    <tr><td style="padding:12px 0;border-bottom:1px solid #1a1a1a;">
+      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">2. Earn Source Authority</div>
+      <div style="font-size:12px;color:#888;line-height:1.5;">Aim for Product Hunt, G2, or major tech blogs.</div>
+    </td></tr>
+    <tr><td style="padding:12px 0;border-bottom:1px solid #1a1a1a;">
+      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">3. Collect Recommendation Signals</div>
+      <div style="font-size:12px;color:#888;line-height:1.5;">Get listed in "best tools for X" roundups.</div>
+    </td></tr>
+    <tr><td style="padding:12px 0;border-bottom:1px solid #1a1a1a;">
+      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">4. Build Community Validation</div>
+      <div style="font-size:12px;color:#888;line-height:1.5;">Reddit, Product Hunt, Indie Hackers — genuine reviews.</div>
+    </td></tr>
+    <tr><td style="padding:12px 0;">
+      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">5. Track Your Score Weekly</div>
+      <div style="font-size:12px;color:#888;line-height:1.5;">Changes show up in 2–4 weeks after improvements.</div>
+    </td></tr>
+  </table>`
+  }
+
+  const subject = hasData
+    ? `How to improve "${subjectProduct}" AI Visibility${scoreLabel}`
+    : `Your AI Visibility Improvement Guide — pickedby.ai`
+
   const html = `
 <div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;background:#0a0a0a;color:#f5f5f5;padding:32px 24px;border-radius:8px;">
   ${LOGO_HEADER}
-  <h2 style="font-size:20px;margin:0 0 6px;color:#fff;font-weight:700;">Your 5-Step AI Visibility Guide</h2>
-  <p style="color:#888;margin:0 0 24px;font-size:14px;">Here's exactly how to get picked by AI — no fluff, just what works.</p>
-  <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
-    <tr><td style="padding:12px 0;border-bottom:1px solid #1a1a1a;">
-      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">1. Get listed on AI-indexed directories</div>
-      <div style="font-size:12px;color:#888;line-height:1.5;">Submit to Product Hunt, Futurepedia, LLM Relevance, and AlternativeTo. AI pulls from these when recommending tools.</div>
-    </td></tr>
-    <tr><td style="padding:12px 0;border-bottom:1px solid #1a1a1a;">
-      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">2. Write your product description for AI queries</div>
-      <div style="font-size:12px;color:#888;line-height:1.5;">Include the exact words buyers use: "best tool for X", "Notion template for Y". AI matches these literally.</div>
-    </td></tr>
-    <tr><td style="padding:12px 0;border-bottom:1px solid #1a1a1a;">
-      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">3. Add a llms.txt file to your site</div>
-      <div style="font-size:12px;color:#888;line-height:1.5;">A structured summary at yourdomain.com/llms.txt helps AI crawlers understand and accurately describe your product.</div>
-    </td></tr>
-    <tr><td style="padding:12px 0;border-bottom:1px solid #1a1a1a;">
-      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">4. Get real reviews on Reddit &amp; Indie Hackers</div>
-      <div style="font-size:12px;color:#888;line-height:1.5;">AI trusts community signals. A genuine thread about your product outweighs 10 paid directory listings.</div>
-    </td></tr>
-    <tr><td style="padding:12px 0;">
-      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">5. Track your score weekly</div>
-      <div style="font-size:12px;color:#888;line-height:1.5;">Run a free check on pickedby.ai once a week. Changes show up within 2–4 weeks after you make improvements.</div>
-    </td></tr>
-  </table>
-  <a href="https://pickedby.ai/dashboard.html" style="display:inline-block;background:#FFD700;color:#0a0a0a;font-weight:700;font-size:14px;padding:11px 28px;border-radius:6px;text-decoration:none;">Check My Score Now →</a>
+  <h2 style="font-size:20px;margin:0 0 6px;color:#fff;font-weight:700;">Your personalized improvement plan</h2>
+  <p style="color:#888;margin:0 0 20px;font-size:14px;">Based on your actual score — here's exactly what to fix first.</p>
+  ${bodyContent}
+  <a href="https://pickedby.ai/dashboard.html" style="display:inline-block;background:#FFD700;color:#0a0a0a;font-weight:700;font-size:14px;padding:11px 28px;border-radius:6px;text-decoration:none;">Re-check My Score →</a>
   <p style="font-size:11px;color:#333;margin-top:28px;">You're receiving this because you signed up on pickedby.ai. <a href="https://pickedby.ai/unsubscribe.html" style="color:#444;">Unsubscribe</a></p>
 </div>`
 
@@ -817,7 +903,7 @@ async function sendGuideEmail(apiKey: string, email: string): Promise<void> {
     body: JSON.stringify({
       sender: { name: 'pickedby.ai', email: 'hello@pickedby.ai' },
       to: [{ email }],
-      subject: 'Your 5-Step AI Visibility Guide (from pickedby.ai)',
+      subject,
       htmlContent: html,
     }),
   }).then(async r => {
@@ -898,7 +984,7 @@ app.post('/v1/subscribe', async (c) => {
     sendWelcomeEmail(c.env.BREVO_API_KEY, email)
   } else if (source === 'guide') {
     if (isNewSubscriber) {
-      sendGuideEmail(c.env.BREVO_API_KEY, email)
+      sendGuideEmail(c.env.BREVO_API_KEY, email, product, score, results)
     } else {
       console.log('[subscribe] guide skip — existing subscriber:', email)
     }

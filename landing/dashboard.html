@@ -1910,7 +1910,13 @@
       const r = await fetch(API_URL + '/v1/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'guide' }),
+        body: JSON.stringify({
+          email,
+          source: 'guide',
+          product: lastCheckResult ? lastCheckResult.product : undefined,
+          score: lastCheckResult ? lastCheckResult.score : undefined,
+          results: lastCheckResult ? lastCheckResult.results : undefined,
+        }),
       })
       if (r.ok) {
         document.getElementById('guide-email-ok').style.display = 'block'
