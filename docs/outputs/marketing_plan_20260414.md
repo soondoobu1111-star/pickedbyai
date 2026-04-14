@@ -21,7 +21,8 @@
 
 | 날짜 | 액션 | 채널 | CEO 역할 |
 |------|------|------|----------|
-| **4/15 화** | Reddit 3곳 동시 게시 | r/AlphaAndBetaUsers, r/startups, r/NotionTemplates | 복붙 게시 + 댓글 응대 |
+| **4/15 화 오전** | 타겟 언어 리서치 | r/Etsy, r/EtsySellers, Gumroad 커뮤니티 | Claude 실행 → 포스트 카피 최종 반영 |
+| **4/15 화** | Reddit 3곳 동시 게시 | r/AlphaAndBetaUsers, r/startups, r/SideProject | 복붙 게시 + 댓글 응대 |
 | **4/15 화** | 셀럽 DM 5건 발송 | Twitter DM (Marc Lou, Easlo, Tony Dinh, Arvid Kahl, Pat Walls) | 복붙 DM + 스크린샷 첨부 |
 | **4/16 수** | IH 포스트 게시 | Indie Hackers | 복붙 게시 + 종일 댓글 응대 |
 | **4/16 수** | r/InternetIsBeautiful 게시 | Reddit (17M 구독자) | 복붙 게시 |
