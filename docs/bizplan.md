@@ -1,5 +1,5 @@
 # pickedby.ai (PBA) 사업계획서
-> 최종 업데이트: 2026-04-07 (5AI 피드백 + Moat 전략 반영) | 기반: pickedby_ai_full_report.json + whitepaper.md
+> 최종 업데이트: 2026-04-14 (X 정지 대응 + MLP-Slim 완료 + 경쟁사 추가 + LinkedIn 전환 반영) | 기반: pickedby_ai_full_report.json + whitepaper.md
 > **전략 상위 문서**: `pickedbyAI/docs/whitepaper.md` (Moat 전략, 시장 래더, 가설 검증 포함)
 
 ---
@@ -54,13 +54,18 @@ ChatGPT, Claude, Perplexity가 쇼핑 추천의 주요 채널이 되고 있다.
 
 | 경쟁사 | 가격 | 타겟 | 우리와 차이 |
 |--------|------|------|-----------|
-| Otterly AI | $29-989/월 | 마케터/SEO | 기업용 UX, Claude 미지원, 가입 필수 |
+| Otterly AI | $29-989/월 | 마케터/SEO | 기업용 UX, Claude 미지원, 가입 필수. 20K+ 유저, Gartner Cool Vendor |
 | Profound | $500+/월 | Fortune 500 | 대기업 전용 |
+| trysight.ai | 유료 | SEO/마케터 | "AI Visibility Score" 키워드 블로그 장악 중. 직접 위협 |
+| amivisibleonai.com | 무료 | 일반 | 가짜 결과 이슈로 신뢰 낮음 |
+| llmclicks.ai | 무료 | 일반 | 단순 체커, 크리에이터 특화 없음 |
+| amionai.com | TBD | 일반 | 단순 가시성 진단 |
 | Durable Discoverability | 무료 | 로컬 비즈니스 | 배관공/레스토랑 타겟 |
 | Goodie AI | TBD | 인디 SaaS | B2B SaaS 타겟 |
-| **pickedby.ai** | **무료/$19** | **크리에이터** | **10초 무료, 가입 불필요** |
+| **pickedby.ai** | **무료/$19** | **크리에이터** | **10초 무료, 가입 불필요, 5차원 분해** |
 
-**혁신자의 딜레마**: 기존 경쟁사는 더 높은 마진의 기업 고객 집중 → 크리에이터 시장에 안 내려옴.
+**혁신자의 딜레마**: 기존 경쟁사는 더 높은 마진의 기업/마케터 고객 집중 → 크리에이터 시장에 안 내려옴.
+**⚠️ 2026-04-13 업데이트**: trysight.ai가 "AI Visibility Score" 관련 키워드 블로그 장악 시작. SEO 선점 경쟁 진입 필요.
 
 ---
 
@@ -91,7 +96,7 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 
 **전략**: 지금은 돈보다 선점. 무료로 깔고, 유료는 가치 증명 후.
 **유료 전환 핵심 후크**: llms.txt 자동생성 + 점수 추이 차트 + 경쟁사 비교
-**결제 인프라**: DodoPay + Wise USD 계좌 (Bank Verification 승인 대기, 2026-04-06 제출)
+**결제 인프라**: Paddle (Phase 2, PAY-PB-01 — 글로벌 크리에이터 타겟에 최적. K-사주 DodoPay UPI와 별도)
 
 ---
 
@@ -102,13 +107,22 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 ### Phase 1 (0-1개월): 바이럴 훅 ✅ 완료
 - 무료 AI Visibility Score 배포 ✅
 - 배지 시스템 V2-C (Gold/Silver/Bronze) ✅
-- @pickedbyAI Twitter/X 개설 + 런칭 스레드 ✅
+- Reddit r/SideProject 런칭 → 5.3K 뷰 (2026-04-06) ✅
+- ENGINE-05 AI Probe (Perplexity+GPT+Gemini) 배포 (2026-04-10) ✅
+- MLP-Slim: 5차원 분해 UI + 모멘텀 배지 + 추이 차트 배포 (2026-04-10) ✅
+- BLOG-SEO Wave 1: 4개 포스트 배포 (2026-04-08) ✅
+- ~~@pickedbyAI Twitter/X 개설~~ → **🔴 2026-04-14 영구 정지** (포스트모텀: `docs/outputs/postmortem_20260414_x_suspension.md`)
+- **LinkedIn 채널 전환 결정** (주력 SNS를 X → LinkedIn으로 변경)
 
 ### Phase 1.5 (지금): 마케팅 런칭 ← 현재 단계
-- Product Hunt 출시 (목표: 2026-04-14)
-- 내부 /blog 구현 + 첫 글 작성
-- Reddit: r/Gumroad, r/Etsy, r/NotionTemplates
+- **이메일 50개 확보** → Product Hunt 런치 트리거 (현재 0개)
+  - Product Hunt 출시: 이메일 50개 달성 후 (CPO 의견: 4월 마지막 주 앞당기기 권고)
+- Hero 카피 변경 검토: "AI Visibility Score" → "Does ChatGPT recommend your product?"
+- CEO 개인 X DM 아웃리치 30명 (Gumroad/Etsy 셀러 대상)
+- Reddit: r/Etsy, r/EtsySellers, r/gumroad (타겟 유저 직접 접근)
 - Indie Hackers 빌딩 인 퍼블릭
+- AlternativeTo 등록 (2026-04-20 이후, 계정 7일 대기)
+- GEO 디렉토리 등록: Futurepedia/TAAFT/toolify
 - 목표: 이메일 1,000개
 
 ### Phase 2 (1-3개월): 핵심 제품 확장 + Moat Layer 1
@@ -150,11 +164,11 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 |--------|------|------|
 | FE | 정적 HTML + Tailwind CDN | CF Pages 무료 |
 | BE | TypeScript + Hono + CF Workers | perceptdot 스택 재활용 |
-| DB | Supabase PostgreSQL | 이메일/스코어 저장, 무료 티어 |
+| DB | Supabase PostgreSQL | 이메일/스코어/히스토리 저장, 무료 티어 |
 | AI (ENGINE-04) | CF Workers AI (llama-3.2-3b) + Tavily 웹검색 | 패턴매칭, ~4초 |
-| AI Probe (ENGINE-05) | **Perplexity Sonar + GPT-4o-mini + Gemini** | **직접 AI 쿼리, 2026-04-08 실증** |
+| AI Probe (ENGINE-05) | **Perplexity Sonar + GPT-4o-mini + Gemini 2.5 Flash** | **직접 AI 쿼리, 2026-04-10 프로덕션 배포 완료** ✅ |
 | 이메일 | Brevo | 무료 300통/일 |
-| 결제 | DodoPay | Phase 2, Wise USD 계좌 연결 완료 |
+| 결제 | Paddle | Phase 2 (PAY-PB-01). 글로벌 크리에이터 타겟 |
 | 배포 | CF Pages + CF Workers | pickedby.ai / api.pickedby.ai |
 
 **월 운영비**: Phase 1 ~$0, Phase 1.5 ~$5 (Perplexity/GPT API), Phase 2 ~$55
@@ -179,15 +193,19 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 | 리스크 | 확률 | 영향 | 대응 |
 |--------|------|------|------|
 | ~~Gemini HKG DC 차단~~ | **해결됨** | — | CF Workers AI 전환 (2026-04-06) |
+| ~~@pickedbyAI X 계정~~ | **발생** | 중간 | LinkedIn 채널 전환. X 이의제기 2026-04-17 재시도 |
+| trysight.ai SEO 장악 | **진행 중** | 높음 | Wave 2 블로그 가속 + GEO 디렉토리 선점 |
+| 채널-타겟 미스매치 | **확인됨** | 높음 | 타겟 채널(r/Etsy, Facebook Etsy 그룹) 집중 전환 |
 | Semrush/Ahrefs GEO 기능 출시 | 높음 | 높음 | 배지 네트워크 선점 속도 경쟁. 크리에이터 채널 없는 그들의 약점 활용 |
 | 크리에이터 지불의향 낮음 | 중간 | 높음 | Agency 래더로 ARPU 확보 + 점수 0 사용자 타겟 전환 |
-| AI 알고리즘 변동 | 높음 | 중간 | 다중 소스(Tavily+LLM) + ENGINE-04 결정적 점수 |
+| AI 알고리즘 변동 | 높음 | 중간 | 다중 소스(Tavily+ENGINE-05 AI Probe) + 결정적 점수 |
 | 유료 전환율 < 2% | 중간 | 높음 | llms.txt 가치 강화 + Score Tracker Lock-in |
 | Otterly 크리에이터 플랜 출시 | 중간 | 중간 | 속도 선점 + SDK 전환비용 |
 | 팀 규모 한계 | 확실 | 중간 | AI 코딩 에이전트 최대 활용 |
 | ROI 증명 어려움 | 높음 | 중간 | SDK impression/클릭 데이터 + GA4 연동 |
+| "AI Visibility" 개념 미인지 | 높음 | 높음 | Hero 카피 변경 "Does ChatGPT recommend your product?" |
 
-> **5AI 피드백 기반 리스크 재평가 (2026-04-07)**
+> **5AI 피드백 기반 리스크 재평가 (2026-04-07) + CPO 유통 진단 추가 (2026-04-13)**
 
 ---
 
@@ -200,12 +218,19 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 | 2026-04-05 | Supabase 이메일 수집 DB 연동 | ✅ |
 | 2026-04-06 | API 안정화 (Gemini → CF Workers AI, 4초) | ✅ |
 | 2026-04-06 | 배지 시스템 V2-C (Gold/Silver/Bronze) 구현 | ✅ |
-| 2026-04-06 | DodoPay + Wise USD 결제 인프라 구축 | ✅ 제출 |
-| 2026-04-09 | DodoPay Bank Verification 승인 예상 | ⏳ |
-| 2026-04-14 | Twitter/X 런칭 포스트 + Product Hunt 출시 | 예정 |
+| 2026-04-06 | Reddit r/SideProject 런치 → 5.3K 뷰 | ✅ |
+| 2026-04-08 | BLOG-SEO Wave 1: 4개 포스트 + 사이트맵 배포 | ✅ |
+| 2026-04-10 | ENGINE-05 AI Probe (Perplexity+GPT+Gemini) 프로덕션 배포 | ✅ |
+| 2026-04-10 | MLP-Slim: 5차원 분해 UI + 모멘텀 배지 + 추이 차트 배포 | ✅ |
+| 2026-04-10 | SETTINGS-01: 설정 모달 (마케팅토글/CSV/계정탈퇴) 배포 | ✅ |
+| 2026-04-14 | @pickedbyAI X 계정 자동화 정책 위반으로 영구 정지 | 🔴 |
+| 2026-04-14 | LinkedIn SNS 채널 전환 결정 | ✅ |
+| 2026-04-17 | X 이의제기 2차 재시도 (웹 폼) | 예정 |
+| 2026-04-20+ | AlternativeTo 등록 (계정 7일 대기) | 예정 |
+| TBD | Product Hunt 출시 (이메일 50개 달성 후) | 대기 |
 | 2026-05-15 | 모두의 창업 지원서 제출 (마감) | 예정 |
 | 2026-05-31 | 이메일 1,000개 목표 | 예정 |
-| 2026-07-01 | Phase 2 유료 전환, MRR $1,900 목표 | 예정 |
+| 2026-07-01 | Phase 2 유료 전환 (Paddle), MRR $1,900 목표 | 예정 |
 
 ---
 
@@ -248,4 +273,4 @@ Flywheel: 배지 embed → AI 크롤링 → 학습 데이터 → pickedby.ai = �
 
 *기반 리서치: `/Volumes/My Passport for Mac/My_project/docs/input/pickedby_ai_full_report.json`*
 *작성: 2026-04-05, CPO (데스크탑 Claude)*
-*최종 업데이트: 2026-04-07 — 5AI 피드백 반영, Moat 3단계 전략, Agency $99 플랜, 시장 래더, 리스크 재평가*
+*최종 업데이트: 2026-04-14 — X 정지 대응 및 LinkedIn 전환, MLP-Slim/ENGINE-05 완료, 신규 경쟁사(trysight.ai 등) 추가, 결제 DodoPay→Paddle 수정, 마일스톤 최신화, 유통 채널 진단 반영*
