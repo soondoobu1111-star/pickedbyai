@@ -888,7 +888,7 @@ app.post('/v1/subscribe', async (c) => {
       }
     ).catch(() => null)
     if (check && check.ok) {
-      const rows = await check.json().catch(() => [])
+      const rows = await check.json().catch(() => []) as unknown[]
       isNewSubscriber = rows.length === 0
     }
   }
