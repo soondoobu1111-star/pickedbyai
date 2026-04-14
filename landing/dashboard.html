@@ -1460,15 +1460,135 @@
     `
   }
 
-  // ── NEW-01: Share Tweet ────────────────────────────────────
-  function shareTweet() {
+  // ── Share: Copy Link ───────────────────────────────────────
+  function copyLink() {
+    if (!lastCheckResult) return
+    const name = lastCheckResult.product
+    const url = `https://pickedby.ai?utm_source=share&utm_content=${encodeURIComponent(name)}`
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.getElementById('btn-copy-link')
+      const orig = btn.textContent
+      btn.textContent = '✓ Copied!'
+      setTimeout(() => { btn.textContent = orig }, 2000)
+    }).catch(() => alert('Copy failed'))
+  }
+
+  // ── Share: LinkedIn ────────────────────────────────────────
+  function shareLinkedIn() {
+    if (!lastCheckResult) return
+    const url = `https://pickedby.ai?utm_source=linkedin`
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank', 'width=600,height=500')
+  }
+
+  // ── Share: Copy Score Image ────────────────────────────────
+  async function copyScoreImage() {
     if (!lastCheckResult) return
     const score = lastCheckResult.score
     const name = lastCheckResult.product
-    let tier = score >= 75 ? '🥇 PICKED BY AI' : score >= 50 ? '🥈 SEEN BY AI' : score >= 25 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
-    const text = `I just checked "${name}" on @pickedbyAI\n\nAI Visibility Score: ${score}/100 — ${tier}\n\nCheck yours free (10 seconds, no signup):`
-    const url = 'https://pickedby.ai'
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank', 'width=550,height=420')
+    const tier = score >= 75 ? 'PICKED BY AI' : score >= 50 ? 'SEEN BY AI' : score >= 25 ? 'NOTICED BY AI' : 'NOT YET VISIBLE'
+    const tierColor = score >= 75 ? '#4ade80' : score >= 50 ? '#FFD700' : score >= 25 ? '#f97316' : '#ef4444'
+    const barColor = score >= 60 ? '#4ade80' : score >= 30 ? '#FFD700' : '#ef4444'
+
+    const W = 800, H = 420
+    const canvas = document.createElement('canvas')
+    canvas.width = W; canvas.height = H
+    const c = canvas.getContext('2d')
+
+    // Background
+    c.fillStyle = '#0a0a0a'
+    c.fillRect(0, 0, W, H)
+
+    // Border
+    c.strokeStyle = '#FFD70033'
+    c.lineWidth = 1.5
+    c.strokeRect(1, 1, W - 2, H - 2)
+
+    // Crown SVG rects (scaled, top-left)
+    const crownX = 48, crownY = 44, crownScale = 3.2
+    c.fillStyle = '#FFD700'
+    const crownParts = [
+      [0,0,2,4],[9,0,2,4],[18,0,2,4],
+      [0,4,20,2],[0,6,2,6],[18,6,2,6],
+      [4,8,2,2],[9,8,2,2],[14,8,2,2],
+      [0,12,20,2],[2,14,16,2]
+    ]
+    crownParts.forEach(([x,y,w,h]) => {
+      c.fillRect(crownX + x * crownScale, crownY + y * crownScale, w * crownScale, h * crownScale)
+    })
+
+    // Logo text
+    c.font = 'bold 18px monospace'
+    c.fillStyle = '#FFD700'
+    c.fillText('picked', crownX + 20 * crownScale + 12, crownY + 36)
+    c.fillStyle = '#888'
+    c.fillText('by', crownX + 20 * crownScale + 12 + c.measureText('picked').width, crownY + 36)
+    c.fillStyle = '#FFD700'
+    c.fillText('.ai', crownX + 20 * crownScale + 12 + c.measureText('pickedby').width, crownY + 36)
+
+    // Product name
+    c.font = '600 22px -apple-system, sans-serif'
+    c.fillStyle = '#888'
+    c.fillText('AI Visibility Score for', 48, 130)
+    c.font = '700 30px -apple-system, sans-serif'
+    c.fillStyle = '#ffffff'
+    const maxNameW = W - 96
+    let displayName = name
+    while (c.measureText(displayName).width > maxNameW && displayName.length > 10) {
+      displayName = displayName.slice(0, -1)
+    }
+    if (displayName !== name) displayName += '…'
+    c.fillText(displayName, 48, 170)
+
+    // Score number
+    c.font = '900 96px -apple-system, sans-serif'
+    c.fillStyle = '#FFD700'
+    c.fillText(`${score}`, 48, 290)
+    c.font = '400 28px -apple-system, sans-serif'
+    c.fillStyle = '#555'
+    c.fillText('/ 100', 48 + c.measureText(`${score}`).width + 8, 285)
+
+    // Tier label
+    c.font = '700 20px -apple-system, sans-serif'
+    c.fillStyle = tierColor
+    c.fillText(tier, 48, 328)
+
+    // Score bar background
+    const barY = 352, barH = 12, barW = W - 96
+    c.fillStyle = '#1a1a1a'
+    c.beginPath()
+    c.roundRect(48, barY, barW, barH, 6)
+    c.fill()
+
+    // Score bar fill
+    c.fillStyle = barColor
+    c.beginPath()
+    c.roundRect(48, barY, Math.round(barW * score / 100), barH, 6)
+    c.fill()
+
+    // pickedby.ai URL
+    c.font = '400 16px -apple-system, sans-serif'
+    c.fillStyle = '#444'
+    c.textAlign = 'right'
+    c.fillText('pickedby.ai', W - 48, H - 36)
+
+    // Copy to clipboard
+    const btn = document.getElementById('btn-copy-image')
+    try {
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/png'))
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+      const orig = btn.textContent
+      btn.textContent = '✓ Copied!'
+      setTimeout(() => { btn.textContent = orig }, 2000)
+    } catch (err) {
+      // Fallback: download the image
+      const a = document.createElement('a')
+      a.download = `pickedbyai-score-${name.replace(/\s+/g,'-')}.png`
+      a.href = canvas.toDataURL('image/png')
+      a.click()
+      const orig = btn.textContent
+      btn.textContent = '✓ Downloaded!'
+      setTimeout(() => { btn.textContent = orig }, 2000)
+    }
   }
 
   // ── NEW-02: Trend Chart (per-product multi-line, max 5) ───
