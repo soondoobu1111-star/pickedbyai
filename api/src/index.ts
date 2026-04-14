@@ -872,11 +872,36 @@ app.post('/v1/subscribe', async (c) => {
     return c.json({ error: 'Subscribe failed' }, 500)
   }
 
+  // ── EMAIL-POLICY-01: 발송 정책 ────────────────────────────────
+  // guide: 신규 이메일만 발송 (DB에 있으면 Brevo 추가만)
+  // result-email: 항상 발송 (제품별 내용 다름)
+  // google-signup: 항상 발송
+  let isNewSubscriber = true
+  if (source === 'guide') {
+    const check = await fetch(
+      `${SUPABASE_URL}/rest/v1/emails?email=eq.${encodeURIComponent(email)}&select=email&limit=1`,
+      {
+        headers: {
+          'apikey': c.env.SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+        },
+      }
+    ).catch(() => null)
+    if (check && check.ok) {
+      const rows = await check.json().catch(() => [])
+      isNewSubscriber = rows.length === 0
+    }
+  }
+
   // Send email (fire-and-forget — don't block response)
   if (source === 'google-signup') {
     sendWelcomeEmail(c.env.BREVO_API_KEY, email)
   } else if (source === 'guide') {
-    sendGuideEmail(c.env.BREVO_API_KEY, email)
+    if (isNewSubscriber) {
+      sendGuideEmail(c.env.BREVO_API_KEY, email)
+    } else {
+      console.log('[subscribe] guide skip — existing subscriber:', email)
+    }
   } else {
     sendScoreEmail(c.env.BREVO_API_KEY, email, product ?? '', score ?? 0, results)
   }
