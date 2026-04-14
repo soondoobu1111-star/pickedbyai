@@ -5,9 +5,23 @@
   <meta name="pickedby-site-verification" content="ngeyntm4zgjwawnrzwri" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://api.pickedby.ai https://*.supabase.co https://www.google-analytics.com; img-src 'self' data: https:; frame-src 'none'; object-src 'none';" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://static.cloudflareinsights.com https://*.contentsquare.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://api.pickedby.ai https://*.supabase.co https://www.google-analytics.com https://*.contentsquare.net https://*.contentsquare.com; img-src 'self' data: https:; frame-src https://*.contentsquare.net; object-src 'none';" />
   <title>Dashboard — pickedby.ai</title>
   <meta name="robots" content="noindex, nofollow" />
+  <!-- Google tag (gtag.js) — Consent Mode v2 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2H007YWM9F"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_personalization: 'denied' });
+    gtag('js', new Date());
+    gtag('config', 'G-2H007YWM9F');
+    if (localStorage.getItem('cookie_consent') === 'accepted') {
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+    }
+  </script>
+  <!-- Contentsquare (Hotjar) -->
+  <script src="https://t.contentsquare.net/uxa/539b28e3d0a6f.js" async></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
@@ -264,6 +278,21 @@
       <button class="btn-ghost" id="btn-save-comp" onclick="saveToComp()" style="font-size:0.85rem;">
         + Save as Competitor
       </button>
+    </div>
+    <!-- FEEDBACK-01: Was this helpful? -->
+    <div id="feedback-cta" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#0d0d0d;border:1px solid #1f1f1f;border-radius:8px;">
+      <div id="feedback-ask" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+        <span style="font-size:0.82rem;color:#888;">Was this result helpful?</span>
+        <div style="display:flex;gap:0.5rem;">
+          <button onclick="submitFeedback('yes')" style="background:#1a2e1a;color:#4ade80;border:1px solid #2a3a2a;padding:0.35rem 1rem;border-radius:4px;cursor:pointer;font-size:0.78rem;font-weight:600;">Yes</button>
+          <button onclick="submitFeedback('no')" style="background:#2e1a1a;color:#ef4444;border:1px solid #3a2a2a;padding:0.35rem 1rem;border-radius:4px;cursor:pointer;font-size:0.78rem;font-weight:600;">Not really</button>
+        </div>
+      </div>
+      <div id="feedback-comment" style="display:none;margin-top:0.6rem;">
+        <input type="text" id="feedback-text" placeholder="What would make this more useful? (optional)" maxlength="280" style="width:100%;padding:0.45rem 0.7rem;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:4px;font-size:0.78rem;box-sizing:border-box;" />
+        <button onclick="submitFeedbackComment()" style="margin-top:0.4rem;background:#FFD700;color:#000;border:none;padding:0.35rem 0.85rem;border-radius:4px;cursor:pointer;font-size:0.72rem;font-weight:700;">Send</button>
+      </div>
+      <div id="feedback-thanks" style="display:none;font-size:0.78rem;color:#4ade80;">Thank you for your feedback!</div>
     </div>
     <!-- MLP-CTA: Track score over time nudge -->
     <div id="mlp-track-cta" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#0d0d0d;border:1px dashed #FFD70044;border-radius:8px;text-align:center;">
@@ -831,6 +860,9 @@
     if (rEmail) rEmail.style.display = isGuest ? 'block' : 'none'
     const guideEl = document.getElementById('guide-email-cta')
     if (guideEl) guideEl.style.display = isGuest ? 'block' : 'none'
+    // Show feedback CTA for everyone
+    const fbCta = document.getElementById('feedback-cta')
+    if (fbCta) { fbCta.style.display = 'block'; document.getElementById('feedback-ask').style.display = 'flex'; document.getElementById('feedback-comment').style.display = 'none'; document.getElementById('feedback-thanks').style.display = 'none'; }
   }
 
   // ENGINE-05 dimension row with score bar
@@ -1871,6 +1903,35 @@
       showLogin()
     }
   })
+
+  // ── FEEDBACK-01: Was this helpful? ─────────────────────────
+  let _fbVote = ''
+  function submitFeedback(vote) {
+    _fbVote = vote
+    if (typeof gtag === 'function') {
+      gtag('event', 'feedback_vote', {
+        vote: vote,
+        product: lastCheckResult ? lastCheckResult.product : '',
+        score: lastCheckResult ? lastCheckResult.score : 0,
+      })
+    }
+    document.getElementById('feedback-ask').style.display = 'none'
+    document.getElementById('feedback-comment').style.display = 'block'
+    document.getElementById('feedback-text').focus()
+  }
+  function submitFeedbackComment() {
+    const text = (document.getElementById('feedback-text').value || '').trim()
+    if (typeof gtag === 'function') {
+      gtag('event', 'feedback_comment', {
+        vote: _fbVote,
+        comment: text.slice(0, 280),
+        product: lastCheckResult ? lastCheckResult.product : '',
+        score: lastCheckResult ? lastCheckResult.score : 0,
+      })
+    }
+    document.getElementById('feedback-comment').style.display = 'none'
+    document.getElementById('feedback-thanks').style.display = 'block'
+  }
 
   // ── EMAIL-CAPTURE-01: Flow 1 — send score report ──────────
   async function submitResultEmail() {
