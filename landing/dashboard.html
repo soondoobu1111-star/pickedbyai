@@ -1462,23 +1462,22 @@
 
   function renderTrendChart(data) {
     const wrap = document.getElementById('trend-chart-wrap')
-    if (!data || data.length < 2) {
-      // Show "Check again" nudge if there's exactly 1 data point
-      if (data && data.length === 1) {
-        wrap.style.display = 'block'
-        wrap.style.height = 'auto'
-        wrap.innerHTML = '<p style="color:#444;font-size:0.78rem;text-align:center;padding:1rem 0;">📈 Check again tomorrow to see your trend appear</p>'
-      } else {
-        wrap.style.display = 'none'
-      }
+    if (!data || data.length === 0) {
+      wrap.style.display = 'none'
       return
     }
+
+    // Limit to last 30 days
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+    const recentData = data.filter(r => new Date(r.created_at) >= thirtyDaysAgo)
+    if (recentData.length === 0) { wrap.style.display = 'none'; return }
+
     wrap.style.height = '180px'
     wrap.innerHTML = '<canvas id="trend-chart"></canvas>'
 
     const productDayMap = {}
     const seenOrder = []
-    for (const row of data) {
+    for (const row of recentData) {
       const name = row.product_name
       const day = new Date(row.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
       if (!productDayMap[name]) { productDayMap[name] = {}; seenOrder.push(name) }
@@ -1488,7 +1487,7 @@
     const products = seenOrder.slice(0, 5)
 
     const daySet = new Set()
-    ;[...data].reverse().forEach(r =>
+    ;[...recentData].reverse().forEach(r =>
       daySet.add(new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }))
     )
     const allDays = [...daySet]
@@ -1519,7 +1518,7 @@
         layout: { padding: { top: 6, bottom: 2 } },
         plugins: {
           legend: {
-            display: products.length > 1,
+            display: products.length > 0,
             position: 'bottom',
             labels: {
               color: '#888', font: { size: 11 },
