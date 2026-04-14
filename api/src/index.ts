@@ -778,6 +778,54 @@ async function sendWelcomeEmail(apiKey: string, email: string): Promise<void> {
   }).catch(err => console.error('[Brevo SMTP welcome] fetch error:', err))
 }
 
+// ── AI Visibility Guide email ─────────────────────────────────
+async function sendGuideEmail(apiKey: string, email: string): Promise<void> {
+  const html = `
+<div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;background:#0a0a0a;color:#f5f5f5;padding:32px 24px;border-radius:8px;">
+  ${LOGO_HEADER}
+  <h2 style="font-size:20px;margin:0 0 6px;color:#fff;font-weight:700;">Your 5-Step AI Visibility Guide</h2>
+  <p style="color:#888;margin:0 0 24px;font-size:14px;">Here's exactly how to get picked by AI — no fluff, just what works.</p>
+  <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+    <tr><td style="padding:12px 0;border-bottom:1px solid #1a1a1a;">
+      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">1. Get listed on AI-indexed directories</div>
+      <div style="font-size:12px;color:#888;line-height:1.5;">Submit to Product Hunt, Futurepedia, LLM Relevance, and AlternativeTo. AI pulls from these when recommending tools.</div>
+    </td></tr>
+    <tr><td style="padding:12px 0;border-bottom:1px solid #1a1a1a;">
+      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">2. Write your product description for AI queries</div>
+      <div style="font-size:12px;color:#888;line-height:1.5;">Include the exact words buyers use: "best tool for X", "Notion template for Y". AI matches these literally.</div>
+    </td></tr>
+    <tr><td style="padding:12px 0;border-bottom:1px solid #1a1a1a;">
+      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">3. Add a llms.txt file to your site</div>
+      <div style="font-size:12px;color:#888;line-height:1.5;">A structured summary at yourdomain.com/llms.txt helps AI crawlers understand and accurately describe your product.</div>
+    </td></tr>
+    <tr><td style="padding:12px 0;border-bottom:1px solid #1a1a1a;">
+      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">4. Get real reviews on Reddit &amp; Indie Hackers</div>
+      <div style="font-size:12px;color:#888;line-height:1.5;">AI trusts community signals. A genuine thread about your product outweighs 10 paid directory listings.</div>
+    </td></tr>
+    <tr><td style="padding:12px 0;">
+      <div style="font-size:13px;color:#FFD700;font-weight:700;margin-bottom:4px;">5. Track your score weekly</div>
+      <div style="font-size:12px;color:#888;line-height:1.5;">Run a free check on pickedby.ai once a week. Changes show up within 2–4 weeks after you make improvements.</div>
+    </td></tr>
+  </table>
+  <a href="https://pickedby.ai/dashboard.html" style="display:inline-block;background:#FFD700;color:#0a0a0a;font-weight:700;font-size:14px;padding:11px 28px;border-radius:6px;text-decoration:none;">Check My Score Now →</a>
+  <p style="font-size:11px;color:#333;margin-top:28px;">You're receiving this because you signed up on pickedby.ai. <a href="https://pickedby.ai/unsubscribe.html" style="color:#444;">Unsubscribe</a></p>
+</div>`
+
+  await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'api-key': apiKey },
+    body: JSON.stringify({
+      sender: { name: 'pickedby.ai', email: 'hello@pickedby.ai' },
+      to: [{ email }],
+      subject: 'Your 5-Step AI Visibility Guide (from pickedby.ai)',
+      htmlContent: html,
+    }),
+  }).then(async r => {
+    if (!r.ok) console.error('[Brevo guide] error:', r.status, await r.text())
+    else console.log('[Brevo guide] sent to', email)
+  }).catch(err => console.error('[Brevo guide] fetch error:', err))
+}
+
 // ── POST /v1/subscribe ────────────────────────────────────────
 // Adds email to Brevo contact list
 app.post('/v1/subscribe', async (c) => {
@@ -827,6 +875,8 @@ app.post('/v1/subscribe', async (c) => {
   // Send email (fire-and-forget — don't block response)
   if (source === 'google-signup') {
     sendWelcomeEmail(c.env.BREVO_API_KEY, email)
+  } else if (source === 'guide') {
+    sendGuideEmail(c.env.BREVO_API_KEY, email)
   } else {
     sendScoreEmail(c.env.BREVO_API_KEY, email, product ?? '', score ?? 0, results)
   }

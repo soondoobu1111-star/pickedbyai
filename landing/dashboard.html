@@ -270,6 +270,26 @@
       <div style="font-size:0.78rem;color:#FFD700;font-weight:600;margin-bottom:0.25rem;">📈 Track how your score changes over time</div>
       <div style="font-size:0.72rem;color:#555;">Save to My Products → check again tomorrow → see your trend</div>
     </div>
+    <!-- EMAIL-CAPTURE-01: Flow 1 — Email this score report (non-logged users only) -->
+    <div id="result-email-cta" style="display:none;margin-top:0.75rem;padding:0.875rem 1rem;background:#0d0d0d;border:1px solid #FFD70022;border-radius:8px;">
+      <div style="font-size:0.82rem;color:#FFD700;font-weight:600;margin-bottom:0.25rem;">📧 Get this report in your inbox</div>
+      <div style="font-size:0.75rem;color:#555;margin-bottom:0.6rem;">Your AI Visibility Score + full breakdown, delivered instantly.</div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <input type="email" id="result-email-input" placeholder="your@email.com" style="flex:1;min-width:180px;padding:0.45rem 0.7rem;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:4px;font-size:0.82rem;" />
+        <button onclick="submitResultEmail()" id="result-email-btn" style="background:#FFD700;color:#000;border:none;padding:0.45rem 1rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:4px;white-space:nowrap;">SEND REPORT</button>
+      </div>
+      <div id="result-email-ok" style="display:none;color:#4ade80;font-size:0.75rem;margin-top:0.4rem;">&#10003; Check your inbox!</div>
+    </div>
+  </div>
+  <!-- EMAIL-CAPTURE-01: Flow 2 — AI visibility guide (shown after result) -->
+  <div id="guide-email-cta" class="card mb-6" style="display:none;">
+    <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.25rem;">&#x1F680; Free Guide: How to Improve Your AI Visibility Score</div>
+    <div style="font-size:0.78rem;color:#666;margin-bottom:0.75rem;">5 actionable steps — sent to your inbox, no fluff.</div>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <input type="email" id="guide-email-input" placeholder="your@email.com" style="flex:1;min-width:180px;padding:0.45rem 0.7rem;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:4px;font-size:0.82rem;" />
+      <button onclick="submitGuideEmail()" id="guide-email-btn" style="background:#fff;color:#000;border:none;padding:0.45rem 1rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:4px;white-space:nowrap;">GET GUIDE</button>
+    </div>
+    <div id="guide-email-ok" style="display:none;color:#4ade80;font-size:0.75rem;margin-top:0.4rem;">&#10003; Guide is on its way!</div>
   </div>
 
   <!-- History card with 3-tab structure -->
@@ -799,9 +819,14 @@
     document.getElementById('result-grounded-note').style.display = hasUngrounded ? 'block' : 'none'
 
     document.getElementById('check-result').style.display = 'block'
-    // Show track CTA only when not logged in
+    // Show non-logged CTAs
+    const isGuest = !currentUser
     const ctaEl = document.getElementById('mlp-track-cta')
-    if (ctaEl) ctaEl.style.display = currentUser ? 'none' : 'block'
+    if (ctaEl) ctaEl.style.display = isGuest ? 'block' : 'none'
+    const rEmail = document.getElementById('result-email-cta')
+    if (rEmail) rEmail.style.display = isGuest ? 'block' : 'none'
+    const guideEl = document.getElementById('guide-email-cta')
+    if (guideEl) guideEl.style.display = isGuest ? 'block' : 'none'
   }
 
   // ENGINE-05 dimension row with score bar
@@ -1842,6 +1867,62 @@
       showLogin()
     }
   })
+
+  // ── EMAIL-CAPTURE-01: Flow 1 — send score report ──────────
+  async function submitResultEmail() {
+    const input = document.getElementById('result-email-input')
+    const email = (input.value || '').trim()
+    if (!email) return
+    const btn = document.getElementById('result-email-btn')
+    if (btn) { btn.disabled = true; btn.textContent = '...' }
+    try {
+      const r = await fetch(API_URL + '/v1/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          product: lastCheckResult ? lastCheckResult.product : '',
+          score: lastCheckResult ? lastCheckResult.score : 0,
+          source: 'result-email',
+          results: lastCheckResult ? lastCheckResult.results : [],
+        }),
+      })
+      if (r.ok) {
+        document.getElementById('result-email-ok').style.display = 'block'
+        if (input) input.style.display = 'none'
+        if (btn) btn.style.display = 'none'
+      } else {
+        if (btn) { btn.disabled = false; btn.textContent = 'SEND REPORT' }
+      }
+    } catch(e) {
+      if (btn) { btn.disabled = false; btn.textContent = 'SEND REPORT' }
+    }
+  }
+
+  // ── EMAIL-CAPTURE-01: Flow 2 — send guide ─────────────────
+  async function submitGuideEmail() {
+    const input = document.getElementById('guide-email-input')
+    const email = (input.value || '').trim()
+    if (!email) return
+    const btn = document.getElementById('guide-email-btn')
+    if (btn) { btn.disabled = true; btn.textContent = '...' }
+    try {
+      const r = await fetch(API_URL + '/v1/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'guide' }),
+      })
+      if (r.ok) {
+        document.getElementById('guide-email-ok').style.display = 'block'
+        if (input) input.style.display = 'none'
+        if (btn) btn.style.display = 'none'
+      } else {
+        if (btn) { btn.disabled = false; btn.textContent = 'GET GUIDE' }
+      }
+    } catch(e) {
+      if (btn) { btn.disabled = false; btn.textContent = 'GET GUIDE' }
+    }
+  }
 </script>
 
 <!-- ── Settings Modal ───────────────────────────────── -->
