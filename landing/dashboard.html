@@ -284,10 +284,14 @@
   <!-- EMAIL-CAPTURE-01: Flow 2 — AI visibility guide (shown after result) -->
   <div id="guide-email-cta" class="card mb-6" style="display:none;">
     <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.25rem;">&#x1F680; Free Guide: How to Improve Your AI Visibility Score</div>
-    <div style="font-size:0.78rem;color:#666;margin-bottom:0.75rem;">5 actionable steps — sent to your inbox, no fluff.</div>
+    <div style="font-size:0.78rem;color:#666;margin-bottom:0.65rem;">Your personalized improvement plan — sent to your inbox based on your actual score.</div>
+    <label style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.65rem;cursor:pointer;">
+      <input type="checkbox" id="guide-consent" onchange="toggleGuideBtn()" style="margin-top:2px;accent-color:#FFD700;cursor:pointer;" />
+      <span style="font-size:0.73rem;color:#777;line-height:1.5;">I agree to receive marketing emails from pickedby.ai. You can unsubscribe at any time.</span>
+    </label>
     <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
       <input type="email" id="guide-email-input" placeholder="your@email.com" style="flex:1;min-width:180px;padding:0.45rem 0.7rem;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:4px;font-size:0.82rem;" />
-      <button onclick="submitGuideEmail()" id="guide-email-btn" style="background:#fff;color:#000;border:none;padding:0.45rem 1rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:4px;white-space:nowrap;">GET GUIDE</button>
+      <button onclick="submitGuideEmail()" id="guide-email-btn" disabled style="background:#444;color:#888;border:none;padding:0.45rem 1rem;font-weight:700;font-size:0.75rem;cursor:not-allowed;border-radius:4px;white-space:nowrap;">GET GUIDE</button>
     </div>
     <div id="guide-email-ok" style="display:none;color:#4ade80;font-size:0.75rem;margin-top:0.4rem;">&#10003; Guide is on its way!</div>
   </div>
@@ -1899,6 +1903,17 @@
     }
   }
 
+  function toggleGuideBtn() {
+    const cb = document.getElementById('guide-consent')
+    const btn = document.getElementById('guide-email-btn')
+    if (!cb || !btn) return
+    const checked = cb.checked
+    btn.disabled = !checked
+    btn.style.background = checked ? '#fff' : '#444'
+    btn.style.color = checked ? '#000' : '#888'
+    btn.style.cursor = checked ? 'pointer' : 'not-allowed'
+  }
+
   // ── EMAIL-CAPTURE-01: Flow 2 — send guide ─────────────────
   async function submitGuideEmail() {
     const input = document.getElementById('guide-email-input')
@@ -1913,6 +1928,7 @@
         body: JSON.stringify({
           email,
           source: 'guide',
+          marketing_consent: true,
           product: lastCheckResult ? lastCheckResult.product : undefined,
           score: lastCheckResult ? lastCheckResult.score : undefined,
           results: lastCheckResult ? lastCheckResult.results : undefined,

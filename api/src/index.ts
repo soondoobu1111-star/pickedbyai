@@ -920,7 +920,7 @@ app.post('/v1/subscribe', async (c) => {
     return c.json({ error: 'Too many requests. Please try again later.' }, 429)
   }
 
-  let body: { email?: string; product?: string; score?: number; source?: string; results?: Array<{ label: string; found: boolean }> }
+  let body: { email?: string; product?: string; score?: number; source?: string; results?: Array<{ label: string; found: boolean }>; marketing_consent?: boolean }
 
   try {
     body = await c.req.json()
@@ -928,10 +928,47 @@ app.post('/v1/subscribe', async (c) => {
     return c.json({ error: 'Invalid JSON' }, 400)
   }
 
-  const { email, product, score, source, results } = body
+  const { email, product, score, source, results, marketing_consent } = body
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email) || email.length > 254) {
     return c.json({ error: 'Invalid email' }, 400)
+  }
+
+  // ── EMAIL-POLICY-01: 가이드 수신동의 + 수신거부 사전 체크 ───────
+  // guide는 Brevo POST 전에 체크 (re-add 이전 상태를 봐야 함)
+  let guideEligible = false
+  if (source === 'guide') {
+    // 1. 수신동의 체크
+    if (marketing_consent !== true) {
+      console.log('[subscribe] guide skip — no marketing consent:', email)
+      // Brevo/Supabase는 그래도 추가 (리스트 관리용), 이메일만 스킵
+    } else {
+      // 2. Brevo 연락처 상태 사전 확인 (수신거부/전체차단 여부)
+      const brevoContact = await fetch(
+        `https://api.brevo.com/v3/contacts/${encodeURIComponent(email)}`,
+        { headers: { 'api-key': c.env.BREVO_API_KEY } }
+      ).catch(() => null)
+
+      if (!brevoContact || brevoContact.status === 404) {
+        // 신규 연락처 → 발송 가능
+        guideEligible = true
+      } else if (brevoContact.ok) {
+        const contact = await brevoContact.json().catch(() => ({})) as {
+          emailBlacklisted?: boolean
+          listIds?: number[]
+        }
+        if (contact.emailBlacklisted === true) {
+          // 전체 수신거부 (Brevo 글로벌 opt-out)
+          console.log('[subscribe] guide skip — globally blacklisted:', email)
+        } else if (Array.isArray(contact.listIds) && !contact.listIds.includes(4)) {
+          // list 4에서 제거됨 = 우리 구독 취소한 사용자
+          console.log('[subscribe] guide skip — previously unsubscribed:', email)
+        } else {
+          // 기존 구독자 (중복 발송 방지)
+          console.log('[subscribe] guide skip — existing subscriber:', email)
+        }
+      }
+    }
   }
 
   const res = await fetch('https://api.brevo.com/v3/contacts', {
@@ -942,7 +979,7 @@ app.post('/v1/subscribe', async (c) => {
     },
     body: JSON.stringify({
       email,
-      listIds: [4], // pickedby.ai list — create in Brevo dashboard
+      listIds: [4], // pickedby.ai list
       attributes: {
         PRODUCT: product ?? '',
         SCORE: score ?? 0,
@@ -958,35 +995,15 @@ app.post('/v1/subscribe', async (c) => {
     return c.json({ error: 'Subscribe failed' }, 500)
   }
 
-  // ── EMAIL-POLICY-01: 발송 정책 ────────────────────────────────
-  // guide: 신규 이메일만 발송 (DB에 있으면 Brevo 추가만)
-  // result-email: 항상 발송 (제품별 내용 다름)
-  // google-signup: 항상 발송
-  let isNewSubscriber = true
-  if (source === 'guide') {
-    const check = await fetch(
-      `${SUPABASE_URL}/rest/v1/emails?email=eq.${encodeURIComponent(email)}&select=email&limit=1`,
-      {
-        headers: {
-          'apikey': c.env.SUPABASE_SERVICE_KEY,
-          'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
-        },
-      }
-    ).catch(() => null)
-    if (check && check.ok) {
-      const rows = await check.json().catch(() => []) as unknown[]
-      isNewSubscriber = rows.length === 0
-    }
-  }
-
-  // Send email (fire-and-forget — don't block response)
+  // ── 이메일 발송 (fire-and-forget) ─────────────────────────────
+  // result-email: 항상 발송 (트랜잭션성 — 사용자가 직접 요청한 결과)
+  // guide: 수신동의 + 미구독취소 확인된 경우만
+  // google-signup: 항상 발송 (트랜잭션성)
   if (source === 'google-signup') {
     sendWelcomeEmail(c.env.BREVO_API_KEY, email)
   } else if (source === 'guide') {
-    if (isNewSubscriber) {
+    if (guideEligible) {
       sendGuideEmail(c.env.BREVO_API_KEY, email, product, score, results)
-    } else {
-      console.log('[subscribe] guide skip — existing subscriber:', email)
     }
   } else {
     sendScoreEmail(c.env.BREVO_API_KEY, email, product ?? '', score ?? 0, results)
