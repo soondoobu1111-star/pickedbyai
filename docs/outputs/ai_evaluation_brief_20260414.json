@@ -1,0 +1,300 @@
+{
+  "meta": {
+    "document": "pickedby.ai — 5-AI Comprehensive Evaluation Brief",
+    "version": "1.0",
+    "date": "2026-04-14",
+    "purpose": "Request honest, brutal evaluation from 5 major AI models on why we have ZERO customers after 10 days of building",
+    "live_url": "https://pickedby.ai",
+    "dashboard_url": "https://pickedby.ai/dashboard.html",
+    "api_url": "https://api.pickedby.ai",
+    "blog_url": "https://pickedby.ai/blog/"
+  },
+
+  "instructions_for_ai": {
+    "role": "You are a brutally honest startup advisor. We are a solo founder (1 person + AI coding agents) who built this product in 10 days. We have ZERO paying customers, ZERO email signups, and we don't know why. We need you to evaluate everything below and tell us what's wrong.",
+    "what_we_want": [
+      "1. Visit https://pickedby.ai and https://pickedby.ai/dashboard.html — use the product yourself. Enter any product name or URL.",
+      "2. Read this entire brief. It contains everything NOT on the website — our strategy, our failures, our numbers.",
+      "3. Answer the 5 critical questions at the bottom of this document.",
+      "4. Be brutally honest. We'd rather hear painful truth now than fail silently for 3 more months."
+    ],
+    "output_format": "Structured response with numbered answers to each of the 5 questions. Include specific, actionable recommendations ranked by impact."
+  },
+
+  "product": {
+    "name": "pickedby.ai",
+    "tagline": "Get Picked by AI — AI Visibility Score for Digital Creators",
+    "one_liner": "Google Search Console for AI — but for digital product creators",
+    "what_it_does": "Enter a product name or URL → get an AI Visibility Score (0-100) in 10 seconds, for free, no signup required. See if ChatGPT, Perplexity, and other AI models know about and recommend your product.",
+    "target_users": [
+      "Gumroad digital product sellers",
+      "Notion template creators",
+      "Etsy digital download sellers",
+      "Online course creators",
+      "AI prompt pack sellers",
+      "Indie SaaS founders"
+    ],
+    "differentiators": [
+      "① Creator-specific (all 24 GEO tools target enterprises, we target creators)",
+      "② 10-second free check, no signup required (competitors require registration + setup)",
+      "③ AI Probe — we actually ASK ChatGPT and Perplexity if they know the product (not just web scraping)"
+    ],
+    "launched": "2026-04-05",
+    "days_since_launch": 10,
+    "founder": "Solo founder + AI coding agents (Claude Code). UX/service planning background."
+  },
+
+  "tech_stack": {
+    "frontend": "Static HTML + Tailwind CSS CDN → Cloudflare Pages (free)",
+    "backend": "TypeScript + Hono → Cloudflare Workers (free tier)",
+    "database": "Supabase PostgreSQL (free tier)",
+    "ai_engines": {
+      "scoring": "Gemini 2.5 Flash + Search Grounding (web presence analysis)",
+      "ai_probe_perplexity": "Perplexity Sonar — asks 'do you know this product?' in real-time",
+      "ai_probe_gpt": "GPT-4o-mini — checks if training data contains the product",
+      "web_search": "Tavily API — web search for mentions, reviews, comparisons"
+    },
+    "email": "Brevo (300 emails/day free)",
+    "payments": "Paddle (not yet integrated — Phase 2)",
+    "monthly_cost": "~$5 total (Perplexity + GPT API calls)"
+  },
+
+  "scoring_engine": {
+    "name": "ENGINE-05",
+    "max_score": 100,
+    "dimensions": {
+      "web_presence": {"max": 25, "description": "How visible is this product across the web?"},
+      "source_authority": {"max": 20, "description": "Are mentions from high-authority sources (TechCrunch, G2, etc.)?"},
+      "recommendations": {"max": 20, "description": "Do sources actively recommend this product?"},
+      "community": {"max": 20, "description": "User reviews, Reddit mentions, community discussions"},
+      "competitive_context": {"max": 15, "description": "Is the product mentioned in category comparisons?"}
+    },
+    "ai_probe": {
+      "perplexity": "Real-time query — 'Tell me about [product]'. Checks if AI has current knowledge.",
+      "gpt": "Training data query — checks if product exists in GPT's knowledge base.",
+      "result": "Shows 'Known by ChatGPT: ✓/✗' and 'Known by Perplexity: ✓/✗' in results"
+    },
+    "grade_tiers": {
+      "gold": "≥75 — PICKED BY AI",
+      "silver": "≥50 — SEEN BY AI",
+      "bronze": "≥25 — NOTICED BY AI",
+      "none": "<25 — no badge"
+    }
+  },
+
+  "pages_and_features": {
+    "landing": "https://pickedby.ai — Hero with 'Does ChatGPT recommend your product?', interactive demo, Under the Hood section, FAQ",
+    "dashboard": "https://pickedby.ai/dashboard.html — Product checker, score history chart, My Products (max 5), Competitors tab, Tools tab (badge embed + llms.txt generator)",
+    "methodology": "https://pickedby.ai/methodology/ — Transparent scoring methodology page",
+    "blog": "https://pickedby.ai/blog/ — 13 posts (SEO long-tail + Building in Public)",
+    "blog_posts": [
+      "why-chatgpt-doesnt-recommend-your-product",
+      "chatgpt-never-mentioned-me",
+      "ai-visibility-score-notion-templates",
+      "etsy-digital-products-ai-visibility",
+      "gumroad-ai-discovery-marketing",
+      "online-course-ai-discovery",
+      "how-we-calculate-your-ai-visibility-score",
+      "day-3-building-ai-visibility",
+      "join-beta-100",
+      "we-asked-4-ais-to-redesign-our-product",
+      "we-scored-0-on-our-own-tool",
+      "we-scored-12-on-our-own-tool",
+      "marketing-day-twitter-banned-reddit"
+    ],
+    "api_endpoints": [
+      "POST /v1/check — score a product",
+      "POST /v1/subscribe — email signup",
+      "POST /v1/verify — ownership verification",
+      "POST /v1/unsubscribe — email unsubscribe",
+      "GET /v1/beta-count — beta signup counter"
+    ],
+    "email_capture_flows": {
+      "flow_1": "After score check → 'Get this report in your inbox' (sends score details)",
+      "flow_2": "After score check → 'Free Guide: How to Improve Your AI Visibility Score' (5 actionable steps, requires marketing consent checkbox)"
+    },
+    "total_html_pages": 21,
+    "total_git_commits": 275
+  },
+
+  "pricing": {
+    "current": "100% free — no paywall exists yet",
+    "planned": {
+      "free": {"price": "$0", "features": "Unlimited checks, badge, basic score"},
+      "creator": {"price": "$19/mo", "features": "Score history, llms.txt auto-gen, weekly report, unlimited tracking"},
+      "pro": {"price": "$49/mo", "features": "Competitor tracking, API access, multilingual optimization"},
+      "agency": {"price": "$99+/mo", "features": "White-label reports, 10 client management"}
+    },
+    "payment_infrastructure": "Paddle (selected, not yet integrated)",
+    "note": "Strategy is 'free until market dominance, then monetize'. No paywall until proven PMF."
+  },
+
+  "traction": {
+    "emails_collected": 0,
+    "paying_customers": 0,
+    "registered_users": "unknown — Google OAuth exists but tracking not measured",
+    "reddit_launch": {
+      "subreddit": "r/SideProject",
+      "views": 5300,
+      "date": "2026-04-06",
+      "result": "Views but no conversions to email"
+    },
+    "reddit_karma": {
+      "account": "u/perceptdot",
+      "karma": 59,
+      "subreddits_active": ["r/ChatGPT", "r/ClaudeAI", "r/ClaudeCode", "r/SideProject", "r/buildinpublic", "r/AskReddit"],
+      "target_subreddits_blocked": {
+        "r/EtsySellers": "Rule 1: zero tolerance for tool promotion",
+        "r/Entrepreneur": "Rule 1: no URLs allowed",
+        "r/gumroad": "Dead subreddit, 286 weekly visitors"
+      }
+    },
+    "indie_hackers": {
+      "status": "Account promoted by Courtland Allen (founder). Post ready, publishing 2026-04-16 (Thursday = optimal day)",
+      "post_title": "I asked ChatGPT to recommend my product. It had no idea it existed."
+    },
+    "linkedin": {
+      "status": "Just started (2026-04-14). Replacing banned X/Twitter account.",
+      "first_post": "Published"
+    },
+    "twitter_x": {
+      "status": "PERMANENTLY BANNED (2026-04-14). Automated posting bot violated ToS. Unrecoverable.",
+      "appeal": "Web form retry scheduled 2026-04-17"
+    },
+    "ai_directories": {
+      "submitted_free": ["LLM Relevance"],
+      "too_expensive": {
+        "Futurepedia": "$497/year",
+        "TAAFT": "$49-347",
+        "toolify": "$99",
+        "DevHunt": "$49"
+      }
+    },
+    "google_search_console": "Registered. Crawling in progress. Not yet indexed.",
+    "product_hunt": "Not launched — waiting for 50 email signups as gate",
+    "alternativeto": "Account created, 7-day wait period (available 2026-04-20)"
+  },
+
+  "what_we_built_in_10_days": {
+    "summary": "275 git commits. 21 HTML pages. 13 blog posts. Full API with 5 endpoints. AI Probe integration with 3 AI models. Email infrastructure. Dashboard with charts. Badge system. Mobile-responsive across all pages. SEO optimization. Methodology page.",
+    "timeline": [
+      {"date": "04-05", "work": "Domain purchase ($160/2yr). MVP live. First score check working."},
+      {"date": "04-06", "work": "API stabilization (Gemini→CF Workers AI). Badge system V2-C. Reddit launch → 5.3K views."},
+      {"date": "04-07", "work": "Dashboard 3-tab (Products/Competitors/Tools). ENGINE-01~04 iterations. Blog SEO Wave 1 (4 posts). Directory submissions. 5-AI evaluation."},
+      {"date": "04-08", "work": "Google OAuth. Brevo email. Security hardening (OWASP). Whitepaper written."},
+      {"date": "04-09", "work": "Security scan. Rate limiting. Prompt injection defense."},
+      {"date": "04-10", "work": "ENGINE-05 complete rewrite. AI Probe (Perplexity+GPT) production deploy. MLP-Slim (5-dimension UI + momentum badges). Settings modal. 2 blog posts."},
+      {"date": "04-13", "work": "SEO optimization (sitemaps, meta, canonical, internal links). Hero copy change. Under the Hood section. Methodology page. Mobile hamburger menu (17 pages). Mobile dashboard optimization. Distribution channel diagnosis report."},
+      {"date": "04-14", "work": "X account permanently banned → LinkedIn pivot. Daily auto-scan cron. Reddit karma 16→59. IH post finalized. 3 bizplans updated. Email capture 2-flow system. Blog #4 (building in public). GDPR consent checkbox. 7 working sessions."}
+    ]
+  },
+
+  "moat_strategy": {
+    "current_moat": "ZERO. Product is a calculator. Calculator is replaceable.",
+    "planned_layers": [
+      {"layer": 1, "name": "Score Tracker", "description": "Weekly auto-check + trend charts. Users who accumulate 3 months of data can't switch (data starts at zero elsewhere).", "status": "Partially built — daily cron exists, charts exist"},
+      {"layer": 2, "name": "SDK", "description": "JavaScript embed badge with impression/click tracking. Code removal = fear.", "status": "Not started"},
+      {"layer": 3, "name": "Creator Graph", "description": "Anonymous aggregate data → category benchmarks. 'Notion template category avg: 42, top 10%: 78+'", "status": "Not started"},
+      {"layer": 4, "name": "Creator Network", "description": "Cross-promotion matching between verified creators in same category.", "status": "Not started"}
+    ],
+    "flywheel": "Badge embed → AI crawling → training data → pickedby.ai = trusted source → more badges → repeat"
+  },
+
+  "competitors": [
+    {"name": "Otterly AI", "price": "$29-989/mo", "target": "Enterprise/Marketing", "threat": "High", "users": "20K+", "note": "Gartner Cool Vendor. But enterprise UX, no free tier."},
+    {"name": "trysight.ai", "price": "Paid", "target": "SEO/Marketing", "threat": "High", "note": "Dominating 'AI Visibility Score' SEO keywords with blog content."},
+    {"name": "Profound", "price": "$500+/mo", "target": "Fortune 500", "threat": "Low", "note": "Different market entirely."},
+    {"name": "amivisibleonai.com", "price": "Free", "target": "General", "threat": "Low", "note": "Fake results issue, low trust."},
+    {"name": "llmclicks.ai", "price": "Free", "target": "General", "threat": "Low", "note": "Simple checker, no creator specialization."},
+    {"name": "amionai.com", "price": "TBD", "target": "General", "threat": "Low", "note": "Simple visibility diagnostic."}
+  ],
+
+  "market_data": {
+    "ai_referral_traffic_growth": "+527% YoY (Semrush 2025)",
+    "claude_conversion_rate": "16.8% (vs Google 1.76-2.8%)",
+    "chatgpt_daily_shopping_queries": "50 million",
+    "geo_market_cagr": "40.6%, projected $17.15B by 2034",
+    "digital_product_creators": "2-3 million (Gumroad/Etsy/LemonSqueezy combined)",
+    "creator_targeted_geo_tools": "0 (all 24 tools target enterprises)",
+    "creator_economy_size": "$191-254B (Goldman Sachs 2025)"
+  },
+
+  "previous_ai_evaluation": {
+    "date": "2026-04-07",
+    "note": "This was done when product was 2 days old. Now it's 10 days old with significantly more features.",
+    "results": {
+      "gemini": {"score": "Qualitative excellent", "verdict": "Game changer potential", "key": "Needs diagnosis→prescription transition"},
+      "gpt": {"score": "6/10", "verdict": "Feature-level", "key": "Expand to Agency SaaS"},
+      "genspark": {"score": "3.6/10", "verdict": "PASS", "key": "No revenue model"},
+      "manus": {"score": "6.8/10", "verdict": "Hold", "key": "Needs real-time API"},
+      "grok": {"score": "3.5/10", "verdict": "PASS", "key": "No moat"}
+    },
+    "consensus": [
+      "Timing is perfect (8-9/10) — same as 2005 SEO market",
+      "PLG/UX structure is correct — 10sec, no signup, instant result",
+      "Badge is the only network effect",
+      "Diagnosis→prescription transition is mandatory",
+      "No technical moat — must build data/badge/brand moat instead"
+    ]
+  },
+
+  "failures_and_honest_problems": {
+    "zero_emails": "We have ZERO email signups. The email capture system was deployed TODAY. For 9 days, there was no email capture on the results page.",
+    "zero_customers": "We have ZERO paying customers. Payment is not even integrated yet.",
+    "channel_mismatch": "We've been posting in tech communities (r/SideProject, X/Twitter) where our target users (Etsy sellers, Gumroad creators) don't exist.",
+    "twitter_banned": "Our @pickedbyAI Twitter account was permanently banned because we deployed an automated posting bot without reading the Terms of Service.",
+    "ai_directories_all_paid": "Every AI directory worth submitting to charges $49-$497. We submitted to the only free one (LLM Relevance).",
+    "target_subreddits_blocked": "r/EtsySellers and r/Entrepreneur both have strict rules against tool promotion. r/gumroad is dead. We can't reach our target users on Reddit.",
+    "no_user_testing": "Zero real user tests. We've never watched a non-technical creator use the product.",
+    "concept_awareness": "Most digital creators don't know what 'AI Visibility' means. We changed the hero to 'Does ChatGPT recommend your product?' to make it concrete.",
+    "seo_not_indexed": "Google hasn't indexed us yet (GSC registered 2 days ago). SEO traffic = 0.",
+    "our_own_score": "pickedby.ai scores 12/100 on its own tool. Both ChatGPT and Perplexity don't know we exist."
+  },
+
+  "resources": {
+    "team_size": 1,
+    "funding": "Bootstrapped, $0 raised",
+    "domain_cost": "$160/2yr",
+    "infrastructure_cost": "~$5/month",
+    "runway": "Self-funded by founder",
+    "tools": "Claude Code (AI coding agent), Cloudflare free tier, Supabase free tier, Brevo free tier",
+    "time_invested": "10 days full-time (founder + AI agent pair programming)"
+  },
+
+  "upcoming": [
+    {"date": "2026-04-16", "item": "Indie Hackers post publish (CEO manually)"},
+    {"date": "2026-04-17", "item": "Twitter/X appeal retry (web form)"},
+    {"date": "2026-04-20", "item": "AlternativeTo registration (7-day wait)"},
+    {"date": "2026-05-15", "item": "모두의 창업 (Korean startup competition) application deadline"},
+    {"date": "TBD", "item": "Product Hunt launch (after 50 email signups)"}
+  ],
+
+  "five_critical_questions": {
+    "preamble": "We built an impressive product in 10 days. But we have zero customers. Something is fundamentally wrong. Please answer these 5 questions with brutal honesty.",
+
+    "Q1_why_zero_customers": {
+      "question": "WHY do we have zero customers and zero email signups after 10 days? What is the #1 reason — not 5 reasons, the ONE root cause?",
+      "context": "We have 5.3K Reddit views, 275 commits, 13 blog posts, AI Probe integration... but zero conversions. Is it the product, the market, the distribution, the messaging, or something else entirely?"
+    },
+
+    "Q2_honest_product_evaluation": {
+      "question": "After visiting https://pickedby.ai and using the product yourself — what is wrong with the product experience? Score us 1-10 on: (a) First impression, (b) Value clarity, (c) Aha moment speed, (d) Trust signals, (e) Reason to return, (f) Reason to pay.",
+      "context": "We believe our PLG is strong (10sec, no signup, instant result). But maybe we're wrong. Maybe the result doesn't feel valuable. Maybe the score feels meaningless. Tell us what a first-time Etsy seller would think."
+    },
+
+    "Q3_distribution_strategy": {
+      "question": "Where should we find our first 50 users? Not theoretically — specifically. Which exact channels, communities, people, or tactics should we use THIS WEEK to get 50 email signups?",
+      "context": "Our target is Gumroad/Etsy/Notion creators. Reddit's Etsy and Entrepreneur subreddits block promotion. Twitter is banned. LinkedIn just started. AI directories cost $49-$497. Facebook groups? Cold email? YouTube? Something we haven't thought of?"
+    },
+
+    "Q4_pivot_or_persist": {
+      "question": "Should we pivot? If so, to what? If not, what specific change would you make to the current approach?",
+      "context": "We're targeting a market (digital creators) that may not know they have this problem. GEO/AEO is a $17B projected market, but awareness is near zero among non-technical creators. Are we too early? Wrong segment? Right idea, wrong execution?"
+    },
+
+    "Q5_if_you_were_ceo": {
+      "question": "If you were the CEO of pickedby.ai for the next 30 days with $0 budget and only AI coding agents, what would your exact plan be? Day by day, action by action.",
+      "context": "We have: 1 person, $0 budget, AI coding agents, Cloudflare free infra, a working product, 13 blog posts, Reddit karma 59, IH posting access, LinkedIn just started, email capture just deployed. What do we DO?"
+    }
+  }
+}
