@@ -1026,8 +1026,11 @@
       })
       const data = await res.json()
       showResult(data)
-      lastCheckResult = { product, url: url || null, score: data.score, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null }
-      console.log('[SYNC] currentUser:', !!currentUser, 'product:', product, 'score:', data.score)
+      // Use probe score (displayed score) when available, otherwise raw score
+      const useProbe = (data.probe_count >= 3) && (data.probe_score >= 0)
+      const savedScore = useProbe ? data.probe_score : data.score
+      lastCheckResult = { product, url: url || null, score: savedScore, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null }
+      console.log('[SYNC] currentUser:', !!currentUser, 'product:', product, 'rawScore:', data.score, 'probeScore:', data.probe_score, 'savedScore:', savedScore)
       console.log('[SYNC] allProducts:', allProducts.map(p => p.product_name + ':' + p.score))
       if (currentUser) {
         // Optimistic update: immediately reflect new score in My Products
