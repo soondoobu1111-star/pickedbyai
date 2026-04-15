@@ -1370,7 +1370,7 @@ app.post('/v1/subscribe', async (c) => {
 // Tries both prod and staging Supabase URLs to support both environments
 const SUPABASE_URL_STAGING = 'https://xzecybljfipmmzzzfnit.supabase.co'
 
-async function verifyToken(token: string, env: Bindings): Promise<{ id: string; email: string } | null> {
+async function verifyToken(token: string, env: Bindings): Promise<{ id: string; email: string; supabaseUrl: string } | null> {
   const urls = [SUPABASE_URL, SUPABASE_URL_STAGING]
   for (const url of urls) {
     try {
@@ -1382,7 +1382,7 @@ async function verifyToken(token: string, env: Bindings): Promise<{ id: string; 
       })
       if (!res.ok) continue
       const data = await res.json() as { id: string; email: string }
-      if (data?.id) return { id: data.id, email: data.email }
+      if (data?.id) return { id: data.id, email: data.email, supabaseUrl: url }
     } catch { /* try next */ }
   }
   return null
@@ -1651,14 +1651,9 @@ app.post('/v1/domains/register', async (c) => {
   if (!auth?.startsWith('Bearer ')) return c.json({ error: 'unauthorized' }, 401)
   const token = auth.slice(7)
 
-  // JWT에서 user_id 추출
-  const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-    headers: { 'Authorization': `Bearer ${token}`, 'apikey': c.env.SUPABASE_ANON_KEY },
-  })
-  if (!userRes.ok) return c.json({ error: 'unauthorized' }, 401)
-  const userData = await userRes.json() as { id?: string }
-  const userId = userData.id
-  if (!userId) return c.json({ error: 'unauthorized' }, 401)
+  const user = await verifyToken(token, c.env)
+  if (!user) return c.json({ error: 'unauthorized' }, 401)
+  const { id: userId, supabaseUrl } = user
 
   const body = await c.req.json<{ product_name?: string; domain_url?: string }>()
   if (!body.product_name?.trim() || !body.domain_url?.trim()) {
@@ -1676,7 +1671,7 @@ app.post('/v1/domains/register', async (c) => {
 
   // 무료: 유저당 1개 도메인 제한 확인
   const existingRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/domains?user_id=eq.${userId}&status=neq.failed&select=id`,
+    `${supabaseUrl}/rest/v1/domains?user_id=eq.${userId}&status=neq.failed&select=id`,
     { headers }
   )
   const existing: Array<{ id: string }> = existingRes.ok ? await existingRes.json() : []
@@ -1686,7 +1681,7 @@ app.post('/v1/domains/register', async (c) => {
 
   // 이미 등록된 도메인 체크
   const dupRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/domains?user_id=eq.${userId}&domain_url=eq.${encodeURIComponent(domainUrl)}&select=id,status,verification_token`,
+    `${supabaseUrl}/rest/v1/domains?user_id=eq.${userId}&domain_url=eq.${encodeURIComponent(domainUrl)}&select=id,status,verification_token`,
     { headers }
   )
   const dups: Array<{ id: string; status: string; verification_token: string }> = dupRes.ok ? await dupRes.json() : []
@@ -1695,7 +1690,7 @@ app.post('/v1/domains/register', async (c) => {
   }
 
   const verificationToken = generateVerificationToken()
-  const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/domains`, {
+  const insertRes = await fetch(`${supabaseUrl}/rest/v1/domains`, {
     method: 'POST',
     headers: { ...headers, 'Prefer': 'return=representation' },
     body: JSON.stringify({
@@ -1720,13 +1715,9 @@ app.post('/v1/domains/verify', async (c) => {
   if (!auth?.startsWith('Bearer ')) return c.json({ error: 'unauthorized' }, 401)
   const token = auth.slice(7)
 
-  const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-    headers: { 'Authorization': `Bearer ${token}`, 'apikey': c.env.SUPABASE_ANON_KEY },
-  })
-  if (!userRes.ok) return c.json({ error: 'unauthorized' }, 401)
-  const userData = await userRes.json() as { id?: string }
-  const userId = userData.id
-  if (!userId) return c.json({ error: 'unauthorized' }, 401)
+  const user = await verifyToken(token, c.env)
+  if (!user) return c.json({ error: 'unauthorized' }, 401)
+  const { id: userId, supabaseUrl } = user
 
   const body = await c.req.json<{ domain_id?: string }>()
   if (!body.domain_id) return c.json({ error: 'domain_id required' }, 400)
@@ -1738,7 +1729,7 @@ app.post('/v1/domains/verify', async (c) => {
   }
 
   const domainRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/domains?id=eq.${body.domain_id}&user_id=eq.${userId}&select=*`,
+    `${supabaseUrl}/rest/v1/domains?id=eq.${body.domain_id}&user_id=eq.${userId}&select=*`,
     { headers }
   )
   const domains: Array<{ id: string; domain_url: string; verification_token: string; status: string }> = domainRes.ok ? await domainRes.json() : []
@@ -1782,7 +1773,7 @@ app.post('/v1/domains/verify', async (c) => {
   }
 
   const newStatus = verified ? 'verified' : 'failed'
-  await fetch(`${SUPABASE_URL}/rest/v1/domains?id=eq.${domain.id}`, {
+  await fetch(`${supabaseUrl}/rest/v1/domains?id=eq.${domain.id}`, {
     method: 'PATCH',
     headers,
     body: JSON.stringify({
@@ -1807,20 +1798,16 @@ app.get('/v1/domains/list', async (c) => {
   if (!auth?.startsWith('Bearer ')) return c.json({ error: 'unauthorized' }, 401)
   const token = auth.slice(7)
 
-  const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
-    headers: { 'Authorization': `Bearer ${token}`, 'apikey': c.env.SUPABASE_ANON_KEY },
-  })
-  if (!userRes.ok) return c.json({ error: 'unauthorized' }, 401)
-  const userData = await userRes.json() as { id?: string }
-  const userId = userData.id
-  if (!userId) return c.json({ error: 'unauthorized' }, 401)
+  const user = await verifyToken(token, c.env)
+  if (!user) return c.json({ error: 'unauthorized' }, 401)
+  const { id: userId, supabaseUrl } = user
 
   const headers = {
     'apikey': c.env.SUPABASE_SERVICE_KEY,
     'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
   }
   const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/domains?user_id=eq.${userId}&select=id,product_name,domain_url,status,sdk_installed,llms_installed,verified_at,created_at&order=created_at.desc`,
+    `${supabaseUrl}/rest/v1/domains?user_id=eq.${userId}&select=id,product_name,domain_url,status,sdk_installed,llms_installed,verified_at,created_at&order=created_at.desc`,
     { headers }
   )
   const domains = res.ok ? await res.json() : []
