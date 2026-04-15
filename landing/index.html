@@ -740,6 +740,71 @@
       line-height: 1.4 !important;
     }
 
+    .hero-sub {
+      font-size: 1rem;
+      color: #aaa;
+      line-height: 1.6;
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── ROADMAP DIAGRAM ── */
+    .roadmap-section {
+      max-width: 720px;
+      margin: 2.5rem auto 2rem;
+      text-align: center;
+    }
+    .roadmap-section h2 {
+      font-size: 0.7rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 1.25rem;
+    }
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: #333;
+      border: 1px solid #333;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .roadmap-card {
+      background: #1a1a1a;
+      padding: 1.25rem 1rem;
+    }
+    .roadmap-badge {
+      display: inline-block;
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 0.75rem;
+    }
+    .roadmap-badge.available { background: #22c55e22; color: #22c55e; }
+    .roadmap-badge.coming { background: #f59e0b22; color: #f59e0b; }
+    .roadmap-badge.future { background: #8b5cf622; color: #8b5cf6; }
+    .roadmap-phase {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.25rem;
+    }
+    .roadmap-equiv {
+      font-size: 0.7rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+    .roadmap-desc {
+      font-size: 0.75rem;
+      color: #999;
+      line-height: 1.4;
+    }
+    @media (max-width: 600px) {
+      .roadmap-grid { grid-template-columns: 1fr; }
+    }
+
     /* ── VS ROW ── */
     .vs-row {
       display: flex;
@@ -1544,12 +1609,35 @@
     <!-- HERO -->
     <div class="hero">
       <div class="hero-eyebrow">▶ Free AI Visibility Check</div>
-      <h1>Does <em>ChatGPT</em> recommend<br>your product?</h1>
-      <p class="hero-for">For: <span>Gumroad sellers</span> · <span>Notion creators</span> · <span>Etsy digital shops</span></p>
-      <p>When someone asks ChatGPT <em style="color:#ccc;font-style:normal">"best Notion templates for freelancers"</em> — is your product on the list?<br>Also checks <strong style="color:#888;">Perplexity</strong> and <strong style="color:#888;">Gemini</strong>. Free in 10 seconds.</p>
-      <div class="hero-tagline">IF AI DOESN'T KNOW YOU · YOU DON'T EXIST</div>
+      <h1>The <em>AI Visibility</em> Platform</h1>
+      <p class="hero-sub">Search Console, Analytics, and <span style="opacity:0.6">(soon)</span> Ads — for the AI era.<br>Start free. No signup.</p>
       <button class="hero-cta" onclick="window.location.href='/dashboard.html'">CHECK MY SCORE FREE ▶▶</button>
       <p class="hero-disclaimer">Starting with digital creators. Built for the entire AI economy.</p>
+    </div>
+
+    <!-- ROADMAP DIAGRAM (P0-03) -->
+    <div class="roadmap-section fade-up">
+      <h2>The Google Stack for AI Recommendations</h2>
+      <div class="roadmap-grid">
+        <div class="roadmap-card">
+          <span class="roadmap-badge available">✅ AVAILABLE</span>
+          <div class="roadmap-phase">MEASURE</div>
+          <div class="roadmap-equiv">Search Console</div>
+          <div class="roadmap-desc">Know if AI knows you. Free visibility score + AI Probe.</div>
+        </div>
+        <div class="roadmap-card">
+          <span class="roadmap-badge coming">🔜 COMING Q3</span>
+          <div class="roadmap-phase">ANALYZE</div>
+          <div class="roadmap-equiv">Analytics (GA4)</div>
+          <div class="roadmap-desc">Track your AI traffic, recommendation trends & benchmarks.</div>
+        </div>
+        <div class="roadmap-card">
+          <span class="roadmap-badge future">🔮 2027</span>
+          <div class="roadmap-phase">OPTIMIZE</div>
+          <div class="roadmap-equiv">Ads Platform</div>
+          <div class="roadmap-desc">Optimize for AI placement. The future of AI advertising.</div>
+        </div>
+      </div>
     </div>
 
     <!-- SOCIAL PROOF -->
