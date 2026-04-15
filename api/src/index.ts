@@ -1623,6 +1623,210 @@ app.post('/v1/admin/run-cron', async (c) => {
   return c.json({ ok: true, message: 'daily refresh complete' })
 })
 
+// ── Domain Verification ────────────────────────────────────────
+
+function generateVerificationToken(): string {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789'
+  let token = 'pba-'
+  for (let i = 0; i < 16; i++) {
+    token += chars[Math.floor(Math.random() * chars.length)]
+  }
+  return token
+}
+
+function normalizeDomainUrl(raw: string): string {
+  let url = raw.trim()
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url
+  try {
+    const u = new URL(url)
+    return `${u.protocol}//${u.hostname}`
+  } catch {
+    return url
+  }
+}
+
+// POST /v1/domains/register — 도메인 등록 + 토큰 발급
+app.post('/v1/domains/register', async (c) => {
+  const auth = c.req.header('Authorization')
+  if (!auth?.startsWith('Bearer ')) return c.json({ error: 'unauthorized' }, 401)
+  const token = auth.slice(7)
+
+  // JWT에서 user_id 추출
+  const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    headers: { 'Authorization': `Bearer ${token}`, 'apikey': c.env.SUPABASE_ANON_KEY },
+  })
+  if (!userRes.ok) return c.json({ error: 'unauthorized' }, 401)
+  const userData = await userRes.json() as { id?: string }
+  const userId = userData.id
+  if (!userId) return c.json({ error: 'unauthorized' }, 401)
+
+  const body = await c.req.json<{ product_name?: string; domain_url?: string }>()
+  if (!body.product_name?.trim() || !body.domain_url?.trim()) {
+    return c.json({ error: 'product_name and domain_url required' }, 400)
+  }
+
+  const domainUrl = normalizeDomainUrl(body.domain_url)
+  if (isBlockedUrl(domainUrl)) return c.json({ error: 'Invalid URL' }, 400)
+
+  const headers = {
+    'apikey': c.env.SUPABASE_SERVICE_KEY,
+    'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+    'Content-Type': 'application/json',
+  }
+
+  // 무료: 유저당 1개 도메인 제한 확인
+  const existingRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/domains?user_id=eq.${userId}&status=neq.failed&select=id`,
+    { headers }
+  )
+  const existing: Array<{ id: string }> = existingRes.ok ? await existingRes.json() : []
+  if (existing.length >= 1) {
+    return c.json({ error: 'Free plan allows 1 domain. Upgrade for more.' }, 403)
+  }
+
+  // 이미 등록된 도메인 체크
+  const dupRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/domains?user_id=eq.${userId}&domain_url=eq.${encodeURIComponent(domainUrl)}&select=id,status,verification_token`,
+    { headers }
+  )
+  const dups: Array<{ id: string; status: string; verification_token: string }> = dupRes.ok ? await dupRes.json() : []
+  if (dups.length > 0) {
+    return c.json({ id: dups[0].id, verification_token: dups[0].verification_token, status: dups[0].status, domain_url: domainUrl })
+  }
+
+  const verificationToken = generateVerificationToken()
+  const insertRes = await fetch(`${SUPABASE_URL}/rest/v1/domains`, {
+    method: 'POST',
+    headers: { ...headers, 'Prefer': 'return=representation' },
+    body: JSON.stringify({
+      user_id: userId,
+      product_name: body.product_name.trim(),
+      domain_url: domainUrl,
+      verification_token: verificationToken,
+      status: 'pending',
+    }),
+  })
+  if (!insertRes.ok) {
+    console.error('[Domain:Register] insert failed', await insertRes.text())
+    return c.json({ error: 'Failed to register domain' }, 500)
+  }
+  const rows = await insertRes.json() as Array<{ id: string }>
+  return c.json({ id: rows[0].id, verification_token: verificationToken, domain_url: domainUrl, status: 'pending' })
+})
+
+// POST /v1/domains/verify — 소유자 확인 (메타태그 or JSON)
+app.post('/v1/domains/verify', async (c) => {
+  const auth = c.req.header('Authorization')
+  if (!auth?.startsWith('Bearer ')) return c.json({ error: 'unauthorized' }, 401)
+  const token = auth.slice(7)
+
+  const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    headers: { 'Authorization': `Bearer ${token}`, 'apikey': c.env.SUPABASE_ANON_KEY },
+  })
+  if (!userRes.ok) return c.json({ error: 'unauthorized' }, 401)
+  const userData = await userRes.json() as { id?: string }
+  const userId = userData.id
+  if (!userId) return c.json({ error: 'unauthorized' }, 401)
+
+  const body = await c.req.json<{ domain_id?: string }>()
+  if (!body.domain_id) return c.json({ error: 'domain_id required' }, 400)
+
+  const headers = {
+    'apikey': c.env.SUPABASE_SERVICE_KEY,
+    'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+    'Content-Type': 'application/json',
+  }
+
+  const domainRes = await fetch(
+    `${SUPABASE_URL}/rest/v1/domains?id=eq.${body.domain_id}&user_id=eq.${userId}&select=*`,
+    { headers }
+  )
+  const domains: Array<{ id: string; domain_url: string; verification_token: string; status: string }> = domainRes.ok ? await domainRes.json() : []
+  if (!domains.length) return c.json({ error: 'Domain not found' }, 404)
+
+  const domain = domains[0]
+  const expectedToken = domain.verification_token
+  let verified = false
+  let method = ''
+
+  // 1) 메타태그 확인
+  try {
+    const htmlRes = await fetch(domain.domain_url, {
+      headers: { 'User-Agent': 'PickedByAI-Verifier/1.0' },
+      signal: AbortSignal.timeout(10000),
+    })
+    if (htmlRes.ok) {
+      const html = await htmlRes.text()
+      if (html.includes(expectedToken)) {
+        verified = true
+        method = 'meta'
+      }
+    }
+  } catch { /* timeout or fetch error */ }
+
+  // 2) JSON 파일 확인 (메타태그 실패 시)
+  if (!verified) {
+    try {
+      const jsonRes = await fetch(`${domain.domain_url}/.well-known/pickedby.json`, {
+        headers: { 'User-Agent': 'PickedByAI-Verifier/1.0' },
+        signal: AbortSignal.timeout(8000),
+      })
+      if (jsonRes.ok) {
+        const json = await jsonRes.json() as { verification?: string }
+        if (json.verification === expectedToken) {
+          verified = true
+          method = 'json'
+        }
+      }
+    } catch { /* timeout or fetch error */ }
+  }
+
+  const newStatus = verified ? 'verified' : 'failed'
+  await fetch(`${SUPABASE_URL}/rest/v1/domains?id=eq.${domain.id}`, {
+    method: 'PATCH',
+    headers,
+    body: JSON.stringify({
+      status: newStatus,
+      last_checked_at: new Date().toISOString(),
+      ...(verified ? { verified_at: new Date().toISOString() } : {}),
+    }),
+  })
+
+  if (!verified) {
+    return c.json({
+      verified: false,
+      error: 'Token not found. Make sure the meta tag or JSON file is publicly accessible.',
+    }, 400)
+  }
+  return c.json({ verified: true, method, domain_url: domain.domain_url })
+})
+
+// GET /v1/domains/list — 내 도메인 목록
+app.get('/v1/domains/list', async (c) => {
+  const auth = c.req.header('Authorization')
+  if (!auth?.startsWith('Bearer ')) return c.json({ error: 'unauthorized' }, 401)
+  const token = auth.slice(7)
+
+  const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    headers: { 'Authorization': `Bearer ${token}`, 'apikey': c.env.SUPABASE_ANON_KEY },
+  })
+  if (!userRes.ok) return c.json({ error: 'unauthorized' }, 401)
+  const userData = await userRes.json() as { id?: string }
+  const userId = userData.id
+  if (!userId) return c.json({ error: 'unauthorized' }, 401)
+
+  const headers = {
+    'apikey': c.env.SUPABASE_SERVICE_KEY,
+    'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+  }
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/domains?user_id=eq.${userId}&select=id,product_name,domain_url,status,sdk_installed,llms_installed,verified_at,created_at&order=created_at.desc`,
+    { headers }
+  )
+  const domains = res.ok ? await res.json() : []
+  return c.json({ domains })
+})
+
 export default {
   fetch: app.fetch,
   async scheduled(_event: ScheduledEvent, env: Bindings, ctx: ExecutionContext) {
