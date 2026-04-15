@@ -15,7 +15,7 @@
 - ChatGPT 일일 쇼핑 쿼리 5,000만 건
 - GEO 시장 CAGR 40.6%, 2034년 $171.5억 전망
 
-그런데 **디지털 제품 크리에이터 200~300만 명**은 자기 제품이 AI에 보이는지조차 확인할 수 없다. 24개 GEO 도구 전부 기업/브랜드 타겟이다. 크리에이터를 위한 도구는 **0개**다.
+그런데 **디지털 제품 크리에이터 200~300만 명**은 자기 제품이 AI에 보이는지조차 확인할 수 없다. 24개 GEO 도구 전부 기업/브랜드 타겟이다. 크리에이터부터 시작하는 도구는 **0개**다. 이것이 Phase 1 진입점이며, 로드맵은 D2C·SaaS·에이전시까지 확장된다.
 
 pickedby.ai는 이 공백을 채운다.
 
@@ -186,8 +186,8 @@ Otterly가 SDK를 만든다고 치자:
 | **2단계** | 6~12개월 | Micro-SaaS / Indie Hacker | $19~49 | "AI에 안 보이면 생존 불가" = 높은 지불의향 |
 | **3단계** | 12개월+ | SMB / SEO Agency | $99~299 | 화이트라벨 + 클라이언트 관리 → ARPU 폭발 |
 
-**절대 금지:** Enterprise 시장 진입 (Profound 영역, 우리 강점 없음)
-**핵심:** "디지털 제품을 만드는 사람"이라는 정체성은 유지. 기업 타겟은 안 함.
+**Phase 1 집중:** 인디 크리에이터 시드 확보. Phase 2부터 D2C·에이전시·SMB 확장.
+**핵심:** "디지털 제품을 만드는 사람"에서 시작하되, 로드맵은 모든 온라인 셀러까지 확장.
 
 ### 시장별 가치 제안
 
@@ -261,9 +261,8 @@ Cloudflare가 수백만 사이트에 깔린 후 유료 플랜 출시 — 동일 
 AI가 우리를 B2B로 오분류 = 사람도 헷갈린다는 신호.
 랜딩 Hero에 명확히:
 
-"Not for agencies. Not for enterprises. Built for you."
-또는
-"No team seats. No enterprise plans. Just you and your product."
+"Starting with digital creators. Built for the entire AI economy."
+<!-- Legacy v1.0 copy removed: "Not for agencies" / "No enterprise plans" — v2.0 빅파이 전환 (2026-04-15) -->
 
 타겟 페르소나 구체적 명시:
 "For Gumroad sellers · Notion creators · Course builders"
