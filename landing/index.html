@@ -172,6 +172,33 @@
       opacity: 0.6;
     }
 
+    /* ── NAV DROPDOWN ── */
+    .nav-dropdown { position: relative; }
+    .nav-dropdown-btn { background: none; border: none; cursor: pointer; font-family: inherit; }
+    .nav-dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      min-width: 200px;
+      padding: 0.5rem 0;
+      z-index: 100;
+      margin-top: 0.5rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .nav-dropdown.open .nav-dropdown-menu { display: block; }
+    .nav-dropdown-menu a {
+      display: block;
+      padding: 0.6rem 1rem;
+      color: #ccc;
+      text-decoration: none;
+      font-size: 0.85rem;
+    }
+    .nav-dropdown-menu a:hover { background: #222; color: #fff; }
+
     .nav-blog-link {
       font-family: 'Press Start 2P', monospace;
       font-size: 0.45rem;
@@ -1592,15 +1619,26 @@
       <span><span style="color:var(--yellow);">picked</span><span style="color:#fff;">by</span><span style="color:var(--yellow);">.ai</span></span>
     </a>
     <div class="nav-links">
+      <div class="nav-dropdown">
+        <button class="nav-blog-link nav-dropdown-btn" onclick="this.parentElement.classList.toggle('open')">PLATFORM ▾</button>
+        <div class="nav-dropdown-menu">
+          <a href="/dashboard.html"><span style="color:#22c55e;">✅</span> Search Console <span style="color:#666;font-size:0.75rem;">(now)</span></a>
+          <a href="#" style="pointer-events:none;opacity:0.5;"><span style="color:#f59e0b;">🔜</span> Analytics <span style="color:#666;font-size:0.75rem;">(Q3)</span></a>
+          <a href="#" style="pointer-events:none;opacity:0.5;"><span style="color:#8b5cf6;">🔮</span> Ads <span style="color:#666;font-size:0.75rem;">(2027)</span></a>
+        </div>
+      </div>
+      <a href="/manifesto/" class="nav-blog-link">MANIFESTO</a>
       <a href="/blog/" class="nav-blog-link">BLOG</a>
-      <a href="/methodology/" class="nav-blog-link">HOW WE SCORE</a>
       <a href="/dashboard.html" style="color:#000;background:var(--yellow);border:none;padding:0.45rem 1.1rem;border-radius:6px;font-weight:700;font-size:0.88rem;letter-spacing:0.03em;text-decoration:none;box-shadow:0 0 12px rgba(255,215,0,0.35);transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 0 20px rgba(255,215,0,0.6)'" onmouseout="this.style.boxShadow='0 0 12px rgba(255,215,0,0.35)'">Dashboard</a>
       <button class="nav-burger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">☰</button>
     </div>
   </nav>
   <div class="nav-mobile">
+    <a href="/dashboard.html">✅ Search Console (now)</a>
+    <a href="#" style="opacity:0.5;">🔜 Analytics (Q3)</a>
+    <a href="#" style="opacity:0.5;">🔮 Ads (2027)</a>
+    <a href="/manifesto/">Manifesto</a>
     <a href="/blog/">Blog</a>
-    <a href="/methodology/">How We Score</a>
     <a href="/dashboard.html">Dashboard</a>
   </div>
 
