@@ -538,6 +538,7 @@ async function logProbes(
   probes: AIProbeResult[],
   opts: { userId?: string; productUrl?: string; triggerType: 'manual' | 'cron'; startMs: number }
 ) {
+  console.log(`[ProbeLog] called with ${probes.length} probes for "${productName}", hasKey=${!!env.SUPABASE_SERVICE_KEY}`)
   if (!probes.length) return
   const rows = probes.map(p => ({
     product_id: productName,
@@ -566,9 +567,10 @@ async function logProbes(
       },
       body: JSON.stringify(rows),
     })
-    if (!res.ok) console.error('[ProbeLog] insert failed:', await res.text())
-    else console.log(`[ProbeLog] ${rows.length} rows logged for "${productName}"`)
-  } catch (err) { console.error('[ProbeLog] error:', err) }
+    const status = res.status
+    if (!res.ok) { const body = await res.text(); console.error(`[ProbeLog] insert failed (${status}):`, body) }
+    else console.log(`[ProbeLog] ✓ ${rows.length} rows logged for "${productName}" (${status})`)
+  } catch (err) { console.error('[ProbeLog] fetch error:', err instanceof Error ? err.message : String(err)) }
 }
 
 // ── POST /v1/check ────────────────────────────────────────────
@@ -596,10 +598,8 @@ app.post('/v1/check', async (c) => {
 
   const startMs = Date.now()
   const engineResult = await runEngine(c.env, name, url)
-  // P1-03: Log probe results (fire-and-forget, don't block response)
-  c.executionCtx.waitUntil(
-    logProbes(c.env, name, engineResult.aiProbe, { productUrl: url, triggerType: 'manual', startMs })
-  )
+  // P1-03: Log probe results (non-blocking, errors caught inside logProbes)
+  await logProbes(c.env, name, engineResult.aiProbe, { productUrl: url, triggerType: 'manual', startMs })
   return c.json(engineResult)
 })
 
