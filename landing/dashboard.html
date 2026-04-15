@@ -627,6 +627,7 @@
 
   let currentUser = null
   let lastCheckResult = null
+  let allDomains = []        // ALL registered domains (any status)
   let verifiedDomains = []   // [{ domain_url, product_name, status, sdk_installed, llms_installed }]
   let activeTab = 'mine'
   // All loaded history rows (latest per product)
@@ -803,9 +804,9 @@
     const emailHint = user.email ? maskEmail(user.email) : ''
     const ddEmail = document.getElementById('nav-dropdown-email')
     if (ddEmail) ddEmail.textContent = emailHint
-    loadHistory()
     loadBetaStatus()
-    loadVerifiedDomains()
+    // Load domains first so domain-only rows appear in My Products
+    loadVerifiedDomains().then(() => loadHistory())
   }
 
   async function loadVerifiedDomains() {
@@ -817,7 +818,8 @@
       })
       if (!res.ok) return
       const data = await res.json()
-      verifiedDomains = (data.domains || []).filter(d => d.status === 'verified')
+      allDomains = data.domains || []
+      verifiedDomains = allDomains.filter(d => d.status === 'verified')
     } catch { /* non-critical */ }
   }
 
@@ -1646,19 +1648,36 @@
 
     document.getElementById('mine-loading').style.display = 'none'
 
-    if (error || !data || data.length === 0) {
-      document.getElementById('mine-empty').style.display = 'block'
-      return
-    }
-
-    allHistoryData = data
+    const scores = (!error && data) ? data : []
+    allHistoryData = scores
 
     // One row per product (latest check per product)
     const latestMap = {}
-    for (const row of data) {
+    for (const row of scores) {
       if (!latestMap[row.product_name]) latestMap[row.product_name] = row
     }
     allProducts = Object.values(latestMap)
+
+    // Merge: add domain-only rows (registered but no score yet)
+    const scoredNames = new Set(allProducts.map(p => p.product_name))
+    for (const domain of allDomains) {
+      if (domain.product_name && !scoredNames.has(domain.product_name)) {
+        allProducts.push({
+          product_name: domain.product_name,
+          product_url: domain.domain_url,
+          score: null,
+          created_at: domain.created_at,
+          user_id: currentUser.id,
+          _domainOnly: true,
+          _domainStatus: domain.status,
+        })
+      }
+    }
+
+    if (allProducts.length === 0) {
+      document.getElementById('mine-empty').style.display = 'block'
+      return
+    }
 
     // Sync: ensure all DB products are in localStorage mine set
     const mineSet = getMineSet()
@@ -1666,12 +1685,12 @@
     for (const p of allProducts) { if (!mineSet.has(p.product_name)) { mineSet.add(p.product_name); synced = true } }
     if (synced) saveMineSet(mineSet)
 
-    // Update slot counts
+    // Update slot counts (exclude domain-only from slot count)
     const slotEl = document.getElementById('mine-slot-count')
-    if (slotEl) slotEl.textContent = `(${allProducts.length}/5)`
+    if (slotEl) slotEl.textContent = `(${Object.keys(latestMap).length}/5)`
 
     // Render Mine
-    renderMineTab(allProducts, data)
+    renderMineTab(allProducts, scores)
 
     // Update tools badge preview
     if (activeTab === 'tools') updateBadgePreview()
@@ -1691,8 +1710,9 @@
     const verifiedNames = getVerifiedProductNames()
     const now = Date.now()
 
-    // Filter: verified products stay forever; unverified expire after 72h
+    // Filter: domain-only / verified → forever; unverified scores → expire after 72h
     const visible = products.filter(p => {
+      if (p._domainOnly) return true
       if (verifiedNames.has(p.product_name)) return true
       const age = now - new Date(p.created_at).getTime()
       return age < UNVERIFIED_EXPIRY_MS
@@ -1716,7 +1736,43 @@
     renderTrendChart(mineData)
   }
 
+  function fillCheckForm(name, url) {
+    const inp = document.getElementById('product-input')
+    const urlInp = document.getElementById('url-input')
+    if (inp) { inp.value = name; inp.dispatchEvent(new Event('input')) }
+    if (urlInp && url) urlInp.value = url
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+    setTimeout(() => inp && inp.focus(), 350)
+  }
+
   function buildRowHtml(row, idx, tag, verifiedNames) {
+    // Domain-only row: registered domain but no score yet
+    if (row._domainOnly) {
+      const isVerified = row._domainStatus === 'verified'
+      const statusBadge = isVerified
+        ? '<span style="color:#4ade80;font-size:0.72rem;">✓ Verified</span>'
+        : '<span style="color:#f59e0b;font-size:0.72rem;">Pending</span>'
+      return `
+        <div style="border-bottom:1px solid #1f1f1f;">
+          <div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:0.5rem;align-items:center;padding:0.8rem 0;">
+            <div>
+              <div style="font-size:0.95rem;font-weight:600;">${escHtml(row.product_name)}</div>
+              ${row.product_url ? `<div style="font-size:0.75rem;color:#555;">${escHtml(row.product_url)}</div>` : ''}
+            </div>
+            <div style="text-align:center;"><span style="font-size:0.78rem;color:#444;">—</span></div>
+            <div style="text-align:center;"><span style="font-size:0.7rem;color:#555;font-style:italic;">No check yet</span></div>
+            <div style="text-align:center;">${statusBadge}</div>
+            <div style="text-align:right;">
+              <button onclick="fillCheckForm('${escHtml(row.product_name).replace(/'/g,"\\'")}','${(row.product_url||'').replace(/'/g,"\\'")}');event.stopPropagation()"
+                style="background:#FFD700;color:#0a0a0a;border:none;padding:0.3rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.72rem;font-family:inherit;font-weight:700;white-space:nowrap;">
+                Run Check →
+              </button>
+            </div>
+          </div>
+        </div>
+      `
+    }
+
     const score = row.score
     let badge = ''
     if (score >= 81) badge = '<span class="badge-gold">PICKED</span>'
