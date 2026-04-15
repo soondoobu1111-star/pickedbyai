@@ -246,18 +246,9 @@
           <span>I agree to receive product update emails and provide feedback as an early beta tester.</span>
         </label>
       </div>
-      <div style="display:flex;flex-direction:column;gap:0.5rem;flex-shrink:0;">
+      <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
         <button id="beta-join-btn" onclick="betaJoin()" style="background:#FFD700;color:#0a0a0a;font-weight:700;padding:0.6rem 1.25rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:0.85rem;white-space:nowrap;">Join Beta</button>
-        <button onclick="betaDecline()" style="background:none;border:none;color:#555;font-size:0.75rem;cursor:pointer;padding:0.25rem;font-family:inherit;">Not now</button>
-      </div>
-    </div>
-    <div id="beta-spots-bar" style="margin-top:0.85rem;">
-      <div style="display:flex;justify-content:space-between;margin-bottom:0.3rem;font-size:0.7rem;color:#555;">
-        <span>Beta spots claimed</span>
-        <span id="beta-spots-text"></span>
-      </div>
-      <div style="background:#1a1a1a;border-radius:999px;height:4px;overflow:hidden;">
-        <div id="beta-spots-fill" style="height:100%;border-radius:999px;background:#FFD700;width:0%;transition:width 0.6s ease;"></div>
+        <button onclick="betaDecline()" style="background:none;border:none;color:#555;font-size:0.75rem;cursor:pointer;padding:0.25rem;font-family:inherit;white-space:nowrap;">Not now</button>
       </div>
     </div>
   </div>
