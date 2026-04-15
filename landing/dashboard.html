@@ -1027,9 +1027,12 @@
       const data = await res.json()
       showResult(data)
       lastCheckResult = { product, url: url || null, score: data.score, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null }
+      console.log('[SYNC] currentUser:', !!currentUser, 'product:', product, 'score:', data.score)
+      console.log('[SYNC] allProducts:', allProducts.map(p => p.product_name + ':' + p.score))
       if (currentUser) {
-        // Optimistic update: immediately reflect new score in My Products without waiting for DB
+        // Optimistic update: immediately reflect new score in My Products
         const existingIdx = allProducts.findIndex(p => p.product_name === product)
+        console.log('[SYNC] findIndex:', existingIdx)
         if (existingIdx >= 0) {
           allProducts[existingIdx] = {
             ...allProducts[existingIdx],
@@ -1040,9 +1043,15 @@
             created_at: new Date().toISOString(),
           }
           renderMineTab(allProducts, allHistoryData)
+          console.log('[SYNC] optimistic update done')
         }
-        // Then persist to DB (async)
-        saveHistory('mine').catch(() => {})
+        // Persist to DB + reload from DB
+        try {
+          await saveHistory('mine')
+          console.log('[SYNC] DB save OK')
+        } catch(e) {
+          console.error('[SYNC] DB save error:', e)
+        }
       }
     } catch (err) {
       alert('Check failed. Please try again.')
