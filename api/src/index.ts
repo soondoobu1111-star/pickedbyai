@@ -531,6 +531,47 @@ async function runEngine(env: Bindings, name: string, url?: string) {
   return { results, score, maxScore: 100, product: name, dimensions, sources: sources.slice(0, 15), aiProbe: aiProbes }
 }
 
+// ── Probe Log: record every AI probe result ─────────────────
+async function logProbes(
+  env: Bindings,
+  productName: string,
+  probes: AIProbeResult[],
+  opts: { userId?: string; productUrl?: string; triggerType: 'manual' | 'cron'; startMs: number }
+) {
+  if (!probes.length) return
+  const rows = probes.map(p => ({
+    product_id: productName,
+    query_template: 'product_knowledge',
+    ai_source: p.ai,
+    result_text: p.snippet || '',
+    detected_rank: null,
+    co_recommendations: [],
+    recognized: p.recognized,
+    recommended: p.recommended,
+    citations: p.citations || [],
+    user_id: opts.userId || null,
+    product_url: opts.productUrl || null,
+    trigger_type: opts.triggerType,
+    response_ms: Date.now() - opts.startMs,
+    model_version: null,
+  }))
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/probe_logs`, {
+      method: 'POST',
+      headers: {
+        'apikey': env.SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal',
+      },
+      body: JSON.stringify(rows),
+    })
+    const status = res.status
+    if (!res.ok) { const body = await res.text(); console.error(`[ProbeLog] insert failed (${status}):`, body) }
+    else console.log(`[ProbeLog] ✓ ${rows.length} rows logged for "${productName}" (${status})`)
+  } catch (err) { console.error('[ProbeLog] fetch error:', err instanceof Error ? err.message : String(err)) }
+}
+
 // ── POST /v1/check ────────────────────────────────────────────
 app.post('/v1/check', async (c) => {
   const ip = c.req.header('cf-connecting-ip') || c.req.header('x-forwarded-for') || 'unknown'
@@ -554,7 +595,10 @@ app.post('/v1/check', async (c) => {
   const colo = (c.req.raw as Request & { cf?: { colo?: string } }).cf?.colo ?? 'unknown'
   console.log(`[DC] ${colo}`)
 
+  const startMs = Date.now()
   const engineResult = await runEngine(c.env, name, url)
+  // P1-03: Log probe results (non-blocking, errors caught inside logProbes)
+  await logProbes(c.env, name, engineResult.aiProbe, { productUrl: url, triggerType: 'manual', startMs })
   return c.json(engineResult)
 })
 
@@ -601,7 +645,12 @@ async function dailyRefresh(env: Bindings) {
   // 4. Scan each product sequentially (avoid rate limits)
   for (const task of tasks) {
     try {
+      const cronStartMs = Date.now()
       const result = await runEngine(env, task.product_name, task.product_url ?? undefined)
+      // P1-03: Log probe results from cron
+      await logProbes(env, task.product_name, result.aiProbe, {
+        userId: task.user_id, productUrl: task.product_url ?? undefined, triggerType: 'cron', startMs: cronStartMs
+      })
       await fetch(`${SUPABASE_URL}/rest/v1/scores`, {
         method: 'POST',
         headers: { ...headers, 'Prefer': 'return=minimal' },
