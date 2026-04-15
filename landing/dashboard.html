@@ -278,8 +278,14 @@
     <h2 style="font-size:0.95rem;font-weight:700;margin-bottom:1rem;">Check AI Visibility</h2>
     <div class="flex gap-3 flex-wrap">
       <input id="input-product" class="input-field" placeholder="Product name (e.g. Notion Budget Tracker)" style="flex:1;min-width:200px;" />
-      <input id="input-url" class="input-field" placeholder="URL (optional)" style="flex:1;min-width:160px;" />
+      <input id="input-url" class="input-field" placeholder="URL (optional)" style="flex:1;min-width:160px;" oninput="document.getElementById('url-hint').style.display='none'" />
       <button class="btn-primary" id="btn-check" onclick="runCheck()">Check</button>
+    </div>
+    <div id="url-hint" style="display:none;margin-top:0.65rem;font-size:0.8rem;color:#888;">
+      Adding a URL improves score accuracy.
+      <button onclick="document.getElementById('input-url').focus();document.getElementById('url-hint').style.display='none'" style="background:none;border:none;color:#FFD700;cursor:pointer;font-size:0.8rem;font-family:inherit;padding:0;margin-left:0.25rem;">Add URL</button>
+      <span style="color:#444;margin:0 0.25rem;">or</span>
+      <button onclick="runCheckForce()" style="background:none;border:none;color:#666;cursor:pointer;font-size:0.8rem;font-family:inherit;padding:0;text-decoration:underline;">skip anyway</button>
     </div>
   </div>
 
@@ -975,6 +981,18 @@
 
   // ── Check ──────────────────────────────────────────────────
   async function runCheck() {
+    const product = document.getElementById('input-product').value.trim()
+    const url = document.getElementById('input-url').value.trim()
+    if (!product) { document.getElementById('input-product').focus(); return }
+    if (!url) {
+      document.getElementById('url-hint').style.display = 'block'
+      return
+    }
+    await runCheckForce()
+  }
+
+  async function runCheckForce() {
+    document.getElementById('url-hint').style.display = 'none'
     const product = document.getElementById('input-product').value.trim()
     const url = document.getElementById('input-url').value.trim()
     if (!product) { document.getElementById('input-product').focus(); return }
