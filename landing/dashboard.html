@@ -1123,20 +1123,25 @@
       if (mineSet.has(prod)) {
         btnMine.style.display = 'none'
         btnMine.insertAdjacentHTML('afterend', '<span id="mine-registered-msg" style="font-size:0.8rem;color:#4ade80;">✅ Already in My Products</span>')
+        // 내 제품이면 경쟁 등록 버튼도 숨김
+        if (btnComp) btnComp.style.display = 'none'
+        const existComp = document.getElementById('comp-registered-msg')
+        if (existComp) existComp.remove()
       } else {
         btnMine.style.display = ''
         const existMsg = document.getElementById('mine-registered-msg')
         if (existMsg) existMsg.remove()
-      }
-    }
-    if (btnComp) {
-      if (compSet.has(prod)) {
-        btnComp.style.display = 'none'
-        btnComp.insertAdjacentHTML('afterend', '<span id="comp-registered-msg" style="font-size:0.8rem;color:#f59e0b;">✅ Already in Competitors</span>')
-      } else {
-        btnComp.style.display = ''
-        const existMsg = document.getElementById('comp-registered-msg')
-        if (existMsg) existMsg.remove()
+        // 내 제품이 아닐 때만 경쟁 등록 버튼 처리
+        if (btnComp) {
+          if (compSet.has(prod)) {
+            btnComp.style.display = 'none'
+            btnComp.insertAdjacentHTML('afterend', '<span id="comp-registered-msg" style="font-size:0.8rem;color:#f59e0b;">✅ Already in Competitors</span>')
+          } else {
+            btnComp.style.display = ''
+            const existComp = document.getElementById('comp-registered-msg')
+            if (existComp) existComp.remove()
+          }
+        }
       }
     }
   }
