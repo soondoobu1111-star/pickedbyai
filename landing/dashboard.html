@@ -1730,15 +1730,23 @@
     const rows = visible.map((row, idx) => buildRowHtml(row, idx, 'mine', verifiedNames))
     document.getElementById('mine-rows').innerHTML = rows.join('')
 
-    // Chart: visible products only
-    const visibleNames = new Set(visible.map(p => p.product_name))
+    // Chart: visible products only (exclude domain-only rows — no scores yet)
+    const visibleNames = new Set(visible.filter(p => !p._domainOnly).map(p => p.product_name))
     const mineData = allData.filter(r => visibleNames.has(r.product_name))
-    renderTrendChart(mineData)
+    if (mineData.length === 0 && visible.some(p => p._domainOnly)) {
+      // Has registered domains but no scores yet → show placeholder
+      const wrap = document.getElementById('trend-chart-wrap')
+      wrap.style.display = 'block'
+      wrap.style.height = 'auto'
+      wrap.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;height:80px;border:1px dashed #1e1e1e;border-radius:8px;color:#444;font-size:0.8rem;">Run your first Check to start tracking trend data</div>`
+    } else {
+      renderTrendChart(mineData)
+    }
   }
 
   function fillCheckForm(name, url) {
-    const inp = document.getElementById('product-input')
-    const urlInp = document.getElementById('url-input')
+    const inp = document.getElementById('input-product')
+    const urlInp = document.getElementById('input-url')
     if (inp) { inp.value = name; inp.dispatchEvent(new Event('input')) }
     if (urlInp && url) urlInp.value = url
     window.scrollTo({ top: 0, behavior: 'smooth' })
