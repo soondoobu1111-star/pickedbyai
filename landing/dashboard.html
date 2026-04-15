@@ -303,7 +303,6 @@
     </div>
     <div id="result-dimensions"></div>
     <div id="result-ai-probe" style="display:none;"></div>
-    <div id="result-owner-lock" style="display:none;"></div>
     <p id="result-grounded-note" style="font-size:0.72rem;color:#555;margin-top:0.75rem;display:none;">
       ℹ️ Results based on AI training data only (real-time search unavailable in your region).
     </p>
@@ -333,6 +332,8 @@
       </div>
       <div id="feedback-thanks" style="display:none;font-size:0.78rem;color:#4ade80;">Thank you for your feedback!</div>
     </div>
+    <!-- OWNER DATA (verified owner only — below feedback) -->
+    <div id="result-owner-lock" style="display:none;"></div>
     <!-- MLP-CTA: Track score over time nudge -->
     <div id="mlp-track-cta" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#0d0d0d;border:1px dashed #FFD70044;border-radius:8px;text-align:center;">
       <div style="font-size:0.78rem;color:#FFD700;font-weight:600;margin-bottom:0.25rem;">📈 Own this product? Track your score over time</div>
@@ -1249,6 +1250,13 @@
       .gte('created_at', today + 'T00:00:00.000Z')
       .limit(1)
     if (todayCheck && todayCheck.length > 0) {
+      // Update today's existing record with latest score
+      await sb.from('scores').update({
+        score: lastCheckResult.score,
+        results: lastCheckResult.results,
+        dimensions: lastCheckResult.dimensions || null,
+        ai_probe: lastCheckResult.aiProbe || null,
+      }).eq('id', todayCheck[0].id)
       setSavedBtn()
       loadHistory()
       return
@@ -1857,6 +1865,28 @@
           </div>
           ${dimsHtml}
           ${hasUngrounded ? `<p style="font-size:0.72rem;color:#555;margin-top:0.75rem;">ℹ️ Results based on AI training data only (real-time search unavailable in your region).</p>` : ''}
+          ${isMine ? (isVerified ? `
+          <div style="margin-top:0.75rem;padding:0.75rem 1rem;background:#111;border:1px solid #1a3a1a;border-radius:8px;">
+            <div style="font-size:0.7rem;color:#4ade80;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">🔓 OWNER DATA — ${escHtml(row.product_name)}</div>
+            <div style="font-size:0.75rem;color:#555;line-height:1.8;">
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>Query Coverage</span><span style="color:#888;">Coming soon</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>co_recommendations</span><span style="color:#888;">Coming soon</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>Weekly Trend</span><span style="color:#888;">Coming soon</span></div>
+              <div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>Improvement Guide</span><span style="color:#888;">Coming soon</span></div>
+            </div>
+            <div style="margin-top:0.75rem;padding:0.6rem 0.75rem;background:#0d1a0d;border:1px solid #1a3a1a;border-radius:6px;font-size:0.72rem;">
+              🚀 <strong style="color:#4ade80;">Track real AI referral traffic</strong> — <a href="/register" style="color:#FFD700;text-decoration:underline;">Install SDK</a>
+            </div>
+          </div>` : `
+          <div style="margin-top:0.75rem;padding:0.75rem 1rem;background:#111;border:1px solid #222;border-radius:8px;">
+            <div style="font-size:0.7rem;color:#555;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">🔒 OWNER-ONLY DATA</div>
+            <div style="font-size:0.75rem;color:#333;line-height:1.8;">
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>Query Coverage</span><span>---</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>co_recommendations</span><span>---</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>Weekly Score Trend</span><span>---</span></div>
+              <div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>Improvement Guide TOP 3</span><span>---</span></div>
+            </div>
+          </div>`) : ''}
           ${embedSection}
           ${verifySection}
           <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;align-items:center;">
