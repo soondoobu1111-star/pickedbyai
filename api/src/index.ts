@@ -715,10 +715,16 @@ app.post('/v1/check', async (c) => {
     return c.json({ error: 'Invalid JSON' }, 400)
   }
 
-  const { product, url } = body
+  const { product } = body
+  let url = body.url
   if (!product || product.trim().length < 1) return c.json({ error: 'product is required' }, 400)
   if (product.trim().length > 100) return c.json({ error: 'product name too long (max 100 chars)' }, 400)
-  if (url && isBlockedUrl(url)) return c.json({ error: 'Invalid URL' }, 400)
+  // Normalize URL: add https:// if missing, skip empty/invalid
+  if (url && typeof url === 'string') {
+    url = url.trim()
+    if (url && !/^https?:\/\//i.test(url)) url = `https://${url}`
+    if (isBlockedUrl(url)) return c.json({ error: 'Invalid URL' }, 400)
+  }
 
   const name = product.trim()
   const colo = (c.req.raw as Request & { cf?: { colo?: string } }).cf?.colo ?? 'unknown'
