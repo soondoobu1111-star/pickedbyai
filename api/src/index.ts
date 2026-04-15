@@ -558,7 +558,7 @@ const ALLOWED_ORIGINS = [
 app.use('*', cors({
   origin: (origin) => ALLOWED_ORIGINS.includes(origin) ? origin : '',
   allowMethods: ['GET', 'POST', 'OPTIONS'],
-  allowHeaders: ['Content-Type'],
+  allowHeaders: ['Content-Type', 'Authorization', 'apikey'],
   maxAge: 86400,
 }))
 
