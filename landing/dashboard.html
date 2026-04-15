@@ -1025,7 +1025,11 @@
       })
       const data = await res.json()
       showResult(data)
-      lastCheckResult = { product, url: url || null, score: data.score, results: data.results }
+      lastCheckResult = { product, url: url || null, score: data.score, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null }
+      // Auto-save: if logged in and checked product matches a registered domain
+      if (currentUser && url && isOwnedDomain(url)) {
+        saveHistory('mine').catch(() => {})
+      }
     } catch (err) {
       alert('Check failed. Please try again.')
     } finally {
@@ -1197,10 +1201,6 @@
     const fbCta = document.getElementById('feedback-cta')
     if (fbCta) { fbCta.style.display = 'block'; document.getElementById('feedback-ask').style.display = 'flex'; document.getElementById('feedback-comment').style.display = 'none'; document.getElementById('feedback-thanks').style.display = 'none'; }
 
-    // Auto-save: if logged in and checked product matches a registered domain → save score silently
-    if (currentUser && url && isOwnedDomain(url)) {
-      saveHistory('mine').catch(() => {})
-    }
   }
 
   // ENGINE-05 dimension row with score bar
@@ -1698,13 +1698,18 @@
     }
   }
 
-  function fillCheckForm(name, url) {
+  async function runCheckFromList(name, url) {
     const inp = document.getElementById('input-product')
     const urlInp = document.getElementById('input-url')
     if (inp) { inp.value = name; inp.dispatchEvent(new Event('input')) }
-    if (urlInp && url) urlInp.value = url
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-    setTimeout(() => inp && inp.focus(), 350)
+    if (urlInp) urlInp.value = url || ''
+    // Run check immediately (no user interaction needed)
+    await runCheckForce()
+    // Scroll result into view
+    const resultEl = document.getElementById('check-result')
+    if (resultEl && resultEl.style.display !== 'none') {
+      resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
   }
 
   function buildRowHtml(row, idx, tag, verifiedNames) {
@@ -1725,7 +1730,7 @@
             <div style="text-align:center;"><span style="font-size:0.7rem;color:#555;font-style:italic;">No check yet</span></div>
             <div style="text-align:center;">${statusBadge}</div>
             <div style="text-align:right;">
-              <button onclick="fillCheckForm('${escHtml(row.product_name).replace(/'/g,"\\'")}','${(row.product_url||'').replace(/'/g,"\\'")}');event.stopPropagation()"
+              <button onclick="runCheckFromList('${escHtml(row.product_name).replace(/'/g,"\\'")}','${(row.product_url||'').replace(/'/g,"\\'")}');event.stopPropagation()"
                 style="background:#FFD700;color:#0a0a0a;border:none;padding:0.3rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.72rem;font-family:inherit;font-weight:700;white-space:nowrap;">
                 Run Check →
               </button>
