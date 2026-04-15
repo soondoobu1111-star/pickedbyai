@@ -5,3 +5,5 @@ api/.wrangler/
 docs/inputs/
 memory/
 CLAUDE.md
+api/.tmp-build/
+api/.tmp-check/
