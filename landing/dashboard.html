@@ -275,7 +275,10 @@
 
   <!-- Check form -->
   <div class="card mb-6">
-    <h2 style="font-size:0.95rem;font-weight:700;margin-bottom:1rem;">Check AI Visibility</h2>
+    <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+      <h2 style="font-size:0.95rem;font-weight:700;">Check AI Visibility</h2>
+      <a href="/register" style="font-size:0.75rem;color:#FFD700;border:1px solid #333;padding:0.3rem 0.75rem;border-radius:6px;text-decoration:none;font-weight:600;white-space:nowrap;">+ Register Your Domain</a>
+    </div>
     <div class="flex gap-3 flex-wrap">
       <input id="input-product" class="input-field" placeholder="Product name (e.g. Notion Budget Tracker)" style="flex:1;min-width:200px;" oninput="updateCheckBtn()" />
       <input id="input-url" class="input-field" placeholder="URL (optional)" style="flex:1;min-width:160px;" oninput="updateCheckBtn()" />
@@ -1160,7 +1163,7 @@
     // 🔒 Owner-only data section
     const ownerLockEl = document.getElementById('result-owner-lock')
     if (ownerLockEl) {
-      const checkedUrl = document.getElementById('url-input')?.value?.trim() || ''
+      const checkedUrl = document.getElementById('input-url')?.value?.trim() || ''
       const ownedDomain = isOwnedDomain(checkedUrl)
       if (ownedDomain) {
         // 소유자 — 잠금 해제 UI (향후 실제 데이터 연결)
