@@ -188,32 +188,18 @@
 <body>
 
 <!-- NAV -->
-<nav class="nav">
-  <a href="/?home=1" class="nav-logo" style="display:flex;align-items:center;gap:8px;">
-    <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
-    <span><span style="color:#FFD700;">picked</span><span style="color:#fff;">by</span><span style="color:#FFD700;">.ai</span></span>
-  </a>
-  <div class="nav-links">
-      <a href="/blog/" style="color:#888;font-size:0.9rem;text-decoration:none;">Blog</a>
-      <a href="/methodology/" style="color:#888;font-size:0.9rem;text-decoration:none;">How We Score</a>
-    <!-- Profile icon + dropdown (shown when logged in) -->
-    <div id="nav-user" class="nav-profile" style="display:none;">
-      <button class="nav-avatar-btn" onclick="toggleDropdown()" id="nav-avatar-btn">
-        <img id="nav-avatar" src="" alt="Profile" />
-      </button>
-      <div class="nav-dropdown" id="nav-dropdown">
-        <div class="nav-dropdown-email" id="nav-email"></div>
-        <button onclick="openSettings()">Settings</button>
-        <button onclick="signOut()">Sign out</button>
-      </div>
-    </div>
+  <nav class="nav">
+    <a href="/" class="nav-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+      <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+      <span><span style="color:var(--yellow);">picked</span><span style="color:#fff;">by</span><span style="color:var(--yellow);">.ai</span></span>
+    </a>
+    <div class="nav-links">
+      <span style="color:#444;font-size:0.85rem;">Account</span>
       <button class="nav-burger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">&#9776;</button>
-  </div>
-</nav>
+    </div>
+  </nav>
   <div class="nav-mobile">
-    <a href="/blog/">Blog</a>
-    <a href="/methodology/">How We Score</a>
-    <a href="/dashboard.html">Dashboard</a>
+    <a href="/">Home</a>
   </div>
 
 <!-- LOGIN SCREEN -->

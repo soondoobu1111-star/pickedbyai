@@ -330,20 +330,27 @@
 <body>
 
   <nav class="nav">
-    <a href="/" class="nav-logo">
+    <a href="/" class="nav-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
       <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
       <span><span style="color:var(--yellow);">picked</span><span style="color:#fff;">by</span><span style="color:var(--yellow);">.ai</span></span>
     </a>
     <div class="nav-links">
-      <a href="/blog/" class="nav-blog-link">BLOG</a>
-      <a href="/methodology/" class="nav-blog-link">HOW WE SCORE</a>
-      <a href="/dashboard.html" style="color:#000;background:var(--yellow);border:none;padding:0.45rem 1.1rem;border-radius:6px;font-weight:700;font-size:0.88rem;letter-spacing:0.03em;text-decoration:none;box-shadow:0 0 12px rgba(255,215,0,0.35);transition:box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 0 20px rgba(255,215,0,0.6)'" onmouseout="this.style.boxShadow='0 0 12px rgba(255,215,0,0.35)'">Dashboard</a>
+      <div style="position:relative;">
+        <button onclick="var m=this.nextElementSibling;m.style.display=m.style.display==='block'?'none':'block';" style="background:none;border:none;cursor:pointer;color:#888;font-size:0.9rem;padding:0;font-family:inherit;letter-spacing:0.02em;">ABOUT &#9660;</button>
+        <div style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:#0d0d0d;border:1px solid #2a2a2a;min-width:160px;z-index:100;">
+          <a href="/manifesto/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;border-bottom:1px solid #1f1f1f;">Manifesto</a>
+          <a href="/methodology/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;border-bottom:1px solid #1f1f1f;">How We Score</a>
+          <a href="/blog/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;">Blog</a>
+        </div>
+      </div>
+      <a href="/dashboard.html" style="color:#000;background:#FFD700;border:none;padding:0.45rem 1.1rem;border-radius:6px;font-weight:700;font-size:0.88rem;letter-spacing:0.03em;text-decoration:none;box-shadow:0 0 12px rgba(255,215,0,0.35);">Dashboard</a>
       <button class="nav-burger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">&#9776;</button>
     </div>
   </nav>
   <div class="nav-mobile">
-    <a href="/blog/">Blog</a>
+    <a href="/manifesto/">Manifesto</a>
     <a href="/methodology/">How We Score</a>
+    <a href="/blog/">Blog</a>
     <a href="/dashboard.html">Dashboard</a>
   </div>
 
