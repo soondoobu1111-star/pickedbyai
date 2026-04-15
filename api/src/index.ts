@@ -1102,6 +1102,167 @@ app.get('/v1/beta-count', async (c) => {
   }
 })
 
+// ── Auth helper ───────────────────────────────────────────────
+async function verifyToken(token: string, env: Bindings): Promise<{ id: string; email: string } | null> {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: {
+        'apikey': env.SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+    if (!res.ok) return null
+    const data = await res.json() as { id: string; email: string }
+    if (!data?.id) return null
+    return { id: data.id, email: data.email }
+  } catch {
+    return null
+  }
+}
+
+// ── GET /v1/beta/status ───────────────────────────────────────
+// Returns beta status for current user + current spot count
+app.get('/v1/beta/status', async (c) => {
+  const authHeader = c.req.header('Authorization')
+  const token = authHeader?.replace('Bearer ', '')
+  if (!token) return c.json({ error: 'Unauthorized' }, 401)
+
+  const user = await verifyToken(token, c.env)
+  if (!user) return c.json({ error: 'Unauthorized' }, 401)
+
+  try {
+    // Get count of joined users
+    const countRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/beta_signups?joined_at=not.is.null&opted_out_at=is.null&select=id`,
+      {
+        headers: {
+          'apikey': c.env.SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+          'Prefer': 'count=exact',
+          'Range': '0-0',
+        },
+      }
+    )
+    const range = countRes.headers.get('content-range')
+    const count = range ? parseInt(range.split('/')[1]) || 0 : 0
+
+    // Get user's own record
+    const userRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/beta_signups?user_id=eq.${user.id}&select=joined_at,opted_out_at`,
+      {
+        headers: {
+          'apikey': c.env.SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+        },
+      }
+    )
+    const rows = await userRes.json() as Array<{ joined_at: string | null; opted_out_at: string | null }>
+    const row = rows?.[0]
+
+    let status: 'joined' | 'declined' | 'none' = 'none'
+    if (row?.joined_at && !row?.opted_out_at) status = 'joined'
+    else if (row?.opted_out_at) status = 'declined'
+
+    return c.json({ status, count, spots_left: Math.max(0, 100 - count) })
+  } catch (err) {
+    console.error('[beta/status] error:', err)
+    return c.json({ status: 'none', count: 0, spots_left: 100 })
+  }
+})
+
+// ── POST /v1/beta/join ────────────────────────────────────────
+// User opts into beta program (requires terms agreement)
+app.post('/v1/beta/join', async (c) => {
+  const authHeader = c.req.header('Authorization')
+  const token = authHeader?.replace('Bearer ', '')
+  if (!token) return c.json({ error: 'Unauthorized' }, 401)
+
+  const user = await verifyToken(token, c.env)
+  if (!user) return c.json({ error: 'Unauthorized' }, 401)
+
+  let body: { terms_agreed?: boolean }
+  try { body = await c.req.json() } catch { return c.json({ error: 'Invalid JSON' }, 400) }
+  if (!body.terms_agreed) return c.json({ error: 'Terms agreement required' }, 400)
+
+  const now = new Date().toISOString()
+
+  try {
+    // Upsert: insert or update existing record
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/beta_signups`,
+      {
+        method: 'POST',
+        headers: {
+          'apikey': c.env.SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates',
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          email: user.email,
+          terms_agreed_at: now,
+          joined_at: now,
+          opted_out_at: null,
+        }),
+      }
+    )
+    if (!res.ok) {
+      const err = await res.text()
+      console.error('[beta/join] supabase error:', err)
+      return c.json({ error: 'Failed to join beta' }, 500)
+    }
+    return c.json({ ok: true })
+  } catch (err) {
+    console.error('[beta/join] error:', err)
+    return c.json({ error: 'Server error' }, 500)
+  }
+})
+
+// ── POST /v1/beta/decline ─────────────────────────────────────
+// User declines beta invitation
+app.post('/v1/beta/decline', async (c) => {
+  const authHeader = c.req.header('Authorization')
+  const token = authHeader?.replace('Bearer ', '')
+  if (!token) return c.json({ error: 'Unauthorized' }, 401)
+
+  const user = await verifyToken(token, c.env)
+  if (!user) return c.json({ error: 'Unauthorized' }, 401)
+
+  const now = new Date().toISOString()
+
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/beta_signups`,
+      {
+        method: 'POST',
+        headers: {
+          'apikey': c.env.SUPABASE_SERVICE_KEY,
+          'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'resolution=merge-duplicates',
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          email: user.email,
+          terms_agreed_at: null,
+          joined_at: null,
+          opted_out_at: now,
+        }),
+      }
+    )
+    if (!res.ok) {
+      const err = await res.text()
+      console.error('[beta/decline] supabase error:', err)
+      return c.json({ error: 'Failed to decline' }, 500)
+    }
+    return c.json({ ok: true })
+  } catch (err) {
+    console.error('[beta/decline] error:', err)
+    return c.json({ error: 'Server error' }, 500)
+  }
+})
+
 // ── POST /v1/verify ───────────────────────────────────────────
 // Checks product site for pickedby-site-verification meta tag
 app.post('/v1/verify', async (c) => {
