@@ -317,9 +317,6 @@
       <button class="btn-ghost" id="btn-share-linkedin" onclick="shareLinkedIn()" style="font-size:0.85rem;">
         in LinkedIn
       </button>
-      <button class="btn-ghost" id="btn-save-mine" onclick="saveToMine()" style="font-size:0.85rem;">
-        + Save to My Products
-      </button>
     </div>
     <!-- FEEDBACK-01: Was this helpful? -->
     <div id="feedback-cta" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#0d0d0d;border:1px solid #1f1f1f;border-radius:8px;">
@@ -338,8 +335,8 @@
     </div>
     <!-- MLP-CTA: Track score over time nudge -->
     <div id="mlp-track-cta" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#0d0d0d;border:1px dashed #FFD70044;border-radius:8px;text-align:center;">
-      <div style="font-size:0.78rem;color:#FFD700;font-weight:600;margin-bottom:0.25rem;">📈 Track how your score changes over time</div>
-      <div style="font-size:0.72rem;color:#555;">Save to My Products → check again tomorrow → see your trend</div>
+      <div style="font-size:0.78rem;color:#FFD700;font-weight:600;margin-bottom:0.25rem;">📈 Own this product? Track your score over time</div>
+      <div style="font-size:0.72rem;color:#555;">Register your domain → check again tomorrow → see your trend</div>
     </div>
     <!-- EMAIL-CAPTURE-01: Flow 1 — Email this score report (non-logged users only) -->
     <div id="result-email-cta" style="display:none;margin-top:0.75rem;padding:0.875rem 1rem;background:#0d0d0d;border:1px solid #FFD70022;border-radius:8px;">
@@ -419,8 +416,8 @@
           <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1rem;">
             <div style="width:32px;height:32px;border-radius:50%;background:#1a1a1a;border:1px solid #444;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.75rem;color:#888;font-weight:700;">2</div>
             <div>
-              <div style="font-size:0.82rem;font-weight:600;margin-bottom:0.2rem;">Save to My Products</div>
-              <div style="font-size:0.75rem;color:#555;">Save the result to track your score over time. Unverified products expire in 72h.</div>
+              <div style="font-size:0.82rem;font-weight:600;margin-bottom:0.2rem;">Register your domain</div>
+              <div style="font-size:0.75rem;color:#555;">Click "+ Register Your Domain" to add your product and start tracking.</div>
             </div>
           </div>
           <div style="display:flex;align-items:flex-start;gap:0.75rem;">
@@ -1038,8 +1035,6 @@
   }
 
   function resetSaveButtons() {
-    const bm = document.getElementById('btn-save-mine')
-    if (bm) { bm.textContent = '+ Save to My Products'; bm.disabled = false; bm.style.color = ''; bm.style.borderColor = ''; bm.style.display = '' }
     const mm = document.getElementById('mine-registered-msg'); if (mm) mm.remove()
   }
 
@@ -1184,10 +1179,6 @@
                 <span>Improvement Guide TOP 3</span><span>---</span>
               </div>
             </div>
-            <div style="margin-top:0.75rem;padding:0.6rem 0.75rem;background:#1a1400;border:1px solid #3a2a00;border-radius:6px;font-size:0.75rem;display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
-              <span style="color:#888;">Is this your product?</span>
-              <a href="${ctaUrl}" style="background:#FFD700;color:#0a0a0a;padding:0.35rem 0.9rem;border-radius:5px;font-weight:700;font-size:0.72rem;text-decoration:none;white-space:nowrap;">Verify ownership →</a>
-            </div>
           </div>`
         ownerLockEl.style.display = 'block'
       }
@@ -1206,19 +1197,9 @@
     const fbCta = document.getElementById('feedback-cta')
     if (fbCta) { fbCta.style.display = 'block'; document.getElementById('feedback-ask').style.display = 'flex'; document.getElementById('feedback-comment').style.display = 'none'; document.getElementById('feedback-thanks').style.display = 'none'; }
 
-    // Show status message if product is already saved, hide Save button
-    const mineSet = getMineSet()
-    const btnMine = document.getElementById('btn-save-mine')
-    if (btnMine) {
-      if (mineSet.has(product)) {
-        btnMine.style.display = 'none'
-        const existMsg = document.getElementById('mine-registered-msg')
-        if (!existMsg) btnMine.insertAdjacentHTML('afterend', '<span id="mine-registered-msg" style="font-size:0.8rem;color:#4ade80;">✅ Already in My Products</span>')
-      } else {
-        btnMine.style.display = ''
-        const existMsg = document.getElementById('mine-registered-msg')
-        if (existMsg) existMsg.remove()
-      }
+    // Auto-save: if logged in and checked product matches a registered domain → save score silently
+    if (currentUser && url && isOwnedDomain(url)) {
+      saveHistory('mine').catch(() => {})
     }
   }
 
@@ -1250,24 +1231,6 @@
       </div>`
   }
 
-  // ── Save to My Products ────────────────────────────────────
-  async function saveToMine() {
-    const btn = document.getElementById('btn-save-mine')
-    if (!btn || btn.disabled || !lastCheckResult || !currentUser) return
-
-    // Duplicate check: already in DB?
-    const existing = allProducts.find(p => p.product_name === lastCheckResult.product)
-    if (existing) { btn.textContent = '✓ Already saved'; btn.disabled = true; return }
-
-    // Mine 태그 localStorage
-    const mineSet = getMineSet()
-    mineSet.add(lastCheckResult.product)
-    saveMineSet(mineSet)
-
-    btn.disabled = true
-    btn.textContent = 'Saving…'
-    await saveHistory('mine')
-  }
 
   // ── localStorage Set helpers ───────────────────────────────
   function getMineSet() {
@@ -1294,10 +1257,7 @@
     const { data: existing } = await sb.from('scores').select('product_name').eq('user_id', currentUser.id)
     const distinctProducts = [...new Set((existing || []).map(r => r.product_name))]
     if (!distinctProducts.includes(lastCheckResult.product) && distinctProducts.length >= 5) {
-      const btn = document.getElementById('btn-save-mine')
-      if (btn) { btn.textContent = '+ Save to My Products'; btn.disabled = false }
-      alert('Maximum 5 products allowed. Delete an existing product to add a new one.')
-      return
+      return  // Max 5 products reached — silently skip
     }
     const { error } = await sb.from('scores').insert({
       user_id: currentUser.id,
@@ -1311,16 +1271,10 @@
     if (!error) {
       setSavedBtn()
       loadHistory()
-    } else {
-      const btn = document.getElementById('btn-save-mine')
-      if (btn) { btn.textContent = '+ Save to My Products'; btn.disabled = false }
     }
   }
 
-  function setSavedBtn() {
-    const btn = document.getElementById('btn-save-mine')
-    if (btn) { btn.textContent = '✓ Saved'; btn.disabled = true; btn.style.color = '#4ade80'; btn.style.borderColor = '#4ade80' }
-  }
+  function setSavedBtn() { /* no-op: save button removed */ }
 
   // ── autoSave for Refresh Score ─────────────────────────────
   async function autoSave(tag) {
