@@ -1027,8 +1027,11 @@
       const data = await res.json()
       showResult(data)
       lastCheckResult = { product, url: url || null, score: data.score, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null }
-      // Auto-save: if logged in and checked product matches a registered domain
-      if (currentUser && url && isOwnedDomain(url)) {
+      // Auto-save: if logged in and (owned domain URL OR product already in history)
+      if (currentUser && (
+        (url && isOwnedDomain(url)) ||
+        (allProducts && allProducts.some(p => p.product_name === product))
+      )) {
         saveHistory('mine').catch(() => {})
       }
     } catch (err) {
@@ -1127,30 +1130,9 @@
     const hasUngrounded = (results || []).some(r => !r.grounded)
     document.getElementById('result-grounded-note').style.display = hasUngrounded ? 'block' : 'none'
 
-    // 🔒 Owner-only data section — CAV shows a CTA to go to My Products (full data lives there)
+    // Owner lock section hidden in CAV — full data lives in My Products panel
     const ownerLockEl = document.getElementById('result-owner-lock')
-    if (ownerLockEl) {
-      const checkedUrl = document.getElementById('input-url')?.value?.trim() || ''
-      const ownedDomain = isOwnedDomain(checkedUrl)
-      if (ownedDomain) {
-        // 소유자 — My Products 탭에 상세 데이터 안내
-        ownerLockEl.innerHTML = `
-          <div style="margin-top:1rem;padding:0.65rem 1rem;background:#0d1a0d;border:1px solid #1a3a1a;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;">
-            <div style="font-size:0.78rem;color:#4ade80;">🔓 Your product — full AI breakdown in <strong>My Products</strong></div>
-            <button onclick="switchTab('mine');event.stopPropagation()" style="background:#FFD700;color:#000;border:none;padding:0.3rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.72rem;font-weight:700;white-space:nowrap;font-family:inherit;">View →</button>
-          </div>`
-        ownerLockEl.style.display = 'block'
-      } else {
-        // 비소유자 — 등록 CTA
-        const ctaUrl = '/register' + (checkedUrl ? `?url=${encodeURIComponent(checkedUrl)}` : '')
-        ownerLockEl.innerHTML = `
-          <div style="margin-top:1rem;padding:0.65rem 1rem;background:#111;border:1px dashed #2a2a2a;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;">
-            <div style="font-size:0.78rem;color:#555;">🔒 Own this product? Register to unlock AI breakdown & trend data</div>
-            <a href="${ctaUrl}" style="background:none;border:1px solid #FFD700;color:#FFD700;padding:0.3rem 0.75rem;border-radius:4px;font-size:0.72rem;font-weight:700;white-space:nowrap;text-decoration:none;">Register →</a>
-          </div>`
-        ownerLockEl.style.display = 'block'
-      }
-    }
+    if (ownerLockEl) ownerLockEl.style.display = 'none'
 
     document.getElementById('check-result').style.display = 'block'
     // Show non-logged CTAs
@@ -1856,9 +1838,6 @@
               </div>
               <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>co_recommendations graph</span><span style="color:#333;">Collecting data...</span></div>
               <div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>Query Coverage</span><span style="color:#333;">Collecting data...</span></div>
-            </div>
-            <div style="margin-top:0.75rem;padding:0.6rem 0.75rem;background:#0d1a0d;border:1px solid #1a3a1a;border-radius:6px;font-size:0.72rem;">
-              🚀 <strong style="color:#4ade80;">Track real AI referral traffic</strong> — <a href="/register" style="color:#FFD700;text-decoration:underline;">Install SDK</a>
             </div>
           </div>` : `
           <div style="margin-top:0.75rem;padding:0.75rem 1rem;background:#111;border:1px solid #222;border-radius:8px;">
