@@ -1077,6 +1077,10 @@
     const btn = document.getElementById('btn-save-mine')
     if (!btn || btn.disabled || !lastCheckResult || !currentUser) return
 
+    // Duplicate check: already in DB?
+    const existing = allProducts.find(p => p.product_name === lastCheckResult.product)
+    if (existing) { btn.textContent = '✓ Already saved'; btn.disabled = true; return }
+
     // Mine 태그 localStorage
     const mineSet = getMineSet()
     mineSet.add(lastCheckResult.product)
@@ -1094,6 +1098,10 @@
   async function saveToComp() {
     const btn = document.getElementById('btn-save-comp')
     if (!btn || btn.disabled || !lastCheckResult || !currentUser) return
+
+    // Duplicate check: already in DB?
+    const existing = allProducts.find(p => p.product_name === lastCheckResult.product)
+    if (existing) { btn.textContent = '✓ Already saved'; btn.disabled = true; return }
 
     // Comp 태그 localStorage
     const compSet = getCompSet()
@@ -1515,13 +1523,19 @@
     }
     allProducts = Object.values(latestMap)
 
-    // Split by localStorage tags
+    // Split by localStorage tags — sync DB products to localStorage
     const mineSet = getMineSet()
     const compSet = getCompSet()
 
     // Products not yet tagged → default to mine for backwards compat
     const mineProducts = allProducts.filter(p => mineSet.has(p.product_name) || (!compSet.has(p.product_name) && !mineSet.has(p.product_name)))
     const compProducts = allProducts.filter(p => compSet.has(p.product_name) && !mineSet.has(p.product_name))
+
+    // Sync: ensure all DB products are in localStorage (prevents duplicate Save)
+    let synced = false
+    for (const p of mineProducts) { if (!mineSet.has(p.product_name)) { mineSet.add(p.product_name); synced = true } }
+    for (const p of compProducts) { if (!compSet.has(p.product_name)) { compSet.add(p.product_name); synced = true } }
+    if (synced) { saveMineSet(mineSet); saveCompSet(compSet) }
 
     // Update slot counts
     const slotEl = document.getElementById('mine-slot-count')
