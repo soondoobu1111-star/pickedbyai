@@ -1027,8 +1027,21 @@
       const data = await res.json()
       showResult(data)
       lastCheckResult = { product, url: url || null, score: data.score, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null }
-      // Auto-save: always save when logged in (update existing, or insert if new product within 5-slot limit)
       if (currentUser) {
+        // Optimistic update: immediately reflect new score in My Products without waiting for DB
+        const existingIdx = allProducts.findIndex(p => p.product_name === product)
+        if (existingIdx >= 0) {
+          allProducts[existingIdx] = {
+            ...allProducts[existingIdx],
+            score: data.score,
+            dimensions: data.dimensions || allProducts[existingIdx].dimensions,
+            ai_probe: data.aiProbe || allProducts[existingIdx].ai_probe,
+            results: data.results || allProducts[existingIdx].results,
+            created_at: new Date().toISOString(),
+          }
+          renderMineTab(allProducts, allHistoryData)
+        }
+        // Then persist to DB (async)
         saveHistory('mine').catch(() => {})
       }
     } catch (err) {
