@@ -1369,14 +1369,19 @@ app.post('/v1/subscribe', async (c) => {
 // ── Auth helper ───────────────────────────────────────────────
 // Tries both prod and staging Supabase URLs to support both environments
 const SUPABASE_URL_STAGING = 'https://xzecybljfipmmzzzfnit.supabase.co'
+// Staging anon key is public (embedded in FE HTML) — safe to hardcode here
+const SUPABASE_ANON_KEY_STAGING = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZWN5YmxqZmlwbW16enpmbml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NTY4NjAsImV4cCI6MjA5MTAzMjg2MH0.pYqbBfJ7hwgKFgUSjvlhRlaOBIG4RqAgwDVTNUat03w'
 
 async function verifyToken(token: string, env: Bindings): Promise<{ id: string; email: string; supabaseUrl: string } | null> {
-  const urls = [SUPABASE_URL, SUPABASE_URL_STAGING]
-  for (const url of urls) {
+  const candidates = [
+    { url: SUPABASE_URL, apikey: env.SUPABASE_ANON_KEY },
+    { url: SUPABASE_URL_STAGING, apikey: SUPABASE_ANON_KEY_STAGING },
+  ]
+  for (const { url, apikey } of candidates) {
     try {
       const res = await fetch(`${url}/auth/v1/user`, {
         headers: {
-          'apikey': env.SUPABASE_ANON_KEY,
+          'apikey': apikey,
           'Authorization': `Bearer ${token}`,
         },
       })
