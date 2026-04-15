@@ -1070,6 +1070,19 @@
             <span style="color:#444;font-size:0.68rem;">${p.recognized}/${p.total}</span>
           </div>`
         }).join('')
+        // probe_breakdown에 없는 AI는 aiProbe 실시간 결과로 보완 (예: Gemini 신규 추가)
+        if (aiProbe && aiProbe.length) {
+          const coveredAIs = new Set(probe_breakdown.map(p => p.ai))
+          aiProbe.filter(p => !coveredAIs.has(p.ai)).forEach(p => {
+            const lbl = escHtml(probeLabels[p.ai] || p.ai)
+            const color = p.recognized ? (p.recommended ? '#4ade80' : '#FFD700') : '#555'
+            const label = p.recognized ? (p.recommended ? 'Recommended' : 'Known') : 'Unknown'
+            breakdownHtml += `<div style="display:flex;align-items:center;gap:0.5rem;padding:0.25rem 0;">
+              <span style="color:#555;font-size:0.75rem;min-width:80px;">${lbl}</span>
+              <span style="color:${color};font-size:0.75rem;font-weight:600;">${label}</span>
+            </div>`
+          })
+        }
       } else if (aiProbe && aiProbe.length) {
         // fallback: 이번 체크의 실시간 결과
         breakdownHtml = aiProbe.map(p => {
