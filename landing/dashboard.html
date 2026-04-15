@@ -233,8 +233,9 @@
 <!-- DASHBOARD SCREEN -->
 <div id="screen-dashboard" style="display:none;max-width:1280px;margin:0 auto;padding:2rem 3rem;">
 
-  <!-- Announcements / Release Notes -->
-  <div style="background:#0d0d12;border:1px solid #1e1e2e;border-radius:0.75rem;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
+  <!-- Announcements / Release Notes + Beta CTA (merged) -->
+  <div id="beta-banner" style="background:#0d0d12;border:1px solid #1e1e2e;border-radius:0.75rem;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
+    <!-- Changelog header -->
     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
       <span style="font-size:0.55rem;font-family:'Press Start 2P',monospace;color:#555;letter-spacing:0.08em;">CHANGELOG</span>
       <span style="height:1px;flex:1;background:#1e1e2e;"></span>
@@ -242,6 +243,7 @@
     <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
       <span style="font-size:0.7rem;color:#555;">2026-04-15</span>
       <span style="font-size:0.6rem;color:#FFD700;border:1px solid #3a2800;padding:1px 7px;border-radius:10px;font-family:'Press Start 2P',monospace;">Beta Launch</span>
+      <span id="beta-spots-badge" style="font-size:0.7rem;color:#666;"></span>
     </div>
     <p style="font-size:0.9rem;color:#ddd;font-weight:600;margin:0 0 0.5rem;">Welcome to the pickedby.ai Beta</p>
     <p style="font-size:0.82rem;color:#888;line-height:1.6;margin:0 0 0.75rem;">We're looking for 100 beta testers to help shape what this becomes.</p>
@@ -250,29 +252,19 @@
       <div><span style="color:#FFD700;">+</span> Direct line to the founder. Your feedback gets read and acted on.</div>
       <div><span style="color:#FFD700;">+</span> Early access to features before public release</div>
     </div>
-    <p style="font-size:0.72rem;color:#444;line-height:1.6;margin:0;border-top:1px solid #1e1e2e;padding-top:0.75rem;">During beta, the site and features may update without prior notice. Scores may change as we improve the engine. Some things will break — we'll fix them fast.</p>
-  </div>
-
-  <!-- Beta Banner (hidden by default, shown when status=none) -->
-  <div id="beta-banner" style="display:none;background:linear-gradient(135deg,#1a1200 0%,#0f0f0f 100%);border:1px solid #3a2800;border-radius:0.75rem;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
-      <div style="flex:1;min-width:200px;">
-        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;">
-          <span style="font-size:0.65rem;font-family:'Press Start 2P',monospace;color:#FFD700;letter-spacing:0.05em;">BETA PROGRAM</span>
-          <span id="beta-spots-badge" style="font-size:0.7rem;color:#888;"></span>
-        </div>
-        <p style="font-size:0.88rem;color:#ddd;margin:0 0 0.5rem;">Get early access to Analytics & Alerts — Phase 2 features launching next. <strong style="color:#FFD700;">100 spots only.</strong></p>
-        <p style="font-size:0.72rem;color:#555;margin:0 0 0.75rem;">🎁 Beta members get free access forever — even after we launch paid plans.</p>
-        <label style="display:flex;align-items:flex-start;gap:0.5rem;cursor:pointer;font-size:0.78rem;color:#888;">
-          <input type="checkbox" id="beta-terms-check" style="margin-top:2px;accent-color:#FFD700;flex-shrink:0;" />
-          <span>I agree to receive product update emails and provide feedback as an early beta tester.</span>
-        </label>
-      </div>
-      <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
+    <!-- Beta CTA (shown when status=none) -->
+    <div id="beta-cta-section" style="display:none;border-top:1px solid #1e1e2e;padding-top:1rem;margin-top:0.25rem;">
+      <label style="display:flex;align-items:flex-start;gap:0.5rem;cursor:pointer;font-size:0.78rem;color:#888;margin-bottom:0.75rem;">
+        <input type="checkbox" id="beta-terms-check" style="margin-top:2px;accent-color:#FFD700;flex-shrink:0;" />
+        <span>I agree to receive product update emails and provide feedback as an early beta tester.</span>
+      </label>
+      <div style="display:flex;align-items:center;gap:0.75rem;">
         <button id="beta-join-btn" onclick="betaJoin()" style="background:#FFD700;color:#0a0a0a;font-weight:700;padding:0.6rem 1.25rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:0.85rem;white-space:nowrap;">Join Beta</button>
         <button onclick="betaDecline()" style="background:none;border:none;color:#555;font-size:0.75rem;cursor:pointer;padding:0.25rem;font-family:inherit;white-space:nowrap;">Not now</button>
       </div>
     </div>
+    <!-- Disclaimer -->
+    <p style="font-size:0.72rem;color:#444;line-height:1.6;margin:0.75rem 0 0;border-top:1px solid #1e1e2e;padding-top:0.75rem;">During beta, the site and features may update without prior notice. Scores may change as we improve the engine. Some things will break — we'll fix them fast.</p>
   </div>
 
   <!-- Beta Joined Confirmation (hidden by default) -->
@@ -814,23 +806,20 @@
 
   function renderBetaBanner(data) {
     const { status, count, spots_left } = data
-    const banner = document.getElementById('beta-banner')
+    const ctaSection = document.getElementById('beta-cta-section')
     const joinedMsg = document.getElementById('beta-joined-msg')
 
     if (status === 'joined') {
-      banner.style.display = 'none'
+      ctaSection.style.display = 'none'
       joinedMsg.style.display = 'block'
     } else if (status === 'declined') {
-      banner.style.display = 'none'
+      ctaSection.style.display = 'none'
       joinedMsg.style.display = 'none'
     } else {
-      banner.style.display = 'block'
+      ctaSection.style.display = 'block'
       joinedMsg.style.display = 'none'
-      // Spots
-      const pct = Math.min(100, Math.round((count / 100) * 100))
-      document.getElementById('beta-spots-fill').style.width = pct + '%'
-      document.getElementById('beta-spots-text').textContent = `${count}/100`
-      document.getElementById('beta-spots-badge').textContent = `${spots_left} spot${spots_left !== 1 ? 's' : ''} left`
+      const badge = document.getElementById('beta-spots-badge')
+      if (badge && spots_left != null) badge.textContent = `${spots_left} spot${spots_left !== 1 ? 's' : ''} left`
     }
   }
 
@@ -857,7 +846,7 @@
       })
       if (res.ok) {
         betaStatus = 'joined'
-        document.getElementById('beta-banner').style.display = 'none'
+        document.getElementById('beta-cta-section').style.display = 'none'
         document.getElementById('beta-joined-msg').style.display = 'block'
       } else {
         btn.disabled = false
@@ -875,7 +864,7 @@
     const token = session?.data?.session?.access_token
     if (!token) return
 
-    document.getElementById('beta-banner').style.display = 'none'
+    document.getElementById('beta-cta-section').style.display = 'none'
     betaStatus = 'declined'
 
     try {
