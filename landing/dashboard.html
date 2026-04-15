@@ -949,6 +949,8 @@
     const bc = document.getElementById('btn-save-comp')
     if (bm) { bm.textContent = '+ Save to My Products'; bm.disabled = false; bm.style.color = ''; bm.style.borderColor = ''; bm.style.display = '' }
     if (bc) { bc.textContent = '+ Save as Competitor'; bc.disabled = false; bc.style.color = ''; bc.style.borderColor = ''; bc.style.display = '' }
+    const mm = document.getElementById('mine-registered-msg'); if (mm) mm.remove()
+    const cm = document.getElementById('comp-registered-msg'); if (cm) cm.remove()
   }
 
   function showResult(data) {
@@ -1014,13 +1016,32 @@
     const fbCta = document.getElementById('feedback-cta')
     if (fbCta) { fbCta.style.display = 'block'; document.getElementById('feedback-ask').style.display = 'flex'; document.getElementById('feedback-comment').style.display = 'none'; document.getElementById('feedback-thanks').style.display = 'none'; }
 
-    // Hide Save buttons if product is already registered
+    // Show status message if product is already registered, hide Save button
     const mineSet = getMineSet()
     const compSet = getCompSet()
     const btnMine = document.getElementById('btn-save-mine')
     const btnComp = document.getElementById('btn-save-comp')
-    if (btnMine) btnMine.style.display = mineSet.has(product) ? 'none' : ''
-    if (btnComp) btnComp.style.display = compSet.has(product) ? 'none' : ''
+    const prod = product
+    if (btnMine) {
+      if (mineSet.has(prod)) {
+        btnMine.style.display = 'none'
+        btnMine.insertAdjacentHTML('afterend', '<span id="mine-registered-msg" style="font-size:0.8rem;color:#4ade80;">✅ Already in My Products</span>')
+      } else {
+        btnMine.style.display = ''
+        const existMsg = document.getElementById('mine-registered-msg')
+        if (existMsg) existMsg.remove()
+      }
+    }
+    if (btnComp) {
+      if (compSet.has(prod)) {
+        btnComp.style.display = 'none'
+        btnComp.insertAdjacentHTML('afterend', '<span id="comp-registered-msg" style="font-size:0.8rem;color:#f59e0b;">✅ Already in Competitors</span>')
+      } else {
+        btnComp.style.display = ''
+        const existMsg = document.getElementById('comp-registered-msg')
+        if (existMsg) existMsg.remove()
+      }
+    }
   }
 
   // ENGINE-05 dimension row with score bar
