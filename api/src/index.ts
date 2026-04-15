@@ -1363,6 +1363,14 @@ app.post('/v1/unsubscribe', async (c) => {
   return c.json({ ok: true })
 })
 
+// ── Manual cron trigger (admin only) ───────────────────────────
+app.post('/v1/admin/run-cron', async (c) => {
+  const auth = c.req.header('X-Admin-Key')
+  if (auth !== c.env.SUPABASE_SERVICE_KEY) return c.json({ error: 'unauthorized' }, 401)
+  await dailyRefresh(c.env)
+  return c.json({ ok: true, message: 'daily refresh complete' })
+})
+
 export default {
   fetch: app.fetch,
   async scheduled(_event: ScheduledEvent, env: Bindings, ctx: ExecutionContext) {
