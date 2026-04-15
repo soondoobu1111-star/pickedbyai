@@ -908,8 +908,8 @@
     const url = document.getElementById('input-url').value.trim()
     if (!product) { document.getElementById('input-product').focus(); return }
 
-    // Rate limit: 로그인 상태일 때만 적용
-    if (currentUser) {
+    // Rate limit: 로그인 상태일 때만 적용 (스테이징에서는 비활성화)
+    if (currentUser && !IS_STAGING) {
       const isMine = activeTab === 'mine'
       const rl = checkRateLimit(product, isMine)
       if (rl.blocked) {
