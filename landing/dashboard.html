@@ -684,7 +684,50 @@
     document.getElementById('delete-confirm-wrap').classList.remove('show')
     document.getElementById('delete-confirm-input').value = ''
     document.getElementById('delete-final-btn').classList.remove('ready')
+    // 베타 상태 표시
+    const isJoined = betaStatus === 'joined'
+    document.getElementById('settings-beta-joined').style.display = isJoined ? 'block' : 'none'
+    document.getElementById('settings-beta-not-joined').style.display = isJoined ? 'none' : 'block'
     document.getElementById('settings-overlay').classList.add('open')
+  }
+
+  async function settingsBetaCancel() {
+    const session = await sb.auth.getSession()
+    const token = session?.data?.session?.access_token
+    if (!token) return
+    try {
+      const res = await fetch(`${API_URL}/v1/beta/decline`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      })
+      if (res.ok) {
+        betaStatus = 'declined'
+        document.getElementById('settings-beta-joined').style.display = 'none'
+        document.getElementById('settings-beta-not-joined').style.display = 'block'
+        document.getElementById('beta-cta-section').style.display = 'block'
+        document.getElementById('beta-joined-msg').style.display = 'none'
+      }
+    } catch (err) { console.error('[beta cancel]', err) }
+  }
+
+  async function settingsBetaJoin() {
+    const session = await sb.auth.getSession()
+    const token = session?.data?.session?.access_token
+    if (!token) return
+    try {
+      const res = await fetch(`${API_URL}/v1/beta/join`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ terms_agreed: true }),
+      })
+      if (res.ok) {
+        betaStatus = 'joined'
+        document.getElementById('settings-beta-joined').style.display = 'block'
+        document.getElementById('settings-beta-not-joined').style.display = 'none'
+        document.getElementById('beta-cta-section').style.display = 'none'
+        document.getElementById('beta-joined-msg').style.display = 'block'
+      }
+    } catch (err) { console.error('[beta join settings]', err) }
   }
 
   function closeSettings() {
@@ -2292,6 +2335,25 @@
           </label>
           <span class="toggle-label" id="settings-marketing-label">Off</span>
         </div>
+      </div>
+    </div>
+
+    <!-- Beta Program -->
+    <div class="settings-section" id="settings-beta-section">
+      <div class="settings-section-label">BETA PROGRAM</div>
+      <div id="settings-beta-joined" style="display:none;">
+        <div class="settings-row" style="margin-bottom:0.5rem;">
+          <div>
+            <div class="settings-row-label">Beta tester</div>
+            <div style="font-size:0.75rem;color:#555;margin-top:2px;">You have lifetime free access to Phase 2</div>
+          </div>
+          <span style="font-size:0.7rem;color:#FFD700;border:1px solid #3a2800;padding:2px 8px;border-radius:10px;">Active</span>
+        </div>
+        <button onclick="settingsBetaCancel()" style="background:none;border:1px solid #2a2a2a;color:#888;padding:0.45rem 0.9rem;border-radius:8px;cursor:pointer;font-size:0.78rem;font-family:inherit;transition:all 0.15s;margin-top:0.25rem;" onmouseover="this.style.borderColor='#555';this.style.color='#ccc'" onmouseout="this.style.borderColor='#2a2a2a';this.style.color='#888'">Cancel beta participation</button>
+      </div>
+      <div id="settings-beta-not-joined" style="display:none;">
+        <div style="font-size:0.82rem;color:#888;margin-bottom:0.75rem;line-height:1.5;">Join the beta to get lifetime free access to Phase 2 features.</div>
+        <button onclick="settingsBetaJoin()" style="background:#FFD700;color:#0a0a0a;font-weight:700;padding:0.5rem 1rem;border-radius:8px;border:none;cursor:pointer;font-size:0.82rem;font-family:inherit;">Join Beta</button>
       </div>
     </div>
 
