@@ -300,6 +300,7 @@
     </div>
     <div id="result-dimensions"></div>
     <div id="result-ai-probe" style="display:none;"></div>
+    <div id="result-owner-lock" style="display:none;"></div>
     <p id="result-grounded-note" style="font-size:0.72rem;color:#555;margin-top:0.75rem;display:none;">
       ℹ️ Results based on AI training data only (real-time search unavailable in your region).
     </p>
@@ -633,6 +634,7 @@
 
   let currentUser = null
   let lastCheckResult = null
+  let verifiedDomains = []   // [{ domain_url, product_name, status, sdk_installed, llms_installed }]
   let activeTab = 'mine'
   // All loaded history rows (latest per product)
   let allProducts = []
@@ -811,6 +813,33 @@
     if (ddEmail) ddEmail.textContent = emailHint
     loadHistory()
     loadBetaStatus()
+    loadVerifiedDomains()
+  }
+
+  async function loadVerifiedDomains() {
+    try {
+      const { data: { session } } = await sb.auth.getSession()
+      if (!session) return
+      const res = await fetch(`${API_URL}/v1/domains/list`, {
+        headers: { 'Authorization': `Bearer ${session.access_token}` },
+      })
+      if (!res.ok) return
+      const data = await res.json()
+      verifiedDomains = (data.domains || []).filter(d => d.status === 'verified')
+    } catch { /* non-critical */ }
+  }
+
+  function isOwnedDomain(productUrl) {
+    if (!productUrl || !verifiedDomains.length) return null
+    try {
+      const inputHost = new URL(productUrl.startsWith('http') ? productUrl : 'https://' + productUrl).hostname.replace(/^www\./, '')
+      return verifiedDomains.find(d => {
+        try {
+          const ownHost = new URL(d.domain_url).hostname.replace(/^www\./, '')
+          return inputHost === ownHost
+        } catch { return false }
+      }) || null
+    } catch { return null }
   }
 
   function maskEmail(email) {
@@ -1127,6 +1156,67 @@
     // Grounding note
     const hasUngrounded = (results || []).some(r => !r.grounded)
     document.getElementById('result-grounded-note').style.display = hasUngrounded ? 'block' : 'none'
+
+    // 🔒 Owner-only data section
+    const ownerLockEl = document.getElementById('result-owner-lock')
+    if (ownerLockEl) {
+      const checkedUrl = document.getElementById('url-input')?.value?.trim() || ''
+      const ownedDomain = isOwnedDomain(checkedUrl)
+      if (ownedDomain) {
+        // 소유자 — 잠금 해제 UI (향후 실제 데이터 연결)
+        ownerLockEl.innerHTML = `
+          <div style="margin-top:1rem;padding:0.75rem 1rem;background:#111;border:1px solid #1a3a1a;border-radius:8px;">
+            <div style="font-size:0.7rem;color:#4ade80;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">🔓 OWNER DATA — ${escHtml(ownedDomain.product_name)}</div>
+            <div style="font-size:0.75rem;color:#555;line-height:1.8;">
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
+                <span>Query Coverage</span><span style="color:#888;">Coming soon</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
+                <span>co_recommendations</span><span style="color:#888;">Coming soon</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
+                <span>Weekly Trend</span><span style="color:#888;">Coming soon</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:0.25rem 0;">
+                <span>Improvement Guide</span><span style="color:#888;">Coming soon</span>
+              </div>
+            </div>
+            ${!ownedDomain.sdk_installed ? `
+            <div style="margin-top:0.75rem;padding:0.6rem 0.75rem;background:#0d1a0d;border:1px solid #1a3a1a;border-radius:6px;font-size:0.72rem;">
+              🚀 <strong style="color:#4ade80;">Track real AI referral traffic</strong> —
+              <a href="/register" style="color:#FFD700;text-decoration:underline;">Install SDK</a>
+            </div>` : ''}
+          </div>`
+        ownerLockEl.style.display = 'block'
+      } else {
+        // 비소유자 — 잠금 UI + 등록 CTA
+        const displayUrl = checkedUrl || data?.product || ''
+        const ctaUrl = '/register' + (checkedUrl ? `?url=${encodeURIComponent(checkedUrl)}` : '')
+        ownerLockEl.innerHTML = `
+          <div style="margin-top:1rem;padding:0.75rem 1rem;background:#111;border:1px solid #222;border-radius:8px;">
+            <div style="font-size:0.7rem;color:#555;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">🔒 OWNER-ONLY DATA</div>
+            <div style="font-size:0.75rem;color:#333;line-height:1.8;">
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
+                <span>Query Coverage</span><span>---</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
+                <span>co_recommendations</span><span>---</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
+                <span>Weekly Score Trend</span><span>---</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:0.25rem 0;">
+                <span>Improvement Guide TOP 3</span><span>---</span>
+              </div>
+            </div>
+            <div style="margin-top:0.75rem;padding:0.6rem 0.75rem;background:#1a1400;border:1px solid #3a2a00;border-radius:6px;font-size:0.75rem;display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
+              <span style="color:#888;">Is this your product?</span>
+              <a href="${ctaUrl}" style="background:#FFD700;color:#0a0a0a;padding:0.35rem 0.9rem;border-radius:5px;font-weight:700;font-size:0.72rem;text-decoration:none;white-space:nowrap;">Verify ownership →</a>
+            </div>
+          </div>`
+        ownerLockEl.style.display = 'block'
+      }
+    }
 
     document.getElementById('check-result').style.display = 'block'
     // Show non-logged CTAs

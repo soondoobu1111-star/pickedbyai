@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register Your Product — pickedby.ai</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <style>
+    body { background: #0a0a0a; color: #f5f5f5; font-family: 'Inter', sans-serif; }
+    .logo-font { font-family: 'Press Start 2P', monospace; }
+    .gold { color: #FFD700; }
+    .card { background: #111; border: 1px solid #222; border-radius: 12px; }
+    .btn-primary { background: #FFD700; color: #0a0a0a; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; transition: opacity 0.2s; }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-ghost { background: transparent; color: #FFD700; border: 1px solid #333; border-radius: 8px; cursor: pointer; transition: all 0.2s; }
+    .btn-ghost:hover { border-color: #FFD700; }
+    .input-field { background: #1a1a1a; border: 1px solid #333; border-radius: 8px; color: #f5f5f5; outline: none; transition: border-color 0.2s; }
+    .input-field:focus { border-color: #FFD700; }
+    .input-field::placeholder { color: #555; }
+    .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; }
+    .step-dot.active { background: #FFD700; color: #0a0a0a; }
+    .step-dot.done { background: #4ade80; color: #0a0a0a; }
+    .step-dot.inactive { background: #222; color: #555; }
+    .tab-btn { padding: 0.5rem 1.2rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: 1px solid #333; transition: all 0.2s; }
+    .tab-btn.active { background: #FFD700; color: #0a0a0a; border-color: #FFD700; }
+    .tab-btn.inactive { background: transparent; color: #888; }
+    .code-box { background: #0d0d0d; border: 1px solid #2a2a2a; border-radius: 8px; font-family: monospace; font-size: 0.8rem; color: #4ade80; word-break: break-all; }
+    .copy-btn { background: #1a1a1a; border: 1px solid #333; border-radius: 6px; color: #888; font-size: 0.75rem; cursor: pointer; transition: all 0.2s; }
+    .copy-btn:hover { border-color: #FFD700; color: #FFD700; }
+    .error-box { background: #1a0a0a; border: 1px solid #ef4444; border-radius: 8px; color: #ef4444; }
+    .success-box { background: #0a1a0a; border: 1px solid #4ade80; border-radius: 8px; color: #4ade80; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- Nav -->
+  <nav class="flex items-center justify-between px-6 py-4 border-b border-[#1a1a1a]">
+    <a href="/" class="logo-font text-xs gold" style="font-size:0.6rem;">pickedby.ai</a>
+    <a href="/dashboard" class="text-sm text-[#888] hover:text-white transition-colors">← Back to Dashboard</a>
+  </nav>
+
+  <!-- Main -->
+  <main class="max-w-lg mx-auto px-4 py-12">
+
+    <!-- Step Indicator -->
+    <div class="flex items-center gap-3 mb-10" id="step-indicator">
+      <div class="step-dot active" id="dot-1">1</div>
+      <div class="h-px flex-1" style="background:#222;" id="line-1"></div>
+      <div class="step-dot inactive" id="dot-2">2</div>
+      <div class="flex flex-col ml-2">
+        <span class="text-xs text-[#888]" id="step-label">Step 1 of 2</span>
+      </div>
+    </div>
+
+    <!-- STEP 1: 제품 등록 -->
+    <div id="step-1">
+      <h1 class="text-2xl font-bold mb-2">Register Your Product</h1>
+      <p class="text-[#888] text-sm mb-8">Track your AI visibility with owner-level insights.</p>
+
+      <div class="card p-6 space-y-5">
+        <div>
+          <label class="block text-sm font-semibold mb-2">Product Name <span class="text-[#ef4444]">*</span></label>
+          <input id="input-name" type="text" placeholder="e.g. Notion, Figma, pickedby.ai"
+            class="input-field w-full px-4 py-3 text-sm" maxlength="80" />
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-2">Product URL <span class="text-[#ef4444]">*</span></label>
+          <input id="input-url" type="url" placeholder="https://yourproduct.com"
+            class="input-field w-full px-4 py-3 text-sm" />
+          <p class="text-xs text-[#555] mt-2">Ownership will be verified via this URL.</p>
+        </div>
+        <div id="step1-error" class="error-box px-4 py-3 text-sm hidden"></div>
+        <button id="btn-continue" class="btn-primary w-full py-3 text-sm" onclick="goToStep2()">
+          Continue →
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 2: 소유자 확인 -->
+    <div id="step-2" class="hidden">
+      <h1 class="text-2xl font-bold mb-2">Verify Ownership</h1>
+      <p class="text-[#888] text-sm mb-1">Proving you own <span id="display-domain" class="text-white font-semibold"></span></p>
+      <p class="text-xs text-[#555] mb-8">Token must remain on your site. Removing it will revoke access.</p>
+
+      <!-- Tabs -->
+      <div class="flex gap-2 mb-6">
+        <button class="tab-btn active" id="tab-meta" onclick="switchTab('meta')">Meta Tag</button>
+        <button class="tab-btn inactive" id="tab-json" onclick="switchTab('json')">JSON File</button>
+      </div>
+
+      <!-- Meta Tag 탭 -->
+      <div id="panel-meta" class="card p-6 space-y-5">
+        <div>
+          <p class="text-sm font-semibold mb-3">1. Add this tag inside your <code class="text-[#FFD700]">&lt;head&gt;</code>:</p>
+          <div class="code-box p-4 relative">
+            <pre id="meta-snippet" class="text-xs whitespace-pre-wrap leading-relaxed"></pre>
+            <button class="copy-btn absolute top-3 right-3 px-3 py-1" onclick="copyText('meta-snippet', this)">📋 Copy</button>
+          </div>
+        </div>
+        <div class="text-xs text-[#555] leading-relaxed">
+          <span class="text-[#888]">2.</span> Deploy the change so it's publicly accessible.<br>
+          <span class="text-[#888]">3.</span> Click Verify below.
+        </div>
+      </div>
+
+      <!-- JSON File 탭 -->
+      <div id="panel-json" class="card p-6 space-y-5 hidden">
+        <div>
+          <p class="text-sm font-semibold mb-1">1. Create this file:</p>
+          <p class="text-xs text-[#FFD700] mb-3" id="json-path"></p>
+          <p class="text-sm font-semibold mb-3">2. File contents:</p>
+          <div class="code-box p-4 relative">
+            <pre id="json-snippet" class="text-xs whitespace-pre-wrap leading-relaxed"></pre>
+            <button class="copy-btn absolute top-3 right-3 px-3 py-1" onclick="copyText('json-snippet', this)">📋 Copy</button>
+          </div>
+        </div>
+        <div class="text-xs text-[#555] leading-relaxed">
+          <span class="text-[#888]">3.</span> Deploy so the file is publicly accessible.<br>
+          <span class="text-[#888]">4.</span> Click Verify below.
+        </div>
+      </div>
+
+      <div id="step2-error" class="error-box px-4 py-3 text-sm hidden mt-4"></div>
+
+      <div class="flex gap-3 mt-6">
+        <button class="btn-ghost flex-1 py-3 text-sm" onclick="goToStep1()">← Back</button>
+        <button id="btn-verify" class="btn-primary flex-1 py-3 text-sm" onclick="verifyOwnership()">
+          Verify Now ✓
+        </button>
+      </div>
+
+      <p class="text-xs text-[#555] text-center mt-4">
+        ⚠️ Token must remain on your site (Google Search Console policy)
+      </p>
+    </div>
+
+    <!-- 완료 -->
+    <div id="step-done" class="hidden text-center">
+      <div class="text-5xl mb-6">✅</div>
+      <h1 class="text-2xl font-bold mb-3">Ownership Verified!</h1>
+      <p class="text-[#888] text-sm mb-8">You now have full access to owner-level insights for <span id="done-domain" class="text-white font-semibold"></span>.</p>
+      <a href="/dashboard" class="btn-primary inline-block px-8 py-3 text-sm no-underline">
+        Go to Dashboard →
+      </a>
+    </div>
+
+  </main>
+
+  <script>
+    const IS_STAGING = window.location.hostname.includes('staging')
+    const SUPABASE_URL_FE = IS_STAGING
+      ? 'https://xzecybljfipmzzzzfnit.supabase.co'
+      : 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
+    const SUPABASE_ANON_KEY = IS_STAGING
+      ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZWN5YmxqZmlwbW16enpmbml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NTY4NjAsImV4cCI6MjA5MTAzMjg2MH0.pYqbBfJ7hwgKFgUSjvlhRlaOBIG4RqAgwDVTNUat03w'
+      : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmcmNwcGdlY3FzYm5oa2tqa2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjQ5OTQsImV4cCI6MjA5MDkwMDk5NH0.cxBUHjJoSEPJ7IilidxpVfCjS0SFmLFNWCeq92W0fUI'
+    const API_URL = IS_STAGING
+      ? 'https://pickedbyai-api-staging.perceptdot.workers.dev'
+      : 'https://api.pickedby.ai'
+
+    const { createClient } = window.supabase
+    const sb = createClient(SUPABASE_URL_FE, SUPABASE_ANON_KEY)
+
+    let registeredDomainId = null
+    let verificationToken = null
+    let domainUrl = null
+
+    // 로그인 체크
+    async function getSession() {
+      const { data } = await sb.auth.getSession()
+      return data.session
+    }
+
+    // Step 1 → Step 2
+    async function goToStep2() {
+      const name = document.getElementById('input-name').value.trim()
+      const url = document.getElementById('input-url').value.trim()
+      const errEl = document.getElementById('step1-error')
+      errEl.classList.add('hidden')
+
+      if (!name || !url) {
+        errEl.textContent = 'Both fields are required.'
+        errEl.classList.remove('hidden')
+        return
+      }
+      if (!/^https?:\/\/.+/.test(url) && !/^[a-zA-Z0-9]/.test(url)) {
+        errEl.textContent = 'Please enter a valid URL.'
+        errEl.classList.remove('hidden')
+        return
+      }
+
+      const session = await getSession()
+      if (!session) {
+        window.location.href = '/dashboard'
+        return
+      }
+
+      const btn = document.getElementById('btn-continue')
+      btn.disabled = true
+      btn.textContent = 'Registering...'
+
+      try {
+        const res = await fetch(`${API_URL}/v1/domains/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ product_name: name, domain_url: url }),
+        })
+        const data = await res.json()
+        if (!res.ok) {
+          errEl.textContent = data.error || 'Registration failed.'
+          errEl.classList.remove('hidden')
+          return
+        }
+
+        registeredDomainId = data.id
+        verificationToken = data.verification_token
+        domainUrl = data.domain_url
+
+        // Step 2 UI 채우기
+        const displayDomain = domainUrl.replace('https://', '').replace('http://', '')
+        document.getElementById('display-domain').textContent = displayDomain
+        document.getElementById('done-domain').textContent = displayDomain
+        document.getElementById('json-path').textContent = `${domainUrl}/.well-known/pickedby.json`
+        document.getElementById('meta-snippet').textContent =
+          `<meta name="pickedby-site-verification"\n      content="${verificationToken}" />`
+        document.getElementById('json-snippet').textContent =
+          JSON.stringify({ verification: verificationToken }, null, 2)
+
+        document.getElementById('step-1').classList.add('hidden')
+        document.getElementById('step-2').classList.remove('hidden')
+        document.getElementById('dot-1').className = 'step-dot done'
+        document.getElementById('dot-1').textContent = '✓'
+        document.getElementById('dot-2').className = 'step-dot active'
+        document.getElementById('step-label').textContent = 'Step 2 of 2'
+
+      } catch {
+        errEl.textContent = 'Network error. Please try again.'
+        errEl.classList.remove('hidden')
+      } finally {
+        btn.disabled = false
+        btn.textContent = 'Continue →'
+      }
+    }
+
+    function goToStep1() {
+      document.getElementById('step-2').classList.add('hidden')
+      document.getElementById('step-1').classList.remove('hidden')
+      document.getElementById('dot-1').className = 'step-dot active'
+      document.getElementById('dot-1').textContent = '1'
+      document.getElementById('dot-2').className = 'step-dot inactive'
+      document.getElementById('step-label').textContent = 'Step 1 of 2'
+    }
+
+    function switchTab(tab) {
+      const isMeta = tab === 'meta'
+      document.getElementById('tab-meta').className = `tab-btn ${isMeta ? 'active' : 'inactive'}`
+      document.getElementById('tab-json').className = `tab-btn ${!isMeta ? 'active' : 'inactive'}`
+      document.getElementById('panel-meta').classList.toggle('hidden', !isMeta)
+      document.getElementById('panel-json').classList.toggle('hidden', isMeta)
+    }
+
+    async function copyText(elId, btn) {
+      const text = document.getElementById(elId).textContent
+      await navigator.clipboard.writeText(text)
+      const orig = btn.textContent
+      btn.textContent = '✓ Copied'
+      setTimeout(() => { btn.textContent = orig }, 2000)
+    }
+
+    async function verifyOwnership() {
+      const session = await getSession()
+      if (!session || !registeredDomainId) return
+
+      const errEl = document.getElementById('step2-error')
+      errEl.classList.add('hidden')
+      const btn = document.getElementById('btn-verify')
+      btn.disabled = true
+      btn.textContent = 'Verifying...'
+
+      try {
+        const res = await fetch(`${API_URL}/v1/domains/verify`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({ domain_id: registeredDomainId }),
+        })
+        const data = await res.json()
+
+        if (!res.ok || !data.verified) {
+          errEl.textContent = data.error || 'Verification failed. Check that the token is accessible.'
+          errEl.classList.remove('hidden')
+          return
+        }
+
+        // 완료
+        document.getElementById('step-2').classList.add('hidden')
+        document.getElementById('step-done').classList.remove('hidden')
+        document.getElementById('dot-2').className = 'step-dot done'
+        document.getElementById('dot-2').textContent = '✓'
+
+      } catch {
+        errEl.textContent = 'Network error. Please try again.'
+        errEl.classList.remove('hidden')
+      } finally {
+        btn.disabled = false
+        btn.textContent = 'Verify Now ✓'
+      }
+    }
+
+    // 초기화: 로그인 안 된 경우 대시보드로
+    ;(async () => {
+      const session = await getSession()
+      if (!session) window.location.href = '/dashboard'
+    })()
+  </script>
+</body>
+</html>
