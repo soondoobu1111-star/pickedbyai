@@ -1030,31 +1030,22 @@
       const useProbe = (data.probe_count >= 3) && (data.probe_score >= 0)
       const savedScore = useProbe ? data.probe_score : data.score
       lastCheckResult = { product, url: url || null, score: savedScore, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null }
-      console.log('[SYNC] currentUser:', !!currentUser, 'product:', product, 'rawScore:', data.score, 'probeScore:', data.probe_score, 'savedScore:', savedScore)
-      console.log('[SYNC] allProducts:', allProducts.map(p => p.product_name + ':' + p.score))
       if (currentUser) {
         // Optimistic update: immediately reflect new score in My Products
         const existingIdx = allProducts.findIndex(p => p.product_name === product)
-        console.log('[SYNC] findIndex:', existingIdx)
         if (existingIdx >= 0) {
           allProducts[existingIdx] = {
             ...allProducts[existingIdx],
-            score: data.score,
+            score: savedScore,
             dimensions: data.dimensions || allProducts[existingIdx].dimensions,
             ai_probe: data.aiProbe || allProducts[existingIdx].ai_probe,
             results: data.results || allProducts[existingIdx].results,
             created_at: new Date().toISOString(),
           }
           renderMineTab(allProducts, allHistoryData)
-          console.log('[SYNC] optimistic update done')
         }
         // Persist to DB + reload from DB
-        try {
-          await saveHistory('mine')
-          console.log('[SYNC] DB save OK')
-        } catch(e) {
-          console.error('[SYNC] DB save error:', e)
-        }
+        try { await saveHistory('mine') } catch(e) { /* silent */ }
       }
     } catch (err) {
       alert('Check failed. Please try again.')
