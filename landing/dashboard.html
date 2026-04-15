@@ -1119,71 +1119,34 @@
         ? `Direct AI Measurement <span style="color:#555;font-weight:400;">(${probe_count} probes)</span>`
         : `AI Recognition <span style="color:#555;font-weight:400;">${probe_count > 0 ? `(${probe_count} probe${probe_count>1?'s':''} — collecting...)` : ''}</span>`
 
-      probeContainer.innerHTML = `
-        <div style="margin-top:1rem;padding:0.75rem 1rem;background:#111;border:1px solid #222;border-radius:8px;">
-          <div style="font-size:0.7rem;color:#555;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">${headerLabel}</div>
-          ${breakdownHtml}
-          ${probe_count < 3 ? `<div style="font-size:0.68rem;color:#444;margin-top:0.4rem;">Run more checks to accumulate probe data for a more accurate score.</div>` : ''}
-        </div>`
-      probeContainer.style.display = 'block'
+      // AI probe breakdown lives in My Products panel, not in CAV check result
+      probeContainer.style.display = 'none'
     }
 
     // Grounding note
     const hasUngrounded = (results || []).some(r => !r.grounded)
     document.getElementById('result-grounded-note').style.display = hasUngrounded ? 'block' : 'none'
 
-    // 🔒 Owner-only data section
+    // 🔒 Owner-only data section — CAV shows a CTA to go to My Products (full data lives there)
     const ownerLockEl = document.getElementById('result-owner-lock')
     if (ownerLockEl) {
       const checkedUrl = document.getElementById('input-url')?.value?.trim() || ''
       const ownedDomain = isOwnedDomain(checkedUrl)
       if (ownedDomain) {
-        // 소유자 — 잠금 해제 UI (향후 실제 데이터 연결)
+        // 소유자 — My Products 탭에 상세 데이터 안내
         ownerLockEl.innerHTML = `
-          <div style="margin-top:1rem;padding:0.75rem 1rem;background:#111;border:1px solid #1a3a1a;border-radius:8px;">
-            <div style="font-size:0.7rem;color:#4ade80;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">🔓 OWNER DATA — ${escHtml(ownedDomain.product_name)}</div>
-            <div style="font-size:0.75rem;color:#555;line-height:1.8;">
-              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
-                <span>Query Coverage</span><span style="color:#888;">Coming soon</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
-                <span>co_recommendations</span><span style="color:#888;">Coming soon</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
-                <span>Weekly Trend</span><span style="color:#888;">Coming soon</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;padding:0.25rem 0;">
-                <span>Improvement Guide</span><span style="color:#888;">Coming soon</span>
-              </div>
-            </div>
-            ${!ownedDomain.sdk_installed ? `
-            <div style="margin-top:0.75rem;padding:0.6rem 0.75rem;background:#0d1a0d;border:1px solid #1a3a1a;border-radius:6px;font-size:0.72rem;">
-              🚀 <strong style="color:#4ade80;">Track real AI referral traffic</strong> —
-              <a href="/register" style="color:#FFD700;text-decoration:underline;">Install SDK</a>
-            </div>` : ''}
+          <div style="margin-top:1rem;padding:0.65rem 1rem;background:#0d1a0d;border:1px solid #1a3a1a;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;">
+            <div style="font-size:0.78rem;color:#4ade80;">🔓 Your product — full AI breakdown in <strong>My Products</strong></div>
+            <button onclick="switchTab('mine');event.stopPropagation()" style="background:#FFD700;color:#000;border:none;padding:0.3rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.72rem;font-weight:700;white-space:nowrap;font-family:inherit;">View →</button>
           </div>`
         ownerLockEl.style.display = 'block'
       } else {
-        // 비소유자 — 잠금 UI + 등록 CTA
-        const displayUrl = checkedUrl || data?.product || ''
+        // 비소유자 — 등록 CTA
         const ctaUrl = '/register' + (checkedUrl ? `?url=${encodeURIComponent(checkedUrl)}` : '')
         ownerLockEl.innerHTML = `
-          <div style="margin-top:1rem;padding:0.75rem 1rem;background:#111;border:1px solid #222;border-radius:8px;">
-            <div style="font-size:0.7rem;color:#555;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">🔒 OWNER-ONLY DATA</div>
-            <div style="font-size:0.75rem;color:#333;line-height:1.8;">
-              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
-                <span>Query Coverage</span><span>---</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
-                <span>co_recommendations</span><span>---</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
-                <span>Weekly Score Trend</span><span>---</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;padding:0.25rem 0;">
-                <span>Improvement Guide TOP 3</span><span>---</span>
-              </div>
-            </div>
+          <div style="margin-top:1rem;padding:0.65rem 1rem;background:#111;border:1px dashed #2a2a2a;border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:0.75rem;">
+            <div style="font-size:0.78rem;color:#555;">🔒 Own this product? Register to unlock AI breakdown & trend data</div>
+            <a href="${ctaUrl}" style="background:none;border:1px solid #FFD700;color:#FFD700;padding:0.3rem 0.75rem;border-radius:4px;font-size:0.72rem;font-weight:700;white-space:nowrap;text-decoration:none;">Register →</a>
           </div>`
         ownerLockEl.style.display = 'block'
       }
@@ -1296,14 +1259,12 @@
       .limit(1)
     if (todayCheck && todayCheck.length > 0) {
       const existing = todayCheck[0]
-      if (lastCheckResult.score > existing.score) {
-        await sb.from('scores').update({
-          score: lastCheckResult.score,
-          results: lastCheckResult.results,
-          dimensions: lastCheckResult.dimensions || null,
-          ai_probe: lastCheckResult.aiProbe || null,
-        }).eq('id', existing.id)
-      }
+      await sb.from('scores').update({
+        score: lastCheckResult.score,
+        results: lastCheckResult.results,
+        dimensions: lastCheckResult.dimensions || null,
+        ai_probe: lastCheckResult.aiProbe || null,
+      }).eq('id', existing.id)
       loadHistory()
       return
     }
@@ -1779,6 +1740,23 @@
     const dimsHtml = dims && dims.length
       ? dims.map(d => renderDimRowV5(d)).join('')
       : results.map(r => renderDimRow(r, false)).join('')
+
+    // AI probe breakdown for expanded panel
+    const aiProbeData = row.ai_probe || []
+    const probeLabels = { perplexity: 'Perplexity', gpt: 'ChatGPT', gemini: 'Gemini' }
+    const aiProbeHtml = aiProbeData.length ? `
+      <div style="margin-top:0.75rem;padding:0.75rem 1rem;background:#111;border:1px solid #1e1e1e;border-radius:8px;">
+        <div style="font-size:0.7rem;color:#FFD700;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">Direct AI Measurement</div>
+        ${aiProbeData.map(p => {
+          const lbl = escHtml(probeLabels[p.ai] || p.ai)
+          const color = p.recognized ? (p.recommended ? '#4ade80' : '#FFD700') : '#555'
+          const label = p.recognized ? (p.recommended ? '✓ Recommended' : '◎ Known') : '✗ Unknown'
+          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #1a1a1a;">
+            <span style="color:#888;font-size:0.8rem;">${lbl}</span>
+            <span style="color:${color};font-size:0.8rem;font-weight:600;">${label}</span>
+          </div>`
+        }).join('')}
+      </div>` : ''
     // Momentum: compare latest vs previous check for this product
     const productHistory = allHistoryData
       .filter(r => r.product_name === row.product_name)
@@ -1864,15 +1842,20 @@
             <div class="score-bar-fill" style="width:${Math.round(score/100*100)}%;background:${barColor};"></div>
           </div>
           ${dimsHtml}
+          ${aiProbeHtml}
           ${hasUngrounded ? `<p style="font-size:0.72rem;color:#555;margin-top:0.75rem;">ℹ️ Results based on AI training data only (real-time search unavailable in your region).</p>` : ''}
           ${isMine ? (isVerified ? `
           <div style="margin-top:0.75rem;padding:0.75rem 1rem;background:#111;border:1px solid #1a3a1a;border-radius:8px;">
             <div style="font-size:0.7rem;color:#4ade80;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">🔓 OWNER DATA — ${escHtml(row.product_name)}</div>
             <div style="font-size:0.75rem;color:#555;line-height:1.8;">
-              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>Query Coverage</span><span style="color:#888;">Coming soon</span></div>
-              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>co_recommendations</span><span style="color:#888;">Coming soon</span></div>
-              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>Weekly Trend</span><span style="color:#888;">Coming soon</span></div>
-              <div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>Improvement Guide</span><span style="color:#888;">Coming soon</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
+                <span>Score Momentum</span>
+                <span style="color:${productHistory.length >= 2 ? (score - productHistory[1].score > 0 ? '#4ade80' : score - productHistory[1].score < 0 ? '#ef4444' : '#888') : '#888'};">
+                  ${productHistory.length >= 2 ? (score - productHistory[1].score > 0 ? '↑' + (score - productHistory[1].score) + ' pts vs last check' : score - productHistory[1].score < 0 ? '↓' + Math.abs(score - productHistory[1].score) + ' pts vs last check' : 'No change') : 'First check'}
+                </span>
+              </div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>co_recommendations graph</span><span style="color:#333;">Collecting data...</span></div>
+              <div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>Query Coverage</span><span style="color:#333;">Collecting data...</span></div>
             </div>
             <div style="margin-top:0.75rem;padding:0.6rem 0.75rem;background:#0d1a0d;border:1px solid #1a3a1a;border-radius:6px;font-size:0.72rem;">
               🚀 <strong style="color:#4ade80;">Track real AI referral traffic</strong> — <a href="/register" style="color:#FFD700;text-decoration:underline;">Install SDK</a>
