@@ -538,7 +538,6 @@ async function logProbes(
   probes: AIProbeResult[],
   opts: { userId?: string; productUrl?: string; triggerType: 'manual' | 'cron'; startMs: number }
 ) {
-  console.log(`[ProbeLog] called with ${probes.length} probes for "${productName}", hasKey=${!!env.SUPABASE_SERVICE_KEY}`)
   if (!probes.length) return
   const rows = probes.map(p => ({
     product_id: productName,
