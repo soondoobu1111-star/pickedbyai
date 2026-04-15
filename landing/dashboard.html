@@ -762,6 +762,7 @@
     const ddEmail = document.getElementById('nav-dropdown-email')
     if (ddEmail) ddEmail.textContent = emailHint
     loadHistory()
+    loadBetaStatus()
   }
 
   function maskEmail(email) {
@@ -772,6 +773,31 @@
 
   // ── Beta Program ───────────────────────────────────────────
   let betaStatus = 'none'
+
+  async function loadBetaStatus() {
+    const session = await sb.auth.getSession()
+    const token = session?.data?.session?.access_token
+    if (!token) {
+      // No token — show banner anyway (default to none)
+      renderBetaBanner({ status: 'none', count: 0, spots_left: 100 })
+      return
+    }
+    try {
+      const res = await fetch(`${API_URL}/v1/beta/status`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      })
+      if (!res.ok) {
+        renderBetaBanner({ status: 'none', count: 0, spots_left: 100 })
+        return
+      }
+      const data = await res.json()
+      betaStatus = data.status
+      renderBetaBanner(data)
+    } catch (err) {
+      console.error('[beta status]', err)
+      renderBetaBanner({ status: 'none', count: 0, spots_left: 100 })
+    }
+  }
 
   function renderBetaBanner(data) {
     const { status, count, spots_left } = data
