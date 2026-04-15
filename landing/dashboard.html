@@ -1027,11 +1027,8 @@
       const data = await res.json()
       showResult(data)
       lastCheckResult = { product, url: url || null, score: data.score, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null }
-      // Auto-save: if logged in and (owned domain URL OR product already in history)
-      if (currentUser && (
-        (url && isOwnedDomain(url)) ||
-        (allProducts && allProducts.some(p => p.product_name === product))
-      )) {
+      // Auto-save: always save when logged in (update existing, or insert if new product within 5-slot limit)
+      if (currentUser) {
         saveHistory('mine').catch(() => {})
       }
     } catch (err) {
@@ -1212,7 +1209,7 @@
     if (!distinctProducts.includes(lastCheckResult.product) && distinctProducts.length >= 5) {
       return  // Max 5 products reached — silently skip
     }
-    const { error } = await sb.from('scores').insert({
+    await sb.from('scores').insert({
       user_id: currentUser.id,
       product_name: lastCheckResult.product,
       product_url: lastCheckResult.url,
@@ -1221,10 +1218,7 @@
       dimensions: lastCheckResult.dimensions || null,
       ai_probe: lastCheckResult.aiProbe || null,
     })
-    if (!error) {
-      setSavedBtn()
-      loadHistory()
-    }
+    loadHistory()
   }
 
   function setSavedBtn() { /* no-op: save button removed */ }
