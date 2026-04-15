@@ -660,6 +660,70 @@ async function runEngine(env: Bindings, name: string, url?: string) {
   return { results, score, maxScore: 100, product: name, dimensions, sources: sources.slice(0, 15), aiProbe: aiProbes }
 }
 
+// ── ENGINE-06: co_recommendations 추출 ────────────────────────
+function extractCoRecommendations(responseText: string, targetProduct: string): string[] {
+  if (!responseText || responseText.length < 10) return []
+  const target = targetProduct.toLowerCase()
+  const found = new Set<string>()
+
+  // 패턴 1: "1. ProductName" / "2. ProductName -" 형식
+  const numbered = /^\s*\d+[\.\)]\s+([A-Z][A-Za-z0-9\s\.\-]{1,40}?)(?:\s*[-–:,\n]|$)/gm
+  let m: RegExpExecArray | null
+  while ((m = numbered.exec(responseText)) !== null) {
+    const c = m[1].trim()
+    if (c.toLowerCase() !== target && c.length > 1 && c.length < 40) found.add(c)
+  }
+
+  // 패턴 2: "like X, Y, and Z" / "including X, Y" / "recommend X"
+  const inline = /(?:like|including|such as|recommend(?:ed)?|try|use|consider)\s+([A-Z][A-Za-z0-9\s\.\-]{1,30}?)(?:\s*[,;]|\s+and\s+([A-Z][A-Za-z0-9\s\.\-]{1,30}?))?/g
+  while ((m = inline.exec(responseText)) !== null) {
+    [m[1], m[2]].forEach(c => {
+      if (c) { const t = c.trim(); if (t.toLowerCase() !== target && t.length > 1 && t.length < 40) found.add(t) }
+    })
+  }
+
+  return [...found].slice(0, 8)
+}
+
+// ── ENGINE-06: Probe 로그 기반 스코어 조회 ──────────────────────
+async function getProbeScore(env: Bindings, productName: string): Promise<{
+  probe_score: number
+  probe_count: number
+  probe_breakdown: Array<{ ai: string; recognized: number; total: number; rate: number }>
+}> {
+  const empty = { probe_score: -1, probe_count: 0, probe_breakdown: [] }
+  if (!env.SUPABASE_SERVICE_KEY) return empty
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/probe_logs?product_id=eq.${encodeURIComponent(productName)}&select=ai_source,recognized&order=created_at.desc&limit=100`,
+      { headers: { 'apikey': env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${env.SUPABASE_SERVICE_KEY}` } }
+    )
+    if (!res.ok) return empty
+    const logs: Array<{ ai_source: string; recognized: boolean }> = await res.json()
+    const valid = logs.filter(l => l.ai_source !== 'test')
+    if (!valid.length) return empty
+
+    const recognized = valid.filter(l => l.recognized).length
+    const probe_score = Math.round((recognized / valid.length) * 100)
+
+    const byAI: Record<string, { recognized: number; total: number }> = {}
+    for (const log of valid) {
+      if (!byAI[log.ai_source]) byAI[log.ai_source] = { recognized: 0, total: 0 }
+      byAI[log.ai_source].total++
+      if (log.recognized) byAI[log.ai_source].recognized++
+    }
+    const probe_breakdown = Object.entries(byAI).map(([ai, s]) => ({
+      ai, recognized: s.recognized, total: s.total, rate: Math.round((s.recognized / s.total) * 100)
+    }))
+
+    console.log(`[ENGINE-06] probe_score=${probe_score} (${recognized}/${valid.length}) for "${productName}"`)
+    return { probe_score, probe_count: valid.length, probe_breakdown }
+  } catch (err) {
+    console.error('[ENGINE-06] getProbeScore error:', err)
+    return empty
+  }
+}
+
 // ── Probe Log: record every AI probe result ─────────────────
 async function logProbes(
   env: Bindings,
@@ -674,7 +738,7 @@ async function logProbes(
     ai_source: p.ai,
     result_text: p.snippet || '',
     detected_rank: null,
-    co_recommendations: [],
+    co_recommendations: extractCoRecommendations(p.snippet || '', productName),
     recognized: p.recognized,
     recommended: p.recommended,
     citations: p.citations || [],
@@ -731,10 +795,14 @@ app.post('/v1/check', async (c) => {
   console.log(`[DC] ${colo}`)
 
   const startMs = Date.now()
-  const engineResult = await runEngine(c.env, name, url)
-  // P1-03: Log probe results (non-blocking, errors caught inside logProbes)
+  // ENGINE-06: probe 스코어 조회 + 엔진 실행 병렬 처리
+  const [engineResult, probeData] = await Promise.all([
+    runEngine(c.env, name, url),
+    getProbeScore(c.env, name),
+  ])
+  // P1-03: Log probe results (non-blocking)
   await logProbes(c.env, name, engineResult.aiProbe, { productUrl: url, triggerType: 'manual', startMs })
-  return c.json(engineResult)
+  return c.json({ ...engineResult, ...probeData })
 })
 
 // ── Daily cron: auto-refresh all tracked products ─────────────

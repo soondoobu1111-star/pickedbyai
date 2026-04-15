@@ -192,6 +192,7 @@
     <a href="/?home=1" class="nav-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
       <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
       <span><span style="color:var(--yellow);">picked</span><span style="color:#fff;">by</span><span style="color:var(--yellow);">.ai</span></span>
+      <span style="font-size:0.5rem;font-family:'Press Start 2P',monospace;color:#0a0a0a;background:#FFD700;padding:2px 5px;border-radius:3px;letter-spacing:0.05em;line-height:1;align-self:center;">BETA</span>
     </a>
     <div class="nav-links">
       <!-- Profile dropdown (shown when logged in) -->
@@ -231,6 +232,26 @@
 
 <!-- DASHBOARD SCREEN -->
 <div id="screen-dashboard" style="display:none;max-width:1280px;margin:0 auto;padding:2rem 3rem;">
+
+  <!-- Announcements / Release Notes -->
+  <div style="background:#0d0d12;border:1px solid #1e1e2e;border-radius:0.75rem;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+      <span style="font-size:0.55rem;font-family:'Press Start 2P',monospace;color:#555;letter-spacing:0.08em;">CHANGELOG</span>
+      <span style="height:1px;flex:1;background:#1e1e2e;"></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+      <span style="font-size:0.7rem;color:#555;">2026-04-15</span>
+      <span style="font-size:0.6rem;color:#FFD700;border:1px solid #3a2800;padding:1px 7px;border-radius:10px;font-family:'Press Start 2P',monospace;">Beta Launch</span>
+    </div>
+    <p style="font-size:0.9rem;color:#ddd;font-weight:600;margin:0 0 0.5rem;">Welcome to the pickedby.ai Beta</p>
+    <p style="font-size:0.82rem;color:#888;line-height:1.6;margin:0 0 0.75rem;">We're looking for 100 beta testers to help shape what this becomes.</p>
+    <div style="font-size:0.8rem;color:#aaa;line-height:1.8;margin-bottom:0.75rem;">
+      <div><span style="color:#FFD700;">+</span> Lifetime free access to Phase 2 — AI traffic analytics, weekly tracking, competitor monitoring</div>
+      <div><span style="color:#FFD700;">+</span> Direct line to the founder. Your feedback gets read and acted on.</div>
+      <div><span style="color:#FFD700;">+</span> Early access to features before public release</div>
+    </div>
+    <p style="font-size:0.72rem;color:#444;line-height:1.6;margin:0;border-top:1px solid #1e1e2e;padding-top:0.75rem;">During beta, the site and features may update without prior notice. Scores may change as we improve the engine. Some things will break — we'll fix them fast.</p>
+  </div>
 
   <!-- Beta Banner (hidden by default, shown when status=none) -->
   <div id="beta-banner" style="display:none;background:linear-gradient(135deg,#1a1200 0%,#0f0f0f 100%);border:1px solid #3a2800;border-radius:0.75rem;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
@@ -972,10 +993,14 @@
   }
 
   function showResult(data) {
-    const { score, results, product, dimensions, aiProbe, sources } = data
+    const { score, results, product, dimensions, aiProbe, sources, probe_score, probe_count, probe_breakdown } = data
     document.getElementById('result-product').textContent = product
-    document.getElementById('result-score').textContent = score
-    document.getElementById('result-bar').style.width = Math.round(Math.min(score, 100)) + '%'
+
+    // ENGINE-06: probe 스코어가 충분히 쌓였으면 primary로 표시
+    const useProbe = probe_count >= 3 && probe_score >= 0
+    const displayScore = useProbe ? probe_score : score
+    document.getElementById('result-score').textContent = displayScore
+    document.getElementById('result-bar').style.width = Math.round(Math.min(displayScore, 100)) + '%'
 
     // Badge
     let badgeHtml = ''
@@ -993,28 +1018,50 @@
       dims.innerHTML = (results || []).map(r => renderDimRow(r, true)).join('')
     }
 
-    // AI Probe — show which AIs recognize the product
+    // ENGINE-06: AI Probe 카드 (probe_breakdown + 실시간 probe)
     const probeContainer = document.getElementById('result-ai-probe')
-    if (probeContainer && aiProbe && aiProbe.length) {
+    if (probeContainer) {
       const probeLabels = { perplexity: 'Perplexity', gpt: 'ChatGPT', gemini: 'Gemini' }
+
+      // 누적 probe_breakdown (역사적 데이터)
+      let breakdownHtml = ''
+      if (probe_breakdown && probe_breakdown.length) {
+        breakdownHtml = probe_breakdown.map(p => {
+          const lbl = escHtml(probeLabels[p.ai] || p.ai)
+          const color = p.rate >= 60 ? '#4ade80' : p.rate >= 30 ? '#FFD700' : '#ef4444'
+          return `<div style="display:flex;align-items:center;gap:0.5rem;padding:0.25rem 0;">
+            <span style="color:#555;font-size:0.75rem;min-width:80px;">${lbl}</span>
+            <div style="flex:1;height:4px;background:#222;border-radius:2px;overflow:hidden;">
+              <div style="height:100%;width:${p.rate}%;background:${color};border-radius:2px;"></div>
+            </div>
+            <span style="color:${color};font-size:0.75rem;font-weight:700;min-width:32px;text-align:right;">${p.rate}%</span>
+            <span style="color:#444;font-size:0.68rem;">${p.recognized}/${p.total}</span>
+          </div>`
+        }).join('')
+      } else if (aiProbe && aiProbe.length) {
+        // fallback: 이번 체크의 실시간 결과
+        breakdownHtml = aiProbe.map(p => {
+          const lbl = escHtml(probeLabels[p.ai] || p.ai)
+          const color = p.recognized ? (p.recommended ? '#4ade80' : '#FFD700') : '#555'
+          const label = p.recognized ? (p.recommended ? 'Recommended' : 'Known') : 'Unknown'
+          return `<div style="display:flex;align-items:center;gap:0.5rem;padding:0.25rem 0;">
+            <span style="color:#555;font-size:0.75rem;min-width:80px;">${lbl}</span>
+            <span style="color:${color};font-size:0.75rem;font-weight:600;">${label}</span>
+          </div>`
+        }).join('')
+      }
+
+      const headerLabel = probe_count >= 3
+        ? `Direct AI Measurement <span style="color:#555;font-weight:400;">(${probe_count} probes)</span>`
+        : `AI Recognition <span style="color:#555;font-weight:400;">${probe_count > 0 ? `(${probe_count} probe${probe_count>1?'s':''} — collecting...)` : ''}</span>`
+
       probeContainer.innerHTML = `
         <div style="margin-top:1rem;padding:0.75rem 1rem;background:#111;border:1px solid #222;border-radius:8px;">
-          <div style="font-size:0.7rem;color:#555;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.5rem;">AI Recognition</div>
-          ${aiProbe.map(p => {
-            const name = escHtml(probeLabels[p.ai] || p.ai)
-            const icon = p.recognized ? (p.recommended ? '●' : '◐') : '○'
-            const color = p.recognized ? (p.recommended ? '#4ade80' : '#FFD700') : '#555'
-            const label = p.recognized ? (p.recommended ? 'Recommended' : 'Known') : 'Unknown'
-            return `<div style="display:flex;align-items:center;gap:0.5rem;padding:0.3rem 0;">
-              <span style="color:${color};font-size:1rem;">${icon}</span>
-              <span style="color:#ccc;font-size:0.82rem;min-width:80px;">${name}</span>
-              <span style="color:${color};font-size:0.75rem;font-weight:600;">${label}</span>
-            </div>`
-          }).join('')}
+          <div style="font-size:0.7rem;color:#555;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">${headerLabel}</div>
+          ${breakdownHtml}
+          ${probe_count < 3 ? `<div style="font-size:0.68rem;color:#444;margin-top:0.4rem;">Run more checks to accumulate probe data for a more accurate score.</div>` : ''}
         </div>`
       probeContainer.style.display = 'block'
-    } else if (probeContainer) {
-      probeContainer.style.display = 'none'
     }
 
     // Grounding note
