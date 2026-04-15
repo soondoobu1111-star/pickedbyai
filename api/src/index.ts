@@ -1372,7 +1372,7 @@ const SUPABASE_URL_STAGING = 'https://xzecybljfipmmzzzfnit.supabase.co'
 // Staging anon key is public (embedded in FE HTML) — safe to hardcode here
 const SUPABASE_ANON_KEY_STAGING = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZWN5YmxqZmlwbW16enpmbml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NTY4NjAsImV4cCI6MjA5MTAzMjg2MH0.pYqbBfJ7hwgKFgUSjvlhRlaOBIG4RqAgwDVTNUat03w'
 
-async function verifyToken(token: string, env: Bindings): Promise<{ id: string; email: string; supabaseUrl: string } | null> {
+async function verifyToken(token: string, env: Bindings): Promise<{ id: string; email: string; supabaseUrl: string; anonKey: string } | null> {
   const candidates = [
     { url: SUPABASE_URL, apikey: env.SUPABASE_ANON_KEY },
     { url: SUPABASE_URL_STAGING, apikey: SUPABASE_ANON_KEY_STAGING },
@@ -1387,7 +1387,7 @@ async function verifyToken(token: string, env: Bindings): Promise<{ id: string; 
       })
       if (!res.ok) continue
       const data = await res.json() as { id: string; email: string }
-      if (data?.id) return { id: data.id, email: data.email, supabaseUrl: url }
+      if (data?.id) return { id: data.id, email: data.email, supabaseUrl: url, anonKey: apikey }
     } catch { /* try next */ }
   }
   return null
@@ -1658,7 +1658,7 @@ app.post('/v1/domains/register', async (c) => {
 
   const user = await verifyToken(token, c.env)
   if (!user) return c.json({ error: 'unauthorized' }, 401)
-  const { id: userId, supabaseUrl } = user
+  const { id: userId, supabaseUrl, anonKey } = user
 
   const body = await c.req.json<{ product_name?: string; domain_url?: string }>()
   if (!body.product_name?.trim() || !body.domain_url?.trim()) {
@@ -1668,15 +1668,16 @@ app.post('/v1/domains/register', async (c) => {
   const domainUrl = normalizeDomainUrl(body.domain_url)
   if (isBlockedUrl(domainUrl)) return c.json({ error: 'Invalid URL' }, 400)
 
+  // Use user JWT + anon key (RLS: authenticated users can CRUD their own domains)
   const headers = {
-    'apikey': c.env.SUPABASE_SERVICE_KEY,
-    'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+    'apikey': anonKey,
+    'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json',
   }
 
   // 무료: 유저당 1개 도메인 제한 확인
   const existingRes = await fetch(
-    `${supabaseUrl}/rest/v1/domains?user_id=eq.${userId}&status=neq.failed&select=id`,
+    `${supabaseUrl}/rest/v1/domains?status=neq.failed&select=id`,
     { headers }
   )
   const existing: Array<{ id: string }> = existingRes.ok ? await existingRes.json() : []
@@ -1686,7 +1687,7 @@ app.post('/v1/domains/register', async (c) => {
 
   // 이미 등록된 도메인 체크
   const dupRes = await fetch(
-    `${supabaseUrl}/rest/v1/domains?user_id=eq.${userId}&domain_url=eq.${encodeURIComponent(domainUrl)}&select=id,status,verification_token`,
+    `${supabaseUrl}/rest/v1/domains?domain_url=eq.${encodeURIComponent(domainUrl)}&select=id,status,verification_token`,
     { headers }
   )
   const dups: Array<{ id: string; status: string; verification_token: string }> = dupRes.ok ? await dupRes.json() : []
@@ -1722,19 +1723,19 @@ app.post('/v1/domains/verify', async (c) => {
 
   const user = await verifyToken(token, c.env)
   if (!user) return c.json({ error: 'unauthorized' }, 401)
-  const { id: userId, supabaseUrl } = user
+  const { supabaseUrl, anonKey } = user
 
   const body = await c.req.json<{ domain_id?: string }>()
   if (!body.domain_id) return c.json({ error: 'domain_id required' }, 400)
 
   const headers = {
-    'apikey': c.env.SUPABASE_SERVICE_KEY,
-    'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+    'apikey': anonKey,
+    'Authorization': `Bearer ${token}`,
     'Content-Type': 'application/json',
   }
 
   const domainRes = await fetch(
-    `${supabaseUrl}/rest/v1/domains?id=eq.${body.domain_id}&user_id=eq.${userId}&select=*`,
+    `${supabaseUrl}/rest/v1/domains?id=eq.${body.domain_id}&select=*`,
     { headers }
   )
   const domains: Array<{ id: string; domain_url: string; verification_token: string; status: string }> = domainRes.ok ? await domainRes.json() : []
@@ -1805,14 +1806,14 @@ app.get('/v1/domains/list', async (c) => {
 
   const user = await verifyToken(token, c.env)
   if (!user) return c.json({ error: 'unauthorized' }, 401)
-  const { id: userId, supabaseUrl } = user
+  const { supabaseUrl, anonKey } = user
 
   const headers = {
-    'apikey': c.env.SUPABASE_SERVICE_KEY,
-    'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+    'apikey': anonKey,
+    'Authorization': `Bearer ${token}`,
   }
   const res = await fetch(
-    `${supabaseUrl}/rest/v1/domains?user_id=eq.${userId}&select=id,product_name,domain_url,status,sdk_installed,llms_installed,verified_at,created_at&order=created_at.desc`,
+    `${supabaseUrl}/rest/v1/domains?select=id,product_name,domain_url,status,sdk_installed,llms_installed,verified_at,created_at&order=created_at.desc`,
     { headers }
   )
   const domains = res.ok ? await res.json() : []
