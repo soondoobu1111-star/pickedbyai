@@ -424,44 +424,6 @@ async function probePerplexityTemplate(apiKey: string, name: string, template: Q
   }
 }
 
-async function probeGPTTemplate(apiKey: string, name: string, template: QueryTemplate, category?: string): Promise<AIProbeResult & { templateId: string }> {
-  const safeName = sanitizeForPrompt(name)
-  const prompts = buildProbePrompt(template, safeName, category ? sanitizeForPrompt(category) : undefined)
-  const res = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: { 'Authorization': `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: prompts.system },
-        { role: 'user', content: prompts.user },
-      ],
-      max_tokens: 300,
-      temperature: 0.3,
-    }),
-    signal: AbortSignal.timeout(15000),
-  })
-  if (!res.ok) throw new Error(`OpenAI ${res.status}`)
-  const json = await res.json() as { choices: Array<{ message: { content: string } }> }
-  const text = json.choices?.[0]?.message?.content ?? ''
-  const textLower = text.toLowerCase()
-  const nameLower = name.toLowerCase()
-
-  const dontKnow = /don.?t (have|know)|do not (know|have)|not aware|no specific|cannot find|not familiar|i.?m not sure|unfamiliar|no information|no record|as of my last/i
-  const recognized = textLower.includes(nameLower) && !dontKnow.test(text)
-  const recSignals = /recommend|worth (trying|using|checking)|great (tool|option|choice)|useful|helpful|solid/i
-  const recommended = recognized && recSignals.test(text)
-
-  return {
-    ai: 'gpt',
-    recognized,
-    recommended,
-    snippet: text.slice(0, 300),
-    citations: [],
-    templateId: template.id,
-  }
-}
-
 // ── AI Probe: Direct query to AI systems ─────────────────────
 async function probePerplexity(apiKey: string, name: string): Promise<AIProbeResult> {
   const safeName = sanitizeForPrompt(name)
