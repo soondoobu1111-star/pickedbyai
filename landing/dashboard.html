@@ -320,9 +320,6 @@
       <button class="btn-ghost" id="btn-save-mine" onclick="saveToMine()" style="font-size:0.85rem;">
         + Save to My Products
       </button>
-      <button class="btn-ghost" id="btn-save-comp" onclick="saveToComp()" style="font-size:0.85rem;">
-        + Save as Competitor
-      </button>
     </div>
     <!-- FEEDBACK-01: Was this helpful? -->
     <div id="feedback-cta" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#0d0d0d;border:1px solid #1f1f1f;border-radius:8px;">
@@ -376,7 +373,6 @@
     <!-- Tab bar -->
     <div class="dash-tabs-bar">
       <button class="dash-tab active" onclick="switchTab('mine')">My Products</button>
-      <button class="dash-tab" onclick="switchTab('comp')">Competitors</button>
       <button class="dash-tab" onclick="switchTab('tools')">Tools</button>
     </div>
 
@@ -401,15 +397,45 @@
       </div>
 
       <!-- Empty state -->
-      <div id="mine-empty" style="display:none;text-align:center;padding:3rem 1rem;">
-        <div style="font-size:2rem;margin-bottom:1rem;">🎯</div>
-        <div style="font-weight:700;margin-bottom:0.5rem;">Track your own products</div>
-        <p style="color:#666;font-size:0.85rem;margin-bottom:1.5rem;max-width:320px;margin-left:auto;margin-right:auto;">
-          Check your product's AI visibility, verify ownership, and embed a badge on your site.
-        </p>
-        <button class="btn-primary" onclick="document.getElementById('input-product').focus();window.scrollTo(0,0)">
-          + Add My First Product
-        </button>
+      <div id="mine-empty" style="display:none;padding:2rem 1rem;">
+        <div style="text-align:center;margin-bottom:2rem;">
+          <div style="font-size:2.5rem;margin-bottom:0.75rem;">📡</div>
+          <div style="font-weight:700;font-size:1rem;margin-bottom:0.5rem;">No products tracked yet</div>
+          <p style="color:#666;font-size:0.82rem;max-width:300px;margin:0 auto 1.5rem;">
+            Check your product's AI visibility score, then save it here to track changes over time.
+          </p>
+          <button class="btn-primary" onclick="document.getElementById('input-product').focus();window.scrollTo(0,0)">
+            Check AI Visibility
+          </button>
+        </div>
+        <div style="border:1px dashed #2a2a2a;border-radius:10px;padding:1.25rem;background:#0d0d0d;">
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1rem;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#1a1a1a;border:1px solid #FFD700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.75rem;color:#FFD700;font-weight:700;">1</div>
+            <div>
+              <div style="font-size:0.82rem;font-weight:600;margin-bottom:0.2rem;">Check your product</div>
+              <div style="font-size:0.75rem;color:#555;">Enter your product name and URL above to get your AI visibility score.</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1rem;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#1a1a1a;border:1px solid #444;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.75rem;color:#888;font-weight:700;">2</div>
+            <div>
+              <div style="font-size:0.82rem;font-weight:600;margin-bottom:0.2rem;">Save to My Products</div>
+              <div style="font-size:0.75rem;color:#555;">Save the result to track your score over time. Unverified products expire in 72h.</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#1a1a1a;border:1px solid #444;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.75rem;color:#888;font-weight:700;">3</div>
+            <div>
+              <div style="font-size:0.82rem;font-weight:600;margin-bottom:0.2rem;">Verify ownership → unlock all data</div>
+              <div style="font-size:0.75rem;color:#555;">Add a meta tag to unlock Query Coverage, weekly trends, and the Improvement Guide.</div>
+            </div>
+          </div>
+          <div style="margin-top:1.25rem;text-align:center;">
+            <a href="/register" style="display:inline-block;background:#FFD700;color:#000;font-weight:700;font-size:0.82rem;padding:0.55rem 1.25rem;border-radius:6px;text-decoration:none;">
+              Register &amp; Verify Your Domain →
+            </a>
+          </div>
+        </div>
       </div>
 
       <!-- Table -->
@@ -421,43 +447,7 @@
       </div>
     </div>
 
-    <!-- ── Tab 2: Competitors ── -->
-    <div id="tab-comp" style="display:none;">
-      <div class="section-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">
-        <div>
-          <div class="section-title">Competitors</div>
-          <div class="section-sub">Monitor competitor AI visibility</div>
-        </div>
-        <span id="comp-search-count" style="font-size:0.75rem;color:#555;"></span>
-      </div>
-
-      <div id="comp-loading" class="text-center py-8" style="color:#555;display:none;">
-        <div class="spinner mx-auto mb-2"></div>
-        <p style="font-size:0.8rem;">Loading...</p>
-      </div>
-
-      <!-- Empty state -->
-      <div id="comp-empty" style="display:none;text-align:center;padding:3rem 1rem;">
-        <div style="font-size:2rem;margin-bottom:1rem;">🔍</div>
-        <div style="font-weight:700;margin-bottom:0.5rem;">Monitor competitors</div>
-        <p style="color:#666;font-size:0.85rem;margin-bottom:1.5rem;max-width:320px;margin-left:auto;margin-right:auto;">
-          Check any competitor's product to compare AI visibility scores.
-        </p>
-        <button class="btn-primary" onclick="document.getElementById('input-product').focus();window.scrollTo(0,0)">
-          + Check a Competitor
-        </button>
-      </div>
-
-      <!-- Table -->
-      <div id="comp-table" style="display:none;">
-        <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid #2a2a2a;font-size:0.75rem;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
-          <span>Product</span><span style="text-align:center;">Score</span><span style="text-align:center;">Badge</span><span style="text-align:right;">Date</span>
-        </div>
-        <div id="comp-rows"></div>
-      </div>
-    </div>
-
-    <!-- ── Tab 3: Tools ── -->
+    <!-- ── Tab 2: Tools ── -->
     <div id="tab-tools" style="display:none;">
       <div class="section-header">
         <div class="section-title">Tools</div>
@@ -667,7 +657,6 @@
     await sb.from('scores').delete().eq('user_id', currentUser.id)
     // 2. 로컬 스토리지 정리
     localStorage.removeItem('pba_mine')
-    localStorage.removeItem('pba_comp')
     // 3. Sign out
     await sb.auth.signOut()
     // 4. 탈퇴 완료 알림 후 홈으로
@@ -972,37 +961,24 @@
   }
 
   // ── Rate Limit ─────────────────────────────────────────────
-  function checkRateLimit(productName, isMine) {
+  function checkRateLimit(productName) {
     const today = new Date().toISOString().split('T')[0]
+    const key = `pba_rl_${productName}_${today}`
+    const count = parseInt(localStorage.getItem(key) || '0')
+    const penaltyKey = `pba_penalty_${productName}`
+    const penaltyUntil = localStorage.getItem(penaltyKey)
 
-    if (isMine) {
-      // My Products: 개별 제품당 3회/일 제한
-      const key = `pba_rl_${productName}_${today}`
-      const count = parseInt(localStorage.getItem(key) || '0')
-      const penaltyKey = `pba_penalty_${productName}`
-      const penaltyUntil = localStorage.getItem(penaltyKey)
-
-      if (penaltyUntil && new Date() < new Date(penaltyUntil)) {
-        const hrs = Math.ceil((new Date(penaltyUntil) - new Date()) / 3600000)
-        return { blocked: true, reason: `Too many checks. Cooldown for ${hrs} more hours.` }
-      }
-      if (count >= 3) {
-        const until = new Date(Date.now() + 48 * 3600 * 1000).toISOString()
-        localStorage.setItem(penaltyKey, until)
-        return { blocked: true, reason: 'Daily check limit reached. Cooldown for 48 hours.' }
-      }
-      localStorage.setItem(key, String(count + 1))
-      return { blocked: false }
-    } else {
-      // Competitors: 하루 100회 전체 제한
-      const key = `pba_comp_count_${today}`
-      const count = parseInt(localStorage.getItem(key) || '0')
-      if (count >= 100) {
-        return { blocked: true, reason: 'Daily limit reached (100 competitor searches/day). Resets at midnight.' }
-      }
-      localStorage.setItem(key, String(count + 1))
-      return { blocked: false }
+    if (penaltyUntil && new Date() < new Date(penaltyUntil)) {
+      const hrs = Math.ceil((new Date(penaltyUntil) - new Date()) / 3600000)
+      return { blocked: true, reason: `Too many checks. Cooldown for ${hrs} more hours.` }
     }
+    if (count >= 3) {
+      const until = new Date(Date.now() + 48 * 3600 * 1000).toISOString()
+      localStorage.setItem(penaltyKey, until)
+      return { blocked: true, reason: 'Daily check limit reached. Cooldown for 48 hours.' }
+    }
+    localStorage.setItem(key, String(count + 1))
+    return { blocked: false }
   }
 
   // ── Check ──────────────────────────────────────────────────
@@ -1028,14 +1004,11 @@
 
     // Rate limit: 로그인 상태일 때만 적용 (스테이징에서는 비활성화)
     if (currentUser && !IS_STAGING) {
-      const isMine = activeTab === 'mine'
-      const rl = checkRateLimit(product, isMine)
+      const rl = checkRateLimit(product)
       if (rl.blocked) {
         alert(rl.reason)
         return
       }
-      // comp 탭 카운터 업데이트
-      if (activeTab === 'comp') updateCompCounter()
     }
 
     const btn = document.getElementById('btn-check')
@@ -1064,11 +1037,8 @@
 
   function resetSaveButtons() {
     const bm = document.getElementById('btn-save-mine')
-    const bc = document.getElementById('btn-save-comp')
     if (bm) { bm.textContent = '+ Save to My Products'; bm.disabled = false; bm.style.color = ''; bm.style.borderColor = ''; bm.style.display = '' }
-    if (bc) { bc.textContent = '+ Save as Competitor'; bc.disabled = false; bc.style.color = ''; bc.style.borderColor = ''; bc.style.display = '' }
     const mm = document.getElementById('mine-registered-msg'); if (mm) mm.remove()
-    const cm = document.getElementById('comp-registered-msg'); if (cm) cm.remove()
   }
 
   function showResult(data) {
@@ -1234,35 +1204,18 @@
     const fbCta = document.getElementById('feedback-cta')
     if (fbCta) { fbCta.style.display = 'block'; document.getElementById('feedback-ask').style.display = 'flex'; document.getElementById('feedback-comment').style.display = 'none'; document.getElementById('feedback-thanks').style.display = 'none'; }
 
-    // Show status message if product is already registered, hide Save button
+    // Show status message if product is already saved, hide Save button
     const mineSet = getMineSet()
-    const compSet = getCompSet()
     const btnMine = document.getElementById('btn-save-mine')
-    const btnComp = document.getElementById('btn-save-comp')
-    const prod = product
     if (btnMine) {
-      if (mineSet.has(prod)) {
+      if (mineSet.has(product)) {
         btnMine.style.display = 'none'
-        btnMine.insertAdjacentHTML('afterend', '<span id="mine-registered-msg" style="font-size:0.8rem;color:#4ade80;">✅ Already in My Products</span>')
-        // 내 제품이면 경쟁 등록 버튼도 숨김
-        if (btnComp) btnComp.style.display = 'none'
-        const existComp = document.getElementById('comp-registered-msg')
-        if (existComp) existComp.remove()
+        const existMsg = document.getElementById('mine-registered-msg')
+        if (!existMsg) btnMine.insertAdjacentHTML('afterend', '<span id="mine-registered-msg" style="font-size:0.8rem;color:#4ade80;">✅ Already in My Products</span>')
       } else {
         btnMine.style.display = ''
         const existMsg = document.getElementById('mine-registered-msg')
         if (existMsg) existMsg.remove()
-        // 내 제품이 아닐 때만 경쟁 등록 버튼 처리
-        if (btnComp) {
-          if (compSet.has(prod)) {
-            btnComp.style.display = 'none'
-            btnComp.insertAdjacentHTML('afterend', '<span id="comp-registered-msg" style="font-size:0.8rem;color:#f59e0b;">✅ Already in Competitors</span>')
-          } else {
-            btnComp.style.display = ''
-            const existComp = document.getElementById('comp-registered-msg')
-            if (existComp) existComp.remove()
-          }
-        }
       }
     }
   }
@@ -1312,28 +1265,6 @@
     btn.disabled = true
     btn.textContent = 'Saving…'
     await saveHistory('mine')
-    // Show verification reminder popup
-    const isVerified = localStorage.getItem(`pba_verified_${lastCheckResult.product}`) === '1'
-    if (!isVerified) showVerifyPopup(lastCheckResult.product, lastCheckResult.url)
-  }
-
-  // ── Save as Competitor ─────────────────────────────────────
-  async function saveToComp() {
-    const btn = document.getElementById('btn-save-comp')
-    if (!btn || btn.disabled || !lastCheckResult || !currentUser) return
-
-    // Duplicate check: already in DB?
-    const existing = allProducts.find(p => p.product_name === lastCheckResult.product)
-    if (existing) { btn.textContent = '✓ Already saved'; btn.disabled = true; return }
-
-    // Comp 태그 localStorage
-    const compSet = getCompSet()
-    compSet.add(lastCheckResult.product)
-    saveCompSet(compSet)
-
-    btn.disabled = true
-    btn.textContent = 'Saving…'
-    await saveHistory('comp')
   }
 
   // ── localStorage Set helpers ───────────────────────────────
@@ -1341,10 +1272,6 @@
     try { return new Set(JSON.parse(localStorage.getItem('pba_mine') || '[]')) } catch { return new Set() }
   }
   function saveMineSet(s) { localStorage.setItem('pba_mine', JSON.stringify([...s])) }
-  function getCompSet() {
-    try { return new Set(JSON.parse(localStorage.getItem('pba_comp') || '[]')) } catch { return new Set() }
-  }
-  function saveCompSet(s) { localStorage.setItem('pba_comp', JSON.stringify([...s])) }
 
   // ── Save to History (shared) ───────────────────────────────
   async function saveHistory(tag) {
@@ -1357,7 +1284,7 @@
       .gte('created_at', today + 'T00:00:00.000Z')
       .limit(1)
     if (todayCheck && todayCheck.length > 0) {
-      setSavedBtn(tag)
+      setSavedBtn()
       loadHistory()
       return
     }
@@ -1365,8 +1292,8 @@
     const { data: existing } = await sb.from('scores').select('product_name').eq('user_id', currentUser.id)
     const distinctProducts = [...new Set((existing || []).map(r => r.product_name))]
     if (!distinctProducts.includes(lastCheckResult.product) && distinctProducts.length >= 5) {
-      const btn = tag === 'mine' ? document.getElementById('btn-save-mine') : document.getElementById('btn-save-comp')
-      if (btn) { btn.textContent = tag === 'mine' ? '+ Save to My Products' : '+ Save as Competitor'; btn.disabled = false }
+      const btn = document.getElementById('btn-save-mine')
+      if (btn) { btn.textContent = '+ Save to My Products'; btn.disabled = false }
       alert('Maximum 5 products allowed. Delete an existing product to add a new one.')
       return
     }
@@ -1380,16 +1307,16 @@
       ai_probe: lastCheckResult.aiProbe || null,
     })
     if (!error) {
-      setSavedBtn(tag)
+      setSavedBtn()
       loadHistory()
     } else {
-      const btn = tag === 'mine' ? document.getElementById('btn-save-mine') : document.getElementById('btn-save-comp')
-      if (btn) { btn.textContent = tag === 'mine' ? '+ Save to My Products' : '+ Save as Competitor'; btn.disabled = false }
+      const btn = document.getElementById('btn-save-mine')
+      if (btn) { btn.textContent = '+ Save to My Products'; btn.disabled = false }
     }
   }
 
-  function setSavedBtn(tag) {
-    const btn = tag === 'mine' ? document.getElementById('btn-save-mine') : document.getElementById('btn-save-comp')
+  function setSavedBtn() {
+    const btn = document.getElementById('btn-save-mine')
     if (btn) { btn.textContent = '✓ Saved'; btn.disabled = true; btn.style.color = '#4ade80'; btn.style.borderColor = '#4ade80' }
   }
 
@@ -1439,7 +1366,6 @@
     if (error) { alert('Delete failed: ' + error.message); return }
     // Also remove from localStorage tags
     const mineSet = getMineSet(); mineSet.delete(productName); saveMineSet(mineSet)
-    const compSet = getCompSet(); compSet.delete(productName); saveCompSet(compSet)
     loadHistory()
   }
 
@@ -1697,30 +1623,19 @@
   function switchTab(tab) {
     activeTab = tab
     document.querySelectorAll('.dash-tab').forEach((btn, i) => {
-      btn.classList.toggle('active', ['mine','comp','tools'][i] === tab)
+      btn.classList.toggle('active', ['mine','tools'][i] === tab)
     })
     document.getElementById('tab-mine').style.display = tab === 'mine' ? 'block' : 'none'
-    document.getElementById('tab-comp').style.display = tab === 'comp' ? 'block' : 'none'
     document.getElementById('tab-tools').style.display = tab === 'tools' ? 'block' : 'none'
 
-    if (tab === 'comp') updateCompCounter()
     if (tab === 'tools') updateBadgePreview()
   }
 
-  function updateCompCounter() {
-    const today = new Date().toISOString().split('T')[0]
-    const count = parseInt(localStorage.getItem(`pba_comp_count_${today}`) || '0')
-    const el = document.getElementById('comp-search-count')
-    if (el) el.textContent = `(${count}/100 searches today)`
-  }
-
-  // ── History (load all, filter by tag) ─────────────────────
+  // ── History (load all) ─────────────────────────────────────
   async function loadHistory() {
     document.getElementById('mine-loading').style.display = 'block'
     document.getElementById('mine-empty').style.display = 'none'
     document.getElementById('mine-table').style.display = 'none'
-    document.getElementById('comp-empty').style.display = 'none'
-    document.getElementById('comp-table').style.display = 'none'
 
     const { data, error } = await sb
       .from('scores')
@@ -1733,7 +1648,6 @@
 
     if (error || !data || data.length === 0) {
       document.getElementById('mine-empty').style.display = 'block'
-      document.getElementById('comp-empty').style.display = 'block'
       return
     }
 
@@ -1746,39 +1660,45 @@
     }
     allProducts = Object.values(latestMap)
 
-    // Split by localStorage tags — sync DB products to localStorage
+    // Sync: ensure all DB products are in localStorage mine set
     const mineSet = getMineSet()
-    const compSet = getCompSet()
-
-    // Products not yet tagged → default to mine for backwards compat
-    const mineProducts = allProducts.filter(p => mineSet.has(p.product_name) || (!compSet.has(p.product_name) && !mineSet.has(p.product_name)))
-    const compProducts = allProducts.filter(p => compSet.has(p.product_name) && !mineSet.has(p.product_name))
-
-    // Sync: ensure all DB products are in localStorage (prevents duplicate Save)
     let synced = false
-    for (const p of mineProducts) { if (!mineSet.has(p.product_name)) { mineSet.add(p.product_name); synced = true } }
-    for (const p of compProducts) { if (!compSet.has(p.product_name)) { compSet.add(p.product_name); synced = true } }
-    if (synced) { saveMineSet(mineSet); saveCompSet(compSet) }
+    for (const p of allProducts) { if (!mineSet.has(p.product_name)) { mineSet.add(p.product_name); synced = true } }
+    if (synced) saveMineSet(mineSet)
 
     // Update slot counts
     const slotEl = document.getElementById('mine-slot-count')
-    if (slotEl) slotEl.textContent = `(${mineProducts.length}/5)`
+    if (slotEl) slotEl.textContent = `(${allProducts.length}/5)`
 
     // Render Mine
-    renderMineTab(mineProducts, data)
-
-    // Render Comp
-    renderCompTab(compProducts)
+    renderMineTab(allProducts, data)
 
     // Update tools badge preview
     if (activeTab === 'tools') updateBadgePreview()
+  }
 
-    // Update comp counter display
-    updateCompCounter()
+  const UNVERIFIED_EXPIRY_MS = 72 * 60 * 60 * 1000  // 72 hours
+
+  function getVerifiedProductNames() {
+    // Check both domains table and legacy localStorage
+    const fromDomains = new Set(verifiedDomains.map(d => d.product_name).filter(Boolean))
+    const mineSet = getMineSet()
+    const fromLs = new Set([...mineSet].filter(p => localStorage.getItem(`pba_verified_${p}`) === '1'))
+    return new Set([...fromDomains, ...fromLs])
   }
 
   function renderMineTab(products, allData) {
-    if (products.length === 0) {
+    const verifiedNames = getVerifiedProductNames()
+    const now = Date.now()
+
+    // Filter: verified products stay forever; unverified expire after 72h
+    const visible = products.filter(p => {
+      if (verifiedNames.has(p.product_name)) return true
+      const age = now - new Date(p.created_at).getTime()
+      return age < UNVERIFIED_EXPIRY_MS
+    })
+
+    if (visible.length === 0) {
       document.getElementById('mine-empty').style.display = 'block'
       document.getElementById('mine-table').style.display = 'none'
       document.getElementById('trend-chart-wrap').style.display = 'none'
@@ -1787,29 +1707,16 @@
     document.getElementById('mine-empty').style.display = 'none'
     document.getElementById('mine-table').style.display = 'block'
 
-    const rows = products.map((row, idx) => buildRowHtml(row, idx, 'mine'))
+    const rows = visible.map((row, idx) => buildRowHtml(row, idx, 'mine', verifiedNames))
     document.getElementById('mine-rows').innerHTML = rows.join('')
 
-    // Chart: mine products only
-    const mineNames = new Set(products.map(p => p.product_name))
-    const mineData = allData.filter(r => mineNames.has(r.product_name))
+    // Chart: visible products only
+    const visibleNames = new Set(visible.map(p => p.product_name))
+    const mineData = allData.filter(r => visibleNames.has(r.product_name))
     renderTrendChart(mineData)
   }
 
-  function renderCompTab(products) {
-    if (products.length === 0) {
-      document.getElementById('comp-empty').style.display = 'block'
-      document.getElementById('comp-table').style.display = 'none'
-      return
-    }
-    document.getElementById('comp-empty').style.display = 'none'
-    document.getElementById('comp-table').style.display = 'block'
-
-    const rows = products.map((row, idx) => buildRowHtml(row, idx + 1000, 'comp'))
-    document.getElementById('comp-rows').innerHTML = rows.join('')
-  }
-
-  function buildRowHtml(row, idx, tag) {
+  function buildRowHtml(row, idx, tag, verifiedNames) {
     const score = row.score
     let badge = ''
     if (score >= 81) badge = '<span class="badge-gold">PICKED</span>'
@@ -1830,7 +1737,12 @@
     const results = row.results || []
     const hasUngrounded = results.some(r => !r.grounded)
     const verifyToken = genVerifyToken(currentUser?.id || '', row.product_name)
-    const isVerified = localStorage.getItem(`pba_verified_${row.product_name}`) === '1'
+    const isVerified = (verifiedNames && verifiedNames.has(row.product_name)) || localStorage.getItem(`pba_verified_${row.product_name}`) === '1'
+    // 72hr expiry for unverified products
+    const ageMs = Date.now() - new Date(row.created_at).getTime()
+    const remainingMs = UNVERIFIED_EXPIRY_MS - ageMs
+    const hoursLeft = Math.ceil(remainingMs / 3600000)
+    const showExpiry = !isVerified && remainingMs < UNVERIFIED_EXPIRY_MS
     // Use ENGINE-05 dimensions (with scores) if available, fallback to legacy results
     const dims = row.dimensions
     const dimsHtml = dims && dims.length
@@ -1855,7 +1767,13 @@
     // Status column (mine only)
     const statusHtml = isMine ? `
       <div style="text-align:center;font-size:0.72rem;">
-        ${isVerified ? '<span style="color:#4ade80;">✓ Verified</span>' : (row.product_url ? '<span style="color:#555;">Unverified</span>' : '<span style="color:#333;">—</span>')}
+        ${isVerified
+          ? '<span style="color:#4ade80;">✓ Verified</span>'
+          : showExpiry && hoursLeft <= 24
+            ? `<span style="color:#ef4444;font-weight:700;">${hoursLeft}h left</span>`
+            : showExpiry
+              ? `<span style="color:#f59e0b;">${hoursLeft}h left</span>`
+              : '<span style="color:#333;">—</span>'}
       </div>` : ''
 
     // Grid columns differ by tab
@@ -1863,7 +1781,7 @@
       ? 'display:grid;grid-template-columns:1fr auto auto auto auto;gap:0.5rem;'
       : 'display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;'
 
-    // Expand panel detail: comp tab omits verify + badge embed sections
+    // Expand panel detail
     const embedSection = isMine && score >= 25 ? `
       <div style="margin-top:0.85rem;padding:0.6rem 0.8rem;background:#0d0d0d;border-radius:6px;border:1px solid #1e1e1e;">
         <div style="font-size:0.7rem;color:#555;margin-bottom:0.4rem;">📎 Embed this badge on your page</div>
