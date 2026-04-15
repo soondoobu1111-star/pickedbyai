@@ -592,6 +592,12 @@ async function runEngine(env: Bindings, name: string, url?: string) {
       })
     )
   }
+  probePromises.push(
+    probeGemini(name).catch(err => {
+      console.error('[Probe:Gemini] error:', err)
+      return { ai: 'gemini', recognized: false, recommended: false, snippet: '', citations: [] } as AIProbeResult
+    })
+  )
 
   const [tavilyArrays, aiProbes] = await Promise.all([
     Promise.all(tavilyPromises),
@@ -658,6 +664,32 @@ async function runEngine(env: Bindings, name: string, url?: string) {
   console.log(`[ENGINE-05] score=${score}/100, dims=${dimensions.map(d => d.score).join('+')}`)
 
   return { results, score, maxScore: 100, product: name, dimensions, sources: sources.slice(0, 15), aiProbe: aiProbes }
+}
+
+// ── Probe: Gemini (Relay Worker 경유, 무료 티어) ──────────────
+async function probeGemini(name: string): Promise<AIProbeResult> {
+  const safeName = sanitizeForPrompt(name)
+  const prompt = `${PROBE_SYSTEM_PROMPT}\n\nProduct name: ${safeName}`
+  try {
+    const res = await fetch(GEMINI_RELAY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt, useSearch: true }),
+      signal: AbortSignal.timeout(14000),
+    })
+    if (!res.ok) throw new Error(`GeminiRelay ${res.status}`)
+    const json = await res.json() as { text?: string; grounded?: boolean }
+    const text = json.text ?? ''
+    const textLower = text.toLowerCase()
+    const nameLower = name.toLowerCase()
+    const dontKnow = /don.?t (have|know)|do not (know|have)|not aware|no specific|cannot find|not familiar|i.?m not sure|unfamiliar|no information|no record/i
+    const recognized = textLower.includes(nameLower) && !dontKnow.test(text)
+    const recSignals = /recommend|worth (trying|using|checking)|great (tool|option|choice)|useful|helpful|solid/i
+    const recommended = recognized && recSignals.test(text)
+    return { ai: 'gemini', recognized, recommended, snippet: text.slice(0, 300), citations: [] }
+  } catch {
+    return { ai: 'gemini', recognized: false, recommended: false, snippet: '', citations: [] }
+  }
 }
 
 // ── ENGINE-06: co_recommendations 추출 ────────────────────────
