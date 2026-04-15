@@ -1,0 +1,336 @@
+{
+  "meta": {
+    "document": "pickedby.ai — Vision Rules",
+    "version": "2.0",
+    "last_updated": "2026-04-14",
+    "companion_doc": "vision-brief-v2.md",
+    "purpose": "Machine-readable rules, priorities, and guardrails. Read together with vision-brief-v2.md.",
+    "precedence": "On conflict with older instructions, this file and vision-brief-v2.md win."
+  },
+
+  "vision": {
+    "one_liner": "The Google Stack for AI Recommendations",
+    "elevator_pitch": "We're building the measurement, analytics, and (eventually) ads layer for the era when AI chatbots replace search engines.",
+    "roadmap": [
+      {
+        "phase": 1,
+        "google_equivalent": "Search Console",
+        "product_role": "Measure — does AI know your product?",
+        "status": "shipped",
+        "current_surface": "pickedby.ai visibility score + AI Probe"
+      },
+      {
+        "phase": 2,
+        "google_equivalent": "Google Analytics (GA4)",
+        "product_role": "Analyze — recommendation frequency, rank, trends, benchmarks",
+        "status": "in_progress",
+        "eta_weeks": "2-4"
+      },
+      {
+        "phase": 3,
+        "google_equivalent": "Google Ads",
+        "product_role": "Optimize — improve AI placement, eventually paid ads via platform APIs",
+        "status": "planned",
+        "eta_year": 2027,
+        "external_dependency": "OpenAI / Anthropic / Perplexity opening ad APIs"
+      }
+    ]
+  },
+
+  "target_segments": {
+    "phase_1_entry": [
+      "Gumroad sellers",
+      "Notion template creators",
+      "Etsy digital product sellers",
+      "Online course creators",
+      "AI prompt pack sellers",
+      "Indie SaaS founders"
+    ],
+    "phase_2_expansion": [
+      "D2C brands on Shopify",
+      "Indie SaaS at scale",
+      "SEO/GEO consultants",
+      "Marketing agencies"
+    ],
+    "phase_3_endgame": "Any online seller (i.e. Google Ads' entire TAM)",
+    "critical_note": "Creators are the SEED segment, not the ONLY segment. Never write copy that excludes future segments."
+  },
+
+  "priorities": {
+    "P0_today": [
+      {
+        "id": "P0-01",
+        "task": "Replace hero H1 with 'The AI Visibility Platform' and subhead with roadmap tease",
+        "roadmap_layer": "all",
+        "files_affected": ["index.html"]
+      },
+      {
+        "id": "P0-02",
+        "task": "Remove 'Not for agencies. Built for creators.' from landing and all blog posts",
+        "roadmap_layer": "all",
+        "action": "global_find_and_replace"
+      },
+      {
+        "id": "P0-03",
+        "task": "Build roadmap diagram section directly under hero (3 columns: AVAILABLE / COMING Q3 / 2027)",
+        "roadmap_layer": "all",
+        "files_affected": ["index.html"]
+      },
+      {
+        "id": "P0-04",
+        "task": "Audit all existing copy and list every instance that narrows audience to creators. Get founder approval before editing.",
+        "roadmap_layer": "all",
+        "action": "audit_first"
+      }
+    ],
+    "P1_this_week": [
+      {
+        "id": "P1-01",
+        "task": "Create /manifesto page with 5-section structure (see brief section 2.3)",
+        "roadmap_layer": "all",
+        "files_affected": ["manifesto.html"]
+      },
+      {
+        "id": "P1-02",
+        "task": "Design and create Probe Log Database schema in Supabase",
+        "roadmap_layer": "phase_2",
+        "schema_fields": [
+          "id",
+          "product_id",
+          "query_template",
+          "ai_source",
+          "result_text",
+          "detected_rank",
+          "co_recommendations",
+          "timestamp"
+        ]
+      },
+      {
+        "id": "P1-03",
+        "task": "Start recording every Probe execution into probe_logs table",
+        "roadmap_layer": "phase_2",
+        "depends_on": "P1-02"
+      }
+    ],
+    "P2_next_week": [
+      {
+        "id": "P2-01",
+        "task": "Restructure header nav to PLATFORM dropdown + MANIFESTO + BLOG + DASHBOARD",
+        "roadmap_layer": "all"
+      },
+      {
+        "id": "P2-02",
+        "task": "Update FAQ with 3 new questions about scope and roadmap (see brief 2.4)",
+        "roadmap_layer": "all"
+      },
+      {
+        "id": "P2-03",
+        "task": "Expand daily Probe cron to ~100 query templates for category benchmarks",
+        "roadmap_layer": "phase_2",
+        "depends_on": "P1-03"
+      },
+      {
+        "id": "P2-04",
+        "task": "Rewrite email capture CTA to 'Join the AI Visibility Platform early access (100 spots)'",
+        "roadmap_layer": "all"
+      }
+    ],
+    "P3_within_2_weeks": [
+      {
+        "id": "P3-01",
+        "task": "Build Dashboard 'Analytics (Coming Soon)' tab powered by real Probe Log data",
+        "roadmap_layer": "phase_2",
+        "depends_on": "P2-03"
+      },
+      {
+        "id": "P3-02",
+        "task": "Prototype SDK/tag snippet for direct referral tracking",
+        "roadmap_layer": "phase_2"
+      },
+      {
+        "id": "P3-03",
+        "task": "Create /investors page (noindex) — manifesto + roadmap + market data + shipping log",
+        "roadmap_layer": "all"
+      },
+      {
+        "id": "P3-04",
+        "task": "Build category benchmark pages (/benchmarks/notion-templates, etc.) from Probe Log data",
+        "roadmap_layer": "phase_2"
+      }
+    ],
+    "backlog_strategic": [
+      {
+        "id": "B-01",
+        "task": "Internal user tracking dashboard (registered users, DAU, conversion funnel)"
+      },
+      {
+        "id": "B-02",
+        "task": "Public probe history page per product (transparency + SEO)"
+      },
+      {
+        "id": "B-03",
+        "task": "Weekly leaderboard — most-recommended products this week"
+      },
+      {
+        "id": "B-04",
+        "task": "Legal/GDPR review for storing third-party product data"
+      },
+      {
+        "id": "B-05",
+        "task": "Korean localization of landing + manifesto (before 2026-05-15 모두의 창업)"
+      },
+      {
+        "id": "B-06",
+        "task": "Create and maintain /docs/runbook.md for solo-founder risk mitigation"
+      }
+    ]
+  },
+
+  "vision_alignment_check": {
+    "rule": "Before executing any task, answer this question. If the answer is 'none', do not execute.",
+    "question": "Which roadmap layer does this task serve — Phase 1 (Search Console), Phase 2 (Analytics), Phase 3 (Ads), or platform-wide?",
+    "valid_answers": ["phase_1", "phase_2", "phase_3", "all", "moat_data", "moat_brand"],
+    "invalid_answers": ["just_looks_nice", "not_sure", "none", "new_idea_i_had"]
+  },
+
+  "hard_prohibitions": {
+    "banned_copy_phrases": [
+      "Not for agencies",
+      "Built for creators",
+      "only for creators",
+      "creators only",
+      "solo creators only"
+    ],
+    "banned_actions": [
+      {
+        "action": "automated_posting_bots",
+        "reason": "@pickedbyAI was permanently banned on X for exactly this. Same risk applies to LinkedIn, Reddit, and any other platform.",
+        "applies_to": ["X/Twitter", "LinkedIn", "Reddit", "Instagram", "any social platform"]
+      },
+      {
+        "action": "new_feature_not_in_brief",
+        "reason": "Product scope is frozen. Only work listed in P0-P3 or backlog is allowed."
+      },
+      {
+        "action": "new_blog_post_without_approval",
+        "reason": "13 posts is already enough. Focus is shifting from content to conversations."
+      },
+      {
+        "action": "skipping_P0_to_work_on_P3",
+        "reason": "Execution order is strict. P0 must complete before P1 begins, and so on."
+      },
+      {
+        "action": "paying_for_directories",
+        "reason": "$49-$497 directories have not proven ROI. Not allowed without founder approval."
+      }
+    ]
+  },
+
+  "distribution_strategy": {
+    "principle": "Stop coding, start talking. 1:1 give-first over 1:N broadcast.",
+    "track_A_creators": {
+      "goal": "Phase 1 seed users + Probe log data + testimonials",
+      "channels": ["Reddit (carefully)", "email", "Discord", "Facebook groups"],
+      "tactic": "Top 100 Preemptive Scan — gift reports to top Gumroad/Etsy/Notion sellers without being asked",
+      "kpi_30_days": {
+        "emails": 100,
+        "calls": 10,
+        "paying_seeds": 10
+      },
+      "message_style": "gift — 'I scanned your product, here are 3 fixes'"
+    },
+    "track_B_vision_audience": {
+      "goal": "Phase 2/3 pilot partners, investors, press, vision believers",
+      "channels": ["LinkedIn (manual only)"],
+      "target_groups": [
+        {
+          "group": "Marketing execs (CMO/VPM)",
+          "query": "VP Marketing DTC Shopify",
+          "quota": 20,
+          "why": "Phase 2 pilot customers"
+        },
+        {
+          "group": "SEO/GEO consultants",
+          "query": "GEO Answer Engine Optimization AI SEO",
+          "quota": 20,
+          "why": "One consultant brings 100 downstream users"
+        },
+        {
+          "group": "D2C founders",
+          "query": "Founder Shopify DTC",
+          "quota": 20,
+          "why": "10x willingness to pay vs creators"
+        },
+        {
+          "group": "AI/SaaS seed investors",
+          "query": "Seed AI MarTech",
+          "quota": 20,
+          "why": "Prepare seed round"
+        },
+        {
+          "group": "Tech journalists",
+          "query": "TechCrunch The Information AI beat",
+          "quota": 20,
+          "why": "The 'Google for AI' story sells"
+        }
+      ],
+      "signal_keywords_30d": [
+        "AI search",
+        "GEO",
+        "ChatGPT recommendation",
+        "AI visibility",
+        "AEO",
+        "answer engine",
+        "AI shopping"
+      ],
+      "kpi_30_days": {
+        "conversations": 20,
+        "pilots": 3,
+        "investor_meetings": 2
+      },
+      "cadence": "10 manual sends per day x 10 days = 100 total. Claude drafts. Human sends.",
+      "message_style": "insider seat — 'I'm opening 5 early pilot slots'"
+    }
+  },
+
+  "reporting_protocol": {
+    "after_every_task": {
+      "format": "3 lines",
+      "line_1": "What changed",
+      "line_2": "Vision alignment check (which roadmap layer served)",
+      "line_3": "Proposed next step"
+    },
+    "weekly_summary": {
+      "frequency": "every Sunday",
+      "sections": [
+        "P0/P1/P2/P3 progress",
+        "new conflicts with vision discovered",
+        "proposed additions to backlog",
+        "blockers needing founder input"
+      ]
+    }
+  },
+
+  "kpis_30_day": {
+    "email_signups": 100,
+    "paying_customers": 10,
+    "user_calls_completed": 10,
+    "pilot_partnerships": 3,
+    "investor_meetings": 2,
+    "probe_log_entries": 10000,
+    "go_no_go_check_day": 7,
+    "go_no_go_criteria": {
+      "emails_minimum": 20,
+      "calls_minimum": 5,
+      "action_if_failed": "Escalate to founder — consider segment pivot"
+    }
+  },
+
+  "escalate_to_founder_when": [
+    "A task has no clear roadmap layer",
+    "A copy change affects more than 5 files",
+    "External API cost exceeds $10/month",
+    "Any task requires creating a new page not listed in this file",
+    "Any conflict between this file and older instructions"
+  ]
+}
