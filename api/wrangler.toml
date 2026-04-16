@@ -15,6 +15,9 @@ ENVIRONMENT = "production"
 [env.staging]
 name = "pickedbyai-api-staging"
 
+[env.staging.triggers]
+crons = ["0 2 * * *"]  # 스테이징도 동일 cron
+
 [env.staging.vars]
 ENVIRONMENT = "staging"
 
