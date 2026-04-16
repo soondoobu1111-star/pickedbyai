@@ -1421,6 +1421,19 @@ app.post('/v1/beta/join', async (c) => {
   try { body = await c.req.json() } catch { return c.json({ error: 'Invalid JSON' }, 400) }
   if (!body.terms_agreed) return c.json({ error: 'Terms agreement required' }, 400)
 
+  // Check beta capacity before joining
+  try {
+    const countRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/beta_signups?joined_at=not.is.null&opted_out_at=is.null&select=id`,
+      { headers: { 'apikey': c.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`, 'Prefer': 'count=exact' } }
+    )
+    const countHeader = countRes.headers.get('content-range')
+    const currentCount = countHeader ? parseInt(countHeader.split('/')[1] || '0', 10) : 0
+    if (currentCount >= 100) {
+      return c.json({ error: 'Beta is full', sold_out: true }, 409)
+    }
+  } catch { /* proceed on error */ }
+
   const now = new Date().toISOString()
   try {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/beta_signups`, {

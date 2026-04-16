@@ -916,6 +916,8 @@
     const { status, count, spots_left } = data
     const ctaSection = document.getElementById('beta-cta-section')
     const joinedMsg = document.getElementById('beta-joined-msg')
+    const badge = document.getElementById('beta-spots-badge')
+    const isSoldOut = spots_left != null && spots_left <= 0
 
     if (status === 'joined') {
       ctaSection.style.display = 'none'
@@ -926,8 +928,21 @@
     } else {
       ctaSection.style.display = 'block'
       joinedMsg.style.display = 'none'
-      const badge = document.getElementById('beta-spots-badge')
-      if (badge && spots_left != null) badge.textContent = `${spots_left} spot${spots_left !== 1 ? 's' : ''} left`
+      if (isSoldOut) {
+        if (badge) { badge.textContent = 'SOLD OUT'; badge.style.color = '#ef4444'; }
+        const btn = document.getElementById('beta-join-btn')
+        if (btn) {
+          btn.disabled = true
+          btn.textContent = 'SOLD OUT'
+          btn.style.background = '#2a2a2a'
+          btn.style.color = '#555'
+          btn.style.cursor = 'not-allowed'
+        }
+        const checkbox = document.getElementById('beta-terms-check')
+        if (checkbox) checkbox.disabled = true
+      } else {
+        if (badge && spots_left != null) badge.textContent = `${spots_left} spot${spots_left !== 1 ? 's' : ''} left`
+      }
     }
   }
 
@@ -956,6 +971,14 @@
         betaStatus = 'joined'
         document.getElementById('beta-cta-section').style.display = 'none'
         document.getElementById('beta-joined-msg').style.display = 'block'
+      } else if (res.status === 409) {
+        btn.disabled = true
+        btn.textContent = 'SOLD OUT'
+        btn.style.background = '#2a2a2a'
+        btn.style.color = '#555'
+        btn.style.cursor = 'not-allowed'
+        const badge = document.getElementById('beta-spots-badge')
+        if (badge) { badge.textContent = 'SOLD OUT'; badge.style.color = '#ef4444'; }
       } else {
         btn.disabled = false
         btn.textContent = 'Join Beta'
