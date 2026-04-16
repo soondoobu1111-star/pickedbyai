@@ -1,4 +1,4 @@
-# IH Post Final Draft — 2026-04-16 게시용
+# IH Post Final Draft — 2026-04-16 게시용 (최신화 완료)
 > CEO 직접 게시. 목요일 최적. 제목 51자 이내. 제품명 미포함.
 
 ---
@@ -13,7 +13,7 @@ I asked ChatGPT to recommend my product. It had no idea it existed.
 
 ---
 
-10 days ago, I typed my own product into ChatGPT and asked: "What's the best tool for [my category]?"
+12 days ago, I typed my own product into ChatGPT and asked: "What's the best tool for [my category]?"
 
 It recommended 5 competitors. Mine wasn't on the list.
 
@@ -65,7 +65,11 @@ The gap between "AI knows you" and "AI has no idea you exist" is massive. And mo
 
 ### What Happened After Launch
 
-Honest update: I launched 10 days ago. I have **zero paying customers**. I posted on Reddit (5.3K views, 0 conversions). My Twitter account got permanently banned because my AI agent auto-posted without my knowledge (lesson learned the hard way).
+Honest update: I launched 12 days ago. I have **zero paying customers**. I posted on Reddit (5.3K views, 0 conversions). My Twitter account got permanently banned because my AI agent auto-posted without my knowledge (lesson learned the hard way).
+
+But here's the interesting part: **I ran the tool on my own product again this week. Score jumped from 12 to 32 in 11 days.**
+
+What moved it: 13 blog posts, one Reddit thread that got 5.3K views, and 6 directory submissions. Perplexity now recognizes us in 8 out of 10 probes. ChatGPT still has no idea — but that was expected (training cutoff).
 
 I asked 5 different AI models to evaluate my product. All 5 agreed:
 
@@ -91,7 +95,7 @@ The tool is free, no signup: [pickedby.ai](https://pickedby.ai)
 
 ---
 
-*Solo founder building in public. Day 10 of 90. All code written by AI agents. AMA.*
+*Solo founder building in public. Day 12 of 90. All code written by AI agents. AMA.*
 
 ---
 
