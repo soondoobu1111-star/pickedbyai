@@ -1421,6 +1421,18 @@ app.post('/v1/beta/join', async (c) => {
   try { body = await c.req.json() } catch { return c.json({ error: 'Invalid JSON' }, 400) }
   if (!body.terms_agreed) return c.json({ error: 'Terms agreement required' }, 400)
 
+  // Check if user previously declined (permanent ban from rejoining)
+  try {
+    const prevRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/beta_signups?user_id=eq.${user.id}&select=opted_out_at`,
+      { headers: { 'apikey': c.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}` } }
+    )
+    const prevRows = await prevRes.json() as Array<{ opted_out_at: string | null }>
+    if (prevRows?.[0]?.opted_out_at) {
+      return c.json({ error: 'Beta access permanently revoked', declined: true }, 403)
+    }
+  } catch { /* proceed on error */ }
+
   // Check beta capacity before joining
   try {
     const countRes = await fetch(
