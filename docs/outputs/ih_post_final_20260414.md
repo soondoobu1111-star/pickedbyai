@@ -95,6 +95,12 @@ The tool is free, no signup: [pickedby.ai](https://pickedby.ai)
 
 ---
 
+**Also: I'm looking for beta users.**
+
+If you want early access to deeper features (score history, improvement roadmap, AI probe logs), I'm onboarding a small group of 100 founders for free — lifetime access. [Join the beta here](https://pickedby.ai/register.html)
+
+---
+
 *Solo founder building in public. Day 12 of 90. All code written by AI agents. AMA.*
 
 ---
