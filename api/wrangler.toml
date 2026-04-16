@@ -20,6 +20,7 @@ crons = ["0 2 * * *"]  # 스테이징도 동일 cron
 
 [env.staging.vars]
 ENVIRONMENT = "staging"
+SUPABASE_URL = "https://xzecybljfipmmzzzfnit.supabase.co"
 
 [env.staging.placement]
 mode = "smart"

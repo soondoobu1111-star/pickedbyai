@@ -8,6 +8,7 @@ type Bindings = {
   TAVILY_API_KEY: string
   OPENAI_API_KEY: string
   PERPLEXITY_API_KEY: string
+  SUPABASE_URL?: string
   AI: Ai
 }
 
@@ -801,6 +802,7 @@ app.post('/v1/check', async (c) => {
 
 // ── Daily cron: auto-refresh all tracked products ─────────────
 async function dailyRefresh(env: Bindings) {
+  const sbUrl = env.SUPABASE_URL || SUPABASE_URL
   const today = new Date().toISOString().split('T')[0]
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
 
@@ -812,7 +814,7 @@ async function dailyRefresh(env: Bindings) {
 
   // 1. Get all tracked products from last 30 days
   const trackedRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/scores?select=user_id,product_name,product_url&created_at=gte.${thirtyDaysAgo}&limit=1000`,
+    `${sbUrl}/rest/v1/scores?select=user_id,product_name,product_url&created_at=gte.${thirtyDaysAgo}&limit=1000`,
     { headers }
   )
   if (!trackedRes.ok) { console.error('[CRON] fetch tracked failed', await trackedRes.text()); return }
@@ -820,7 +822,7 @@ async function dailyRefresh(env: Bindings) {
 
   // 2. Get today's already-scanned (user_id, product_name) pairs
   const todayRes = await fetch(
-    `${SUPABASE_URL}/rest/v1/scores?select=user_id,product_name&created_at=gte.${today}T00:00:00.000Z`,
+    `${sbUrl}/rest/v1/scores?select=user_id,product_name&created_at=gte.${today}T00:00:00.000Z`,
     { headers }
   )
   const todayScanned: Array<{ user_id: string; product_name: string }> = todayRes.ok ? await todayRes.json() : []
@@ -837,7 +839,7 @@ async function dailyRefresh(env: Bindings) {
     }
   }
 
-  console.log(`[CRON] daily refresh: ${tasks.length} products to scan`)
+  console.log(`[CRON] daily refresh: ${tasks.length} products to scan (db=${sbUrl.includes('xzec') ? 'staging' : 'prod'})`)
 
   // 4. Scan each product sequentially (avoid rate limits)
   for (const task of tasks) {
@@ -848,20 +850,25 @@ async function dailyRefresh(env: Bindings) {
       await logProbes(env, task.product_name, result.aiProbe, {
         userId: task.user_id, productUrl: task.product_url ?? undefined, triggerType: 'cron', startMs: cronStartMs
       })
-      await fetch(`${SUPABASE_URL}/rest/v1/scores`, {
+      // Use probe_score if available (probe_count >= 3), else raw score
+      const validProbes = result.aiProbe.filter((p: AIProbeResult) => p.ai !== 'test')
+      const recognized = validProbes.filter((p: AIProbeResult) => p.recognized).length
+      const probe_score = validProbes.length >= 3 ? Math.round(recognized / validProbes.length * 100) : -1
+      const savedScore = probe_score >= 0 ? probe_score : result.score
+      await fetch(`${sbUrl}/rest/v1/scores`, {
         method: 'POST',
         headers: { ...headers, 'Prefer': 'return=minimal' },
         body: JSON.stringify({
           user_id: task.user_id,
           product_name: task.product_name,
           product_url: task.product_url,
-          score: result.score,
+          score: savedScore,
           results: result.results,
           dimensions: result.dimensions,
           ai_probe: result.aiProbe,
         }),
       })
-      console.log(`[CRON] ✓ ${task.product_name} score=${result.score}`)
+      console.log(`[CRON] ✓ ${task.product_name} score=${savedScore} (probe=${probe_score}, raw=${result.score})`)
       // Small delay between scans
       await new Promise(r => setTimeout(r, 2000))
     } catch (err) {
