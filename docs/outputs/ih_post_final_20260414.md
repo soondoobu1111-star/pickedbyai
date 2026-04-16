@@ -83,7 +83,7 @@ The biggest feedback: "You're giving a diagnosis but no prescription. When someo
 
 I'm not building more features. I'm listening.
 
-**I'm onboarding 100 founders for free beta access** — score history, improvement roadmap, AI probe logs. Lifetime free. If that sounds useful, [grab a spot here](https://pickedby.ai/register.html) (85 left).
+**I'm onboarding 100 founders into the beta** — first 100 get lifetime free access as we build. If you want to be part of this early, [grab a spot here](https://pickedby.ai/register.html).
 
 If you sell digital products (Gumroad, Etsy, Notion templates, online courses), I'd genuinely love your input:
 
