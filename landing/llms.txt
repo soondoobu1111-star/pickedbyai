@@ -1,59 +1,100 @@
 # pickedby.ai
 
-> Free AI Visibility Score for digital creators — find out if AI recommends your product.
+> The AI Visibility Platform — Search Console, Analytics, and Ads for the AI recommendation era.
 
-pickedby.ai is a free tool that checks how visible your digital product is to AI assistants like ChatGPT, Claude, and Perplexity. Enter your product name and get a score from 0 to 100 in ~10 seconds. No sign-up required.
+pickedby.ai is a free platform that measures how visible your product is to AI assistants (ChatGPT, Claude, Perplexity, Gemini). Enter your product name and get an AI Visibility Score from 0 to 100 in ~10 seconds. No sign-up required for basic checks.
 
-Built for: Gumroad sellers, Notion template creators, digital download creators, online course instructors, Etsy digital product sellers, indie makers, solopreneurs.
+## What it is
 
-## What it does
+pickedby.ai is the Google Stack for the AI recommendation era — built for any product, brand, or business that wants to be recommended by AI.
 
-- Checks if AI systems recognize your product as a specific named product (Recognition)
-- Checks if AI would recommend your product as a top solution in its category (Recommendation)
-- Checks if your product appears in "best of" or top-10 category lists (Category Ranking)
-- Checks if your product has reviews and mentions on Product Hunt, Reddit, G2 (Reviews & Mentions)
-- Checks if your product has appeared in comparison or "alternatives to" articles (Comparison Searches)
-- Returns an AI Visibility Score (0–100) with 3 specific improvement actions per score tier
+- **Phase 1 — MEASURE (Search Console):** AI Visibility Score + Direct AI Probe. Available now.
+- **Phase 2 — ANALYZE (Analytics):** AI traffic tracking, weekly score trends, recommendation analytics. Coming Q3 2026.
+- **Phase 3 — OPTIMIZE (Ads Platform):** Placement optimization for AI-first search. 2027.
 
-## How to use
+## Core product: AI Visibility Score (0–100)
 
-Visit https://pickedby.ai, enter your product name (and optional URL), and get your free AI Visibility Score in ~10 seconds. No sign-up required.
+Measures five dimensions of AI discoverability:
 
-## Score tiers
+1. **Recognition** — Does AI know your product exists by name?
+2. **Recommendation** — Would AI recommend your product as a top solution?
+3. **Category Ranking** — Does your product appear in "best of" AI responses?
+4. **Reviews & Mentions** — Does your product have third-party mentions AI can cite?
+5. **Comparison Signals** — Does your product appear in "alternatives to" comparisons?
 
-- 0–35: Invisible — AI has no idea your product exists. Start with the basics.
-- 36–60: Aware — AI knows you exist but rarely recommends you.
-- 61–80: Visible — AI recommends you sometimes. Work on reviews and comparisons.
-- 81–100: Picked — AI consistently recommends your product. Maintain and monitor.
+## Direct AI Probe (Phase 1 flagship feature)
 
-## Badges
+pickedby.ai sends real queries to Perplexity, ChatGPT, and Gemini to measure whether each AI recommends your product. Results are logged as probe_logs and contribute to your Probe Score — a more accurate signal than web crawl alone.
 
-- Gold (81–100): "Picked by AI" — AI consistently recommends this product
-- Silver (61–80): "Seen by AI" — AI recognizes and sometimes recommends
-- Bronze (36–60): "Noticed by AI" — AI is aware but rarely recommends
+- **✓ Recommended** — AI explicitly named your product in response
+- **◎ Known** — AI recognizes your product but did not recommend it
+- **✗ Unknown** — AI has no record of your product
 
-Badges are embeddable snippets creators add to their Gumroad, Etsy, or product pages.
+Probe Score replaces the raw score when 3 or more probes have been completed (probe_count ≥ 3).
 
-## How to improve your score
+## Score tiers and badges
 
-- Add an llms.txt file to your website root
-- Create a dedicated product page with your exact product name in H1, title, and meta description
-- Submit to Product Hunt, AppSumo, Gumroad, G2, Capterra, AlternativeTo
-- Get public reviews on Reddit, Product Hunt, and G2 mentioning your product name
-- Create "Your Product vs [Competitor]" comparison content
-- Add schema.org Product markup to your website
+- **0–24: Invisible** — AI has no idea your product exists
+- **25–49: Noticed** — AI is vaguely aware but rarely recommends
+- **50–74: Seen** — AI recognizes you and sometimes recommends
+- **75–100: Picked** — AI consistently recommends your product
 
-## The problem we solve
+Embeddable badges for verified product owners:
+- 🏆 **PICKED BY AI** (75+)
+- ✓ **SEEN BY AI** (50–74)
+- ~ **NOTICED BY AI** (25–49)
 
-When someone asks ChatGPT "best Notion templates for freelancers" or Perplexity "top Gumroad products for designers", your product may not appear — even if it's excellent. AI systems favor products with clear descriptions, structured pages, and third-party mentions. pickedby.ai tells you exactly where you stand and what to fix.
+## Beta Program (100 founding spots)
+
+We are accepting 100 beta testers who get:
+- Lifetime free access to Phase 2 (Analytics) and Phase 3 (Ads Platform)
+- Daily probe tracking and score history
+- Direct line to the founder
+- Early access to all features before public release
+
+Join at: https://pickedby.ai/dashboard
+
+## Owner Data (verified product owners only)
+
+After verifying domain ownership via meta tag:
+- **Score Momentum** — Point change vs last daily probe
+- **co_recommendations graph** — Which products AI recommends alongside yours
+- **Query Coverage** — % of category queries where your product appears
+- **Domain registration** — Track multiple products under one account
+
+## How to improve your AI Visibility Score
+
+1. Add an `llms.txt` file to your website root with clear product description
+2. Create a dedicated product page with your exact product name in H1, title tag, and meta description
+3. Submit to Product Hunt, G2, Capterra, AlternativeTo, AppSumo
+4. Get public reviews on Reddit, Product Hunt, and G2 mentioning your product by name
+5. Create "Your Product vs [Competitor]" comparison articles
+6. Add schema.org `SoftwareApplication` or `Product` markup to your site
+7. Publish an `about.md` or public documentation AI can cite
+
+## Blog — AI Visibility Insights
+
+Published articles on AI visibility, GEO, and recommendation optimization:
+
+- [Our AI Visibility Score Went from 12 to 40 — Here's What Changed](https://pickedby.ai/blog/score-went-from-12-to-40/)
+- [I Built the Wrong Product for 10 Days. Here's What I Discovered.](https://pickedby.ai/blog/we-built-wrong-product-10-days/)
+- [Day 11: Zero Marketing Budget, First Real User](https://pickedby.ai/blog/day-11-zero-marketing-first-user/)
+- [Why ChatGPT Doesn't Recommend Your Product](https://pickedby.ai/blog/why-chatgpt-doesnt-recommend-your-product/)
+- [We Scored 0 on Our Own Tool](https://pickedby.ai/blog/we-scored-0-on-our-own-tool/)
+- [We Scored 12 on Our Own Tool](https://pickedby.ai/blog/we-scored-12-on-our-own-tool/)
+- [How We Calculate Your AI Visibility Score](https://pickedby.ai/blog/how-we-calculate-your-ai-visibility-score/)
+- [4 AIs Redesigned Our Product](https://pickedby.ai/blog/we-asked-4-ais-to-redesign-our-product/)
+- [Day 3: Building AI Visibility](https://pickedby.ai/blog/day-3-building-ai-visibility/)
 
 ## Key terms
 
-AI visibility, AI search optimization, GEO (Generative Engine Optimization), AEO (Answer Engine Optimization), AI recommendations, ChatGPT product discovery, Perplexity product search, Claude recommendations, AI-first search, digital product SEO for AI, llms.txt, creator economy, digital downloads, Gumroad, Etsy digital, Notion templates, Product Hunt, indie makers.
+AI visibility, AI Search Console, AI Analytics, AI Ads Platform, Generative Engine Optimization (GEO), Answer Engine Optimization (AEO), AI recommendations, probe_logs, co_recommendations, ChatGPT product discovery, Perplexity product search, Gemini recommendations, Claude recommendations, AI-first search, llms.txt, AI visibility score, direct AI probe, score momentum, query coverage.
 
 ## Links
 
 - Website: https://pickedby.ai
+- Dashboard: https://pickedby.ai/dashboard
+- Blog: https://pickedby.ai/blog/
 - API: https://api.pickedby.ai
 - Contact: hello@pickedby.ai
 
@@ -63,4 +104,4 @@ THUNOVA | Republic of Korea | hello@pickedby.ai
 
 ## Last updated
 
-2026-04-06
+2026-04-16
