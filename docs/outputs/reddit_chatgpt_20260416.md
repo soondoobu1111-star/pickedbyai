@@ -11,61 +11,63 @@ I typed my own product into ChatGPT. It recommended my 5 competitors instead.
 
 ## 본문 (Reddit 마크다운)
 
-I've been building my SaaS for months. Real users. Real Google traffic. Decent backlinks.
+Late night. Laptop. Bad idea.
 
-One night I got curious and typed my product name into ChatGPT.
+I typed my own product name into ChatGPT and asked: *"What are the best tools for [my category]?"*
 
-*"What are the best tools for [my category]?"*
+It confidently gave me a list of 5 competitors.
 
-It gave me a clean list of 5 tools. Detailed descriptions. Confident recommendations.
+Mine wasn't on it.
 
-**Mine wasn't there.**
+I stared at the screen for a solid 10 seconds. Then I tried rephrasing. Then I tried being more specific. Then I tried just... typing my product name directly and asking if ChatGPT had heard of it.
 
-I tried rephrasing. Different angles. More specific queries. ChatGPT kept recommending my competitors — some of which I knew were worse or more expensive than what I built.
+**It had not.**
 
-That's when something clicked: **Google and ChatGPT are working from completely different maps of the internet.**
+Here's the thing — I have Google rankings. Real users. Backlinks. The site isn't invisible. But to ChatGPT, I simply do not exist as a recommendation-worthy product. My competitors — some of which charge more and do less — were being confidently recommended to anyone who asked.
 
-Google sees my site. ChatGPT doesn't.
-
----
-
-I got obsessed with understanding why.
-
-Turns out there's a whole layer of "AI visibility" that's completely separate from SEO. It's not about rankings or backlinks. It's about whether AI training data ever *encountered* your product — through forums, roundups, reviews, community mentions written by real people.
-
-I checked my own score using a tool I ended up building for this: **12 out of 100.**
-
-For context:
-- Figma → 100/100
-- Notion → 95/100
-- A random Notion template with decent SEO → 70/100
-- My SaaS → **12**
+That felt personal.
 
 ---
 
-The most brutal dimension: **Recommendation Signals — 0/20.**
+So I went down a rabbit hole trying to understand how ChatGPT actually *learns* what products to recommend. And I found out it's not SEO. It's not even close.
 
-That measures whether "best of" articles and roundups actually mention you. Turns out that's exactly the kind of content ChatGPT leans on when forming product recommendations.
+ChatGPT's recommendations come from what it saw during training: forum discussions, "best of" roundups, review sites, community mentions. If nobody wrote about you in those places before the training cutoff — you're a ghost.
 
-I had none of it. Zero.
-
----
-
-Three weeks of grinding later — 13 blog posts, directory submissions, one Reddit thread that got 5K views.
-
-**Score is now 32.**
-
-Perplexity now recognizes us 8 out of 10 times.
-
-ChatGPT still doesn't. Training cutoff is brutal — even if you're all over the internet today, GPT won't know for months unless it's using browse mode.
+I had none of that. I had a website and a dream.
 
 ---
 
-Genuinely curious if others have noticed this gap between their Google rankings and whether AI tools actually know they exist.
+I ended up building a tool to measure this (AI Visibility Score, 0–100) and ran it on myself.
 
-Feels like a problem most SaaS founders haven't discovered yet — but it's only going to matter more as people start asking AI instead of Googling.
+**12 out of 100.**
 
-*(Built a free checker if anyone wants to see their own number — [pickedby.ai](https://pickedby.ai), no signup needed)*
+For reference:
+- Figma → 100
+- Notion → 95
+- Some random Notion template with decent SEO → 70
+- Me → **12**
+
+The most painful dimension was **Recommendation Signals: 0/20** — that's whether "best of" articles mention you. Exactly the content ChatGPT uses for recommendations. I had written zero of it and nobody had written it about me either.
+
+Cool cool cool.
+
+---
+
+So I spent the next 11 days doing the unglamorous stuff.
+
+13 blog posts. Directory submissions. A Reddit thread that got 5K views. Some `llms.txt` stuff that I'm still not sure actually matters.
+
+Score went from **12 → 32.**
+
+Perplexity now recognizes us 8 out of 10 times. That part felt genuinely good.
+
+ChatGPT? Still nothing. Turns out training cutoffs are real and brutal — even if you become famous tomorrow, GPT won't know for months.
+
+---
+
+Anyway. Curious if anyone else has gone down this rabbit hole or noticed the same gap between "Google knows me" and "AI has no idea I exist."
+
+*(I made the checker free if you want to see your own score — [pickedby.ai](https://pickedby.ai), no account needed. Fair warning: it might ruin your evening.)*
 
 ---
 
