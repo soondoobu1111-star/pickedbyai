@@ -1785,8 +1785,14 @@
           const lbl = escHtml(probeLabels[p.ai] || p.ai)
           const color = p.recognized ? (p.recommended ? '#4ade80' : '#FFD700') : '#555'
           const label = p.recognized ? (p.recommended ? '✓ Recommended' : '◎ Known') : '✗ Unknown'
+          const tips = {
+            perplexity: 'We send a real user query to Perplexity AI asking for top tools in your category. ✓ Recommended = Perplexity named your product in its answer.',
+            gpt: 'We prompt ChatGPT with a category search query. ✓ Recommended = ChatGPT explicitly cited your product by name.',
+            gemini: 'We ask Google Gemini for the best products in your category. ✓ Recommended = Gemini included your product in its response.'
+          }
+          const tipText = tips[p.ai] || 'AI probe result for this platform.'
           return `<div style="display:flex;align-items:center;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #1a1a1a;">
-            <span style="color:#888;font-size:0.8rem;">${lbl}</span>
+            <span style="color:#888;font-size:0.8rem;display:inline-flex;align-items:center;">${lbl}<span class="dim-tip" data-tip="${tipText}">?</span></span>
             <span style="color:${color};font-size:0.8rem;font-weight:600;">${label}</span>
           </div>`
         }).join('')}
@@ -1883,13 +1889,13 @@
             <div style="font-size:0.7rem;color:#4ade80;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">🔓 OWNER DATA — ${escHtml(row.product_name)}</div>
             <div style="font-size:0.75rem;color:#555;line-height:1.8;">
               <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
-                <span>Score Momentum</span>
+                <span style="display:inline-flex;align-items:center;">Score Momentum<span class="dim-tip" data-tip="Point change in your AI Visibility Score since the last daily probe. Positive = more AIs are recognizing and recommending you.">?</span></span>
                 <span style="color:${productHistory.length >= 2 ? (score - productHistory[1].score > 0 ? '#4ade80' : score - productHistory[1].score < 0 ? '#ef4444' : '#888') : '#888'};">
                   ${productHistory.length >= 2 ? (score - productHistory[1].score > 0 ? '↑' + (score - productHistory[1].score) + ' pts vs last check' : score - productHistory[1].score < 0 ? '↓' + Math.abs(score - productHistory[1].score) + ' pts vs last check' : 'No change') : 'First check'}
                 </span>
               </div>
-              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>co_recommendations graph</span><span style="color:#333;">Collecting data...</span></div>
-              <div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>Query Coverage</span><span style="color:#333;">Collecting data...</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span style="display:inline-flex;align-items:center;">co_recommendations graph<span class="dim-tip" data-tip="Tracks which other products AIs recommend alongside yours. High co-recommendation density signals strong category positioning and brand association.">?</span></span><span style="color:#333;">Collecting data...</span></div>
+              <div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span style="display:inline-flex;align-items:center;">Query Coverage<span class="dim-tip" data-tip="The % of real AI search queries in your product category where your product appears in the response. Higher coverage = broader AI discoverability.">?</span></span><span style="color:#333;">Collecting data...</span></div>
             </div>
           </div>` : `
           <div style="margin-top:0.75rem;padding:0.75rem 1rem;background:#111;border:1px solid #222;border-radius:8px;">
