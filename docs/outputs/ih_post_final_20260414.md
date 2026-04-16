@@ -29,7 +29,7 @@ I found 24 GEO (Generative Engine Optimization) tools. Every single one was buil
 
 ### What I Built
 
-So I built one. In 10 days. With Claude Code as my only developer.
+So I built one. In under 2 weeks. With Claude Code as my only developer.
 
 **How it works:** Enter any product name → get an AI Visibility Score (0-100) in 10 seconds. Free. No signup required.
 
@@ -83,6 +83,8 @@ The biggest feedback: "You're giving a diagnosis but no prescription. When someo
 
 I'm not building more features. I'm listening.
 
+**I'm onboarding 100 founders for free beta access** — score history, improvement roadmap, AI probe logs. Lifetime free. If that sounds useful, [grab a spot here](https://pickedby.ai/register.html) (85 left).
+
 If you sell digital products (Gumroad, Etsy, Notion templates, online courses), I'd genuinely love your input:
 
 1. **Does "AI visibility" matter to you at all?** Or is it too abstract compared to "how do I get more sales this month?"
@@ -92,12 +94,6 @@ If you sell digital products (Gumroad, Etsy, Notion templates, online courses), 
 3. **Want me to check your product?** Drop the name below and I'll run it for you.
 
 The tool is free, no signup: [pickedby.ai](https://pickedby.ai)
-
----
-
-**Also: I'm looking for beta users.**
-
-If you want early access to deeper features (score history, improvement roadmap, AI probe logs), I'm onboarding a small group of 100 founders for free — lifetime access. [Join the beta here](https://pickedby.ai/register.html)
 
 ---
 
