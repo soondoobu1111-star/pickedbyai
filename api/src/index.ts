@@ -802,7 +802,8 @@ app.post('/v1/check', async (c) => {
 
 // ── Daily cron: auto-refresh all tracked products ─────────────
 async function dailyRefresh(env: Bindings) {
-  const sbUrl = env.SUPABASE_URL || SUPABASE_URL
+  const SUPABASE_URL_STAGING = 'https://xzecybljfipmmzzzfnit.supabase.co'
+  const sbUrl = (env as any).ENVIRONMENT === 'staging' ? SUPABASE_URL_STAGING : (env.SUPABASE_URL || SUPABASE_URL)
   const today = new Date().toISOString().split('T')[0]
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
 
