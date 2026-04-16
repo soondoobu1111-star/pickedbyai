@@ -13,7 +13,7 @@ I typed my own product into ChatGPT. It recommended my 5 competitors instead.
 
 Late night. Laptop. Bad idea.
 
-I typed my own product name into ChatGPT and asked: *"What are the best tools for [my category]?"*
+I typed my own product name into ChatGPT and asked: *"What are the best tools for checking AI visibility?"*
 
 It confidently gave me a list of 5 competitors.
 
@@ -67,7 +67,7 @@ ChatGPT? Still nothing. Turns out training cutoffs are real and brutal — even 
 
 Anyway. Curious if anyone else has gone down this rabbit hole or noticed the same gap between "Google knows me" and "AI has no idea I exist."
 
-*(I made the checker free if you want to see your own score — [pickedby.ai](https://pickedby.ai), no account needed. Fair warning: it might ruin your evening.)*
+*(Checker is free, no account — [pickedby.ai](https://pickedby.ai). Fair warning: it might ruin your evening. Also onboarding 100 founders into beta if you want to track this over time — first 100 get lifetime free access.)*
 
 ---
 
