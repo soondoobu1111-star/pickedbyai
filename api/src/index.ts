@@ -1581,6 +1581,95 @@ app.get('/v1/co-recs', async (c) => {
   return c.json({ co_recommendations_top: recs })
 })
 
+// ── /v1/events ─────────────────────────────────────────────────
+// 빅파이 1.5 Phase 2 Day 1 · user_events 테이블 접근
+// POST: Journey Timeline / Milestones / Streak 이벤트 기록
+// GET : 제품별 이벤트 조회 (Timeline 렌더링)
+// Auth: Supabase JWT (Authorization: Bearer <token>) — verifyToken으로 user.id 추출
+const ALLOWED_EVENT_TYPES = new Set([
+  'first_check', 'first_tier1_source', 'first_tier2_source',
+  'emerging_reached', 'strong_reached', 'picked_reached',
+  'perplexity_recognized', 'gemini_recognized', 'category_ranked',
+  'co_mention_peer_5', 'score_delta', 'check_run',
+])
+
+app.post('/v1/events', async (c) => {
+  const authHeader = c.req.header('Authorization') || ''
+  const token = authHeader.replace(/^Bearer\s+/i, '')
+  if (!token) return c.json({ error: 'unauthorized' }, 401)
+  const user = await verifyToken(token, c.env)
+  if (!user) return c.json({ error: 'invalid token' }, 401)
+
+  let body: { product_name?: string; event_type?: string; event_data?: unknown; dedupe?: boolean }
+  try { body = await c.req.json() } catch { return c.json({ error: 'invalid JSON' }, 400) }
+  const product = (body.product_name || '').trim()
+  const eventType = (body.event_type || '').trim()
+  if (!product || product.length > 200) return c.json({ error: 'product_name required' }, 400)
+  if (!eventType || !ALLOWED_EVENT_TYPES.has(eventType)) return c.json({ error: 'invalid event_type' }, 400)
+
+  const sbUrl = user.supabaseUrl
+
+  // Milestone 중복 방지: dedupe=true면 동일 (user_id, product_name, event_type) 이미 존재 시 skip
+  if (body.dedupe) {
+    const dupeRes = await fetch(
+      `${sbUrl}/rest/v1/user_events?user_id=eq.${encodeURIComponent(user.id)}&product_name=eq.${encodeURIComponent(product)}&event_type=eq.${encodeURIComponent(eventType)}&select=id&limit=1`,
+      { headers: { 'apikey': c.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}` } }
+    )
+    if (dupeRes.ok) {
+      const rows = await dupeRes.json() as any[]
+      if (rows.length > 0) return c.json({ event: rows[0], deduped: true })
+    }
+  }
+
+  const res = await fetch(`${sbUrl}/rest/v1/user_events`, {
+    method: 'POST',
+    headers: {
+      'apikey': c.env.SUPABASE_SERVICE_KEY,
+      'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+    },
+    body: JSON.stringify({
+      user_id: user.id,
+      product_name: product,
+      event_type: eventType,
+      event_data: body.event_data || {},
+    }),
+  })
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '')
+    console.error(`[events] POST error ${res.status}:`, errText)
+    return c.json({ error: 'db error' }, 500)
+  }
+  const data = await res.json() as any[]
+  return c.json({ event: data[0] || null })
+})
+
+app.get('/v1/events', async (c) => {
+  const authHeader = c.req.header('Authorization') || ''
+  const token = authHeader.replace(/^Bearer\s+/i, '')
+  if (!token) return c.json({ error: 'unauthorized' }, 401)
+  const user = await verifyToken(token, c.env)
+  if (!user) return c.json({ error: 'invalid token' }, 401)
+
+  const product = c.req.query('product')?.trim()
+  const limitParam = parseInt(c.req.query('limit') || '50', 10)
+  const limit = Math.min(Math.max(Number.isFinite(limitParam) ? limitParam : 50, 1), 200)
+  const sbUrl = user.supabaseUrl
+
+  const productFilter = product ? `&product_name=eq.${encodeURIComponent(product)}` : ''
+  const res = await fetch(
+    `${sbUrl}/rest/v1/user_events?user_id=eq.${encodeURIComponent(user.id)}${productFilter}&select=*&order=created_at.desc&limit=${limit}`,
+    { headers: { 'apikey': c.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}` } }
+  )
+  if (!res.ok) {
+    console.error(`[events] GET error ${res.status}`)
+    return c.json({ events: [] })
+  }
+  const events = await res.json() as any[]
+  return c.json({ events })
+})
+
 // ── GET /v1/beta-count ────────────────────────────────────────
 // Returns current beta tester count (source = 'beta-100')
 app.get('/v1/beta-count', async (c) => {

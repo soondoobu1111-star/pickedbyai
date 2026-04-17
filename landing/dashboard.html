@@ -1407,6 +1407,7 @@
         results: lastCheckResult.results,
         dimensions: lastCheckResult.dimensions || null,
         ai_probe: lastCheckResult.aiProbe || null,
+        unified_v15: lastCheckResult.unified || null,
       }).eq('id', todayCheck[0].id)
       setSavedBtn()
       loadHistory()
@@ -1426,6 +1427,7 @@
       results: lastCheckResult.results,
       dimensions: lastCheckResult.dimensions || null,
       ai_probe: lastCheckResult.aiProbe || null,
+      unified_v15: lastCheckResult.unified || null,
     })
     loadHistory()
   }
@@ -1449,6 +1451,7 @@
         results: lastCheckResult.results,
         dimensions: lastCheckResult.dimensions || null,
         ai_probe: lastCheckResult.aiProbe || null,
+        unified_v15: lastCheckResult.unified || null,
       }).eq('id', existing.id)
       loadHistory()
       return
@@ -1461,6 +1464,7 @@
       results: lastCheckResult.results,
       dimensions: lastCheckResult.dimensions || null,
       ai_probe: lastCheckResult.aiProbe || null,
+      unified_v15: lastCheckResult.unified || null,
     })
     loadHistory()
   }
