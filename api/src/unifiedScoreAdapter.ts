@@ -1,0 +1,246 @@
+// ─────────────────────────────────────────────────────────────
+// UnifiedScoreAdapter — 빅파이 1.5 Phase 1 Step 3
+//
+// 목적: 기존 `runEngine` 결과(Tavily sources + AIProbes)를
+//       unifiedScore.ts의 DimensionContext로 변환하고, 부족한 입력
+//       (category ranking, probe_logs 누적)을 최소 비용으로 보강.
+//
+// 설계 원칙:
+//   - 기존 `runEngine`은 손대지 않는다 (B안: 병존).
+//   - Perplexity 추가 호출은 1쿼리로 제한 (category 추론 + best ranking 통합).
+//   - 플래그가 off면 이 모듈은 호출되지 않는다 (비용 0).
+//   - 카테고리 힌트가 없으면 Category Ranking = not_measured (0점).
+//
+// 작성: 2026-04-17 (Phase 1 Step 3)
+// ─────────────────────────────────────────────────────────────
+
+import {
+  DimensionContext,
+  DimensionScore,
+  UnifiedScoreResult,
+  computeRecognition,
+  computeCategoryRanking,
+  computeCoRecommendation,
+  computeWebAuthority,
+  assembleUnifiedScore,
+} from './unifiedScore'
+
+// ===== Adapter 전용 타입 (index.ts와 느슨하게 결합) =====
+
+export type AdapterEnv = {
+  PERPLEXITY_API_KEY?: string
+  SUPABASE_SERVICE_KEY?: string
+  SUPABASE_URL?: string
+}
+
+export type EngineInputs = {
+  productName: string
+  productUrl?: string
+  tavilySources: Array<{ url: string; tier: number; isOwn: boolean }>
+  aiProbes: Array<{
+    ai: string
+    recognized: boolean
+    recommended: boolean
+    snippet: string
+    citations: string[]
+  }>
+}
+
+const DEFAULT_SUPABASE_URL = 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
+
+// ===== 메인 빌더 + 합산 =====
+
+/**
+ * runEngine 결과를 4차원 단일 스코어 계산 입력으로 변환.
+ * 추가 비용: Perplexity 1쿼리 (카테고리 추론 + best ranking 통합).
+ */
+export async function buildDimensionContext(
+  env: AdapterEnv,
+  inputs: EngineInputs,
+): Promise<DimensionContext> {
+  const gemini = inputs.aiProbes.find(p => p.ai === 'gemini')
+  const perplexity = inputs.aiProbes.find(p => p.ai === 'perplexity')
+
+  // 카테고리 추론 + Ranking 측정 (병렬 불가: 카테고리 확정 후 쿼리)
+  const { rankings } = await inferCategoryAndRank(env, inputs.productName, inputs.aiProbes)
+
+  // Co-Rec 누적 로그 (점수 계산용)
+  const probeLogs = await fetchProbeLogsForScoring(env, inputs.productName)
+
+  return {
+    productName: inputs.productName,
+    productUrl: inputs.productUrl,
+    geminiResponse: gemini
+      ? { recognized: gemini.recognized, recommended: gemini.recommended, text: gemini.snippet }
+      : undefined,
+    perplexityResponse: perplexity
+      ? {
+          recognized: perplexity.recognized,
+          recommended: perplexity.recommended,
+          text: perplexity.snippet,
+          citations: perplexity.citations || [],
+        }
+      : undefined,
+    categoryRankings: rankings,
+    probeLogs,
+    tavilySources: inputs.tavilySources,
+  }
+}
+
+/**
+ * 4차원 전부 계산 → UnifiedScoreResult 반환.
+ * sum(dimensions[].score) === final.score 수학적 보장.
+ */
+export function computeUnified(ctx: DimensionContext): UnifiedScoreResult {
+  const dimensions: DimensionScore[] = [
+    computeRecognition(ctx),
+    computeCategoryRanking(ctx),
+    computeCoRecommendation(ctx),
+    computeWebAuthority(ctx),
+  ]
+  return assembleUnifiedScore(ctx, dimensions)
+}
+
+// ===== Category 추론 + Ranking 측정 =====
+
+/**
+ * 기존 Probe snippet에서 카테고리 힌트 추출 → 실패 시 null (점수 0).
+ * 힌트가 있으면 Perplexity에 `best {category}` 1쿼리로 랭킹 파싱.
+ */
+async function inferCategoryAndRank(
+  env: AdapterEnv,
+  productName: string,
+  aiProbes: Array<{ ai: string; snippet: string }>,
+): Promise<{
+  category: string | null
+  rankings: Array<{ engine: string; rank: number | null; query: string }>
+}> {
+  const category = extractCategoryHint(productName, aiProbes)
+  if (!category || !env.PERPLEXITY_API_KEY) {
+    return { category, rankings: [] }
+  }
+
+  try {
+    const res = await fetch('https://api.perplexity.ai/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${env.PERPLEXITY_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model: 'sonar',
+        messages: [
+          {
+            role: 'system',
+            content:
+              'You are a product recommendation expert. List REAL products in a numbered list (1. Name — desc). Do not invent. Under 250 words.',
+          },
+          {
+            role: 'user',
+            content: `What are the top 10 best ${category} tools in 2026? Numbered list only.`,
+          },
+        ],
+        max_tokens: 500,
+        temperature: 0.2,
+      }),
+      signal: AbortSignal.timeout(12000),
+    })
+    if (!res.ok) {
+      console.error(`[UNIFIED_V15] category rank perplexity ${res.status}`)
+      return { category, rankings: [] }
+    }
+    const json = (await res.json()) as {
+      choices: Array<{ message: { content: string } }>
+    }
+    const text = json.choices?.[0]?.message?.content ?? ''
+    const rank = parseRankFromList(text, productName)
+    return {
+      category,
+      rankings: [{ engine: 'perplexity', rank, query: `best ${category}` }],
+    }
+  } catch (err) {
+    console.error('[UNIFIED_V15] inferCategoryAndRank error:', err)
+    return { category, rankings: [] }
+  }
+}
+
+/**
+ * Probe snippet에서 "X is a [category] tool/platform/app/service" 패턴 추출.
+ * 예: "Notion is a productivity tool" → "productivity"
+ * 실패 시 null (점수 0 = not_measured).
+ */
+function extractCategoryHint(
+  productName: string,
+  probes: Array<{ snippet: string }>,
+): string | null {
+  const nameEsc = escapeRegex(productName)
+  // 1단어 또는 2단어 카테고리만 허용 (노이즈 억제)
+  const pattern = new RegExp(
+    `${nameEsc}\\s+(?:is|,)\\s+(?:an?\\s+)?([a-z][a-z\\-]{2,25}(?:\\s+[a-z][a-z\\-]{2,25})?)\\s+(?:tool|platform|app|software|service)`,
+    'i',
+  )
+  for (const p of probes) {
+    if (!p.snippet) continue
+    const m = pattern.exec(p.snippet)
+    if (m && m[1]) {
+      const cat = m[1].trim().toLowerCase()
+      if (cat.length > 2 && cat.length < 40) return cat
+    }
+  }
+  return null
+}
+
+/**
+ * Perplexity 응답의 넘버드 리스트에서 제품명 랭크 파싱.
+ * 반환: 1~20 또는 null(미등장).
+ */
+function parseRankFromList(text: string, name: string): number | null {
+  if (!text) return null
+  const nameLower = name.toLowerCase()
+  const lines = text.split(/\r?\n/)
+  for (const line of lines) {
+    const m = /^\s*(\d+)[\.\)]\s+(.+)/.exec(line)
+    if (!m) continue
+    const rank = parseInt(m[1], 10)
+    if (rank < 1 || rank > 20) continue
+    if (m[2].toLowerCase().includes(nameLower)) return rank
+  }
+  return null
+}
+
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+// ===== Probe Logs 조회 (Co-Rec Graph 점수 계산용) =====
+
+/**
+ * probe_logs에서 co_recommendations 배열을 최신순 200건 조회.
+ * unifiedScore.computeCoRecommendation이 Set으로 dedupe.
+ */
+async function fetchProbeLogsForScoring(
+  env: AdapterEnv,
+  productName: string,
+): Promise<Array<{ co_recommendations: string[] | null; created_at?: string }>> {
+  if (!env.SUPABASE_SERVICE_KEY) return []
+  const sbUrl = env.SUPABASE_URL || DEFAULT_SUPABASE_URL
+  try {
+    const res = await fetch(
+      `${sbUrl}/rest/v1/probe_logs?product_id=eq.${encodeURIComponent(productName)}&select=co_recommendations,created_at&order=created_at.desc&limit=200`,
+      {
+        headers: {
+          apikey: env.SUPABASE_SERVICE_KEY,
+          Authorization: `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+        },
+      },
+    )
+    if (!res.ok) return []
+    return (await res.json()) as Array<{
+      co_recommendations: string[] | null
+      created_at?: string
+    }>
+  } catch (err) {
+    console.error('[UNIFIED_V15] fetchProbeLogsForScoring error:', err)
+    return []
+  }
+}

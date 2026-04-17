@@ -354,11 +354,12 @@ export function assembleUnifiedScore(
 // ===== 인사이트 생성 (Step 6에서 AI 자동 생성으로 대체) =====
 
 function generateDailyPulse(
-  ctx: DimensionContext,
-  dimensions: DimensionScore[],
+  _ctx: DimensionContext,
+  _dimensions: DimensionScore[],
   finalScore: number,
 ): string {
   // Step 6에서 Gemini Relay 호출로 교체 예정. 지금은 규칙 기반.
+  // 파라미터 ctx/dimensions는 AI 호출 버전에서 사용되므로 시그니처 유지.
   if (finalScore >= 70) return `Strong AI visibility. Score ${finalScore}/100.`
   if (finalScore >= 40) return `Making progress. Score ${finalScore}/100. Room to grow.`
   if (finalScore >= 10) return `Early days. Score ${finalScore}/100. Focus on fundamentals.`

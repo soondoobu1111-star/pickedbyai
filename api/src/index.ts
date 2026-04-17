@@ -1,5 +1,7 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { buildDimensionContext, computeUnified } from './unifiedScoreAdapter'
+import type { UnifiedScoreResult } from './unifiedScore'
 
 type Bindings = {
   BREVO_API_KEY: string
@@ -9,6 +11,7 @@ type Bindings = {
   OPENAI_API_KEY: string
   PERPLEXITY_API_KEY: string
   SUPABASE_URL?: string
+  UNIFIED_SCORE_V15?: string  // '빅파이 1.5 Phase 1: staging만 "true"' — 플래그 분기 (B안)
   AI: Ai
 }
 
@@ -825,7 +828,33 @@ app.post('/v1/check', async (c) => {
   ])
   // P1-03: Log probe results (non-blocking)
   await logProbes(c.env, name, engineResult.aiProbe, { productUrl: url, triggerType: 'manual', startMs })
-  return c.json({ ...engineResult, ...probeData, co_recommendations_top: coRecs })
+
+  // ── UNIFIED_SCORE_V15 (빅파이 1.5 Phase 1 Step 3, B안 병존) ─
+  // 플래그 on(스테이징) → 4차원 단일 스코어 병기. 기존 응답은 유지.
+  let unifiedV15: UnifiedScoreResult | null = null
+  if (c.env.UNIFIED_SCORE_V15 === 'true') {
+    try {
+      const tavilySources = (engineResult.sources || []).map(s => ({
+        url: s.url,
+        tier: s.tier,
+        isOwn: s.isOwn,
+      }))
+      const ctx = await buildDimensionContext(c.env, {
+        productName: name,
+        productUrl: url,
+        tavilySources,
+        aiProbes: engineResult.aiProbe,
+      })
+      unifiedV15 = computeUnified(ctx)
+      console.log(
+        `[UNIFIED_V15] score=${unifiedV15.score}/100 pass=${unifiedV15.pass_indicator} quadrant=${unifiedV15.quadrant.label} dims=${unifiedV15.dimensions.map(d => d.score).join('+')}`,
+      )
+    } catch (err) {
+      console.error('[UNIFIED_V15] compute error:', err)
+    }
+  }
+
+  return c.json({ ...engineResult, ...probeData, co_recommendations_top: coRecs, unified_v15: unifiedV15 })
 })
 
 // ── Daily cron: auto-refresh all tracked products ─────────────

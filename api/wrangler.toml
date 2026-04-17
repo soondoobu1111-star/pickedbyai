@@ -21,6 +21,7 @@ crons = ["0 2 * * *"]  # 스테이징도 동일 cron
 [env.staging.vars]
 ENVIRONMENT = "staging"
 SUPABASE_URL = "https://xzecybljfipmmzzzfnit.supabase.co"
+UNIFIED_SCORE_V15 = "true"  # 빅파이 1.5 Phase 1 Step 3 — 스테이징만 병기. 프로덕션은 절대 활성화 금지(CEO 승인 필요)
 
 [env.staging.placement]
 mode = "smart"
