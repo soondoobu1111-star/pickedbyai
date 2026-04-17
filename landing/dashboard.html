@@ -1119,10 +1119,13 @@
       lastCheckResult = { product, url: url || null, score: savedScore, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null, unified }
       if (currentUser) {
         // 빅파이 1.5: Check = 표시 전용. My Products 등록·DB 저장은 소유권 증명(verified) 완료된 제품만.
-        // localStorage `pba_verified_{name}='1'` 또는 domains 테이블 verified 상태 → 재측정 시 갱신.
-        const isVerified = localStorage.getItem(`pba_verified_${product}`) === '1'
+        // localStorage pba_verified_{name}='1' 또는 domains 테이블 _domainStatus='verified' 항목 포함.
+        const isLsVerified = localStorage.getItem(`pba_verified_${product}`) === '1'
+        const domainEntry = allProducts.find(p => p.product_name === product && p._domainOnly)
+        const isDomainVerified = domainEntry && domainEntry._domainStatus === 'verified'
+        const isVerified = isLsVerified || isDomainVerified
         if (isVerified) {
-          // Optimistic update: 새 점수를 즉시 My Products에 반영 (verified 제품만)
+          // Optimistic update: 새 점수를 즉시 My Products에 반영
           const existingIdx = allProducts.findIndex(p => p.product_name === product)
           if (existingIdx >= 0) {
             allProducts[existingIdx] = {
@@ -1132,13 +1135,14 @@
               ai_probe: data.aiProbe || allProducts[existingIdx].ai_probe,
               results: data.results || allProducts[existingIdx].results,
               created_at: new Date().toISOString(),
+              _domainOnly: false,  // 체크 완료 → score 있는 항목으로 전환
             }
-            renderMineTab(allProducts, allHistoryData)
+          } else {
+            allProducts.push({ product_name: product, product_url: url || null, score: savedScore, dimensions: data.dimensions || null, ai_probe: data.aiProbe || null, results: data.results || [], created_at: new Date().toISOString() })
           }
-          // Persist to DB + reload from DB (verified만)
+          renderMineTab(allProducts, allHistoryData)
           try { await saveHistory('mine') } catch(e) { /* silent */ }
         }
-        // unverified → lastCheckResult만 유지. 사용자가 소유권 증명 완료 후 재측정하면 위 경로로 저장됨.
       }
     } catch (err) {
       alert('Check failed. Please try again.')
