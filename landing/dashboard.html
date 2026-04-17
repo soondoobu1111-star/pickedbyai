@@ -301,7 +301,9 @@
     <div class="score-bar-bg mb-4">
       <div id="result-bar" class="score-bar-fill" style="width:0%;background:#FFD700;"></div>
     </div>
+    <div id="result-daily-pulse" style="display:none;"></div>
     <div id="result-dimensions"></div>
+    <div id="result-v15-extras" style="display:none;"></div>
     <div id="result-ai-probe" style="display:none;"></div>
     <p id="result-grounded-note" style="font-size:0.72rem;color:#555;margin-top:0.75rem;display:none;">
       ℹ️ Results based on AI training data only (real-time search unavailable in your region).
@@ -1110,10 +1112,11 @@
       })
       const data = await res.json()
       showResult(data)
-      // Use probe score (displayed score) when available, otherwise raw score
-      const useProbe = (data.probe_count >= 3) && (data.probe_score >= 0)
-      const savedScore = useProbe ? data.probe_score : data.score
-      lastCheckResult = { product, url: url || null, score: savedScore, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null }
+      // 빅파이 1.5: unified_v15(4차원 단일) 우선. probe_score/score 이원 폐기.
+      // sum(dimensions) === final.score 수학적 일관성 보장.
+      const unified = data.unified_v15 || null
+      const savedScore = unified ? unified.score : data.score
+      lastCheckResult = { product, url: url || null, score: savedScore, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null, unified }
       if (currentUser) {
         // Optimistic update: immediately reflect new score in My Products
         const existingIdx = allProducts.findIndex(p => p.product_name === product)
@@ -1144,26 +1147,40 @@
   }
 
   function showResult(data) {
-    const { score, results, product, dimensions, aiProbe, sources, probe_score, probe_count, probe_breakdown } = data
+    const { score, results, product, dimensions, aiProbe, sources, probe_count, probe_breakdown, unified_v15 } = data
     document.getElementById('result-product').textContent = product
 
-    // ENGINE-06: probe 스코어가 충분히 쌓였으면 primary로 표시
-    const useProbe = probe_count >= 3 && probe_score >= 0
-    const displayScore = useProbe ? probe_score : score
-    document.getElementById('result-score').textContent = displayScore
+    // 빅파이 1.5: 4차원 단일 체계 (sum(dimensions) === final.score 수학적 보장).
+    // unified_v15 있으면 우선. 없으면 raw score 단일 fallback. probe_score 이원 시스템 폐기.
+    const unified = unified_v15 || null
+    const displayScore = unified ? unified.score : score
+    document.getElementById('result-score').textContent = Math.round(displayScore)
     document.getElementById('result-bar').style.width = Math.round(Math.min(displayScore, 100)) + '%'
 
-    // Badge
+    // Badge — unified면 Pass Indicator 기반, 아니면 score 구간
     let badgeHtml = ''
-    if (score >= 75) badgeHtml = '<span class="badge-gold">PICKED BY AI</span>'
-    else if (score >= 50) badgeHtml = '<span class="badge-silver">SEEN BY AI</span>'
-    else if (score >= 25) badgeHtml = '<span class="badge-bronze">NOTICED BY AI</span>'
+    if (unified) {
+      const passMap = {
+        perfect:   '<span class="badge-gold">PERFECT · PICKED BY AI</span>',
+        strong:    '<span class="badge-silver">STRONG · SEEN BY AI</span>',
+        emerging:  '<span class="badge-bronze">EMERGING · NOTICED BY AI</span>',
+        invisible: '<span class="badge-none">INVISIBLE</span>',
+      }
+      badgeHtml = passMap[unified.pass_indicator] || passMap.invisible
+    } else if (displayScore >= 75) badgeHtml = '<span class="badge-gold">PICKED BY AI</span>'
+    else if (displayScore >= 50) badgeHtml = '<span class="badge-silver">SEEN BY AI</span>'
+    else if (displayScore >= 25) badgeHtml = '<span class="badge-bronze">NOTICED BY AI</span>'
     else badgeHtml = '<span class="badge-none">NOT VISIBLE</span>'
     document.getElementById('result-badge').innerHTML = badgeHtml
 
-    // Dimensions — prefer ENGINE-05 `dimensions` (with scores), fall back to `results`
+    // 빅파이 1.5 보조 시각화: Daily Pulse + Pass/Quadrant/Engine Grades
+    renderUnifiedExtras(unified)
+
+    // Dimensions — unified(4차원) 우선, fallback 5차원 ENGINE-05
     const dims = document.getElementById('result-dimensions')
-    if (dimensions && dimensions.length) {
+    if (unified && unified.dimensions && unified.dimensions.length) {
+      dims.innerHTML = unified.dimensions.map(d => renderDimRowV15(d)).join('')
+    } else if (dimensions && dimensions.length) {
       dims.innerHTML = dimensions.map(d => renderDimRowV5(d)).join('')
     } else {
       dims.innerHTML = (results || []).map(r => renderDimRow(r, true)).join('')
@@ -1272,6 +1289,96 @@
           <div style="height:100%;width:${pct}%;background:${d.found ? '#4ade80' : '#333'};border-radius:2px;transition:width 0.6s;"></div>
         </div>
       </div>`
+  }
+
+  // 빅파이 1.5 · 4차원 단일 체계 행 렌더러 (Recognition 35 / Category 35 / CoRec 20 / Web 10)
+  function renderDimRowV15(d) {
+    const max = d.max || 0
+    const pct = max > 0 ? Math.round(d.score / max * 100) : 0
+    const achieved = max > 0 ? d.score / max : 0
+    const color = achieved >= 0.5 ? '#4ade80' : d.score > 0 ? '#FFD700' : '#e05252'
+    const barBg = d.score > 0 ? color : '#333'
+    const tips = {
+      recognition: 'Direct AI Recognition · Gemini + Perplexity가 당신의 제품을 직접 인지/추천하는지. 각 엔진 Known(5) + Recommended(+12.5) = 17.5.',
+      category:    'Category Ranking · best {category} 쿼리에서 Top-10 등장 여부와 순위. 1위 35점, 10위 3점.',
+      corec:       'Co-Recommendation Graph · 경쟁사와 함께 추천되는 빈도. probe_logs 누적 파싱. 신규 제품은 수집 기간 필요.',
+      web:         'Web Authority Proxy · Tavily Tier-1/2 citation. SEO→AI 전환 지표 (10점 cap).',
+    }
+    const tip = (tips[d.id] || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;')
+    const tipIcon = tip ? `<span class="dim-tip" data-tip="${tip}">?</span>` : ''
+    return `
+      <div style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.82rem;color:#ccc;display:flex;align-items:center;gap:4px;">${escHtml(d.label)}${tipIcon}</span>
+          <span style="font-size:0.75rem;font-weight:700;color:${color};">${d.score}/${max}</span>
+        </div>
+        <div style="margin-top:0.3rem;height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${barBg};border-radius:2px;transition:width 0.6s;"></div>
+        </div>
+      </div>`
+  }
+
+  // 빅파이 1.5 보조 시각화: Daily Pulse + Pass Indicator + 2D Quadrant + Engine Grades
+  function renderUnifiedExtras(unified) {
+    const pulseEl = document.getElementById('result-daily-pulse')
+    const extrasEl = document.getElementById('result-v15-extras')
+    if (!pulseEl || !extrasEl) return
+    if (!unified) {
+      pulseEl.style.display = 'none'
+      extrasEl.style.display = 'none'
+      return
+    }
+
+    // Daily Pulse 카드 (Hook 1)
+    const pulseText = (unified.insights && unified.insights.daily_pulse) || ''
+    const topIssue = (unified.insights && unified.insights.top_issue) || ''
+    pulseEl.innerHTML = `
+      <div style="margin:0.5rem 0 0.9rem;padding:0.8rem 1rem;background:#111;border:1px solid #1e1e1e;border-left:3px solid #FFD700;border-radius:6px;">
+        <div style="font-size:0.62rem;color:#FFD700;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0.3rem;">Daily Pulse</div>
+        <div style="font-size:0.88rem;color:#eee;line-height:1.5;">${escHtml(pulseText)}</div>
+        ${topIssue ? `<div style="margin-top:0.4rem;font-size:0.72rem;color:#888;">${escHtml(topIssue)}</div>` : ''}
+      </div>`
+    pulseEl.style.display = 'block'
+
+    // Pass Indicator
+    const passIcons  = { perfect: '🏆', strong: '🟢', emerging: '🟡', invisible: '🔴' }
+    const passLabels = { perfect: 'PERFECT', strong: 'STRONG', emerging: 'EMERGING', invisible: 'INVISIBLE' }
+    const passIcon  = passIcons[unified.pass_indicator]  || '🔴'
+    const passLabel = passLabels[unified.pass_indicator] || 'INVISIBLE'
+
+    // Engine Grades (A/B/C/D/F per engine)
+    const gradeColors = { A: '#4ade80', B: '#86efac', C: '#FFD700', D: '#f59e0b', F: '#555' }
+    const enginesHtml = (unified.engine_grades || []).map(eg => {
+      const color = gradeColors[eg.grade] || '#555'
+      const name = (eg.engine || '').charAt(0).toUpperCase() + (eg.engine || '').slice(1)
+      return `
+        <div style="display:flex;align-items:center;gap:0.45rem;flex-wrap:wrap;">
+          <span style="font-size:0.72rem;color:#888;min-width:70px;">${escHtml(name)}</span>
+          <span style="display:inline-block;min-width:22px;text-align:center;font-size:0.72rem;font-weight:700;color:${color};background:#0f0f0f;border:1px solid ${color};border-radius:4px;padding:2px 8px;">${escHtml(eg.grade || 'F')}</span>
+          <span style="font-size:0.7rem;color:#666;">${escHtml(eg.description || '')}</span>
+        </div>`
+    }).join('')
+
+    // 2D Quadrant (텍스트 라벨 + 좌표 미니 칩)
+    const q = unified.quadrant || { x: 0, y: 0, label: 'Invisible' }
+    const qColors = { Leader: '#4ade80', Niche: '#FFD700', Challenger: '#86efac', Invisible: '#555' }
+    const qColor = qColors[q.label] || '#555'
+
+    extrasEl.innerHTML = `
+      <div style="margin-top:0.75rem;padding:0.8rem 1rem;background:#0d0d0d;border:1px solid #1e1e1e;border-radius:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.7rem;flex-wrap:wrap;gap:0.5rem;">
+          <div style="display:flex;align-items:center;gap:0.5rem;">
+            <span style="font-size:1.1rem;">${passIcon}</span>
+            <span style="font-size:0.78rem;font-weight:700;letter-spacing:0.08em;color:#ccc;">${passLabel}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.4rem;">
+            <span style="font-size:0.66rem;color:#666;text-transform:uppercase;letter-spacing:0.1em;">Quadrant</span>
+            <span style="font-size:0.72rem;font-weight:700;color:${qColor};background:#0f0f0f;border:1px solid ${qColor};border-radius:4px;padding:2px 8px;">${escHtml(q.label)}</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.38rem;">${enginesHtml}</div>
+      </div>`
+    extrasEl.style.display = 'block'
   }
 
 
