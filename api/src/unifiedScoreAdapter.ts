@@ -184,30 +184,63 @@ async function inferCategoryAndRank(
   }
 }
 
+// 카테고리 수식어로만 쓰이는 단어 — 제거 후 핵심 카테고리만 남김
+const CATEGORY_STOP_WORDS = new Set([
+  'all-in-one', 'ai-powered', 'ai-assisted', 'versatile', 'advanced', 'popular',
+  'leading', 'powerful', 'comprehensive', 'next-generation', 'cloud-based',
+  'open-source', 'free', 'paid', 'premium', 'enterprise', 'modern', 'innovative',
+  'intuitive', 'robust', 'scalable', 'flexible', 'integrated', 'collaborative',
+])
+
+// type 단어 자체를 카테고리로 직접 쓸 수 있는 경우 (수식어만 있고 핵심어 없을 때)
+const TYPE_AS_CATEGORY: Record<string, string> = {
+  workspace: 'workspace', suite: 'productivity suite', platform: 'platform',
+}
+
 /**
  * Probe snippet에서 카테고리 힌트 추출.
- * 패턴: "{name} is a X tool" | "It is a X tool" | "This is a X platform" 등
- * 마크다운 **...** 제거 후 적용. 실패 시 null (점수 0 = not_measured).
+ * 1단계: "{name} is a X tool" 패턴 + 수식어 stop words 제거
+ * 2단계: stop words 제거 후 빈 경우 type 단어 자체를 카테고리로 사용
+ * 마크다운 제거 후 적용. 실패 시 null.
  */
 function extractCategoryHint(
   productName: string,
   probes: Array<{ snippet: string }>,
 ): string | null {
   const nameEsc = escapeRegex(productName)
-  // 제품명 or 대명사(It/This/which)로 시작하는 "is a X tool/platform/..." 패턴
+  const TYPE_WORDS = 'tool|platform|app|software|service|solution|workspace|suite|engine|assistant|model'
+  // 최대 4단어 수식어 허용 (stop words 후처리로 제거)
   const pattern = new RegExp(
-    `(?:${nameEsc}|[Ii]t|[Tt]his(?:\\s+tool)?|which)\\s+is\\s+(?:an?\\s+)?([a-z][a-z\\-]{2,25}(?:\\s+[a-z][a-z\\-]{2,25})?)\\s+(?:tool|platform|app|software|service|solution|workspace|suite)`,
+    `(?:${nameEsc}|[Ii]t|[Tt]his(?:\\s+tool)?|which)\\s+is\\s+(?:an?\\s+)?` +
+    `((?:[a-z][a-z\\-]{1,25}\\s+){0,3}[a-z][a-z\\-]{2,25})` +
+    `\\s+(?:${TYPE_WORDS})`,
     'i',
   )
+  // type 단어도 함께 캡처 (fallback용)
+  const typePattern = new RegExp(
+    `(?:${nameEsc}|[Ii]t|[Tt]his(?:\\s+tool)?|which)\\s+is\\s+(?:an?\\s+)` +
+    `(?:[a-z][a-z\\-\\s]{0,60}\\s+)?(${TYPE_WORDS})`,
+    'i',
+  )
+
   for (const p of probes) {
     if (!p.snippet) continue
-    // 마크다운 **bold** / *italic* 제거
     const cleaned = p.snippet.replace(/\*{1,3}([^*\n]*)\*{1,3}/g, '$1')
+
     const m = pattern.exec(cleaned)
     if (m && m[1]) {
-      const cat = m[1].trim().toLowerCase()
-      // 너무 짧거나 generics 단어 제외
-      if (cat.length > 2 && cat.length < 40 && !/^(very|most|also|only|more|much)$/.test(cat)) return cat
+      // stop words 제거 후 남은 핵심어
+      const words = m[1].trim().toLowerCase().split(/\s+/).filter(w => !CATEGORY_STOP_WORDS.has(w))
+      if (words.length > 0) {
+        const cat = words.join(' ')
+        if (cat.length > 2 && cat.length < 40) return cat
+      }
+      // 수식어만 있어 핵심어 없으면 type 단어 fallback
+      const tm = typePattern.exec(cleaned)
+      if (tm && tm[1]) {
+        const typeFallback = TYPE_AS_CATEGORY[tm[1].toLowerCase()]
+        if (typeFallback) return typeFallback
+      }
     }
   }
   return null
