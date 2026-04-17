@@ -1159,24 +1159,13 @@
     document.getElementById('result-score').textContent = Math.round(displayScore)
     document.getElementById('result-bar').style.width = Math.round(Math.min(displayScore, 100)) + '%'
 
-    // Badge — unified면 Pass Indicator 기반, 아니면 score 구간
-    let badgeHtml = ''
-    if (unified) {
-      const passMap = {
-        perfect:   '<span class="badge-gold">PERFECT · PICKED BY AI</span>',
-        strong:    '<span class="badge-silver">STRONG · SEEN BY AI</span>',
-        emerging:  '<span class="badge-bronze">EMERGING · NOTICED BY AI</span>',
-        invisible: '<span class="badge-none">INVISIBLE</span>',
-      }
-      badgeHtml = passMap[unified.pass_indicator] || passMap.invisible
-    } else if (displayScore >= 75) badgeHtml = '<span class="badge-gold">PICKED BY AI</span>'
-    else if (displayScore >= 50) badgeHtml = '<span class="badge-silver">SEEN BY AI</span>'
-    else if (displayScore >= 25) badgeHtml = '<span class="badge-bronze">NOTICED BY AI</span>'
-    else badgeHtml = '<span class="badge-none">NOT VISIBLE</span>'
-    document.getElementById('result-badge').innerHTML = badgeHtml
-
-    // 빅파이 1.5 보조 시각화: Daily Pulse + Pass/Quadrant/Engine Grades
-    renderUnifiedExtras(unified)
+    // 빅파이 1.5: 위(CAV)는 일부 정보만. Badge / Daily Pulse / Quadrant / Engine Grades는
+    // 소유주 확인된 My Products 확장 패널에서만 제공. (CEO 지시 2026-04-17 밤)
+    document.getElementById('result-badge').innerHTML = ''
+    const _pulseEl = document.getElementById('result-daily-pulse')
+    const _extrasEl = document.getElementById('result-v15-extras')
+    if (_pulseEl) { _pulseEl.innerHTML = ''; _pulseEl.style.display = 'none' }
+    if (_extrasEl) { _extrasEl.innerHTML = ''; _extrasEl.style.display = 'none' }
 
     // Dimensions — unified(4차원) 우선, fallback 5차원 ENGINE-05
     const dims = document.getElementById('result-dimensions')
