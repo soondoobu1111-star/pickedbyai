@@ -1374,7 +1374,23 @@
   function toggleDetail(idx) {
     const el = document.getElementById(`prod-detail-${idx}`)
     if (!el) return
-    el.style.display = el.style.display === 'none' ? 'block' : 'none'
+    const opening = el.style.display === 'none'
+    el.style.display = opening ? 'block' : 'none'
+    if (opening) {
+      const coRecsEl = document.getElementById(`co-recs-val-${idx}`)
+      if (coRecsEl && coRecsEl.dataset.loaded !== '1') {
+        const product = coRecsEl.dataset.product
+        fetch(`${API_BASE}/v1/co-recs?product=${encodeURIComponent(product)}`)
+          .then(r => r.json())
+          .then(d => {
+            const recs = d.co_recommendations_top || []
+            coRecsEl.textContent = recs.length ? recs.join(', ') : 'No data yet'
+            coRecsEl.style.color = recs.length ? '#888' : '#333'
+            coRecsEl.dataset.loaded = '1'
+          })
+          .catch(() => { coRecsEl.textContent = '—'; coRecsEl.dataset.loaded = '1' })
+      }
+    }
   }
 
   // ── Refresh product score ───────────────────────────────────
@@ -1934,7 +1950,7 @@
                   ${productHistory.length >= 2 ? (score - productHistory[1].score > 0 ? '↑' + (score - productHistory[1].score) + ' pts vs last check' : score - productHistory[1].score < 0 ? '↓' + Math.abs(score - productHistory[1].score) + ' pts vs last check' : 'No change') : 'First check'}
                 </span>
               </div>
-              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span style="display:inline-flex;align-items:center;">co_recommendations graph<span class="dim-tip" data-tip="Tracks which other products AIs recommend alongside yours. High co-recommendation density signals strong category positioning and brand association.">?</span></span><span style="color:#333;">Collecting data...</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span style="display:inline-flex;align-items:center;">AI Co-mentions<span class="dim-tip" data-tip="Products AIs recommend alongside yours. High co-mention density signals strong category positioning.">?</span></span><span id="co-recs-val-${idx}" data-product="${escHtml(row.product_name)}" style="color:#333;font-size:0.72rem;max-width:60%;text-align:right;">Loading...</span></div>
               <div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span style="display:inline-flex;align-items:center;">Query Coverage<span class="dim-tip" data-tip="The % of real AI search queries in your product category where your product appears in the response. Higher coverage = broader AI discoverability.">?</span></span><span style="color:#333;">Collecting data...</span></div>
             </div>
           </div>` : `

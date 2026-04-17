@@ -680,6 +680,33 @@ function extractCoRecommendations(responseText: string, targetProduct: string): 
   return [...found].slice(0, 8)
 }
 
+// ── ENGINE-06: co_recommendations 집계 (probe_logs DB) ──────────
+async function getCoRecommendations(env: Bindings, productName: string): Promise<string[]> {
+  if (!env.SUPABASE_SERVICE_KEY) return []
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/probe_logs?product_id=eq.${encodeURIComponent(productName)}&select=co_recommendations&order=created_at.desc&limit=200`,
+      { headers: { 'apikey': env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${env.SUPABASE_SERVICE_KEY}` } }
+    )
+    if (!res.ok) return []
+    const logs: Array<{ co_recommendations: string[] | null }> = await res.json()
+    const freq: Record<string, number> = {}
+    for (const log of logs) {
+      for (const name of (log.co_recommendations || [])) {
+        const key = name.trim().toLowerCase()
+        if (key && key !== productName.toLowerCase()) freq[key] = (freq[key] || 0) + 1
+      }
+    }
+    return Object.entries(freq)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([name]) => name)
+  } catch (err) {
+    console.error('[ENGINE-06] getCoRecommendations error:', err)
+    return []
+  }
+}
+
 // ── ENGINE-06: Probe 로그 기반 스코어 조회 ──────────────────────
 async function getProbeScore(env: Bindings, productName: string): Promise<{
   probe_score: number
@@ -790,14 +817,15 @@ app.post('/v1/check', async (c) => {
   console.log(`[DC] ${colo}`)
 
   const startMs = Date.now()
-  // ENGINE-06: probe 스코어 조회 + 엔진 실행 병렬 처리
-  const [engineResult, probeData] = await Promise.all([
+  // ENGINE-06: probe 스코어 + co_recommendations + 엔진 실행 병렬 처리
+  const [engineResult, probeData, coRecs] = await Promise.all([
     runEngine(c.env, name, url),
     getProbeScore(c.env, name),
+    getCoRecommendations(c.env, name),
   ])
   // P1-03: Log probe results (non-blocking)
   await logProbes(c.env, name, engineResult.aiProbe, { productUrl: url, triggerType: 'manual', startMs })
-  return c.json({ ...engineResult, ...probeData })
+  return c.json({ ...engineResult, ...probeData, co_recommendations_top: coRecs })
 })
 
 // ── Daily cron: auto-refresh all tracked products ─────────────
@@ -1510,6 +1538,15 @@ app.post('/v1/beta/decline', async (c) => {
     console.error('[beta/decline] error:', err)
     return c.json({ error: 'Server error' }, 500)
   }
+})
+
+// ── GET /v1/co-recs ───────────────────────────────────────────
+// Returns top co-recommended products from probe_logs for a given product
+app.get('/v1/co-recs', async (c) => {
+  const product = c.req.query('product')?.trim()
+  if (!product || product.length > 200) return c.json({ co_recommendations_top: [] })
+  const recs = await getCoRecommendations(c.env, product)
+  return c.json({ co_recommendations_top: recs })
 })
 
 // ── GET /v1/beta-count ────────────────────────────────────────
