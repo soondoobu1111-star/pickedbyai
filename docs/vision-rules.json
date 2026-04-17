@@ -1,11 +1,13 @@
 {
   "meta": {
     "document": "pickedby.ai — Vision Rules",
-    "version": "2.0",
-    "last_updated": "2026-04-14",
+    "version": "2.1",
+    "last_updated": "2026-04-17",
     "companion_doc": "vision-brief-v2.md",
-    "purpose": "Machine-readable rules, priorities, and guardrails. Read together with vision-brief-v2.md.",
-    "precedence": "On conflict with older instructions, this file and vision-brief-v2.md win."
+    "strategy_doc": "bigpie-v1.5.md",
+    "purpose": "Machine-readable rules, priorities, and guardrails. Read together with vision-brief-v2.md and bigpie-v1.5.md.",
+    "precedence": "On conflict with older instructions, this file and vision-brief-v2.md win. Bigpie-v1.5 specifies strategy execution.",
+    "v2.1_changes": "2026-04-17 score system bug discovery → redesign. P0 replaced with SCORE-UNIFY series (Phase 1 of bigpie-v1.5). Previous P0-01~04 completed and archived to bigpie-v1.0 history."
   },
 
   "vision": {
@@ -59,105 +61,143 @@
   "priorities": {
     "P0_today": [
       {
-        "id": "P0-01",
-        "task": "Replace hero H1 with 'The AI Visibility Platform' and subhead with roadmap tease",
-        "roadmap_layer": "all",
-        "files_affected": ["index.html"]
+        "id": "SCORE-UNIFY-01",
+        "task": "Write computeUnifiedScore() single function with 4 dimensions (Recognition 35 + Category 35 + CoRec 20 + Web 10 = 100)",
+        "roadmap_layer": "phase_1",
+        "bigpie_ref": "v1.5 §4, §10",
+        "files_affected": ["api/src/index.ts"],
+        "acceptance": "sum(dimensions[].score) === final.score with mathematical guarantee"
       },
       {
-        "id": "P0-02",
-        "task": "Remove 'Not for agencies. Built for creators.' from landing and all blog posts",
-        "roadmap_layer": "all",
-        "action": "global_find_and_replace"
+        "id": "SCORE-UNIFY-02",
+        "task": "Create score_snapshots table schema in Supabase for daily history",
+        "roadmap_layer": "phase_1",
+        "bigpie_ref": "v1.5 §10 P0",
+        "schema_fields": ["id", "product_id", "score", "dim_recognition", "dim_category", "dim_corec", "dim_web", "snapshot_date"]
       },
       {
-        "id": "P0-03",
-        "task": "Build roadmap diagram section directly under hero (3 columns: AVAILABLE / COMING Q3 / 2027)",
-        "roadmap_layer": "all",
-        "files_affected": ["index.html"]
+        "id": "SCORE-UNIFY-03",
+        "task": "Remove dual score display logic in dashboard.html (line 1151-1152). Use single computeUnifiedScore result throughout.",
+        "roadmap_layer": "phase_1",
+        "files_affected": ["landing/dashboard.html"]
       },
       {
-        "id": "P0-04",
-        "task": "Audit all existing copy and list every instance that narrows audience to creators. Get founder approval before editing.",
-        "roadmap_layer": "all",
-        "action": "audit_first"
+        "id": "CHART-01",
+        "task": "Build 3-tab chart component (Daily 14d / Weekly 12w / Monthly 12mo) with engine overlay",
+        "roadmap_layer": "phase_1",
+        "bigpie_ref": "v1.5 Hook 2",
+        "files_affected": ["landing/dashboard.html"]
+      },
+      {
+        "id": "PULSE-01",
+        "task": "Implement Daily Pulse card: AI-generated one-line story about today's score change. Morning email via Brevo.",
+        "roadmap_layer": "phase_1",
+        "bigpie_ref": "v1.5 Hook 1, §9 Aha Moment"
+      },
+      {
+        "id": "GT-01",
+        "task": "Manually measure 10 Ground Truth products (Notion 85-95, Figma 85-95, Linear 70-80, Vercel 70-85, ShipFast 55-70, TypingMind 55-70, Airtable 70-85, perceptdot 15-30, pickedby.ai 20-35, fake product 0-5). Adjust expectations based on actual results.",
+        "roadmap_layer": "phase_1",
+        "bigpie_ref": "v1.5 §13"
+      },
+      {
+        "id": "TEST-01",
+        "task": "Write score.test.ts with (a) sum == final integrity test (b) Ground Truth range validation (c) Notion edge case. Hook into deploy scripts.",
+        "roadmap_layer": "phase_1",
+        "bigpie_ref": "v1.5 §13"
+      },
+      {
+        "id": "DEPLOY-GATE-01",
+        "task": "Phase 1 staging deploy + CEO review session. Do not deploy to production without CEO approval.",
+        "roadmap_layer": "phase_1",
+        "target_date": "2026-04-19"
       }
     ],
     "P1_this_week": [
       {
-        "id": "P1-01",
-        "task": "Create /manifesto page with 5-section structure (see brief section 2.3)",
+        "id": "FEED-01",
+        "task": "Movement Feed timeline component. Pull from probe_logs + score_snapshots. Display score changes, engine status changes, category rank movements.",
+        "roadmap_layer": "phase_1",
+        "bigpie_ref": "v1.5 Hook 3, §8"
+      },
+      {
+        "id": "ACTION-01",
+        "task": "Action Items AI-generated. Use Gemini Relay to analyze probe responses and suggest 3 concrete actions per user.",
+        "roadmap_layer": "phase_1",
+        "bigpie_ref": "v1.5 Hook 4"
+      },
+      {
+        "id": "STREAK-01",
+        "task": "Streak system. Track consecutive days measured, score increase streaks, Trifecta hits.",
+        "roadmap_layer": "phase_1",
+        "bigpie_ref": "v1.5 Hook 5"
+      },
+      {
+        "id": "BADGE-01",
+        "task": "Milestones badges. 'First Gemini Recommendation', 'Score 50 Crossed', 'Top 10 Category Rank'.",
+        "roadmap_layer": "phase_1",
+        "bigpie_ref": "v1.5 Hook 6"
+      },
+      {
+        "id": "MKT-REDO-01",
+        "task": "Resume email 100 mission with redesign-story angle. Update LinkedIn/DM/newsletter copy based on fixed scoring.",
         "roadmap_layer": "all",
-        "files_affected": ["manifesto.html"]
-      },
-      {
-        "id": "P1-02",
-        "task": "Design and create Probe Log Database schema in Supabase",
-        "roadmap_layer": "phase_2",
-        "schema_fields": [
-          "id",
-          "product_id",
-          "query_template",
-          "ai_source",
-          "result_text",
-          "detected_rank",
-          "co_recommendations",
-          "timestamp"
-        ]
-      },
-      {
-        "id": "P1-03",
-        "task": "Start recording every Probe execution into probe_logs table",
-        "roadmap_layer": "phase_2",
-        "depends_on": "P1-02"
+        "target_date": "2026-04-20"
       }
     ],
     "P2_next_week": [
       {
-        "id": "P2-01",
-        "task": "Restructure header nav to PLATFORM dropdown + MANIFESTO + BLOG + DASHBOARD",
-        "roadmap_layer": "all"
+        "id": "COMPARE-01",
+        "task": "Category Comparison anonymous leaderboard. Show user rank within category.",
+        "roadmap_layer": "phase_1",
+        "bigpie_ref": "v1.5 §7 Competitors"
       },
       {
-        "id": "P2-02",
-        "task": "Update FAQ with 3 new questions about scope and roadmap (see brief 2.4)",
-        "roadmap_layer": "all"
+        "id": "EMAIL-DIGEST-01",
+        "task": "Weekly Digest Email via Brevo. Monday 8am KST. Last week highlights + next week actions.",
+        "roadmap_layer": "phase_1",
+        "bigpie_ref": "v1.5 Hook 7"
       },
       {
-        "id": "P2-03",
-        "task": "Expand daily Probe cron to ~100 query templates for category benchmarks",
-        "roadmap_layer": "phase_2",
-        "depends_on": "P1-03"
+        "id": "SHARE-01",
+        "task": "Social share buttons on every card. Screenshot-optimized Trifecta/Quadrant.",
+        "roadmap_layer": "phase_1"
       },
       {
-        "id": "P2-04",
-        "task": "Rewrite email capture CTA to 'Join the AI Visibility Platform early access (100 spots)'",
-        "roadmap_layer": "all"
+        "id": "METHOD-01",
+        "task": "Create /methodology public page. Disclose scoring weights and formulas (40% transparency principle).",
+        "roadmap_layer": "phase_1",
+        "bigpie_ref": "v1.5 §4 principle 3"
       }
     ],
     "P3_within_2_weeks": [
       {
-        "id": "P3-01",
-        "task": "Build Dashboard 'Analytics (Coming Soon)' tab powered by real Probe Log data",
+        "id": "SDK-01",
+        "task": "AI referrer detection SDK v1. Lightweight script tag. document.referrer parsing + AI crawler User-Agent detection.",
         "roadmap_layer": "phase_2",
-        "depends_on": "P2-03"
+        "bigpie_ref": "v1.0 P1, v1.5 §10 P3"
       },
       {
-        "id": "P3-02",
-        "task": "Prototype SDK/tag snippet for direct referral tracking",
-        "roadmap_layer": "phase_2"
+        "id": "GA4-01",
+        "task": "GA4 OAuth integration for connected users. Classify direct traffic as AI channels.",
+        "roadmap_layer": "phase_2",
+        "depends_on": "SDK-01"
       },
       {
-        "id": "P3-03",
-        "task": "Create /investors page (noindex) — manifesto + roadmap + market data + shipping log",
+        "id": "INVESTORS-01",
+        "task": "Create /investors page (noindex). Manifesto + roadmap + market data + shipping log + bigpie-v1.5.",
         "roadmap_layer": "all"
       },
       {
-        "id": "P3-04",
-        "task": "Build category benchmark pages (/benchmarks/notion-templates, etc.) from Probe Log data",
-        "roadmap_layer": "phase_2"
+        "id": "MODOO-01",
+        "task": "모두의 창업 2026 application (deadline 2026-05-15). Use bigpie-v1.5 + redesign story as core narrative.",
+        "roadmap_layer": "all",
+        "target_date": "2026-05-15"
       }
     ],
+    "completed_archive": {
+      "note": "P0-01 to P0-04 (hero H1, creators-only removal, roadmap diagram, copy audit) completed by 2026-04-16. Previous P1-02/P1-03 (probe_logs schema and recording) completed. Moved to bigpie-v1.0 historical record."
+    },
     "backlog_strategic": [
       {
         "id": "B-01",
