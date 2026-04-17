@@ -13,6 +13,8 @@ type Bindings = {
   SUPABASE_URL?: string
   UNIFIED_SCORE_V15?: string  // '빅파이 1.5 Phase 1: staging만 "true"' — 플래그 분기 (B안)
   GEMINI_RELAY_URL?: string   // staging: staging relay URL, prod: 기본값 사용
+  GEMINI_API_KEY?: string     // 직접 Gemini API 호출 시 사용 (Relay 우회)
+  GEMINI_RELAY?: { fetch: (req: Request) => Promise<Response> }  // Service Binding
   AI: Ai
 }
 
@@ -562,7 +564,7 @@ async function runEngine(env: Bindings, name: string, url?: string) {
     )
   }
   probePromises.push(
-    probeGemini(relayUrl, name).catch(err => {
+    probeGemini(relayUrl, name, env).catch(err => {
       console.error('[Probe:Gemini] error:', err)
       return { ai: 'gemini', recognized: false, recommended: false, snippet: '', citations: [] } as AIProbeResult
     })
@@ -635,28 +637,80 @@ async function runEngine(env: Bindings, name: string, url?: string) {
   return { results, score, maxScore: 100, product: name, dimensions, sources: sources.slice(0, 15), aiProbe: aiProbes }
 }
 
-// ── Probe: Gemini (Relay Worker 경유, 무료 티어) ──────────────
-async function probeGemini(relayUrl: string, name: string): Promise<AIProbeResult> {
+// ── Probe: Gemini (Service Binding 우선 → HKG DC 차단 완전 우회) ──────────────
+// 순서: (1) Service Binding → Relay의 Smart Placement 사용 (가장 안정적)
+//       (2) 직접 API → KIX/NRT DC에서는 성공, HKG에서는 400 (불안정)
+//       (3) HTTP Relay fallback
+async function probeGemini(
+  relayUrl: string,
+  name: string,
+  env?: { GEMINI_RELAY?: { fetch: (req: Request) => Promise<Response> }; GEMINI_API_KEY?: string },
+): Promise<AIProbeResult> {
   const safeName = sanitizeForPrompt(name)
   const prompt = `${PROBE_SYSTEM_PROMPT}\n\nProduct name: ${safeName}`
+  const relayBody = JSON.stringify({ prompt, useSearch: false })
   try {
-    const res = await fetch(relayUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt, useSearch: true }),
-      signal: AbortSignal.timeout(14000),
-    })
-    if (!res.ok) throw new Error(`GeminiRelay ${res.status}`)
-    const json = await res.json() as { text?: string; grounded?: boolean }
-    const text = json.text ?? ''
+    let text = ''
+    if (env?.GEMINI_RELAY) {
+      // (1) Service Binding: Relay Worker를 직접 호출 → Smart Placement로 JP/US DC 선택
+      console.log(`[Probe:Gemini] service-binding product=${name}`)
+      const res = await env.GEMINI_RELAY.fetch(
+        new Request('https://relay/relay', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: relayBody,
+        })
+      )
+      console.log(`[Probe:Gemini] sb status=${res.status}`)
+      if (!res.ok) throw new Error(`GeminiSB ${res.status}`)
+      const json = await res.json() as { text?: string }
+      text = json.text ?? ''
+    } else if (env?.GEMINI_API_KEY) {
+      // (2) 직접 API (DC에 따라 불안정)
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${env.GEMINI_API_KEY}`
+      console.log(`[Probe:Gemini] direct API product=${name}`)
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          generationConfig: { maxOutputTokens: 300, temperature: 0.1 },
+        }),
+        signal: AbortSignal.timeout(14000),
+      })
+      console.log(`[Probe:Gemini] direct status=${res.status}`)
+      if (!res.ok) {
+        const errText = await res.text().catch(() => '')
+        console.error(`[Probe:Gemini] direct error: ${errText.slice(0, 200)}`)
+        throw new Error(`GeminiDirect ${res.status}`)
+      }
+      const json = await res.json() as { candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }> }
+      text = json.candidates?.[0]?.content?.parts?.[0]?.text ?? ''
+    } else {
+      // (3) HTTP Relay fallback
+      console.log(`[Probe:Gemini] http-relay relay=${relayUrl} product=${name}`)
+      const res = await fetch(relayUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: relayBody,
+        signal: AbortSignal.timeout(14000),
+      })
+      console.log(`[Probe:Gemini] relay status=${res.status}`)
+      if (!res.ok) throw new Error(`GeminiRelay ${res.status}`)
+      const json = await res.json() as { text?: string }
+      text = json.text ?? ''
+    }
+    console.log(`[Probe:Gemini] text_len=${text.length} preview=${text.slice(0, 50)}`)
     const textLower = text.toLowerCase()
     const nameLower = name.toLowerCase()
     const dontKnow = /don.?t (have|know)|do not (know|have)|not aware|no specific|cannot find|not familiar|i.?m not sure|unfamiliar|no information|no record/i
     const recognized = textLower.includes(nameLower) && !dontKnow.test(text)
     const recSignals = /recommend|worth (trying|using|checking)|great (tool|option|choice)|useful|helpful|solid/i
     const recommended = recognized && recSignals.test(text)
+    console.log(`[Probe:Gemini] recognized=${recognized} recommended=${recommended}`)
     return { ai: 'gemini', recognized, recommended, snippet: text.slice(0, 300), citations: [] }
-  } catch {
+  } catch (err) {
+    console.error(`[Probe:Gemini] catch:`, err)
     return { ai: 'gemini', recognized: false, recommended: false, snippet: '', citations: [] }
   }
 }
