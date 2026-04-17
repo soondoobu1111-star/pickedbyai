@@ -1403,7 +1403,7 @@
     if (todayCheck && todayCheck.length > 0) {
       // Update today's existing record with latest score
       await sb.from('scores').update({
-        score: lastCheckResult.score,
+        score: Math.round(lastCheckResult.score),
         results: lastCheckResult.results,
         dimensions: lastCheckResult.dimensions || null,
         ai_probe: lastCheckResult.aiProbe || null,
@@ -1423,7 +1423,7 @@
       user_id: currentUser.id,
       product_name: lastCheckResult.product,
       product_url: lastCheckResult.url,
-      score: lastCheckResult.score,
+      score: Math.round(lastCheckResult.score),
       results: lastCheckResult.results,
       dimensions: lastCheckResult.dimensions || null,
       ai_probe: lastCheckResult.aiProbe || null,
@@ -1447,7 +1447,7 @@
     if (todayCheck && todayCheck.length > 0) {
       const existing = todayCheck[0]
       await sb.from('scores').update({
-        score: lastCheckResult.score,
+        score: Math.round(lastCheckResult.score),
         results: lastCheckResult.results,
         dimensions: lastCheckResult.dimensions || null,
         ai_probe: lastCheckResult.aiProbe || null,
@@ -1460,7 +1460,7 @@
       user_id: currentUser.id,
       product_name: lastCheckResult.product,
       product_url: lastCheckResult.url,
-      score: lastCheckResult.score,
+      score: Math.round(lastCheckResult.score),
       results: lastCheckResult.results,
       dimensions: lastCheckResult.dimensions || null,
       ai_probe: lastCheckResult.aiProbe || null,
@@ -1493,7 +1493,7 @@
       const coRecsEl = document.getElementById(`co-recs-val-${idx}`)
       if (coRecsEl && coRecsEl.dataset.loaded !== '1') {
         const product = coRecsEl.dataset.product
-        fetch(`${API_BASE}/v1/co-recs?product=${encodeURIComponent(product)}`)
+        fetch(`${API_URL}/v1/co-recs?product=${encodeURIComponent(product)}`)
           .then(r => r.json())
           .then(d => {
             const recs = d.co_recommendations_top || []
