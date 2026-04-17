@@ -1320,35 +1320,27 @@
       </div>`
   }
 
-  // 빅파이 1.5 보조 시각화: Daily Pulse + Pass Indicator + 2D Quadrant + Engine Grades
-  function renderUnifiedExtras(unified) {
-    const pulseEl = document.getElementById('result-daily-pulse')
-    const extrasEl = document.getElementById('result-v15-extras')
-    if (!pulseEl || !extrasEl) return
-    if (!unified) {
-      pulseEl.style.display = 'none'
-      extrasEl.style.display = 'none'
-      return
-    }
-
-    // Daily Pulse 카드 (Hook 1)
+  // 순수 HTML 반환: Daily Pulse 카드 (위/아래 공통 재사용)
+  function buildDailyPulseHtml(unified) {
+    if (!unified) return ''
     const pulseText = (unified.insights && unified.insights.daily_pulse) || ''
     const topIssue = (unified.insights && unified.insights.top_issue) || ''
-    pulseEl.innerHTML = `
+    if (!pulseText) return ''
+    return `
       <div style="margin:0.5rem 0 0.9rem;padding:0.8rem 1rem;background:#111;border:1px solid #1e1e1e;border-left:3px solid #FFD700;border-radius:6px;">
         <div style="font-size:0.62rem;color:#FFD700;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0.3rem;">Daily Pulse</div>
         <div style="font-size:0.88rem;color:#eee;line-height:1.5;">${escHtml(pulseText)}</div>
         ${topIssue ? `<div style="margin-top:0.4rem;font-size:0.72rem;color:#888;">${escHtml(topIssue)}</div>` : ''}
       </div>`
-    pulseEl.style.display = 'block'
+  }
 
-    // Pass Indicator
+  // 순수 HTML 반환: Pass Indicator + 2D Quadrant + Engine Grades (위/아래 공통 재사용)
+  function buildUnifiedExtrasHtml(unified) {
+    if (!unified) return ''
     const passIcons  = { perfect: '🏆', strong: '🟢', emerging: '🟡', invisible: '🔴' }
     const passLabels = { perfect: 'PERFECT', strong: 'STRONG', emerging: 'EMERGING', invisible: 'INVISIBLE' }
     const passIcon  = passIcons[unified.pass_indicator]  || '🔴'
     const passLabel = passLabels[unified.pass_indicator] || 'INVISIBLE'
-
-    // Engine Grades (A/B/C/D/F per engine)
     const gradeColors = { A: '#4ade80', B: '#86efac', C: '#FFD700', D: '#f59e0b', F: '#555' }
     const enginesHtml = (unified.engine_grades || []).map(eg => {
       const color = gradeColors[eg.grade] || '#555'
@@ -1360,13 +1352,10 @@
           <span style="font-size:0.7rem;color:#666;">${escHtml(eg.description || '')}</span>
         </div>`
     }).join('')
-
-    // 2D Quadrant (텍스트 라벨 + 좌표 미니 칩)
     const q = unified.quadrant || { x: 0, y: 0, label: 'Invisible' }
     const qColors = { Leader: '#4ade80', Niche: '#FFD700', Challenger: '#86efac', Invisible: '#555' }
     const qColor = qColors[q.label] || '#555'
-
-    extrasEl.innerHTML = `
+    return `
       <div style="margin-top:0.75rem;padding:0.8rem 1rem;background:#0d0d0d;border:1px solid #1e1e1e;border-radius:8px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.7rem;flex-wrap:wrap;gap:0.5rem;">
           <div style="display:flex;align-items:center;gap:0.5rem;">
@@ -1380,6 +1369,21 @@
         </div>
         <div style="display:flex;flex-direction:column;gap:0.38rem;">${enginesHtml}</div>
       </div>`
+  }
+
+  // 빅파이 1.5 보조 시각화: Daily Pulse + Pass Indicator + 2D Quadrant + Engine Grades
+  function renderUnifiedExtras(unified) {
+    const pulseEl = document.getElementById('result-daily-pulse')
+    const extrasEl = document.getElementById('result-v15-extras')
+    if (!pulseEl || !extrasEl) return
+    if (!unified) {
+      pulseEl.style.display = 'none'
+      extrasEl.style.display = 'none'
+      return
+    }
+    pulseEl.innerHTML = buildDailyPulseHtml(unified)
+    pulseEl.style.display = 'block'
+    extrasEl.innerHTML = buildUnifiedExtrasHtml(unified)
     extrasEl.style.display = 'block'
   }
 
@@ -1928,34 +1932,36 @@
     const verifyToken = genVerifyToken(currentUser?.id || '', row.product_name)
     const isVerified = (verifiedNames && verifiedNames.has(row.product_name)) || localStorage.getItem(`pba_verified_${row.product_name}`) === '1'
     // 빅파이 1.5: 72h 유예 폐지. My Products 리스트는 verified 또는 _domainOnly만 도달하므로 expiry 계산 제거.
-    // Use ENGINE-05 dimensions (with scores) if available, fallback to legacy results
+    // 빅파이 1.5: unified_v15 있으면 위(CAV)와 동일한 4차원 UI. 없으면 레거시 5차원 fallback.
+    const unified = row.unified_v15 || null
     const dims = row.dimensions
-    const dimsHtml = dims && dims.length
-      ? dims.map(d => renderDimRowV5(d)).join('')
-      : results.map(r => renderDimRow(r, false)).join('')
-
-    // AI probe breakdown for expanded panel
-    const aiProbeData = row.ai_probe || []
-    const probeLabels = { perplexity: 'Perplexity', gpt: 'ChatGPT', gemini: 'Gemini' }
-    const aiProbeHtml = aiProbeData.length ? `
+    const dimsHtml = unified && unified.dimensions && unified.dimensions.length
+      ? unified.dimensions.map(d => renderDimRowV15(d)).join('')
+      : (dims && dims.length
+          ? dims.map(d => renderDimRowV5(d)).join('')
+          : results.map(r => renderDimRow(r, false)).join(''))
+    const dailyPulseHtml = buildDailyPulseHtml(unified)
+    const extrasHtml = unified
+      ? buildUnifiedExtrasHtml(unified)
+      : // 레거시 폴백: 구 AI Probe Direct Measurement 블록
+        (function() {
+          const aiProbeData = row.ai_probe || []
+          if (!aiProbeData.length) return ''
+          const probeLabels = { perplexity: 'Perplexity', gpt: 'ChatGPT', gemini: 'Gemini' }
+          return `
       <div style="margin-top:0.75rem;padding:0.75rem 1rem;background:#111;border:1px solid #1e1e1e;border-radius:8px;">
         <div style="font-size:0.7rem;color:#FFD700;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">Direct AI Measurement</div>
         ${aiProbeData.map(p => {
           const lbl = escHtml(probeLabels[p.ai] || p.ai)
           const color = p.recognized ? (p.recommended ? '#4ade80' : '#FFD700') : '#555'
           const label = p.recognized ? (p.recommended ? '✓ Recommended' : '◎ Known') : '✗ Unknown'
-          const tips = {
-            perplexity: 'We send a real user query to Perplexity AI asking for top tools in your category. ✓ Recommended = Perplexity named your product in its answer.',
-            gpt: 'We prompt ChatGPT with a category search query. ✓ Recommended = ChatGPT explicitly cited your product by name.',
-            gemini: 'We ask Google Gemini for the best products in your category. ✓ Recommended = Gemini included your product in its response.'
-          }
-          const tipText = tips[p.ai] || 'AI probe result for this platform.'
           return `<div style="display:flex;align-items:center;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #1a1a1a;">
-            <span style="color:#888;font-size:0.8rem;display:inline-flex;align-items:center;">${lbl}<span class="dim-tip" data-tip="${tipText}">?</span></span>
+            <span style="color:#888;font-size:0.8rem;">${lbl}</span>
             <span style="color:${color};font-size:0.8rem;font-weight:600;">${label}</span>
           </div>`
         }).join('')}
-      </div>` : ''
+      </div>`
+        })()
     // Momentum: compare latest vs previous check for this product
     const productHistory = allHistoryData
       .filter(r => r.product_name === row.product_name)
@@ -2034,8 +2040,9 @@
           <div class="score-bar-bg" style="margin-bottom:1rem;">
             <div class="score-bar-fill" style="width:${Math.round(score/100*100)}%;background:${barColor};"></div>
           </div>
+          ${dailyPulseHtml}
           ${dimsHtml}
-          ${aiProbeHtml}
+          ${extrasHtml}
           ${hasUngrounded ? `<p style="font-size:0.72rem;color:#555;margin-top:0.75rem;">ℹ️ Results based on AI training data only (real-time search unavailable in your region).</p>` : ''}
           ${isMine ? (isVerified ? `
           <div style="margin-top:0.75rem;padding:0.75rem 1rem;background:#111;border:1px solid #1a3a1a;border-radius:8px;">
