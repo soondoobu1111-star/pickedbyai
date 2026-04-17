@@ -26,23 +26,27 @@ export default {
     // useSearch defaults to true; set false when Tavily context already provided
     const useSearch = body.useSearch !== false
 
+    // gemini-2.5-flash: thinkingConfig 제거 시 google_search 정상 작동
+    // thinkingConfig + google_search 조합은 400 오류 발생 → thinkingConfig 제거 필수
     const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${env.GEMINI_API_KEY}`
     const geminiBody = {
       contents: [{ role: 'user', parts: [{ text: body.prompt }] }],
       ...(useSearch ? { tools: [{ google_search: {} }] } : {}),
-      generationConfig: { maxOutputTokens: 150, temperature: 0.1, thinkingConfig: { thinkingBudget: 0 } },
+      generationConfig: { maxOutputTokens: 300, temperature: 0.1 },
     }
 
     const res = await fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(geminiBody),
-      signal: AbortSignal.timeout(9000),
+      signal: AbortSignal.timeout(12000),
     })
 
     if (!res.ok) {
+      const errText = await res.text().catch(() => '')
+      console.error(`[relay] Gemini error ${res.status}:`, errText)
       return new Response(
-        JSON.stringify({ error: `Gemini ${res.status}` }),
+        JSON.stringify({ error: `Gemini ${res.status}`, detail: errText.slice(0, 200) }),
         { status: res.status }
       )
     }
@@ -58,7 +62,7 @@ export default {
     const grounded = (json.candidates?.[0]?.groundingMetadata?.webSearchQueries?.length ?? 0) > 0
 
     const colo = (request as Request & { cf?: { colo?: string } }).cf?.colo ?? 'unknown'
-    console.log(`[relay] colo=${colo} grounded=${grounded}`)
+    console.log(`[relay] colo=${colo} grounded=${grounded} text_len=${text.length}`)
 
     return new Response(JSON.stringify({ text, grounded }), {
       headers: { 'Content-Type': 'application/json' },

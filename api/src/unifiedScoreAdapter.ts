@@ -65,7 +65,13 @@ export async function buildDimensionContext(
   const { rankings } = await inferCategoryAndRank(env, inputs.productName, inputs.aiProbes)
 
   // Co-Rec 누적 로그 (점수 계산용)
-  const probeLogs = await fetchProbeLogsForScoring(env, inputs.productName)
+  const dbLogs = await fetchProbeLogsForScoring(env, inputs.productName)
+
+  // logProbes와 병렬 실행으로 현재 체크 결과가 DB에 미반영 → 즉시 합산
+  const currentRecs = inputs.aiProbes.map(p => ({
+    co_recommendations: extractCoRecsFromSnippet(p.snippet, inputs.productName),
+  }))
+  const probeLogs = [...dbLogs, ...currentRecs]
 
   return {
     productName: inputs.productName,
@@ -85,6 +91,20 @@ export async function buildDimensionContext(
     probeLogs,
     tavilySources: inputs.tavilySources,
   }
+}
+
+/** 현재 probe snippet에서 co_recommendations 추출 (index.ts extractCoRecommendations와 동일 로직) */
+function extractCoRecsFromSnippet(snippet: string, productName: string): string[] {
+  if (!snippet || snippet.length < 10) return []
+  const target = productName.toLowerCase()
+  const found = new Set<string>()
+  const numbered = /^\s*\d+[\.\)]\s+([A-Z][A-Za-z0-9\s.\-]{1,40}?)(?:\s*[-–:,\n]|$)/gm
+  let m: RegExpExecArray | null
+  while ((m = numbered.exec(snippet)) !== null) {
+    const c = m[1].trim()
+    if (c.toLowerCase() !== target && c.length > 1 && c.length < 40) found.add(c)
+  }
+  return [...found].slice(0, 8)
 }
 
 /**
@@ -165,26 +185,29 @@ async function inferCategoryAndRank(
 }
 
 /**
- * Probe snippet에서 "X is a [category] tool/platform/app/service" 패턴 추출.
- * 예: "Notion is a productivity tool" → "productivity"
- * 실패 시 null (점수 0 = not_measured).
+ * Probe snippet에서 카테고리 힌트 추출.
+ * 패턴: "{name} is a X tool" | "It is a X tool" | "This is a X platform" 등
+ * 마크다운 **...** 제거 후 적용. 실패 시 null (점수 0 = not_measured).
  */
 function extractCategoryHint(
   productName: string,
   probes: Array<{ snippet: string }>,
 ): string | null {
   const nameEsc = escapeRegex(productName)
-  // 1단어 또는 2단어 카테고리만 허용 (노이즈 억제)
+  // 제품명 or 대명사(It/This/which)로 시작하는 "is a X tool/platform/..." 패턴
   const pattern = new RegExp(
-    `${nameEsc}\\s+(?:is|,)\\s+(?:an?\\s+)?([a-z][a-z\\-]{2,25}(?:\\s+[a-z][a-z\\-]{2,25})?)\\s+(?:tool|platform|app|software|service)`,
+    `(?:${nameEsc}|[Ii]t|[Tt]his(?:\\s+tool)?|which)\\s+is\\s+(?:an?\\s+)?([a-z][a-z\\-]{2,25}(?:\\s+[a-z][a-z\\-]{2,25})?)\\s+(?:tool|platform|app|software|service|solution|workspace|suite)`,
     'i',
   )
   for (const p of probes) {
     if (!p.snippet) continue
-    const m = pattern.exec(p.snippet)
+    // 마크다운 **bold** / *italic* 제거
+    const cleaned = p.snippet.replace(/\*{1,3}([^*\n]*)\*{1,3}/g, '$1')
+    const m = pattern.exec(cleaned)
     if (m && m[1]) {
       const cat = m[1].trim().toLowerCase()
-      if (cat.length > 2 && cat.length < 40) return cat
+      // 너무 짧거나 generics 단어 제외
+      if (cat.length > 2 && cat.length < 40 && !/^(very|most|also|only|more|much)$/.test(cat)) return cat
     }
   }
   return null
