@@ -183,11 +183,234 @@
   .dash-tab { padding: 0.55rem 0.75rem; font-size: 0.78rem; }
   .card { padding: 1rem !important; }
 }
+
+/* =========================================================
+ * D4-INT UI-SHELL-INTEGRATE-01 — 2026-04-19
+ * pickedby.ai Design System 기준 Shell 레이아웃 (Phase A: 공존)
+ * 참조: docs/designs/Dashboard Shell (3-panel)/Dashboard Shell.html
+ * 매핑표: docs/outputs/ui_shell_dom_mapping_20260419.md
+ * ========================================================= */
+:root {
+  --pba-bg:          #0a0a0a;
+  --pba-bg-0:        #000000;
+  --pba-bg-1:        #0d0d0d;
+  --pba-bg-2:        #141414;
+  --pba-bg-3:        #161616;
+  --pba-bg-4:        #1a1a1a;
+  --pba-border:      #2a2a2a;
+  --pba-border-soft: #222222;
+  --pba-border-faint:#1f1f1f;
+  --pba-border-dim:  #181818;
+  --pba-fg:          #f5f5f5;
+  --pba-fg-bold:     #ffffff;
+  --pba-fg-1:        #cccccc;
+  --pba-fg-2:        #aaaaaa;
+  --pba-fg-3:        #888888;
+  --pba-fg-4:        #666666;
+  --pba-fg-5:        #555555;
+  --pba-fg-6:        #444444;
+  --pba-gold:        #FFD700;
+  --pba-gold-dim:    #b39700;
+  --pba-gold-soft:   #FFE55C;
+  --pba-gold-bg:     #0a0800;
+  --pba-gold-border: #3a2800;
+  --pba-green:       #00E676;
+  --pba-font-body:   'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --pba-font-pixel:  'Press Start 2P', monospace;
+}
+
+/* Shell visibility — only shown when logged in (see showDashboard/showLogin) */
+.shell-sidebar, .shell-topbar, .shell-scrim { display: none; }
+body.shell-on .shell-sidebar,
+body.shell-on .shell-topbar { display: flex; }
+
+/* Legacy nav hide when Shell is active */
+body.shell-on > nav.nav,
+body.shell-on > .nav-mobile { display: none !important; }
+
+/* Push legacy #screen-dashboard to account for sidebar + topbar */
+body.shell-on #screen-dashboard {
+  margin-left: 240px !important;
+  padding-top: 80px !important;
+  max-width: none !important;
+}
+@media (max-width: 820px) {
+  body.shell-on #screen-dashboard {
+    margin-left: 0 !important;
+    padding-top: 72px !important;
+  }
+}
+
+/* ========= SIDEBAR ========= */
+.shell-sidebar {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: 240px;
+  background: var(--pba-bg);
+  border-right: 1px solid var(--pba-border);
+  flex-direction: column;
+  z-index: 40;
+}
+.shell-sb-brand {
+  display: flex; align-items: center; gap: 10px;
+  height: 56px; padding: 0 18px;
+  border-bottom: 1px solid var(--pba-border);
+  text-decoration: none; flex: none;
+}
+.shell-sb-brand svg { width: 22px; height: 22px; flex: none; }
+.shell-sb-brand-word {
+  font-family: var(--pba-font-pixel);
+  font-size: 12px; letter-spacing: 0.05em;
+  color: var(--pba-gold); white-space: nowrap;
+}
+.shell-sb-brand-word i { color: #fff; font-style: normal; }
+.shell-sb-menu {
+  flex: 1; padding: 24px 10px 14px;
+  display: flex; flex-direction: column; gap: 2px;
+  overflow-y: auto;
+}
+.shell-sb-label {
+  font-family: var(--pba-font-pixel);
+  font-size: 6.5px; color: var(--pba-fg-6);
+  letter-spacing: 0.2em; padding: 0 10px 8px;
+}
+.shell-sb-item {
+  position: relative; background: transparent; border: none;
+  color: var(--pba-fg-3); text-align: left;
+  padding: 10px 12px; border-radius: 6px;
+  display: flex; align-items: center; gap: 12px;
+  font-family: var(--pba-font-body); font-size: 13.5px;
+  cursor: pointer; transition: background .15s, color .15s;
+  width: 100%;
+}
+.shell-sb-item:hover { background: var(--pba-bg-2); color: #fff; }
+.shell-sb-item.on { background: var(--pba-gold-bg); color: var(--pba-gold); }
+.shell-sb-item.on::before {
+  content: ''; position: absolute; left: -10px; top: 6px; bottom: 6px;
+  width: 3px; background: var(--pba-gold); border-radius: 0 2px 2px 0;
+}
+.shell-sb-ico {
+  width: 18px; height: 18px;
+  display: grid; place-items: center;
+  color: var(--pba-fg-4); flex: none;
+}
+.shell-sb-item:hover .shell-sb-ico { color: var(--pba-fg-1); }
+.shell-sb-item.on .shell-sb-ico { color: var(--pba-gold); }
+.shell-sb-divider {
+  margin: 8px 10px 2px;
+  border-top: 1px solid var(--pba-border-faint);
+}
+
+/* ========= TOPBAR ========= */
+.shell-topbar {
+  position: fixed; top: 0; left: 240px; right: 0;
+  height: 56px;
+  background: rgba(10,10,10,0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--pba-border);
+  align-items: center; justify-content: space-between;
+  padding: 0 24px; z-index: 30;
+}
+.shell-menu-btn {
+  display: none; background: transparent; border: none;
+  color: var(--pba-fg-1);
+  width: 36px; height: 36px; border-radius: 6px; cursor: pointer;
+  align-items: center; justify-content: center; margin-right: 4px;
+}
+.shell-menu-btn:hover { background: var(--pba-bg-2); }
+.shell-crumbs {
+  font-size: 12.5px; color: var(--pba-fg-4);
+  display: flex; align-items: center; gap: 8px;
+}
+.shell-crumbs .sep { color: var(--pba-fg-6); }
+.shell-crumbs .cur { color: #fff; font-weight: 500; }
+
+/* ========= SCRIM / MOBILE ========= */
+.shell-scrim {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6); z-index: 35;
+}
+body.shell-on .shell-scrim.open { display: block; }
+
+@media (max-width: 820px) {
+  .shell-sidebar {
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+  }
+  .shell-sidebar.open { transform: translateX(0); box-shadow: 0 0 40px rgba(0,0,0,0.5); }
+  .shell-topbar { left: 0; padding: 0 14px; }
+  .shell-menu-btn { display: inline-flex; }
+}
+
+/* ========= DATA PANES (SPA 내부 라우팅) ========= */
+[data-pane] { display: none; }
+[data-pane].active { display: block; }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
+<!-- D4-INT Shell (pickedby.ai Design System Dashboard Shell) -->
+<aside class="shell-sidebar" id="shell-sidebar" aria-label="Primary navigation">
+  <a href="/?home=1" class="shell-sb-brand" aria-label="pickedby.ai home">
+    <svg viewBox="0 0 20 20" shape-rendering="crispEdges" aria-hidden="true">
+      <g fill="#FFD700" transform="translate(0,2)">
+        <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
+        <rect x="0" y="4" width="20" height="2"/>
+        <rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
+        <rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
+        <rect x="0" y="12" width="20" height="2"/>
+        <rect x="2" y="14" width="16" height="2"/>
+      </g>
+    </svg>
+    <span class="shell-sb-brand-word">picked<i>by</i>.ai</span>
+  </a>
+  <nav class="shell-sb-menu" aria-label="Dashboard sections">
+    <div class="shell-sb-label">WORKSPACE</div>
+    <button class="shell-sb-item on" data-nav="overview" aria-label="Overview">
+      <span class="shell-sb-ico"><svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="5" height="5"/><rect x="9" y="2" width="5" height="5"/><rect x="2" y="9" width="5" height="5"/><rect x="9" y="9" width="5" height="5"/></svg></span>
+      <span>Overview</span>
+    </button>
+    <button class="shell-sb-item" data-nav="trend" aria-label="Trend">
+      <span class="shell-sb-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><polyline points="2,12 6,8 9,10 14,3"/><polyline points="11,3 14,3 14,6"/></svg></span>
+      <span>Trend</span>
+    </button>
+    <button class="shell-sb-item" data-nav="rivals" aria-label="Rivals">
+      <span class="shell-sb-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="2.5"/><circle cx="11" cy="11" r="2.5"/><path d="M7 7 L9 9"/></svg></span>
+      <span>Rivals</span>
+    </button>
+    <button class="shell-sb-item" data-nav="journey" aria-label="Journey">
+      <span class="shell-sb-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="4" cy="4" r="1.5"/><circle cx="12" cy="12" r="1.5"/><path d="M4 6 Q4 11 8 11 Q12 11 12 6" fill="none" stroke-dasharray="2 2"/></svg></span>
+      <span>Journey</span>
+    </button>
+    <button class="shell-sb-item" data-nav="actions" aria-label="Actions">
+      <span class="shell-sb-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="9,2 3,9 7,9 6,14 13,7 9,7"/></svg></span>
+      <span>Actions</span>
+    </button>
+    <div class="shell-sb-divider"></div>
+    <button class="shell-sb-item" data-nav="tools" aria-label="Tools">
+      <span class="shell-sb-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><line x1="2" y1="4" x2="14" y2="4"/><line x1="2" y1="8" x2="14" y2="8"/><line x1="2" y1="12" x2="14" y2="12"/></svg></span>
+      <span>Tools</span>
+    </button>
+  </nav>
+</aside>
+<div class="shell-scrim" id="shell-scrim" aria-hidden="true"></div>
+<header class="shell-topbar" id="shell-topbar">
+  <div style="display:flex;align-items:center;gap:12px;">
+    <button class="shell-menu-btn" id="shell-menu-btn" aria-label="Open navigation">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square"><line x1="3" y1="5" x2="17" y2="5"/><line x1="3" y1="10" x2="17" y2="10"/><line x1="3" y1="15" x2="17" y2="15"/></svg>
+    </button>
+    <div class="shell-crumbs" aria-label="Breadcrumb">
+      <span>Dashboard</span>
+      <span class="sep">/</span>
+      <span class="cur" id="shell-crumb-cur">Overview</span>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--pba-fg-4);">
+    <span id="shell-topbar-email" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;"></span>
+  </div>
+</header>
+
+<!-- NAV (legacy — retained for logged-out and Phase B parity; hidden when shell-on) -->
   <nav class="nav">
     <a href="/?home=1" class="nav-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
       <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
@@ -851,6 +1074,7 @@
     document.getElementById('screen-dashboard').style.display = 'none'
     document.getElementById('nav-user').style.display = 'none'
     document.getElementById('nav-account-label').style.display = ''
+    document.body.classList.remove('shell-on')
   }
 
   function showDashboard(user) {
@@ -865,6 +1089,10 @@
     const emailHint = user.email ? maskEmail(user.email) : ''
     const ddEmail = document.getElementById('nav-dropdown-email')
     if (ddEmail) ddEmail.textContent = emailHint
+    // D4-INT: activate Shell (sidebar + topbar) and populate email
+    document.body.classList.add('shell-on')
+    const shellEmail = document.getElementById('shell-topbar-email')
+    if (shellEmail) shellEmail.textContent = emailHint
     loadBetaStatus()
     // Load domains first so domain-only rows appear in My Products
     loadVerifiedDomains().then(() => loadHistory())
@@ -2563,6 +2791,100 @@
     } catch(e) {
       if (btn) { btn.disabled = false; btn.textContent = 'GET GUIDE' }
     }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // D4-INT UI-SHELL-INTEGRATE-01 · Shell Navigation
+  // Phase A: Shell 공존 모드. Overview 탭만 기존 #screen-dashboard 콘텐츠 노출.
+  // Trend/Rivals/Journey/Actions/Tools 탭은 placeholder (D5~D9에서 본격 구현).
+  // 매핑표: docs/outputs/ui_shell_dom_mapping_20260419.md
+  // ═══════════════════════════════════════════════════════════
+  const SHELL_NAV = {
+    overview: { crumb: 'Overview', comingSoon: false },
+    trend:    { crumb: 'Trend',    comingSoon: true },
+    rivals:   { crumb: 'Rivals',   comingSoon: true },
+    journey:  { crumb: 'Journey',  comingSoon: true },
+    actions:  { crumb: 'Actions',  comingSoon: true },
+    tools:    { crumb: 'Tools',    comingSoon: false },  // Phase A: #tab-tools 이미 존재
+  };
+
+  function shellNavigateTo(key) {
+    if (!SHELL_NAV[key]) return;
+    // sidebar active state
+    document.querySelectorAll('.shell-sb-item').forEach(b => b.classList.remove('on'));
+    const btn = document.querySelector(`.shell-sb-item[data-nav="${key}"]`);
+    if (btn) btn.classList.add('on');
+    // crumb
+    const cur = document.getElementById('shell-crumb-cur');
+    if (cur) cur.textContent = SHELL_NAV[key].crumb;
+
+    // Phase A pane switching
+    // - overview: 기본 (#screen-dashboard 안의 check form + result + tab-mine 전체 표시)
+    // - tools: switchTab('tools') 호출 (기존 로직 재활용)
+    // - trend/rivals/journey/actions: 공존 모드 placeholder (메인 영역 유지 + 토스트)
+    const pane = document.getElementById('shell-pane-placeholder');
+    if (key === 'tools' && typeof switchTab === 'function') {
+      switchTab('tools');
+      if (pane) pane.style.display = 'none';
+    } else if (key === 'overview') {
+      if (typeof switchTab === 'function') switchTab('mine');
+      if (pane) pane.style.display = 'none';
+    } else {
+      // Coming soon placeholder
+      if (pane) {
+        pane.innerHTML = `
+          <div style="text-align:center;padding:3rem 1rem;border:1px dashed var(--pba-border);border-radius:8px;margin:1.5rem 0;background:var(--pba-bg-2);">
+            <div style="font-family:var(--pba-font-pixel);font-size:7px;color:var(--pba-gold);letter-spacing:0.2em;margin-bottom:8px;">✦ COMING SOON</div>
+            <div style="font-size:15px;color:var(--pba-fg-1);font-weight:500;margin-bottom:6px;">${SHELL_NAV[key].crumb}</div>
+            <div style="font-size:12.5px;color:var(--pba-fg-5);">This section is part of the 11-day sprint. Track progress in the roadmap.</div>
+          </div>`;
+        pane.style.display = 'block';
+      }
+    }
+    // update URL hash (no scroll)
+    try { history.replaceState(null, '', '#' + key); } catch(_) {}
+  }
+
+  function initShell() {
+    // Ensure placeholder exists inside #screen-dashboard for coming-soon panes
+    const sd = document.getElementById('screen-dashboard');
+    if (sd && !document.getElementById('shell-pane-placeholder')) {
+      const ph = document.createElement('div');
+      ph.id = 'shell-pane-placeholder';
+      ph.style.display = 'none';
+      sd.insertBefore(ph, sd.firstChild);
+    }
+    // sidebar clicks
+    document.querySelectorAll('.shell-sb-item[data-nav]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        shellNavigateTo(btn.dataset.nav);
+        // close mobile drawer
+        document.getElementById('shell-sidebar')?.classList.remove('open');
+        document.getElementById('shell-scrim')?.classList.remove('open');
+      });
+    });
+    // mobile hamburger
+    const menuBtn = document.getElementById('shell-menu-btn');
+    const sidebar = document.getElementById('shell-sidebar');
+    const scrim = document.getElementById('shell-scrim');
+    menuBtn?.addEventListener('click', () => {
+      sidebar?.classList.toggle('open');
+      scrim?.classList.toggle('open');
+    });
+    scrim?.addEventListener('click', () => {
+      sidebar?.classList.remove('open');
+      scrim?.classList.remove('open');
+    });
+    // initial nav from hash
+    const initial = (location.hash || '#overview').slice(1);
+    shellNavigateTo(SHELL_NAV[initial] ? initial : 'overview');
+  }
+
+  // Boot Shell once DOM ready (deferred to not interfere with existing auth flow)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initShell);
+  } else {
+    initShell();
   }
 </script>
 
