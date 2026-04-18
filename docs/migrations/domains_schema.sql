@@ -56,6 +56,7 @@ CREATE INDEX IF NOT EXISTS idx_domains_status
 ALTER TABLE domains ENABLE ROW LEVEL SECURITY;
 
 -- Service Role: 전체 CRUD (API Worker)
+DROP POLICY IF EXISTS "service_role_full_access" ON domains;
 CREATE POLICY "service_role_full_access"
   ON domains
   FOR ALL
@@ -64,6 +65,7 @@ CREATE POLICY "service_role_full_access"
   WITH CHECK (true);
 
 -- Authenticated: 자기 도메인만 읽기/수정
+DROP POLICY IF EXISTS "users_own_domains" ON domains;
 CREATE POLICY "users_own_domains"
   ON domains
   FOR ALL

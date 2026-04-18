@@ -82,7 +82,8 @@ CREATE INDEX IF NOT EXISTS idx_snapshots_trigger
 ALTER TABLE score_snapshots ENABLE ROW LEVEL SECURITY;
 
 -- 본인 user_id 레코드만 읽기 (anon/authenticated 유저)
-CREATE POLICY IF NOT EXISTS score_snapshots_user_read
+DROP POLICY IF EXISTS score_snapshots_user_read ON score_snapshots;
+CREATE POLICY score_snapshots_user_read
   ON score_snapshots FOR SELECT
   USING (user_id = current_setting('request.jwt.claim.sub', true));
 
