@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--pba-bg);color:var(--pba-fg);font-family:var(--pba-font-body)}
+  .wrap{padding:20px;display:flex;flex-direction:column;gap:12px}
+  .row{display:flex;align-items:center;gap:14px;font-size:12px}
+  .chip{font-family:var(--pba-font-pixel);font-size:7px;letter-spacing:0.12em;padding:5px 10px;border:1px solid;display:inline-flex;align-items:center;gap:6px}
+  .chip .d{width:6px;height:6px;border-radius:999px}
+  .live{color:#00E676;border-color:#00E67655;background:#001a0a}
+  .live .d{background:#00E676;animation:bl 1.5s infinite}
+  .beta{color:var(--pba-gold);border-color:#FFD70066;background:#0a0800}
+  .ok{color:#00E676;border-color:#00E67633;background:transparent}
+  .warn{color:#FF9100;border-color:#FF910044;background:transparent}
+  .err{color:#FF3D3D;border-color:#FF3D3D44;background:transparent}
+  .dim{color:var(--pba-fg-4);border-color:var(--pba-border);background:transparent}
+  @keyframes bl{0%,100%{opacity:1}50%{opacity:0.3}}
+  .note{color:var(--pba-fg-5);font-size:11px;margin-left:8px}
+</style></head><body>
+<div class="wrap">
+  <div class="row">
+    <span class="chip live"><span class="d"></span> LIVE</span>
+    <span class="chip beta">✦ FOUNDING 100</span>
+    <span class="chip ok">✓ VERIFIED</span>
+    <span class="chip warn">! NOTICED</span>
+    <span class="chip err">× INVISIBLE</span>
+    <span class="chip dim">DAY 42</span>
+  </div>
+  <div class="row" style="margin-top:4px">
+    <span style="font-family:var(--pba-font-pixel);font-size:6.5px;color:var(--pba-fg-5);letter-spacing:0.15em">STATUS · TIER · STEP · PROBE RESULT</span>
+  </div>
+</div>
+</body></html>

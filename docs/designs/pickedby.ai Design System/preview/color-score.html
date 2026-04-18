@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--pba-bg);color:var(--pba-fg);font-family:var(--pba-font-body)}
+  .wrap{padding:18px 20px;height:210px;box-sizing:border-box;display:flex;flex-direction:column;gap:14px}
+  .row{display:flex;gap:10px}
+  .tier{flex:1;padding:10px 12px;border:1px solid var(--pba-border);background:#0d0d0d;display:flex;align-items:center;gap:10px}
+  .dot{width:14px;height:14px;border-radius:999px;flex:none}
+  .label{flex:1;display:flex;flex-direction:column;gap:2px}
+  .name{font-family:var(--pba-font-pixel);font-size:7px;letter-spacing:0.1em}
+  .hex{font-family:var(--pba-font-mono);font-size:10px;color:var(--pba-fg-4)}
+  .role{font-size:10px;color:var(--pba-fg-3)}
+  .score{font-family:var(--pba-font-pixel);font-size:11px;letter-spacing:0.05em}
+</style></head><body>
+<div class="wrap">
+  <div class="row">
+    <div class="tier"><div class="dot" style="background:#00E676"></div><div class="label"><div class="name" style="color:#00E676">PICKED</div><div class="role">Top-tier · 75–100 score</div></div><div class="score" style="color:#00E676">98</div></div>
+    <div class="tier"><div class="dot" style="background:#FFEB3B"></div><div class="label"><div class="name" style="color:#FFEB3B">SEEN</div><div class="role">Mid-tier · 50–74</div></div><div class="score" style="color:#FFEB3B">61</div></div>
+  </div>
+  <div class="row">
+    <div class="tier"><div class="dot" style="background:#FF9100"></div><div class="label"><div class="name" style="color:#FF9100">NOTICED</div><div class="role">Low-tier · 25–49</div></div><div class="score" style="color:#FF9100">34</div></div>
+    <div class="tier"><div class="dot" style="background:#FF3D3D"></div><div class="label"><div class="name" style="color:#FF3D3D">INVISIBLE</div><div class="role">Zero · 0–24</div></div><div class="score" style="color:#FF3D3D">12</div></div>
+  </div>
+</div>
+</body></html>

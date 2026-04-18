@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--pba-bg);color:var(--pba-fg);font-family:var(--pba-font-body)}
+  .wrap{padding:20px 22px;display:flex;gap:22px;height:210px;box-sizing:border-box}
+  .col{flex:1;display:flex;flex-direction:column;gap:10px}
+  h4{margin:0;font-family:var(--pba-font-pixel);font-size:7px;color:var(--pba-fg-5);letter-spacing:0.15em}
+  .stat{font-family:var(--pba-font-body);font-weight:800;color:var(--pba-gold);font-size:36px;line-height:1;letter-spacing:-0.5px}
+  .stat .unit{font-size:20px;color:var(--pba-fg-3);font-weight:600;margin-left:4px}
+  .caption{font-size:12px;color:var(--pba-fg-3);line-height:1.5;max-width:260px}
+  .mono{font-family:var(--pba-font-mono);font-size:12px;color:var(--pba-fg-2);background:#0d0d0d;padding:10px 12px;border:1px solid var(--pba-border);white-space:nowrap}
+  .mono .c{color:var(--pba-gold)}
+</style></head><body>
+<div class="wrap">
+  <div class="col">
+    <h4>BIG NUMBER</h4>
+    <div class="stat">527<span class="unit">%</span></div>
+    <div class="caption">AI referral traffic YoY growth (BrightEdge, 2024). Gold is reserved for key data only.</div>
+  </div>
+  <div class="col">
+    <h4>MONO / CODE</h4>
+    <div class="mono"># <span class="c">llms.txt</span></div>
+    <div class="mono">User-agent: GPTBot</div>
+    <div class="mono">Allow: /</div>
+  </div>
+</div>
+</body></html>

@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manifesto — Why We're Building the Google of AI Recommendations | pickedby.ai</title>
+  <meta name="description" content="AI referral traffic grew 527% YoY. 50 million shopping queries hit ChatGPT daily. Yet there are zero tools for the people being recommended. We're changing that." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pickedby.ai/manifesto/" />
+  <meta property="og:title" content="Manifesto — Why We're Building the Google of AI Recommendations" />
+  <meta property="og:description" content="The old search is dying. The new search has no tools. This is 2005 all over again. Read why we're building the visibility platform for the AI recommendation era." />
+  <meta property="og:url" content="https://pickedby.ai/manifesto/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://pickedby.ai/og-v2.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Manifesto — Why We're Building the Google of AI Recommendations" />
+  <meta name="twitter:description" content="AI referral traffic grew 527% YoY. 50M shopping queries hit ChatGPT daily. Zero tools exist for the people being recommended. We're fixing that." />
+  <meta name="twitter:image" content="https://pickedby.ai/og-v2.png" />
+
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2H007YWM9F"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_personalization: 'denied' });
+    gtag('js', new Date());
+    gtag('config', 'G-2H007YWM9F');
+    if (localStorage.getItem('cookie_consent') === 'accepted') {
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg:      #000000;
+      --bg2:     #0d0d0d;
+      --bg3:     #161616;
+      --yellow:  #FFD700;
+      --yellow2: #b39700;
+      --text:    #ffffff;
+      --muted:   #666666;
+      --border:  #222222;
+      --green:   #00E676;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { overflow-x: hidden; }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 1rem 5rem;
+      overflow-x: hidden;
+      width: 100%;
+    }
+
+    /* ── NAV ── */
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); max-width: 1280px; margin: 0 auto; }
+    .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: var(--yellow); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .nav-logo svg { flex-shrink: 0; }
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; font-size: 0.95rem; color: #888; }
+    .nav-links a { text-decoration: none; color: #888; }
+    .nav-links a:hover { color: #fff; }
+    .nav-blog-link { font-family: 'Press Start 2P', monospace; font-size: 0.45rem; color: var(--muted); letter-spacing: 0.1em; text-decoration: none; transition: color 0.15s; }
+    .nav-blog-link:hover { color: var(--yellow); }
+
+    /* ── HAMBURGER ── */
+    .nav-burger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; color: var(--yellow); font-size: 1.4rem; line-height: 1; }
+    .nav-mobile { display: none; flex-direction: column; gap: 0; border-bottom: 1px solid var(--border); background: var(--bg2); max-width: 1280px; margin: 0 auto; }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a { padding: 0.85rem 2rem; color: #888; text-decoration: none; font-size: 0.9rem; border-top: 1px solid var(--border); }
+    .nav-mobile a:hover { color: #fff; background: var(--bg3); }
+
+    /* ── CONTAINER ── */
+    .container { max-width: 760px; margin: 0 auto; padding-top: 4rem; position: relative; z-index: 1; }
+
+    /* ── HERO ── */
+    .manifesto-hero {
+      text-align: center;
+      margin-bottom: 4rem;
+      padding-bottom: 3rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .manifesto-eyebrow {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.4rem;
+      color: var(--yellow);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+      opacity: 0.7;
+    }
+    .manifesto-hero h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.18;
+      margin-bottom: 1.25rem;
+      letter-spacing: -0.5px;
+    }
+    .manifesto-hero h1 em {
+      color: var(--yellow);
+      font-style: normal;
+      text-shadow: 0 0 20px rgba(255,215,0,0.25);
+    }
+    .manifesto-hero .subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* ── SECTIONS ── */
+    .manifesto-section {
+      margin-bottom: 3.5rem;
+    }
+    .manifesto-section h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      margin-bottom: 0.35rem;
+      line-height: 1.3;
+      letter-spacing: -0.3px;
+    }
+    .manifesto-section h2 .section-num {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.35rem;
+      color: var(--yellow);
+      letter-spacing: 0.15em;
+      display: block;
+      margin-bottom: 0.75rem;
+      opacity: 0.6;
+    }
+    .manifesto-section p {
+      color: #aaa;
+      font-size: 0.95rem;
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+    .manifesto-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── STAT CALLOUT ── */
+    .stat-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+    .stat-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 1.1rem 0.75rem;
+      text-align: center;
+      position: relative;
+    }
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: -1px; left: -1px;
+      width: 5px; height: 5px;
+      background: var(--yellow);
+      opacity: .5;
+    }
+    .stat-num {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.7rem;
+      color: var(--yellow);
+      display: block;
+      margin-bottom: 0.45rem;
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* ── PHASE CARDS ── */
+    .phase-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin: 1.5rem 0;
+    }
+    .phase-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 1.25rem 1rem;
+      position: relative;
+    }
+    .phase-card.active {
+      border-color: var(--yellow);
+      box-shadow: 0 0 15px rgba(255,215,0,0.08);
+    }
+    .phase-tag {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.3rem;
+      color: var(--yellow);
+      letter-spacing: 0.15em;
+      display: block;
+      margin-bottom: 0.6rem;
+      opacity: 0.7;
+    }
+    .phase-card.active .phase-tag {
+      opacity: 1;
+    }
+    .phase-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+      color: #fff;
+    }
+    .phase-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .phase-card.active .phase-title {
+      color: var(--yellow);
+    }
+    .phase-status {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.25rem;
+      letter-spacing: 0.1em;
+      margin-top: 0.6rem;
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 2px;
+    }
+    .phase-status.live {
+      background: rgba(0,230,118,0.12);
+      color: var(--green);
+    }
+    .phase-status.soon {
+      background: rgba(255,215,0,0.08);
+      color: var(--yellow2);
+    }
+
+    /* ── DIVIDER ── */
+    .section-divider {
+      width: 30px;
+      height: 2px;
+      background: var(--border);
+      margin: 0 0 3.5rem;
+    }
+
+    /* ── CTA SECTION ── */
+    .manifesto-cta {
+      text-align: center;
+      padding: 3rem 0;
+      margin-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .manifesto-cta h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 0.75rem;
+    }
+    .manifesto-cta h2 em {
+      color: var(--yellow);
+      font-style: normal;
+    }
+    .manifesto-cta p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+    .cta-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.25rem;
+      background: var(--yellow);
+      color: #000;
+      border: none;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 3px 3px 0 var(--yellow2);
+      transition: transform 0.08s, box-shadow 0.08s;
+    }
+    .cta-btn:hover { transform: translate(1px,1px); box-shadow: 2px 2px 0 var(--yellow2); }
+    .cta-btn:active { transform: translate(3px,3px); box-shadow: none; }
+
+    /* ── FOOTER ── */
+    .footer {
+      margin-top: 3.5rem;
+      text-align: center;
+      font-size: 0.72rem;
+      color: #2a2a2a;
+    }
+    .footer a { color: #333; text-decoration: none; }
+    .footer a:hover { color: var(--muted); }
+
+    /* ── FADE ANIMATION ── */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 767px) {
+      body { padding: 0 0.75rem 5rem; }
+      .container { padding-top: 2rem; }
+      .nav { padding: 0.85rem 1rem; max-width: 100%; }
+      .nav-logo { font-size: 0.7rem; min-width: 0; }
+      .nav-logo span { white-space: nowrap; }
+      .nav-links > a, .nav-links > div { display: none !important; }
+      .nav-burger { display: block; }
+      .nav-mobile { max-width: 100vw; }
+      .manifesto-hero h1 { font-size: 1.6rem; }
+      .manifesto-hero .subtitle { font-size: 0.95rem; }
+      .stat-row { grid-template-columns: 1fr; }
+      .phase-grid { grid-template-columns: 1fr; }
+      .manifesto-section h2 { font-size: 1.15rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="/" class="nav-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+      <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+      <span><span style="color:var(--yellow);">picked</span><span style="color:#fff;">by</span><span style="color:var(--yellow);">.ai</span></span>
+    </a>
+    <div class="nav-links">
+      <div style="position:relative;">
+        <button onclick="var m=this.nextElementSibling;m.style.display=m.style.display==='block'?'none':'block';" style="background:none;border:none;cursor:pointer;color:#888;font-size:0.9rem;padding:0;font-family:inherit;letter-spacing:0.02em;">ABOUT &#9660;</button>
+        <div style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:#0d0d0d;border:1px solid #2a2a2a;min-width:160px;z-index:100;">
+          <a href="/manifesto/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;border-bottom:1px solid #1f1f1f;">Manifesto</a>
+          <a href="/methodology/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;border-bottom:1px solid #1f1f1f;">How We Score</a>
+          <a href="/blog/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;">Blog</a>
+        </div>
+      </div>
+      <a href="/dashboard.html" style="color:#000;background:#FFD700;border:none;padding:0.45rem 1.1rem;border-radius:6px;font-weight:700;font-size:0.88rem;letter-spacing:0.03em;text-decoration:none;box-shadow:0 0 12px rgba(255,215,0,0.35);">Dashboard</a>
+      <button class="nav-burger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">&#9776;</button>
+    </div>
+  </nav>
+  <div class="nav-mobile">
+    <a href="/manifesto/">Manifesto</a>
+    <a href="/methodology/">How We Score</a>
+    <a href="/blog/">Blog</a>
+    <a href="/dashboard.html">Dashboard</a>
+  </div>
+
+  <div class="container">
+
+    <!-- HERO -->
+    <div class="manifesto-hero fade-up">
+      <div class="manifesto-eyebrow">MANIFESTO</div>
+      <h1>Why we're building the<br><em>Google of AI recommendations</em></h1>
+      <p class="subtitle">Search is splitting in two. One half still lives in Google. The other half now lives inside AI chatbots. The second half has no tools. We're building them.</p>
+    </div>
+
+    <!-- SECTION 1 -->
+    <div class="manifesto-section fade-up">
+      <h2>
+        <span class="section-num">01</span>
+        The old search is dying
+      </h2>
+      <p>For twenty years, the path from buyer to product ran through one place: ten blue links on a Google results page. That era is ending. AI referral traffic to retail and e-commerce sites grew 527% year over year in early 2025, according to Salesforce data. ChatGPT alone processes roughly 50 million shopping-related queries every single day. Consumers no longer type a keyword and scroll through ads. They ask an AI a question and get one answer.</p>
+      <div class="stat-row">
+        <div class="stat-card">
+          <span class="stat-num">+527%</span>
+          <span class="stat-label">AI referral traffic YoY</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num">50M</span>
+          <span class="stat-label">daily shopping queries on ChatGPT</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-num">16.8%</span>
+          <span class="stat-label">AI conversion rate vs Google's 1.8-2.8%</span>
+        </div>
+      </div>
+      <p>The conversion gap is staggering. AI-referred visitors convert at 16.8%, roughly six to nine times higher than traditional Google organic traffic at 1.76-2.8%. When an AI recommends a product by name, the buyer is already sold. There is no comparison shopping, no second-guessing. The recommendation is the decision. If your product is not inside that recommendation, you are invisible to a rapidly growing share of buyers.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- SECTION 2 -->
+    <div class="manifesto-section fade-up">
+      <h2>
+        <span class="section-num">02</span>
+        The new search has no tools
+      </h2>
+      <p>Google built an entire ecosystem for the old search paradigm. Search Console tells you when you appear. Google Analytics tells you what happens after the click. Google Ads lets you pay for placement. Together, these three layers gave every business, from a solo freelancer to a Fortune 500, a way to measure, understand, and grow their search visibility.</p>
+      <p>The AI recommendation layer has nothing equivalent. There is no console that tells you "ChatGPT mentioned your product 47 times last week." There is no analytics dashboard showing which AI conversations led to a sale. There is no marketplace to bid for placement in an AI answer. The infrastructure simply does not exist.</p>
+      <p>We surveyed the landscape. The closest category is Generative Engine Optimization (GEO) tools. We found roughly 24 of them. Every single one targets enterprise marketing teams with five-figure annual contracts. If you are a Gumroad seller, an Etsy digital creator, a Notion template maker, or any independent builder, there is no tool for you. You are flying blind in the fastest-growing discovery channel on the internet.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- SECTION 3 -->
+    <div class="manifesto-section fade-up">
+      <h2>
+        <span class="section-num">03</span>
+        This is 2005 all over again
+      </h2>
+      <p>We have seen this exact moment before. In 2004, Google was already dominant, but the SEO tooling market barely existed. Then Moz launched in 2004 and Ahrefs followed later. They started with simple tools: check your rankings, see your backlinks, get a domain score. Those simple tools became the foundation of a multi-billion dollar industry. Today, the SEO software market generates over $1.6 billion in annual revenue.</p>
+      <p>The AI recommendation era is that same empty chair. Analysts project the Generative Engine Optimization market will grow at a 40.6% compound annual rate, reaching $17 billion by 2034. That projection covers enterprise tools. It does not account for the long tail: millions of independent creators and small businesses who need simpler, more accessible versions of the same capabilities.</p>
+      <p>We believe the biggest opportunity is not in selling to Fortune 500 marketing departments. It is in building the default visibility platform for every product on the internet that wants to be found by AI. The same way WordPress democratized publishing, and Shopify democratized commerce, someone will democratize AI visibility. We intend to be that someone.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- SECTION 4 -->
+    <div class="manifesto-section fade-up">
+      <h2>
+        <span class="section-num">04</span>
+        We're filling that gap &mdash; in three layers
+      </h2>
+      <p>We are rebuilding the Google stack for the AI recommendation era. Not all at once. Layer by layer, each one solving a progressively harder problem.</p>
+      <div class="phase-grid">
+        <div class="phase-card active">
+          <span class="phase-tag">PHASE 1 &middot; SEARCH CONSOLE</span>
+          <div class="phase-title">AI Visibility Score</div>
+          <div class="phase-desc">Do AI systems know your product? Get a score from 0 to 100 with a breakdown across five dimensions. Free, instant, no signup.</div>
+          <span class="phase-status live">LIVE NOW</span>
+        </div>
+        <div class="phase-card">
+          <span class="phase-tag">PHASE 2 &middot; ANALYTICS</span>
+          <div class="phase-title">AI Mention Tracking</div>
+          <div class="phase-desc">Track when and where AI recommends your product. Daily monitoring, trend alerts, category benchmarks. Your analytics for AI discovery.</div>
+          <span class="phase-status soon">BUILDING</span>
+        </div>
+        <div class="phase-card">
+          <span class="phase-tag">PHASE 3 &middot; ADS</span>
+          <div class="phase-title">AI Placement</div>
+          <div class="phase-desc">Influence how AI systems describe and recommend your product. Structured data, optimization guidance, and eventually, paid placement.</div>
+          <span class="phase-status soon">PLANNED</span>
+        </div>
+      </div>
+      <p>Phase 1 is live today. You can check your AI Visibility Score right now, for free, in about ten seconds. Phase 2 is in early development: a daily monitoring system that probes AI platforms and records whether they mention your product. Phase 3 is on the roadmap for when the ecosystem matures enough to support it.</p>
+      <p>Each phase expands what you can do: first see, then understand, then act. The same progression that Search Console, Analytics, and Ads provided for Google, we are building for the AI layer.</p>
+    </div>
+    <div class="section-divider"></div>
+
+    <!-- SECTION 5 -->
+    <div class="manifesto-section fade-up">
+      <h2>
+        <span class="section-num">05</span>
+        We're starting small but thinking big
+      </h2>
+      <p>Our first users are digital product creators: Gumroad sellers, Notion template makers, Etsy digital shops, indie SaaS builders. We chose this starting point deliberately. Creators are the most underserved segment in the GEO landscape and the fastest to adopt new tools. They do not have marketing teams or enterprise budgets. They need something that works in ten seconds and costs nothing to try.</p>
+      <p>But we are not building a niche tool. Starting with creators is our wedge, not our ceiling. Every e-commerce brand, every SaaS company, every local business, every media outlet will eventually need to understand how AI systems perceive and recommend them. The AI recommendation layer is not optional. It is becoming the primary way consumers discover products, services, and information.</p>
+      <p>We are a solo-founder company, bootstrapped, building in public. We ship fast, we measure everything, and we listen to users obsessively. If you believe AI is reshaping how people find products, and that the people making those products deserve tools to navigate that shift, we are building this for you.</p>
+      <p style="color:var(--muted);font-size:0.85rem;margin-top:0.5rem;">Starting with creators. Built for the entire AI economy.</p>
+    </div>
+
+    <!-- CTA -->
+    <div class="manifesto-cta fade-up">
+      <h2>Check your <em>AI Visibility Score</em></h2>
+      <p>Free. Ten seconds. No signup required.</p>
+      <a href="/" class="cta-btn">CHECK YOUR SCORE &rarr;</a>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p><a href="/" style="display:inline-flex;align-items:center;gap:5px;text-decoration:none;vertical-align:middle;"><svg width="14" height="11" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg><span style="font-family:'Press Start 2P',monospace;font-size:0.45rem;"><span style="color:#FFD700;">picked</span><span style="color:#888;">by</span><span style="color:#FFD700;">.ai</span></span></a> &nbsp;&middot;&nbsp; The AI Visibility Platform &nbsp;&middot;&nbsp; <a href="/blog/">Blog</a> &nbsp;&middot;&nbsp; <a href="/methodology/">How We Score</a> &nbsp;&middot;&nbsp; <a href="https://www.linkedin.com/in/pickedbyai/" target="_blank" rel="noopener">LinkedIn</a> &nbsp;&middot;&nbsp; <a href="/privacy">Privacy</a> &nbsp;&middot;&nbsp; <a href="/terms">Terms</a></p>
+    </footer>
+
+  </div>
+
+  <script>
+    // Intersection Observer for fade-up animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>

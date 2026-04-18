@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--pba-bg);color:var(--pba-fg);font-family:var(--pba-font-body)}
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding:16px;height:180px;box-sizing:border-box}
+  .sw{display:flex;flex-direction:column;justify-content:flex-end;padding:10px 12px;border:1px solid var(--pba-border);border-right:none;position:relative}
+  .sw:last-child{border-right:1px solid var(--pba-border)}
+  .name{font-family:var(--pba-font-pixel);font-size:8px;color:#000;letter-spacing:0.1em;text-transform:uppercase}
+  .name.lt{color:#000}
+  .name.dk{color:var(--pba-fg-1)}
+  .hex{font-family:var(--pba-font-mono);font-size:10px;margin-top:2px}
+  .hex.lt{color:#000}
+  .hex.dk{color:var(--pba-fg-3)}
+  .role{font-family:var(--pba-font-pixel);font-size:6px;letter-spacing:0.15em;margin-top:8px}
+  .role.lt{color:rgba(0,0,0,0.6)}
+  .role.dk{color:var(--pba-fg-5)}
+  .gold{background:#FFD700}
+  .gold-dim{background:#b39700}
+  .gold-soft{background:#FFE55C}
+  .gold-bg{background:#0a0800;border:1px solid #3a2800 !important}
+</style></head><body>
+<div class="grid">
+  <div class="sw gold"><div class="name lt">Gold</div><div class="hex lt">#FFD700</div><div class="role lt">PRIMARY CTA</div></div>
+  <div class="sw gold-dim"><div class="name lt">Gold Dim</div><div class="hex lt">#B39700</div><div class="role lt">BUTTON OFFSET</div></div>
+  <div class="sw gold-soft"><div class="name lt">Gold Soft</div><div class="hex lt">#FFE55C</div><div class="role lt">HOVER GLOW</div></div>
+  <div class="sw gold-bg"><div class="name dk" style="color:var(--pba-gold)">Gold Tint</div><div class="hex dk">#0A0800</div><div class="role dk">TINTED SURFACE</div></div>
+</div>
+</body></html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--pba-bg-0);color:var(--pba-fg);font-family:var(--pba-font-body)}
+  * { box-sizing:border-box }
+  .fbar{background:#000;border-bottom:1px solid #222;padding:8px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;font-family:var(--pba-font-pixel);font-size:7px;letter-spacing:0.15em}
+  .fbar .l{color:var(--pba-gold);display:flex;align-items:center;gap:8px;white-space:nowrap;min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .fbar .l .d{width:5px;height:5px;border-radius:999px;background:#00E676;animation:bl 1.5s infinite;flex:none}
+  .fbar .r{color:var(--pba-fg-4);white-space:nowrap}
+  @keyframes bl{0%,100%{opacity:1}50%{opacity:0.3}}
+  .nav{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:1px solid #181818}
+  .logo{display:flex;align-items:center;gap:10px;flex:none}
+  .logo svg{width:20px;height:20px;display:block}
+  .wm{font-family:var(--pba-font-pixel);font-size:12px;color:var(--pba-gold);letter-spacing:0.08em;white-space:nowrap}
+  .wm .by{color:#fff}
+  .links{display:flex;gap:26px;font-family:var(--pba-font-pixel);font-size:8px;letter-spacing:0.18em;color:var(--pba-fg-3);flex:1;justify-content:center;min-width:0}
+  .links a{color:inherit;text-decoration:none;white-space:nowrap}
+  .links a.on{color:#fff}
+  .right{display:flex;align-items:center;gap:10px;flex:none}
+  .cta{font-family:var(--pba-font-pixel);font-size:8px;letter-spacing:0.12em;background:var(--pba-gold);color:#000;border:none;padding:10px 16px;box-shadow:3px 3px 0 #b39700;cursor:pointer;white-space:nowrap}
+  .burger{display:none;width:36px;height:36px;background:transparent;border:1px solid #2a2a2a;cursor:pointer;padding:0;align-items:center;justify-content:center;flex:none}
+  .burger svg{width:18px;height:18px;shape-rendering:crispEdges}
+  .burger rect{fill:var(--pba-fg-1)}
+
+  /* Tablet — slightly tighten */
+  @media (max-width: 880px){
+    .links{gap:18px;letter-spacing:0.14em}
+  }
+  /* Mobile — collapse nav links into hamburger */
+  @media (max-width: 720px){
+    .links{display:none}
+    .burger{display:inline-flex}
+  }
+  @media (max-width: 520px){
+    .fbar{padding:8px 14px;font-size:6.5px;letter-spacing:0.12em}
+    .fbar .r{display:none}
+    .nav{padding:12px 14px;gap:12px}
+    .cta{padding:9px 12px}
+    .wm{font-size:11px}
+  }
+  @media (max-width: 380px){
+    .cta span.arrow{display:none}
+    .cta{padding:9px 12px}
+  }
+</style></head><body>
+<div class="fbar">
+  <div class="l"><span class="d"></span>FOUNDING 100 · 34 SPOTS LEFT</div>
+  <div class="r">LIFETIME FREE · NO CREDIT CARD</div>
+</div>
+<div class="nav">
+  <div class="logo">
+    <svg viewBox="0 0 20 20" shape-rendering="crispEdges">
+      <rect width="20" height="20" fill="#000"/>
+      <g fill="#FFD700" transform="translate(0,2)">
+        <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
+        <rect x="0" y="4" width="20" height="2"/>
+        <rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
+        <rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
+        <rect x="0" y="12" width="20" height="2"/>
+        <rect x="2" y="14" width="16" height="2"/>
+      </g>
+    </svg>
+    <span class="wm">picked<span class="by">by</span>.ai</span>
+  </div>
+  <div class="links"><a class="on">HOME</a><a>METHODOLOGY</a><a>MANIFESTO</a><a>BLOG</a><a>CHANGELOG</a></div>
+  <div class="right">
+    <button class="burger" aria-label="Menu">
+      <svg viewBox="0 0 18 18">
+        <rect x="2" y="3" width="14" height="2"/>
+        <rect x="2" y="8" width="14" height="2"/>
+        <rect x="2" y="13" width="14" height="2"/>
+      </svg>
+    </button>
+    <button class="cta">CHECK SCORE<span class="arrow"> →</span></button>
+  </div>
+</div>
+</body></html>

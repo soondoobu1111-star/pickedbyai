@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--pba-bg);color:var(--pba-fg);font-family:var(--pba-font-body)}
+  .wrap{padding:20px;display:flex;flex-direction:column;gap:18px}
+  .row{display:flex;align-items:center;gap:20px}
+  .lb{font-family:var(--pba-font-pixel);font-size:7px;color:var(--pba-fg-5);letter-spacing:0.1em;width:140px;flex:none}
+  .demo{flex:1}
+  .btn{font-family:var(--pba-font-pixel);font-size:9px;letter-spacing:0.1em;padding:11px 18px;background:var(--pba-gold);color:#000;border:none;box-shadow:4px 4px 0 #b39700;display:inline-block}
+  .btn.hov{box-shadow:2px 2px 0 #b39700;transform:translate(2px,2px)}
+  .btn.act{box-shadow:0 0 0 #b39700;transform:translate(4px,4px)}
+  .dots{display:inline-flex;gap:4px;align-items:center}
+  .dots i{width:6px;height:6px;background:var(--pba-gold);display:block}
+  .dots i:nth-child(1){animation:pb 1.2s infinite 0s}
+  .dots i:nth-child(2){animation:pb 1.2s infinite 0.2s}
+  .dots i:nth-child(3){animation:pb 1.2s infinite 0.4s}
+  .dots i:nth-child(4){animation:pb 1.2s infinite 0.6s}
+  .dots i:nth-child(5){animation:pb 1.2s infinite 0.8s}
+  @keyframes pb{0%,100%{opacity:0.2}50%{opacity:1}}
+  .em{font-weight:700;color:var(--pba-gold);animation:eg 3.5s infinite}
+  @keyframes eg{0%,100%{text-shadow:0 0 0 var(--pba-gold)}50%{text-shadow:0 0 12px #FFD70088}}
+  .cap{font-size:11px;color:var(--pba-fg-4)}
+</style></head><body>
+<div class="wrap">
+  <div class="row"><div class="lb">REST</div><div class="demo"><span class="btn">CHECK SCORE</span> <span class="cap">· 4px offset</span></div></div>
+  <div class="row"><div class="lb">HOVER</div><div class="demo"><span class="btn hov">CHECK SCORE</span> <span class="cap">· 2px offset + translate(2,2)</span></div></div>
+  <div class="row"><div class="lb">PRESSED</div><div class="demo"><span class="btn act">CHECK SCORE</span> <span class="cap">· shadow 0 + translate(4,4)</span></div></div>
+  <div class="row"><div class="lb">LOADING</div><div class="demo"><span class="dots"><i></i><i></i><i></i><i></i><i></i></span> <span class="cap">· pixelblink 1.2s · 0.2s stagger</span></div></div>
+  <div class="row"><div class="lb">HERO PULSE</div><div class="demo"><span style="font-size:18px;color:#fff;font-weight:800">Does AI recommend <span class="em">your</span> product?</span></div></div>
+</div>
+</body></html>

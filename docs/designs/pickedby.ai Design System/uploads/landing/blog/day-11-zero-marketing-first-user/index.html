@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 11: Zero Marketing Budget, First Real User — pickedby.ai</title>
+  <meta name="description" content="We spent $0 on marketing. 275 commits later, someone we've never met signed up and ran a real scan. Here's how they found us — and what it means for what we're building." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pickedby.ai/blog/day-11-zero-marketing-first-user/" />
+  <meta property="og:title" content="Day 11: Zero Marketing Budget, First Real User" />
+  <meta property="og:description" content="We spent $0 on marketing. 275 commits later, someone we've never met signed up. Here's how they found us." />
+  <meta property="og:url" content="https://pickedby.ai/blog/day-11-zero-marketing-first-user/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://pickedby.ai/blog/day-11-zero-marketing-first-user/cover.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="article:published_time" content="2026-04-15" />
+  <meta property="article:author" content="CHEONKYU JANG" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Day 11: Zero Marketing Budget, First Real User" />
+  <meta name="twitter:description" content="We spent $0 on marketing. 275 commits later, someone we've never met signed up. Here's how they found us." />
+  <meta name="keywords" content="building in public, first user, zero marketing, AI visibility, indie hacker, organic growth, solo founder, pickedby.ai" />
+  <meta name="author" content="pickedby.ai" />
+  <meta property="og:site_name" content="pickedby.ai" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickedby.ai/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pickedby.ai/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Day 11: Zero Marketing Budget, First Real User", "item": "https://pickedby.ai/blog/day-11-zero-marketing-first-user/" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Day 11: Zero Marketing Budget, First Real User",
+    "description": "We spent $0 on marketing. 275 commits later, someone we've never met signed up and ran a real scan. Here's how they found us — and what it means for what we're building.",
+    "datePublished": "2026-04-15",
+    "author": { "@type": "Organization", "name": "pickedby.ai", "url": "https://pickedby.ai" },
+    "publisher": { "@type": "Organization", "name": "pickedby.ai", "url": "https://pickedby.ai" },
+    "url": "https://pickedby.ai/blog/day-11-zero-marketing-first-user/",
+    "mainEntityOfPage": "https://pickedby.ai/blog/day-11-zero-marketing-first-user/"
+  }
+  </script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2H007YWM9F"></script>
+  <!-- Contentsquare (Hotjar) -->
+  <script src="https://t.contentsquare.net/uxa/539b28e3d0a6f.js" async></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_personalization: 'denied' });
+    gtag('js', new Date());
+    gtag('config', 'G-2H007YWM9F');
+    if (localStorage.getItem('cookie_consent') === 'accepted') {
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #000; --bg2: #0d0d0d; --bg3: #161616;
+      --yellow: #FFD700; --yellow2: #b39700;
+      --text: #e8e8e8; --muted: #888; --border: #1f1f1f;
+    }
+    body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; line-height: 1.7; }
+    a { color: var(--yellow); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); max-width: 1280px; margin: 0 auto; }
+    .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: var(--yellow); text-decoration: none; }
+    .nav-links { display: flex; gap: 1.5rem; font-size: 0.95rem; }
+    .nav-links a { color: var(--muted); }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .article-wrap { max-width: 680px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+    .article-tag { font-family: 'Press Start 2P', monospace; font-size: 0.38rem; color: var(--yellow); letter-spacing: 0.1em; margin-bottom: 1.25rem; }
+    .article-tag a { color: var(--yellow); text-decoration: none; }
+    h1 { font-size: 1.9rem; font-weight: 800; line-height: 1.25; margin-bottom: 1.25rem; }
+    .article-meta { font-size: 0.78rem; color: #555; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .article-body h2 { font-size: 1.2rem; font-weight: 700; margin: 2.5rem 0 0.85rem; color: var(--text); }
+    .article-body p { font-size: 0.95rem; color: #ccc; margin-bottom: 1.15rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0.5rem 0 1.25rem 1.2rem; }
+    .article-body li { font-size: 0.95rem; color: #ccc; margin-bottom: 0.65rem; line-height: 1.75; }
+    .article-body strong { color: var(--text); }
+    .article-body em { color: var(--muted); font-style: italic; }
+    .callout { background: var(--bg2); border-left: 3px solid var(--yellow); padding: 1rem 1.25rem; margin: 1.75rem 0; }
+    .callout p { margin-bottom: 0; color: #bbb; font-size: 0.92rem; }
+    .callout.green { border-left-color: #22c55e; }
+    .callout.green p { color: #bbb; }
+    .stat-row { display: flex; gap: 1.5rem; margin: 1.75rem 0; flex-wrap: wrap; }
+    .stat-box { background: var(--bg2); border: 1px solid #2a2a2a; padding: 1.25rem 1.5rem; flex: 1; min-width: 140px; }
+    .stat-box .stat-num { font-family: 'Press Start 2P', monospace; font-size: 1.4rem; color: var(--yellow); margin-bottom: 0.4rem; }
+    .stat-box .stat-num.green { color: #22c55e; }
+    .stat-box .stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+    .share-section { margin: 2.5rem 0 0; padding: 1.5rem 0; border-top: 1px solid var(--border); }
+    .share-label { font-family: 'Press Start 2P', monospace; font-size: 0.38rem; color: #444; letter-spacing: 0.1em; margin-bottom: 0.85rem; }
+    .share-buttons { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .share-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1.1rem; font-size: 0.82rem; border-radius: 4px; cursor: pointer; text-decoration: none; border: 1px solid #2a2a2a; background: var(--bg2); color: var(--text); transition: border-color 0.2s, color 0.2s; font-family: inherit; }
+    .share-btn:hover { border-color: #444; color: #fff; text-decoration: none; }
+    .copy-done { color: var(--yellow) !important; border-color: var(--yellow) !important; }
+    .cta-box { background: var(--bg2); border: 1px solid #2a2a2a; padding: 2rem; margin: 3rem 0; text-align: center; }
+    .cta-box h3 { font-family: 'Press Start 2P', monospace; font-size: 0.55rem; color: var(--yellow); margin-bottom: 0.75rem; line-height: 1.7; }
+    .cta-box p { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.25rem; }
+    .btn-cta { display: inline-block; background: var(--yellow); color: #000; font-family: 'Press Start 2P', monospace; font-size: 0.42rem; padding: 0.75rem 1.5rem; box-shadow: 3px 3px 0 var(--yellow2); text-decoration: none; }
+    .btn-cta:hover { text-decoration: none; opacity: 0.9; }
+    .prev-next { display: flex; gap: 1rem; margin: 3rem 0 0; padding-top: 2rem; border-top: 1px solid var(--border); font-size: 0.82rem; }
+    .prev-next a { color: var(--muted); flex: 1; }
+    .prev-next a:hover { color: var(--text); text-decoration: none; }
+    .prev-next .label { font-family: 'Press Start 2P', monospace; font-size: 0.35rem; color: #333; display: block; margin-bottom: 0.4rem; letter-spacing: 0.08em; }
+    footer { border-top: 1px solid var(--border); padding: 1.5rem 2rem; text-align: center; font-size: 0.75rem; color: #444; }
+    footer a { color: #555; text-decoration: underline; }
+    .nav-burger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; color: #FFD700; font-size: 1.4rem; line-height: 1; }
+    .nav-mobile { display: none; flex-direction: column; gap: 0; border-bottom: 1px solid #1f1f1f; background: #0d0d0d; max-width: 1280px; margin: 0 auto; }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a { padding: 0.85rem 2rem; color: #888; text-decoration: none; font-size: 0.9rem; border-top: 1px solid #1f1f1f; }
+    .nav-mobile a:hover { color: #fff; background: #161616; }
+    @media (max-width: 767px) {
+      .nav { padding: 0.85rem 1rem; }
+      .nav-logo { font-size: 0.7rem; }
+      .nav-links > a, .nav-links > div { display: none !important; }
+      .nav-burger { display: block; }
+      .article-wrap { padding: 2rem 1rem 4rem; }
+      h1 { font-size: 1.4rem; }
+      .stat-row { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="/" class="nav-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+      <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+      <span><span style="color:var(--yellow);">picked</span><span style="color:#fff;">by</span><span style="color:var(--yellow);">.ai</span></span>
+    </a>
+    <div class="nav-links">
+      <div style="position:relative;">
+        <button onclick="var m=this.nextElementSibling;m.style.display=m.style.display==='block'?'none':'block';" style="background:none;border:none;cursor:pointer;color:#888;font-size:0.9rem;padding:0;font-family:inherit;letter-spacing:0.02em;">ABOUT &#9660;</button>
+        <div style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:#0d0d0d;border:1px solid #2a2a2a;min-width:160px;z-index:100;">
+          <a href="/manifesto/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;border-bottom:1px solid #1f1f1f;">Manifesto</a>
+          <a href="/methodology/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;border-bottom:1px solid #1f1f1f;">How We Score</a>
+          <a href="/blog/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;">Blog</a>
+        </div>
+      </div>
+      <a href="/dashboard.html" style="color:#000;background:#FFD700;border:none;padding:0.45rem 1.1rem;border-radius:6px;font-weight:700;font-size:0.88rem;letter-spacing:0.03em;text-decoration:none;box-shadow:0 0 12px rgba(255,215,0,0.35);">Dashboard</a>
+      <button class="nav-burger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">&#9776;</button>
+    </div>
+  </nav>
+  <div class="nav-mobile">
+    <a href="/manifesto/">Manifesto</a>
+    <a href="/methodology/">How We Score</a>
+    <a href="/blog/">Blog</a>
+    <a href="/dashboard.html">Dashboard</a>
+  </div>
+
+  <article class="article-wrap">
+
+    <div class="article-tag"><a href="/blog/">BLOG</a> &nbsp;·&nbsp; BUILDING IN PUBLIC · MILESTONE</div>
+    <h1>Day 11: Zero Marketing Budget, First Real User</h1>
+    <div class="article-meta">April 15, 2026 &nbsp;·&nbsp; 4 min read &nbsp;·&nbsp; by pickedby.ai</div>
+
+    <div class="article-body">
+
+      <p>This morning I opened our database and saw a row I didn't recognize.</p>
+
+      <p>Not a test account. Not my own email. Not a friend I'd asked to try it. A real person, from somewhere on the internet, who found pickedby.ai on their own, typed in a product, and ran a scan.</p>
+
+      <p>We have spent exactly $0 on marketing. No ads. No paid directories. No influencer deals. Just 275 commits over 11 days and a product that solves a real problem.</p>
+
+      <div class="callout green">
+        <p><strong>The milestone:</strong> Our first organic user signed up via Google Search. No referral link, no social post brought them here. They searched, they found us, they used the product.</p>
+      </div>
+
+      <h2>The numbers (all of them, honestly)</h2>
+
+      <p>Here's what our analytics actually look like at Day 11. No vanity metrics, no rounding up.</p>
+
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-num green">1</div>
+          <div class="stat-label">Real external user</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">25</div>
+          <div class="stat-label">Total active users (incl. us)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">33s</div>
+          <div class="stat-label">Avg. time on site</div>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-num">$0</div>
+          <div class="stat-label">Marketing spend</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">275</div>
+          <div class="stat-label">Commits shipped</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">6.4</div>
+          <div class="stat-label">Google avg. rank for "picked by"</div>
+        </div>
+      </div>
+
+      <p>Is one user a lot? No. But it's infinitely more than zero. And it happened without us doing anything to make it happen.</p>
+
+      <h2>How they found us</h2>
+
+      <p>Google Search. That's it.</p>
+
+      <p>We checked our Search Console data. pickedby.ai is showing up on Google's first page for the query "picked by" &mdash; average position 6.4, with 5 impressions so far. No clicks from that keyword yet, so our first user likely came through a direct URL or a more specific query Google hasn't reported yet.</p>
+
+      <p>Either way: Google knows we exist. We're indexed, we're ranking, and someone found us through that pipeline without any SEO tricks, link building, or paid placement.</p>
+
+      <h2>The same day, something else happened</h2>
+
+      <p>We run a second product &mdash; <a href="https://perceptdot.com">perceptdot</a>, an MCP server for AI agents. It's a completely different market (developer tools vs. creator tools). Different audience, different channel, different product.</p>
+
+      <p>On the same day our first pickedby.ai user showed up, someone issued a free API key for perceptdot. A developer we've never interacted with. They found us through <strong>glama.ai</strong>, an MCP server directory.</p>
+
+      <p>Two products. Two different markets. Both got their first external user on the same day. Neither had any marketing behind it.</p>
+
+      <div class="callout">
+        <p><strong>The pattern:</strong> Build something that solves a real problem, put it where people are already looking (Google, directories, open registries), and wait. Not forever &mdash; but long enough to see if the signal is real.</p>
+      </div>
+
+      <h2>What this means for what we're building</h2>
+
+      <p>pickedby.ai started as a score calculator. "Does ChatGPT know your product?" That's Phase 1 &mdash; and it's what brought this first user in.</p>
+
+      <p>But we're building something bigger. The way we think about it:</p>
+
+      <ul>
+        <li><strong>Phase 1 (now):</strong> Search Console for AI &mdash; measure if AI knows you</li>
+        <li><strong>Phase 2 (next):</strong> Analytics for AI &mdash; track how often AI recommends you</li>
+        <li><strong>Phase 3 (2027):</strong> Ads for AI &mdash; optimize your placement in AI recommendations</li>
+      </ul>
+
+      <p>Google built Search Console, then Analytics, then Ads. That sequence created the most valuable advertising company in history. The same sequence is about to happen for AI recommendations &mdash; and right now, nobody is building it.</p>
+
+      <p>We are.</p>
+
+      <h2>What happens next</h2>
+
+      <p>One user is proof that the problem is real enough for someone to find us on their own. Now we need to find out if it's real enough for 100 people. Then 1,000.</p>
+
+      <p>This week we're doing something we've been putting off: actually talking to people. Not broadcasting. Not automating. Having real conversations with creators and founders about whether AI visibility matters to them.</p>
+
+      <p>If you're reading this and you sell anything online &mdash; a Gumroad template, an Etsy listing, a SaaS product, a Shopify store &mdash; try running your product through our scanner. It takes 10 seconds, costs nothing, and you might be surprised what you find.</p>
+
+      <p>We were surprised by our own score. <a href="/blog/we-scored-12-on-our-own-tool/">We scored 12 out of 100.</a></p>
+
+      <p>Your first user doesn't arrive when you're ready. They arrive when the problem is real.</p>
+
+    </div>
+
+    <div class="cta-box">
+      <h3>IS AI RECOMMENDING YOUR PRODUCT?</h3>
+      <p>Free. No signup. Results in 10 seconds.<br>Check what ChatGPT, Gemini, and Perplexity say about your product right now.</p>
+      <a href="https://pickedby.ai" class="btn-cta">CHECK MY SCORE &rarr;</a>
+    </div>
+
+    <div class="share-section">
+      <div class="share-label">SHARE THIS POST</div>
+      <div class="share-buttons">
+        <a class="share-btn" href="https://www.linkedin.com/sharing/share-offsite/?url=https://pickedby.ai/blog/day-11-zero-marketing-first-user/" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+          Share on LinkedIn
+        </a>
+        <a class="share-btn" href="https://www.reddit.com/submit?url=https://pickedby.ai/blog/day-11-zero-marketing-first-user/&title=Day%2011%3A%20Zero%20Marketing%20Budget%2C%20First%20Real%20User" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>
+          Share on Reddit
+        </a>
+        <button class="share-btn" onclick="navigator.clipboard.writeText('https://pickedby.ai/blog/day-11-zero-marketing-first-user/').then(()=>{this.textContent='Copied';this.classList.add('copy-done');setTimeout(()=>{this.textContent='Copy link';this.classList.remove('copy-done')},2000)})">
+          Copy link
+        </button>
+      </div>
+    </div>
+
+    <div class="prev-next">
+      <a href="/blog/marketing-day-twitter-banned-reddit/">
+        <span class="label">&larr; PREVIOUS</span>
+        My Twitter Account Got Permanently Banned
+      </a>
+      <a href="/blog/we-built-wrong-product-10-days/" style="text-align:right;">
+        <span class="label">NEXT &rarr;</span>
+        I Built the Wrong Product for 10 Days
+      </a>
+    </div>
+
+  </article>
+
+  <footer>
+    <a href="/" style="display:inline-flex;align-items:center;gap:5px;text-decoration:none;vertical-align:middle;"><svg width="14" height="11" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg><span style="font-family:'Press Start 2P',monospace;font-size:0.45rem;"><span style="color:#FFD700;">picked</span><span style="color:#888;">by</span><span style="color:#FFD700;">.ai</span></span></a> &nbsp;·&nbsp;
+    The AI Visibility Platform &nbsp;·&nbsp;
+    <a href="/blog/">Blog</a> &nbsp;·&nbsp;
+    <a href="https://www.linkedin.com/in/pickedbyai/" target="_blank" rel="noopener">LinkedIn</a> &nbsp;·&nbsp;
+    <a href="/privacy.html">Privacy</a> &nbsp;·&nbsp;
+    <a href="/terms.html">Terms</a>
+  </footer>
+
+</body>
+</html>

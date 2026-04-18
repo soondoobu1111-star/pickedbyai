@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--pba-bg);color:var(--pba-fg);font-family:var(--pba-font-body)}
+  .wrap{padding:22px;display:flex;gap:22px;justify-content:center;align-items:center;height:230px;box-sizing:border-box}
+  .badge{background:#0d0d0d;border:1px solid var(--pba-border);padding:16px 20px;display:flex;align-items:center;gap:14px;position:relative}
+  .badge::before{content:'';position:absolute;top:-1px;left:-1px;width:8px;height:8px}
+  .badge.g::before{background:#FFD700}
+  .badge.s::before{background:#C0C0C0}
+  .badge.b::before{background:#CD7F32}
+  .crown{width:38px;height:30px;flex:none;image-rendering:pixelated}
+  .txt{display:flex;flex-direction:column;gap:4px}
+  .tier{font-family:var(--pba-font-pixel);font-size:9px;letter-spacing:0.15em}
+  .val{font-family:var(--pba-font-body);font-weight:800;font-size:18px;color:#fff;line-height:1}
+  .val span{font-size:11px;color:var(--pba-fg-4);font-weight:600;margin-left:2px}
+  .sub{font-family:var(--pba-font-pixel);font-size:6px;color:var(--pba-fg-5);letter-spacing:0.15em}
+  .g .tier{color:#FFD700} .s .tier{color:#C0C0C0} .b .tier{color:#CD7F32}
+  @keyframes pulse{0%,100%{filter:drop-shadow(0 0 0 #FFD700)}50%{filter:drop-shadow(0 0 6px #FFD700aa)}}
+  .g .crown{animation:pulse 2.5s infinite}
+</style></head><body>
+<div class="wrap">
+  <div class="badge g">
+    <svg class="crown" viewBox="0 0 20 16"><rect x="0" y="0" width="2" height="4" fill="#FFD700"/><rect x="9" y="0" width="2" height="4" fill="#FFD700"/><rect x="18" y="0" width="2" height="4" fill="#FFD700"/><rect x="0" y="4" width="20" height="2" fill="#FFD700"/><rect x="0" y="6" width="2" height="6" fill="#FFD700"/><rect x="18" y="6" width="2" height="6" fill="#FFD700"/><rect x="4" y="8" width="2" height="2" fill="#FFD700"/><rect x="9" y="8" width="2" height="2" fill="#FFD700"/><rect x="14" y="8" width="2" height="2" fill="#FFD700"/><rect x="0" y="12" width="20" height="2" fill="#FFD700"/><rect x="2" y="14" width="16" height="2" fill="#FFD700"/></svg>
+    <div class="txt"><div class="tier">✦ GOLD</div><div class="val">87<span>/100</span></div><div class="sub">PICKEDBY.AI</div></div>
+  </div>
+  <div class="badge s">
+    <svg class="crown" viewBox="0 0 20 16"><rect x="0" y="0" width="2" height="4" fill="#C0C0C0"/><rect x="9" y="0" width="2" height="4" fill="#C0C0C0"/><rect x="18" y="0" width="2" height="4" fill="#C0C0C0"/><rect x="0" y="4" width="20" height="2" fill="#C0C0C0"/><rect x="0" y="6" width="2" height="6" fill="#C0C0C0"/><rect x="18" y="6" width="2" height="6" fill="#C0C0C0"/><rect x="4" y="8" width="2" height="2" fill="#C0C0C0"/><rect x="9" y="8" width="2" height="2" fill="#C0C0C0"/><rect x="14" y="8" width="2" height="2" fill="#C0C0C0"/><rect x="0" y="12" width="20" height="2" fill="#C0C0C0"/><rect x="2" y="14" width="16" height="2" fill="#C0C0C0"/></svg>
+    <div class="txt"><div class="tier">✦ SILVER</div><div class="val">64<span>/100</span></div><div class="sub">PICKEDBY.AI</div></div>
+  </div>
+  <div class="badge b">
+    <svg class="crown" viewBox="0 0 20 16"><rect x="0" y="0" width="2" height="4" fill="#CD7F32"/><rect x="9" y="0" width="2" height="4" fill="#CD7F32"/><rect x="18" y="0" width="2" height="4" fill="#CD7F32"/><rect x="0" y="4" width="20" height="2" fill="#CD7F32"/><rect x="0" y="6" width="2" height="6" fill="#CD7F32"/><rect x="18" y="6" width="2" height="6" fill="#CD7F32"/><rect x="4" y="8" width="2" height="2" fill="#CD7F32"/><rect x="9" y="8" width="2" height="2" fill="#CD7F32"/><rect x="14" y="8" width="2" height="2" fill="#CD7F32"/><rect x="0" y="12" width="20" height="2" fill="#CD7F32"/><rect x="2" y="14" width="16" height="2" fill="#CD7F32"/></svg>
+    <div class="txt"><div class="tier">✦ BRONZE</div><div class="val">41<span>/100</span></div><div class="sub">PICKEDBY.AI</div></div>
+  </div>
+</div>
+</body></html>

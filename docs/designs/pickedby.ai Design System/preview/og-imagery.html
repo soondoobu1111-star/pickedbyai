@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--pba-bg-0);color:var(--pba-fg);font-family:var(--pba-font-body)}
+  .wrap{padding:18px;display:flex;gap:14px;align-items:stretch;height:240px;box-sizing:border-box}
+  .og{flex:1.6;background:#000 url('../assets/og-v2.png') center/cover no-repeat;border:1px solid #2a2a2a;position:relative}
+  .og::before{content:'';position:absolute;top:-1px;left:-1px;width:10px;height:10px;background:var(--pba-gold)}
+  .side{flex:1;display:flex;flex-direction:column;gap:8px;justify-content:center}
+  .lb{font-family:var(--pba-font-pixel);font-size:6.5px;color:var(--pba-fg-5);letter-spacing:0.15em}
+  .hd{font-family:var(--pba-font-body);font-weight:700;color:#fff;font-size:14px}
+  .dsc{font-size:11px;color:var(--pba-fg-3);line-height:1.5}
+  .mini{display:flex;gap:8px;margin-top:6px;align-items:center}
+  .mini .sq{width:32px;height:32px;background:#141414;border:1px solid #2a2a2a;display:grid;place-items:center;flex:none}
+  .mini .sq img{width:22px;height:22px;image-rendering:pixelated;display:block}
+  .mini .band{height:32px;background:#141414;border:1px solid #2a2a2a;display:flex;align-items:center;padding:0 8px;flex:none}
+  .mini .band img{height:18px;width:auto;display:block}
+</style></head><body>
+<div class="wrap">
+  <div class="og"></div>
+  <div class="side">
+    <div class="lb">OG · SOCIAL POSTER</div>
+    <div class="hd">og-v2.png</div>
+    <div class="dsc">1200×630 · pure black · single gold line of copy. No photography, no gradients, no stock.</div>
+    <div class="lb" style="margin-top:10px">MARK SIZES</div>
+    <div class="mini">
+      <div class="sq"><img src="../assets/logo-512.png" alt="512"></div>
+      <div class="sq"><img src="../assets/logo-128.webp" alt="128"></div>
+      <div class="band" title="email banner 856×118"><img src="../assets/logo-email.png" alt="email"></div>
+    </div>
+  </div>
+</div>
+</body></html>

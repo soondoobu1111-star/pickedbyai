@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--pba-bg);color:var(--pba-fg);font-family:var(--pba-font-body)}
+  .wrap{padding:18px 22px;display:flex;flex-direction:column;gap:12px}
+  .lb{font-family:var(--pba-font-pixel);font-size:6.5px;color:var(--pba-fg-5);letter-spacing:0.15em}
+  .bar{display:flex;align-items:center;gap:12px}
+  .bar .name{width:100px;font-family:var(--pba-font-pixel);font-size:7px;letter-spacing:0.1em;flex:none}
+  .track{flex:1;height:10px;background:#141414;border:1px solid #222;border-radius:999px;overflow:hidden}
+  .fill{height:100%;border-radius:999px}
+  .val{width:52px;text-align:right;font-family:var(--pba-font-mono);font-size:12px;color:#fff}
+</style></head><body>
+<div class="wrap">
+  <div class="lb">DIMENSION SCORES · 0–100</div>
+  <div class="bar"><span class="name" style="color:#00E676">MENTIONS</span><div class="track"><div class="fill" style="width:92%;background:#00E676"></div></div><span class="val">92</span></div>
+  <div class="bar"><span class="name" style="color:#00E676">RANKING</span><div class="track"><div class="fill" style="width:81%;background:#00E676"></div></div><span class="val">81</span></div>
+  <div class="bar"><span class="name" style="color:#FFEB3B">SENTIMENT</span><div class="track"><div class="fill" style="width:68%;background:#FFEB3B"></div></div><span class="val">68</span></div>
+  <div class="bar"><span class="name" style="color:#FF9100">COVERAGE</span><div class="track"><div class="fill" style="width:42%;background:#FF9100"></div></div><span class="val">42</span></div>
+  <div class="bar"><span class="name" style="color:#FF3D3D">CO-REC</span><div class="track"><div class="fill" style="width:18%;background:#FF3D3D"></div></div><span class="val">18</span></div>
+</div>
+</body></html>

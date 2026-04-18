@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--pba-bg);color:var(--pba-fg);font-family:var(--pba-font-body)}
+  .wrap{padding:24px;display:flex;gap:22px;align-items:center;justify-content:center;height:210px;box-sizing:border-box}
+  .btn{font-family:var(--pba-font-pixel);font-size:10px;letter-spacing:0.1em;padding:14px 22px;background:var(--pba-gold);color:#000;border:none;cursor:pointer;box-shadow:4px 4px 0 #b39700;transition:all 0.15s}
+  .btn:hover{box-shadow:2px 2px 0 #b39700;transform:translate(2px,2px)}
+  .btn:active{box-shadow:0 0 0 #b39700;transform:translate(4px,4px)}
+  .ghost{background:transparent;color:var(--pba-gold);border:1px solid var(--pba-gold);box-shadow:none}
+  .ghost:hover{background:var(--pba-gold);color:#000;transform:none;box-shadow:none}
+  .neutral{background:transparent;color:var(--pba-fg-2);border:1px solid var(--pba-border);box-shadow:none}
+  .neutral:hover{border-color:var(--pba-fg-3);color:var(--pba-fg-bold);transform:none;box-shadow:none}
+  .col{display:flex;flex-direction:column;gap:10px;align-items:center}
+  .lb{font-family:var(--pba-font-pixel);font-size:6.5px;color:var(--pba-fg-5);letter-spacing:0.1em}
+</style></head><body>
+<div class="wrap">
+  <div class="col"><button class="btn">CHECK SCORE</button><div class="lb">PRIMARY · PIXEL OFFSET</div></div>
+  <div class="col"><button class="btn ghost">VIEW METHODOLOGY</button><div class="lb">GHOST · INVERT HOVER</div></div>
+  <div class="col"><button class="btn neutral">CANCEL</button><div class="lb">NEUTRAL</div></div>
+</div>
+</body></html>

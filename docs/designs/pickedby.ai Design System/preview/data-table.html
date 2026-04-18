@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--pba-bg);color:var(--pba-fg);font-family:var(--pba-font-body)}
+  .wrap{padding:18px 22px;display:flex;flex-direction:column;gap:14px}
+  .lb{font-family:var(--pba-font-pixel);font-size:6.5px;color:var(--pba-fg-5);letter-spacing:0.15em}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{text-align:left;font-family:var(--pba-font-pixel);font-size:6.5px;color:var(--pba-fg-5);letter-spacing:0.15em;font-weight:normal;padding:8px 10px;border-bottom:1px solid #2a2a2a}
+  td{padding:10px;border-bottom:1px solid #181818;color:var(--pba-fg-2)}
+  tr:last-child td{border-bottom:none}
+  .model{color:#fff;font-weight:500}
+  .score{font-family:var(--pba-font-mono);font-weight:600}
+  .hi{color:#00E676}
+  .md{color:#FFEB3B}
+  .lo{color:#FF9100}
+  .zr{color:#FF3D3D}
+  .delta{font-family:var(--pba-font-mono);font-size:11px}
+  .up{color:#00E676}
+  .dn{color:#FF3D3D}
+</style></head><body>
+<div class="wrap">
+  <div class="lb">MODEL BREAKDOWN · LAST 30 DAYS</div>
+  <table>
+    <thead><tr><th>MODEL</th><th>SCORE</th><th>MENTIONS</th><th>RANK</th><th>Δ 30D</th></tr></thead>
+    <tbody>
+      <tr><td class="model">ChatGPT <span style="color:var(--pba-fg-5);font-family:var(--pba-font-mono);font-size:11px">· 4o</span></td><td class="score hi">92</td><td>46 / 50</td><td>#1.2 avg</td><td class="delta up">▲ +14</td></tr>
+      <tr><td class="model">Perplexity</td><td class="score hi">81</td><td>38 / 50</td><td>#2.1 avg</td><td class="delta up">▲ +6</td></tr>
+      <tr><td class="model">Claude <span style="color:var(--pba-fg-5);font-family:var(--pba-font-mono);font-size:11px">· Sonnet</span></td><td class="score md">64</td><td>29 / 50</td><td>#3.8 avg</td><td class="delta dn">▼ −3</td></tr>
+      <tr><td class="model">Gemini <span style="color:var(--pba-fg-5);font-family:var(--pba-font-mono);font-size:11px">· 2.0</span></td><td class="score lo">34</td><td>14 / 50</td><td>#6.1 avg</td><td class="delta up">▲ +2</td></tr>
+    </tbody>
+  </table>
+</div>
+</body></html>

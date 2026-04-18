@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1080">
+<title>pickedby.ai — Landing UI Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<link rel="stylesheet" href="landing.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root" data-screen-label="Landing"></div>
+
+<script type="text/babel" src="Nav.jsx"></script>
+<script type="text/babel" src="Hero.jsx"></script>
+<script type="text/babel" src="ScoreResult.jsx"></script>
+<script type="text/babel" src="FAQ.jsx"></script>
+
+<script type="text/babel">
+function App() {
+  const [result, setResult] = React.useState(null);
+  const ref = React.useRef(null);
+
+  const onCheck = (url) => {
+    const host = url.replace(/^https?:\/\//, '').replace(/\/$/, '') || 'your-product.com';
+    // Deterministic pseudo-score so prototype is deterministic
+    const seed = host.split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+    const score = 55 + (seed % 40); // 55..94
+    setResult({ product: host, score });
+    setTimeout(() => ref.current?.scrollIntoView?.({ behavior: 'smooth', block: 'start' }), 60);
+  };
+
+  return (
+    <>
+      <FoundingBar />
+      <Nav current="home" />
+      <main className="landing-main">
+        <Hero />
+        <ScoreCheck onCheck={onCheck} />
+        {result && (
+          <div ref={ref}>
+            <ScoreResult
+              product={result.product}
+              score={result.score}
+              onShare={() => alert('Share on X (mock)')}
+              onClaim={() => alert('Claim badge (mock)')}
+            />
+          </div>
+        )}
+        <LogoTicker />
+        <FAQ />
+      </main>
+      <Footer />
+    </>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

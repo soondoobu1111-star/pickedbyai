@@ -1,0 +1,2719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="pickedby-site-verification" content="ngeyntm4zgjwawnrzwri" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://static.cloudflareinsights.com https://*.contentsquare.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://api.pickedby.ai https://*.perceptdot.workers.dev https://*.supabase.co https://www.google-analytics.com https://www.google.com https://www.googletagmanager.com https://cdn.jsdelivr.net https://*.contentsquare.net https://*.contentsquare.com; worker-src 'self' blob:; img-src 'self' data: https:; frame-src https://*.contentsquare.net; object-src 'none';" />
+  <title>Dashboard — pickedby.ai</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <!-- Google tag (gtag.js) — Consent Mode v2 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2H007YWM9F"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_personalization: 'denied' });
+    gtag('js', new Date());
+    gtag('config', 'G-2H007YWM9F');
+    if (localStorage.getItem('cookie_consent') === 'accepted') {
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+    }
+  </script>
+  <!-- Contentsquare (Hotjar) -->
+  <script src="https://t.contentsquare.net/uxa/539b28e3d0a6f.js" async></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    body { background: #0a0a0a; color: #f5f5f5; font-family: 'Inter', sans-serif; }
+    .logo-font { font-family: 'Press Start 2P', monospace; }
+    .gold { color: #FFD700; }
+    .btn-primary {
+      background: #FFD700; color: #0a0a0a; font-weight: 700;
+      padding: 0.75rem 1.5rem; border-radius: 0.5rem; border: none;
+      cursor: pointer; transition: opacity 0.2s; font-size: 0.95rem;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-ghost {
+      background: transparent; color: #FFD700; font-weight: 600;
+      padding: 0.6rem 1.2rem; border-radius: 0.5rem;
+      border: 1px solid #FFD700; cursor: pointer; transition: all 0.2s;
+      font-size: 0.85rem;
+    }
+    .btn-ghost:hover { background: #FFD700; color: #0a0a0a; }
+    .card {
+      background: #141414; border: 1px solid #2a2a2a;
+      border-radius: 0.75rem; padding: 1.5rem;
+    }
+    .input-field {
+      background: #1a1a1a; border: 1px solid #333; color: #f5f5f5;
+      padding: 0.75rem 1rem; border-radius: 0.5rem; width: 100%;
+      font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+    }
+    .input-field:focus { border-color: #FFD700; }
+    .input-field::placeholder { color: #555; }
+    .badge-gold { background: #2a2000; color: #FFD700; border: 1px solid #FFD700; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .badge-silver { background: #1a1a1a; color: #C0C0C0; border: 1px solid #C0C0C0; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .badge-bronze { background: #1a0f00; color: #CD7F32; border: 1px solid #CD7F32; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+    .badge-none { background: #1a1a1a; color: #555; border: 1px solid #333; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; }
+    .score-bar-bg { background: #1a1a1a; border-radius: 999px; height: 6px; overflow: hidden; }
+    .score-bar-fill { height: 100%; border-radius: 999px; transition: width 0.6s ease; }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid #1f1f1f; max-width: 1280px; margin: 0 auto; }
+    .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: #FFD700; text-decoration: none; }
+    .nav-links { display: flex; align-items: center; gap: 1.5rem; font-size: 0.95rem; }
+    .nav-links a { text-decoration: none; color: #888; }
+    .nav-links a:hover { color: #fff; }
+    /* profile dropdown */
+    .nav-profile { position: relative; }
+    .nav-avatar-btn { background: none; border: none; cursor: pointer; padding: 0; display: flex; align-items: center; }
+    .nav-avatar-btn img { width: 28px; height: 28px; border-radius: 50%; border: 1px solid #333; display: block; }
+    .nav-avatar-btn:hover img { border-color: #FFD700; }
+    .nav-dropdown {
+      display: none; position: absolute; right: 0; top: calc(100% + 8px);
+      background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px;
+      min-width: 160px; overflow: hidden; z-index: 100;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .nav-dropdown.open { display: block; }
+    .nav-dropdown-email { padding: 0.65rem 1rem; font-size: 0.72rem; color: #555; border-bottom: 1px solid #2a2a2a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px; }
+    .nav-dropdown button { width: 100%; background: none; border: none; padding: 0.65rem 1rem; text-align: left; font-size: 0.8rem; color: #ccc; cursor: pointer; font-family: inherit; }
+    .nav-dropdown button:hover { background: #222; color: #fff; }
+    .spinner { border: 2px solid #333; border-top-color: #FFD700; border-radius: 50%; width: 18px; height: 18px; animation: spin 0.7s linear infinite; display: inline-block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .result-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #1e1e1e; }
+    .result-row:last-child { border-bottom: none; }
+    .dot-yes { color: #4ade80; }
+    .dot-no { color: #ef4444; }
+    /* Dimension tooltip */
+    .dim-tip {
+      display:inline-flex;align-items:center;justify-content:center;
+      width:13px;height:13px;border-radius:50%;
+      background:#1e1e1e;border:1px solid #333;
+      color:#444;font-size:8px;font-weight:700;line-height:1;
+      cursor:help;margin-left:5px;vertical-align:middle;
+      position:relative;flex-shrink:0;
+    }
+    .dim-tip::after {
+      content:attr(data-tip);
+      position:absolute;left:18px;top:50%;transform:translateY(-50%);
+      background:#141414;border:1px solid #2a2a2a;color:#bbb;
+      padding:8px 11px;border-radius:7px;font-size:11px;font-weight:400;
+      width:210px;white-space:normal;line-height:1.5;
+      opacity:0;pointer-events:none;z-index:200;
+      transition:opacity 0.15s;
+    }
+    .dim-tip:hover::after { opacity:1; }
+    .dim-no-hint { font-size:0.7rem;color:#444;margin-top:2px; }
+    /* 3탭 바 */
+    .dash-tabs-bar {
+      display: flex; gap: 2px; border-bottom: 1px solid #1f1f1f;
+      margin-bottom: 1.5rem;
+    }
+    .dash-tab {
+      background: none; border: none; border-bottom: 2px solid transparent;
+      padding: 0.65rem 1.25rem; font-size: 0.85rem; color: #666;
+      cursor: pointer; font-family: inherit; font-weight: 500;
+      transition: all 0.15s; margin-bottom: -1px;
+    }
+    .dash-tab:hover { color: #aaa; }
+    .dash-tab.active { color: #FFD700; border-bottom-color: #FFD700; }
+    /* 섹션 헤더 */
+    .section-header { margin-bottom: 1.5rem; }
+    .section-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .section-sub { font-size: 0.78rem; color: #555; }
+    /* 툴즈 카드 */
+    .tools-card { background: #0f0f0f; border: 1px solid #222; border-radius: 8px; padding: 1.25rem; margin-bottom: 1rem; }
+    .coming-soon-badge { font-size: 0.65rem; color: #555; border: 1px solid #333; padding: 1px 6px; border-radius: 10px; }
+    .tool-tab { background:none; border:1px solid #333; color:#888; padding:0.3rem 0.85rem; border-radius:6px; cursor:pointer; font-size:0.78rem; font-family:inherit; transition:all 0.15s; }
+    .tool-tab.active { border-color:#FFD700; color:#FFD700; background:rgba(255,215,0,0.05); }
+    .lt-input { background:#1a1a1a; border:1px solid #333; color:#f5f5f5; padding:0.55rem 0.7rem; border-radius:6px; width:100%; box-sizing:border-box; font-size:0.82rem; outline:none; font-family:inherit; }
+    .lt-input:focus { border-color:#FFD700; }
+    .lt-textarea { background:#1a1a1a; border:1px solid #333; color:#f5f5f5; padding:0.55rem 0.7rem; border-radius:6px; width:100%; box-sizing:border-box; font-size:0.82rem; outline:none; font-family:inherit; resize:vertical; min-height:78px; line-height:1.5; }
+    .lt-textarea:focus { border-color:#FFD700; }
+    .lt-label { font-size:0.72rem; color:#666; display:block; margin-bottom:0.3rem; }
+    /* Settings Modal */
+    .settings-overlay { display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9998;align-items:center;justify-content:center;padding:1.25rem; }
+    .settings-overlay.open { display:flex; }
+    .settings-box { background:#111;border:1px solid #2a2a2a;border-radius:14px;padding:2rem;max-width:440px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);max-height:90vh;overflow-y:auto; }
+    .settings-title { font-size:1rem;font-weight:700;margin-bottom:1.75rem;display:flex;align-items:center;justify-content:space-between; }
+    .settings-close { background:none;border:none;color:#555;cursor:pointer;font-size:1.2rem;padding:0;line-height:1; }
+    .settings-close:hover { color:#fff; }
+    .settings-section { margin-bottom:1.75rem;padding-bottom:1.75rem;border-bottom:1px solid #1f1f1f; }
+    .settings-section:last-child { margin-bottom:0;padding-bottom:0;border-bottom:none; }
+    .settings-section-label { font-size:0.65rem;font-family:'Press Start 2P',monospace;color:#444;letter-spacing:0.1em;margin-bottom:1rem; }
+    .settings-row { display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem; }
+    .settings-row-label { font-size:0.85rem;color:#ccc; }
+    .settings-row-value { font-size:0.8rem;color:#555;word-break:break-all;text-align:right;max-width:180px; }
+    /* Toggle */
+    .toggle-wrap { display:flex;align-items:center;gap:0.6rem; }
+    .toggle { position:relative;width:40px;height:22px;flex-shrink:0; }
+    .toggle input { opacity:0;width:0;height:0; }
+    .toggle-track { position:absolute;inset:0;background:#2a2a2a;border-radius:22px;cursor:pointer;transition:background 0.2s; }
+    .toggle input:checked + .toggle-track { background:#FFD700; }
+    .toggle-thumb { position:absolute;height:16px;width:16px;left:3px;bottom:3px;background:#888;border-radius:50%;transition:transform 0.2s,background 0.2s; }
+    .toggle input:checked ~ .toggle-thumb { transform:translateX(18px);background:#000; }
+    .toggle-label { font-size:0.82rem;color:#888; }
+    /* Delete zone */
+    .danger-btn { width:100%;background:none;border:1px solid #3a1a1a;color:#ef4444;padding:0.65rem;border-radius:8px;cursor:pointer;font-size:0.85rem;font-family:inherit;transition:all 0.15s; }
+    .danger-btn:hover { background:#1a0000;border-color:#ef4444; }
+    .delete-confirm-wrap { display:none;margin-top:1rem; }
+    .delete-confirm-wrap.show { display:block; }
+    .delete-confirm-input { background:#1a1a1a;border:1px solid #3a1a1a;color:#f5f5f5;padding:0.55rem 0.7rem;border-radius:6px;width:100%;box-sizing:border-box;font-size:0.82rem;outline:none;font-family:inherit;margin:0.5rem 0 0.75rem; }
+    .delete-confirm-input:focus { border-color:#ef4444; }
+    .delete-final-btn { width:100%;background:#ef4444;color:#fff;border:none;padding:0.65rem;border-radius:8px;cursor:pointer;font-size:0.85rem;font-weight:700;font-family:inherit;opacity:0.4;transition:opacity 0.15s; }
+    .delete-final-btn.ready { opacity:1; }
+  
+/* Mobile nav */
+.nav-burger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; color: #FFD700; font-size: 1.4rem; line-height: 1; }
+.nav-mobile { display: none; flex-direction: column; gap: 0; border-bottom: 1px solid #1f1f1f; background: #0d0d0d; max-width: 1280px; margin: 0 auto; }
+.nav-mobile.open { display: flex; }
+.nav-mobile a { padding: 0.85rem 2rem; color: #888; text-decoration: none; font-size: 0.9rem; border-top: 1px solid #1f1f1f; }
+.nav-mobile a:hover { color: #fff; background: #161616; }
+@media (max-width: 767px) {
+  .nav { padding: 0.85rem 1rem; }
+  .nav-logo { font-size: 0.7rem; }
+  .nav-links > a, .nav-links > div { display: none !important; }
+  .nav-burger { display: block; }
+  html, body { overflow-x: hidden; }
+  #screen-dashboard { padding: 1rem 0.75rem !important; }
+  #screen-login { padding: 0 0.75rem !important; }
+  .dash-tab { padding: 0.55rem 0.75rem; font-size: 0.78rem; }
+  .card { padding: 1rem !important; }
+}
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+  <nav class="nav">
+    <a href="/?home=1" class="nav-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+      <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+      <span><span style="color:var(--yellow);">picked</span><span style="color:#fff;">by</span><span style="color:var(--yellow);">.ai</span></span>
+      <span style="font-size:0.5rem;font-family:'Press Start 2P',monospace;color:#0a0a0a;background:#FFD700;padding:2px 5px;border-radius:3px;letter-spacing:0.05em;line-height:1;align-self:center;">BETA</span>
+    </a>
+    <div class="nav-links">
+      <!-- Profile dropdown (shown when logged in) -->
+      <div id="nav-user" style="display:none;align-items:center;gap:8px;">
+        <div class="nav-profile">
+          <button class="nav-avatar-btn" id="nav-avatar-btn" onclick="toggleDropdown()" aria-label="Account menu">
+            <img id="nav-avatar" src="" alt="" style="width:28px;height:28px;border-radius:50%;border:1px solid #333;">
+          </button>
+          <div class="nav-dropdown" id="nav-dropdown">
+            <div class="nav-dropdown-email" id="nav-dropdown-email"></div>
+            <button onclick="openSettings()">Settings</button>
+            <button onclick="signOut()" style="color:#ef4444;">Sign Out</button>
+          </div>
+        </div>
+      </div>
+      <!-- Shown when logged out -->
+      <span id="nav-account-label" style="color:#444;font-size:0.85rem;">Account</span>
+      <button class="nav-burger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">&#9776;</button>
+    </div>
+  </nav>
+  <div class="nav-mobile">
+    <a href="/">Home</a>
+  </div>
+
+<!-- LOGIN SCREEN -->
+<div id="screen-login" class="flex flex-col items-center justify-center min-h-screen px-6" style="margin-top:-64px;">
+  <div class="card text-center" style="max-width:400px;width:100%;">
+    <div class="logo-font text-sm mb-2 gold" style="letter-spacing:0.05em;">Is AI picking you?</div>
+    <p style="color:#888;font-size:0.85rem;margin-bottom:1.5rem;">Sign in with Google → check your AI Visibility Score free</p>
+    <button class="btn-primary w-full flex items-center justify-center gap-3" onclick="signInWithGoogle()" id="btn-login">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#0a0a0a" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#0a0a0a" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#0a0a0a" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#0a0a0a" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <p style="color:#555;font-size:0.72rem;margin-top:1rem;">Free · No credit card · Results in 10 seconds</p>
+  </div>
+</div>
+
+<!-- DASHBOARD SCREEN -->
+<div id="screen-dashboard" style="display:none;max-width:1280px;margin:0 auto;padding:2rem 3rem;">
+
+  <!-- Announcements / Release Notes + Beta CTA (merged) -->
+  <div id="beta-banner" style="background:#0d0d12;border:1px solid #1e1e2e;border-radius:0.75rem;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
+    <!-- Changelog header -->
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+      <span style="font-size:0.55rem;font-family:'Press Start 2P',monospace;color:#555;letter-spacing:0.08em;">CHANGELOG</span>
+      <span style="height:1px;flex:1;background:#1e1e2e;"></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+      <span style="font-size:0.7rem;color:#555;">2026-04-15</span>
+      <span style="font-size:0.6rem;color:#FFD700;border:1px solid #3a2800;padding:1px 7px;border-radius:10px;font-family:'Press Start 2P',monospace;">Beta Launch</span>
+      <span id="beta-spots-badge" style="font-size:0.7rem;color:#666;"></span>
+    </div>
+    <p style="font-size:0.9rem;color:#ddd;font-weight:600;margin:0 0 0.5rem;">Welcome to the pickedby.ai Beta</p>
+    <p style="font-size:0.82rem;color:#888;line-height:1.6;margin:0 0 0.75rem;">We're looking for 100 beta testers to help shape what this becomes.</p>
+    <div style="font-size:0.8rem;color:#aaa;line-height:1.8;margin-bottom:0.75rem;">
+      <div><span style="color:#FFD700;">+</span> Lifetime free access to Phase 2 — AI traffic analytics, weekly tracking, competitor monitoring</div>
+      <div><span style="color:#FFD700;">+</span> Direct line to the founder. Your feedback gets read and acted on.</div>
+      <div><span style="color:#FFD700;">+</span> Early access to features before public release</div>
+    </div>
+    <!-- Beta CTA (shown when status=none) -->
+    <div id="beta-cta-section" style="display:none;border-top:1px solid #1e1e2e;padding-top:1rem;margin-top:0.25rem;">
+      <label style="display:flex;align-items:flex-start;gap:0.5rem;cursor:pointer;font-size:0.78rem;color:#888;margin-bottom:0.75rem;">
+        <input type="checkbox" id="beta-terms-check" style="margin-top:2px;accent-color:#FFD700;flex-shrink:0;" />
+        <span>I agree to receive product update emails and provide feedback as an early beta tester.</span>
+      </label>
+      <div style="display:flex;align-items:center;gap:0.75rem;">
+        <button id="beta-join-btn" onclick="betaJoin()" style="background:#FFD700;color:#0a0a0a;font-weight:700;padding:0.6rem 1.25rem;border-radius:0.5rem;border:none;cursor:pointer;font-size:0.85rem;white-space:nowrap;">Join Beta</button>
+        <button onclick="betaDecline()" style="background:none;border:none;color:#555;font-size:0.75rem;cursor:pointer;padding:0.25rem;font-family:inherit;white-space:nowrap;">Not now</button>
+      </div>
+    </div>
+    <!-- Disclaimer -->
+    <p style="font-size:0.72rem;color:#444;line-height:1.6;margin:0.75rem 0 0;border-top:1px solid #1e1e2e;padding-top:0.75rem;">During beta, the site and features may update without prior notice. Scores may change as we improve the engine. Some things will break — we'll fix them fast.</p>
+  </div>
+
+  <!-- Beta Joined Confirmation (hidden by default) -->
+  <div id="beta-joined-msg" style="display:none;background:#0a1a0a;border:1px solid #1a3a1a;border-radius:0.75rem;padding:1rem 1.5rem;margin-bottom:1.5rem;font-size:0.85rem;color:#4ade80;">
+    ✅ You're on the beta list! We'll notify you when Phase 2 launches.
+    <button onclick="betaUnjoin()" style="background:none;border:none;color:#555;font-size:0.72rem;cursor:pointer;font-family:inherit;margin-left:0.75rem;">Undo</button>
+  </div>
+
+  <!-- Check form -->
+  <div class="card mb-6">
+    <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+      <h2 style="font-size:0.95rem;font-weight:700;">Check AI Visibility</h2>
+      <a href="/register" style="font-size:0.75rem;color:#FFD700;border:1px solid #333;padding:0.3rem 0.75rem;border-radius:6px;text-decoration:none;font-weight:600;white-space:nowrap;">+ Register Your Domain</a>
+    </div>
+    <div class="flex gap-3 flex-wrap">
+      <input id="input-product" class="input-field" placeholder="Product name (e.g. Notion Budget Tracker)" style="flex:1;min-width:200px;" oninput="updateCheckBtn()" />
+      <input id="input-url" class="input-field" placeholder="URL (optional)" style="flex:1;min-width:160px;" oninput="updateCheckBtn()" />
+      <button class="btn-primary" id="btn-check" onclick="runCheck()">Check</button>
+    </div>
+  </div>
+
+  <!-- Check result -->
+  <div id="check-result" class="card mb-6" style="display:none;">
+    <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+      <div>
+        <span id="result-product" style="font-weight:700;font-size:1rem;"></span>
+        <span id="result-badge" style="margin-left:8px;"></span>
+      </div>
+      <div style="text-align:right;">
+        <span id="result-score" style="font-size:2rem;font-weight:800;color:#FFD700;"></span>
+        <span style="color:#555;font-size:0.8rem;">/100</span>
+      </div>
+    </div>
+    <div class="score-bar-bg mb-4">
+      <div id="result-bar" class="score-bar-fill" style="width:0%;background:#FFD700;"></div>
+    </div>
+    <div id="result-daily-pulse" style="display:none;"></div>
+    <div id="result-dimensions"></div>
+    <div id="result-v15-extras" style="display:none;"></div>
+    <div id="result-ai-probe" style="display:none;"></div>
+    <p id="result-grounded-note" style="font-size:0.72rem;color:#555;margin-top:0.75rem;display:none;">
+      ℹ️ Results based on AI training data only (real-time search unavailable in your region).
+    </p>
+    <div class="flex items-center gap-3 flex-wrap mt-4">
+      <button class="btn-ghost" id="btn-copy-link" onclick="copyLink()" style="font-size:0.85rem;">
+        📋 Copy Link
+      </button>
+      <button class="btn-ghost" id="btn-copy-image" onclick="copyScoreImage()" style="font-size:0.85rem;">
+        🖼 Copy Image
+      </button>
+      <button class="btn-ghost" id="btn-share-linkedin" onclick="shareLinkedIn()" style="font-size:0.85rem;">
+        in LinkedIn
+      </button>
+    </div>
+    <!-- FEEDBACK-01: Was this helpful? -->
+    <div id="feedback-cta" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#0d0d0d;border:1px solid #1f1f1f;border-radius:8px;">
+      <div id="feedback-ask" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+        <span style="font-size:0.82rem;color:#888;">Was this result helpful?</span>
+        <div style="display:flex;gap:0.5rem;">
+          <button onclick="submitFeedback('yes')" style="background:#1a2e1a;color:#4ade80;border:1px solid #2a3a2a;padding:0.35rem 1rem;border-radius:4px;cursor:pointer;font-size:0.78rem;font-weight:600;">Yes</button>
+          <button onclick="submitFeedback('no')" style="background:#2e1a1a;color:#ef4444;border:1px solid #3a2a2a;padding:0.35rem 1rem;border-radius:4px;cursor:pointer;font-size:0.78rem;font-weight:600;">Not really</button>
+        </div>
+      </div>
+      <div id="feedback-comment" style="display:none;margin-top:0.6rem;">
+        <input type="text" id="feedback-text" placeholder="What would make this more useful? (optional)" maxlength="280" style="width:100%;padding:0.45rem 0.7rem;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:4px;font-size:0.78rem;box-sizing:border-box;" />
+        <button onclick="submitFeedbackComment()" style="margin-top:0.4rem;background:#FFD700;color:#000;border:none;padding:0.35rem 0.85rem;border-radius:4px;cursor:pointer;font-size:0.72rem;font-weight:700;">Send</button>
+      </div>
+      <div id="feedback-thanks" style="display:none;font-size:0.78rem;color:#4ade80;">Thank you for your feedback!</div>
+    </div>
+    <!-- OWNER DATA (verified owner only — below feedback) -->
+    <div id="result-owner-lock" style="display:none;"></div>
+    <!-- MLP-CTA: Track score over time nudge -->
+    <div id="mlp-track-cta" style="display:none;margin-top:1rem;padding:0.75rem 1rem;background:#0d0d0d;border:1px dashed #FFD70044;border-radius:8px;text-align:center;">
+      <div style="font-size:0.78rem;color:#FFD700;font-weight:600;margin-bottom:0.25rem;">📈 Own this product? Track your score over time</div>
+      <div style="font-size:0.72rem;color:#555;">Register your domain → check again tomorrow → see your trend</div>
+    </div>
+    <!-- EMAIL-CAPTURE-01: Flow 1 — Email this score report (non-logged users only) -->
+    <div id="result-email-cta" style="display:none;margin-top:0.75rem;padding:0.875rem 1rem;background:#0d0d0d;border:1px solid #FFD70022;border-radius:8px;">
+      <div style="font-size:0.82rem;color:#FFD700;font-weight:600;margin-bottom:0.25rem;">📧 Get this report in your inbox</div>
+      <div style="font-size:0.75rem;color:#555;margin-bottom:0.6rem;">Your AI Visibility Score + full breakdown, delivered instantly.</div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+        <input type="email" id="result-email-input" placeholder="your@email.com" style="flex:1;min-width:180px;padding:0.45rem 0.7rem;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:4px;font-size:0.82rem;" />
+        <button onclick="submitResultEmail()" id="result-email-btn" style="background:#FFD700;color:#000;border:none;padding:0.45rem 1rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:4px;white-space:nowrap;">SEND REPORT</button>
+      </div>
+      <div id="result-email-ok" style="display:none;color:#4ade80;font-size:0.75rem;margin-top:0.4rem;">&#10003; Check your inbox!</div>
+    </div>
+  </div>
+  <!-- EMAIL-CAPTURE-01: Flow 2 — AI visibility guide (shown after result) -->
+  <div id="guide-email-cta" class="card mb-6" style="display:none;">
+    <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.25rem;">&#x1F680; Free Guide: How to Improve Your AI Visibility Score</div>
+    <div style="font-size:0.78rem;color:#666;margin-bottom:0.65rem;">Your personalized improvement plan — sent to your inbox based on your actual score.</div>
+    <label style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.65rem;cursor:pointer;">
+      <input type="checkbox" id="guide-consent" onchange="toggleGuideBtn()" style="margin-top:2px;accent-color:#FFD700;cursor:pointer;" />
+      <span style="font-size:0.73rem;color:#777;line-height:1.5;">I agree to receive marketing emails from pickedby.ai. You can unsubscribe at any time.</span>
+    </label>
+    <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+      <input type="email" id="guide-email-input" placeholder="your@email.com" style="flex:1;min-width:180px;padding:0.45rem 0.7rem;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:4px;font-size:0.82rem;" />
+      <button onclick="submitGuideEmail()" id="guide-email-btn" disabled style="background:#444;color:#888;border:none;padding:0.45rem 1rem;font-weight:700;font-size:0.75rem;cursor:not-allowed;border-radius:4px;white-space:nowrap;">GET GUIDE</button>
+    </div>
+    <div id="guide-email-ok" style="display:none;color:#4ade80;font-size:0.75rem;margin-top:0.4rem;">&#10003; Guide is on its way!</div>
+  </div>
+
+  <!-- History card with 3-tab structure -->
+  <div class="card">
+
+    <!-- Tab bar -->
+    <div class="dash-tabs-bar">
+      <button class="dash-tab active" onclick="switchTab('mine')">My Products</button>
+      <button class="dash-tab" onclick="switchTab('tools')">Tools</button>
+    </div>
+
+    <!-- ── Tab 1: My Products ── -->
+    <div id="tab-mine">
+      <div class="section-header" style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:0.5rem;">
+        <div>
+          <div class="section-title">My Products</div>
+          <div class="section-sub">Track and verify products you own</div>
+        </div>
+        <span id="mine-slot-count" style="display:none;"></span>
+      </div>
+
+      <!-- Trend Chart (My Products only) -->
+      <div id="trend-chart-wrap" style="display:none;margin-bottom:1.5rem;position:relative;height:180px;">
+        <canvas id="trend-chart"></canvas>
+      </div>
+
+      <div id="mine-loading" class="text-center py-8" style="color:#555;">
+        <div class="spinner mx-auto mb-2"></div>
+        <p style="font-size:0.8rem;">Loading...</p>
+      </div>
+
+      <!-- Empty state -->
+      <div id="mine-empty" style="display:none;padding:2rem 1rem;">
+        <div style="text-align:center;margin-bottom:2rem;">
+          <div style="font-size:2.5rem;margin-bottom:0.75rem;">📡</div>
+          <div style="font-weight:700;font-size:1rem;margin-bottom:0.5rem;">No products tracked yet</div>
+          <p style="color:#666;font-size:0.82rem;max-width:300px;margin:0 auto 1.5rem;">
+            Check your product's AI visibility score, then save it here to track changes over time.
+          </p>
+          <button class="btn-primary" onclick="document.getElementById('input-product').focus();window.scrollTo(0,0)">
+            Check AI Visibility
+          </button>
+        </div>
+        <div style="border:1px dashed #2a2a2a;border-radius:10px;padding:1.25rem;background:#0d0d0d;">
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1rem;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#1a1a1a;border:1px solid #FFD700;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.75rem;color:#FFD700;font-weight:700;">1</div>
+            <div>
+              <div style="font-size:0.82rem;font-weight:600;margin-bottom:0.2rem;">Check your product</div>
+              <div style="font-size:0.75rem;color:#555;">Enter your product name and URL above to get your AI visibility score.</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;margin-bottom:1rem;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#1a1a1a;border:1px solid #444;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.75rem;color:#888;font-weight:700;">2</div>
+            <div>
+              <div style="font-size:0.82rem;font-weight:600;margin-bottom:0.2rem;">Register your domain</div>
+              <div style="font-size:0.75rem;color:#555;">Click "+ Register Your Domain" to add your product and start tracking.</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:0.75rem;">
+            <div style="width:32px;height:32px;border-radius:50%;background:#1a1a1a;border:1px solid #444;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:0.75rem;color:#888;font-weight:700;">3</div>
+            <div>
+              <div style="font-size:0.82rem;font-weight:600;margin-bottom:0.2rem;">Verify ownership → unlock all data</div>
+              <div style="font-size:0.75rem;color:#555;">Add a meta tag to unlock Query Coverage, weekly trends, and the Improvement Guide.</div>
+            </div>
+          </div>
+          <div style="margin-top:1.25rem;text-align:center;">
+            <a href="/register" style="display:inline-block;background:#FFD700;color:#000;font-weight:700;font-size:0.82rem;padding:0.55rem 1.25rem;border-radius:6px;text-decoration:none;">
+              Register &amp; Verify Your Domain →
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div id="mine-table" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid #2a2a2a;font-size:0.75rem;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">
+          <span>Product</span><span style="text-align:center;">Score</span><span style="text-align:center;">Badge</span><span style="text-align:center;">Status</span><span style="text-align:right;">Date</span>
+        </div>
+        <div id="mine-rows"></div>
+      </div>
+    </div>
+
+    <!-- ── Tab 2: Tools ── -->
+    <div id="tab-tools" style="display:none;">
+      <div class="section-header">
+        <div class="section-title">Tools</div>
+      </div>
+
+      <!-- Tool sub-nav -->
+      <div style="display:flex;gap:0.5rem;margin-bottom:1.25rem;">
+        <button id="tool-tab-badge" class="tool-tab active" onclick="switchTool('badge')">Badge Embed</button>
+        <button id="tool-tab-llms" class="tool-tab" onclick="switchTool('llms')">llms.txt Generator</button>
+      </div>
+
+      <!-- ── Panel: Badge Embed ── -->
+      <div id="tool-panel-badge">
+        <div class="tools-card">
+          <div style="font-size:0.9rem;font-weight:700;margin-bottom:0.5rem;">Badge Embed</div>
+          <p style="font-size:0.8rem;color:#666;margin-bottom:1rem;">Copy the HTML badge to embed on your site. Based on your highest-scoring product.</p>
+
+          <!-- Tier is always auto — tier is determined by actual score, not user choice -->
+          <input type="hidden" id="badge-tier-select" value="auto">
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+            <div>
+              <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Size</div>
+              <select id="badge-size-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
+                <option value="L">Large</option>
+                <option value="M" selected>Medium</option>
+                <option value="S">Small</option>
+              </select>
+            </div>
+            <div>
+              <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Shape</div>
+              <select id="badge-shape-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
+                <option value="Rectangle" selected>Rectangle</option>
+                <option value="Square">Square</option>
+              </select>
+            </div>
+          </div>
+
+          <div id="badge-preview-wrap" style="margin-bottom:1rem;padding:0.75rem 1rem;background:#0a0a0a;border-radius:6px;border:1px solid #1e1e1e;">
+            <div style="font-size:0.65rem;color:#444;margin-bottom:0.6rem;text-transform:uppercase;letter-spacing:0.05em;">Preview</div>
+            <div id="badge-preview-inner" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-start;"></div>
+          </div>
+
+          <div id="badge-lock-notice" style="display:none;margin-bottom:0.75rem;padding:0.6rem 0.75rem;background:#0d0d0d;border:1px dashed #2a2a2a;border-radius:6px;font-size:0.75rem;color:#555;">
+            🔒 Verify ownership of at least one product in <b style="color:#888;">My Products</b> to unlock badge embed.
+          </div>
+          <div style="display:flex;align-items:center;gap:0.5rem;">
+            <code id="badge-code-display" style="flex:1;font-size:0.62rem;color:#555;background:#080808;padding:0.4rem 0.6rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;"></code>
+            <button id="badge-copy-btn" onclick="copyBadgeEmbed(this)" style="flex-shrink:0;background:none;border:1px solid #FFD700;color:#FFD700;padding:0.35rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.75rem;font-family:inherit;white-space:nowrap;">Copy HTML</button>
+          </div>
+          <div style="margin-top:0.75rem;">
+            <a href="/badge-preview.html" style="font-size:0.75rem;color:#555;text-decoration:underline;">View all badge styles</a>
+          </div>
+        </div>
+
+        <!-- Coming Soon (badge panel only) -->
+        <div class="tools-card">
+          <div style="font-size:0.9rem;font-weight:700;margin-bottom:0.75rem;">Coming Soon</div>
+          <div style="display:flex;align-items:center;justify-content:space-between;">
+            <div>
+              <div style="font-size:0.85rem;font-weight:600;color:#aaa;">Weekly Report Email</div>
+              <div style="font-size:0.75rem;color:#444;margin-top:2px;">AI visibility trends delivered to your inbox</div>
+            </div>
+            <span class="coming-soon-badge">Soon</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Panel: llms.txt Generator ── -->
+      <div id="tool-panel-llms" style="display:none;">
+        <div class="tools-card">
+          <div style="font-size:0.9rem;font-weight:700;margin-bottom:0.5rem;">llms.txt Generator</div>
+          <p style="font-size:0.8rem;color:#666;margin-bottom:1.25rem;">Tell AI systems exactly what your product is — so they can discover and recommend it. One file. 10 seconds. Free.</p>
+
+          <div style="display:flex;flex-direction:column;gap:0.85rem;">
+            <div>
+              <label class="lt-label">Product name <span style="color:#FFD700;">*</span></label>
+              <input id="lt-name" class="lt-input" placeholder="e.g. Notion Budget Tracker" />
+            </div>
+            <div>
+              <label class="lt-label">Product URL <span style="color:#FFD700;">*</span></label>
+              <input id="lt-url" class="lt-input" placeholder="e.g. https://gumroad.com/l/budget-tracker" />
+            </div>
+            <div>
+              <label class="lt-label">One-line description <span style="color:#FFD700;">*</span></label>
+              <input id="lt-tagline" class="lt-input" placeholder="e.g. A Notion template that tracks monthly budgets for freelancers" />
+            </div>
+            <div>
+              <label class="lt-label">Category</label>
+              <input id="lt-category" class="lt-input" placeholder="e.g. Notion template, Procreate brush, Canva template…" />
+            </div>
+            <div>
+              <label class="lt-label">Target audience</label>
+              <input id="lt-audience" class="lt-input" placeholder="e.g. Freelancers, side-hustlers, small business owners" />
+            </div>
+            <div>
+              <label class="lt-label">Key features (one per line)</label>
+              <textarea id="lt-features" class="lt-textarea" placeholder="e.g.&#10;Monthly budget overview&#10;Income vs expense tracker&#10;Automated category totals"></textarea>
+            </div>
+            <div>
+              <label class="lt-label">Creator / Author name</label>
+              <input id="lt-author" class="lt-input" placeholder="e.g. Jane Smith" />
+            </div>
+          </div>
+
+          <button onclick="generateLlmsTool()" style="margin-top:1.1rem;width:100%;background:#FFD700;color:#0a0a0a;font-weight:700;padding:0.65rem 1.2rem;border-radius:6px;border:none;cursor:pointer;font-size:0.88rem;font-family:inherit;">Generate llms.txt →</button>
+        </div>
+
+        <!-- Output -->
+        <div id="lt-output-section" class="tools-card" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem;">
+            <div style="font-size:0.9rem;font-weight:700;">Your llms.txt</div>
+            <div style="display:flex;gap:0.5rem;">
+              <button onclick="copyLlmsTool(this)" style="background:none;border:1px solid #FFD700;color:#FFD700;padding:0.3rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.75rem;font-family:inherit;">Copy</button>
+              <button onclick="downloadLlmsTool()" style="background:none;border:1px solid #555;color:#aaa;padding:0.3rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.75rem;font-family:inherit;">Download</button>
+            </div>
+          </div>
+          <pre id="lt-output" style="background:#0d0d0d;border:1px solid #222;border-radius:6px;padding:1rem;font-size:0.75rem;line-height:1.7;color:#aaa;white-space:pre-wrap;word-break:break-all;max-height:340px;overflow-y:auto;margin:0;font-family:'Courier New',monospace;"></pre>
+        </div>
+
+        <!-- How to add it -->
+        <div id="lt-howto-section" class="tools-card" style="display:none;">
+          <div style="font-size:0.9rem;font-weight:700;margin-bottom:1rem;">Where to add it</div>
+          <div style="display:flex;flex-direction:column;gap:0.9rem;">
+            <div style="display:flex;gap:0.75rem;">
+              <div style="flex-shrink:0;width:22px;height:22px;background:#FFD700;color:#0a0a0a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:800;">A</div>
+              <div>
+                <div style="font-weight:600;font-size:0.82rem;margin-bottom:0.2rem;">Gumroad / Lemon Squeezy / Payhip</div>
+                <div style="font-size:0.77rem;color:#888;">Paste into your <strong style="color:#f5f5f5;">product description</strong> or About section. AI crawlers index public pages.</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.75rem;">
+              <div style="flex-shrink:0;width:22px;height:22px;background:#FFD700;color:#0a0a0a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:800;">B</div>
+              <div>
+                <div style="font-weight:600;font-size:0.82rem;margin-bottom:0.2rem;">Personal website / blog</div>
+                <div style="font-size:0.77rem;color:#888;">Upload as <code style="background:#1a1a1a;padding:1px 4px;border-radius:3px;font-size:0.72rem;">llms.txt</code> to your root — e.g. <code style="background:#1a1a1a;padding:1px 4px;border-radius:3px;font-size:0.72rem;">yourdomain.com/llms.txt</code></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.75rem;">
+              <div style="flex-shrink:0;width:22px;height:22px;background:#FFD700;color:#0a0a0a;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:800;">C</div>
+              <div>
+                <div style="font-weight:600;font-size:0.82rem;margin-bottom:0.2rem;">Etsy / Creative Market</div>
+                <div style="font-size:0.77rem;color:#888;">Add key details to your <strong style="color:#f5f5f5;">shop About</strong> and listing descriptions.</div>
+              </div>
+            </div>
+            <div style="background:#1a1000;border:1px solid #3a2800;border-radius:6px;padding:0.75rem;">
+              <p style="font-size:0.77rem;color:#aaa;margin:0;">💡 <strong style="color:#FFD700;">Tip:</strong> After adding, check your AI Visibility Score again — most products see improvement within 1–2 weeks.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div><!-- /card -->
+</div>
+
+<script>
+  // ── Config ─────────────────────────────────────────────────
+  const IS_STAGING = window.location.hostname.includes('staging') || window.location.hostname === 'localhost'
+  const SUPABASE_URL = IS_STAGING
+    ? 'https://xzecybljfipmmzzzfnit.supabase.co'
+    : 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
+  const SUPABASE_ANON_KEY = IS_STAGING
+    ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZWN5YmxqZmlwbW16enpmbml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NTY4NjAsImV4cCI6MjA5MTAzMjg2MH0.pYqbBfJ7hwgKFgUSjvlhRlaOBIG4RqAgwDVTNUat03w'
+    : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmcmNwcGdlY3FzYm5oa2tqa2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjQ5OTQsImV4cCI6MjA5MDkwMDk5NH0.cxBUHjJoSEPJ7IilidxpVfCjS0SFmLFNWCeq92W0fUI'
+  const API_URL = IS_STAGING
+    ? 'https://pickedbyai-api-staging.perceptdot.workers.dev'
+    : 'https://api.pickedby.ai'
+
+  // ── Timezone helper ──────────────────────────────────────────
+  function getUserTimezone() {
+    return localStorage.getItem('pba_timezone') || Intl.DateTimeFormat().resolvedOptions().timeZone
+  }
+  function formatDate(dateStr) {
+    return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: getUserTimezone() })
+  }
+  function isSameDay(dateStr) {
+    const tz = getUserTimezone()
+    const a = new Date(dateStr).toLocaleDateString('en-US', { timeZone: tz })
+    const b = new Date().toLocaleDateString('en-US', { timeZone: tz })
+    return a === b
+  }
+
+  const { createClient } = window.supabase
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      persistSession: true,
+      autoRefreshToken: true,
+    }
+  })
+
+  let currentUser = null
+  let lastCheckResult = null
+  let allDomains = []        // ALL registered domains (any status)
+  let verifiedDomains = []   // [{ domain_url, product_name, status, sdk_installed, llms_installed }]
+  let activeTab = 'mine'
+  // All loaded history rows (latest per product)
+  let allProducts = []
+  let allHistoryData = []
+
+  // ── Auth ───────────────────────────────────────────────────
+  async function signInWithGoogle() {
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin + '/dashboard.html',
+      },
+    })
+    if (error) alert('Sign in failed: ' + error.message)
+  }
+
+  async function signOut() {
+    await sb.auth.signOut()
+    currentUser = null
+    showLogin()
+  }
+
+  async function deleteAccount() {
+    if (!confirm('Delete your account? This will permanently remove all your data and cannot be undone.')) return
+    if (!currentUser) return
+    // 1. Supabase에서 유저 scores 데이터 삭제
+    await sb.from('scores').delete().eq('user_id', currentUser.id)
+    // 2. 로컬 스토리지 정리
+    localStorage.removeItem('pba_mine')
+    // 3. Sign out
+    await sb.auth.signOut()
+    // 4. 탈퇴 완료 알림 후 홈으로
+    alert('Account deleted. Thank you for using pickedby.ai.')
+    window.location.href = '/'
+  }
+
+  // ── Settings Modal ─────────────────────────────────────────
+  // ── Timezone selector ─────────────────────────────────────────
+  const COMMON_TIMEZONES = [
+    'Pacific/Auckland', 'Asia/Tokyo', 'Asia/Seoul', 'Asia/Shanghai',
+    'Asia/Hong_Kong', 'Asia/Singapore', 'Asia/Kolkata', 'Asia/Dubai',
+    'Europe/Moscow', 'Europe/Istanbul', 'Europe/Helsinki', 'Europe/Berlin',
+    'Europe/Paris', 'Europe/London', 'Africa/Lagos', 'America/Sao_Paulo',
+    'America/Buenos_Aires', 'America/New_York', 'America/Chicago',
+    'America/Denver', 'America/Los_Angeles', 'America/Anchorage',
+    'Pacific/Honolulu',
+  ]
+  function initTimezoneSelect() {
+    const sel = document.getElementById('settings-timezone')
+    if (!sel || sel.options.length > 1) return
+    const current = getUserTimezone()
+    const zones = [...new Set([current, ...COMMON_TIMEZONES])]
+    sel.innerHTML = zones.map(tz => {
+      try {
+        const offset = new Date().toLocaleString('en-US', { timeZone: tz, timeZoneName: 'shortOffset' }).split(', ').pop()
+        return `<option value="${tz}" ${tz === current ? 'selected' : ''}>${tz.replace(/_/g, ' ')} (${offset})</option>`
+      } catch { return '' }
+    }).join('')
+  }
+  function saveTimezone(tz) {
+    localStorage.setItem('pba_timezone', tz)
+    // Re-render chart and table with new timezone
+    if (allHistoryData) renderTrendChart(allHistoryData)
+    loadHistory()
+  }
+
+  function openSettings() {
+    document.getElementById('nav-dropdown').classList.remove('open')
+    initTimezoneSelect()
+    // 마케팅 동의 상태 로드
+    const consent = localStorage.getItem('pba_marketing_consent')
+    const toggle = document.getElementById('settings-marketing-toggle')
+    toggle.checked = consent === '1'
+    document.getElementById('settings-marketing-label').textContent = consent === '1' ? 'On' : 'Off'
+    // 이메일 표시
+    document.getElementById('settings-email').textContent = currentUser?.email || ''
+    // 탈퇴 confirm 초기화
+    document.getElementById('delete-confirm-wrap').classList.remove('show')
+    document.getElementById('delete-confirm-input').value = ''
+    document.getElementById('delete-final-btn').classList.remove('ready')
+    // 베타 상태 표시
+    const isJoined = betaStatus === 'joined'
+    const isDeclined = betaStatus === 'declined'
+    document.getElementById('settings-beta-joined').style.display = isJoined ? 'block' : 'none'
+    // declined = 영구 철회, 재참여 불가 → not-joined 섹션 숨김
+    document.getElementById('settings-beta-not-joined').style.display = (!isJoined && !isDeclined) ? 'block' : 'none'
+    // 경고 UI 리셋
+    document.getElementById('beta-cancel-warning').style.display = 'none'
+    document.getElementById('beta-cancel-trigger').style.display = 'block'
+    document.getElementById('settings-overlay').classList.add('open')
+  }
+
+  function showBetaCancelWarning() {
+    document.getElementById('beta-cancel-warning').style.display = 'block'
+    document.getElementById('beta-cancel-trigger').style.display = 'none'
+  }
+
+  function hideBetaCancelWarning() {
+    document.getElementById('beta-cancel-warning').style.display = 'none'
+    document.getElementById('beta-cancel-trigger').style.display = 'block'
+  }
+
+  async function settingsBetaCancel() {
+    const session = await sb.auth.getSession()
+    const token = session?.data?.session?.access_token
+    if (!token) return
+    try {
+      const res = await fetch(`${API_URL}/v1/beta/decline`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      })
+      if (res.ok) {
+        betaStatus = 'declined'
+        document.getElementById('settings-beta-joined').style.display = 'none'
+        document.getElementById('settings-beta-not-joined').style.display = 'none'
+        document.getElementById('beta-cancel-warning').style.display = 'none'
+        document.getElementById('beta-cancel-trigger').style.display = 'block'
+        document.getElementById('beta-cta-section').style.display = 'none'
+        document.getElementById('beta-joined-msg').style.display = 'none'
+      }
+    } catch (err) { console.error('[beta cancel]', err) }
+  }
+
+  async function settingsBetaJoin() {
+    const session = await sb.auth.getSession()
+    const token = session?.data?.session?.access_token
+    if (!token) return
+    try {
+      const res = await fetch(`${API_URL}/v1/beta/join`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ terms_agreed: true }),
+      })
+      if (res.ok) {
+        betaStatus = 'joined'
+        document.getElementById('settings-beta-joined').style.display = 'block'
+        document.getElementById('settings-beta-not-joined').style.display = 'none'
+        document.getElementById('beta-cta-section').style.display = 'none'
+        document.getElementById('beta-joined-msg').style.display = 'block'
+      }
+    } catch (err) { console.error('[beta join settings]', err) }
+  }
+
+  function closeSettings() {
+    document.getElementById('settings-overlay').classList.remove('open')
+  }
+
+  async function toggleMarketing() {
+    const toggle = document.getElementById('settings-marketing-toggle')
+    const isOn = toggle.checked
+    const labelEl = document.getElementById('settings-marketing-label')
+    labelEl.textContent = isOn ? 'On' : 'Off'
+    localStorage.setItem('pba_marketing_consent', isOn ? '1' : '0')
+    if (!currentUser?.email) return
+    try {
+      await fetch(`${API_URL}/v1/${isOn ? 'subscribe' : 'unsubscribe'}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: currentUser.email, source: 'settings' }),
+      })
+    } catch (_) {}
+  }
+
+  function exportCSV() {
+    if (!allHistoryData || allHistoryData.length === 0) {
+      alert('No score history to export yet.')
+      return
+    }
+    const rows = [['Product', 'Score', 'Date']]
+    allHistoryData
+      .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+      .forEach(r => {
+        rows.push([
+          `"${(r.product_name || '').replace(/"/g, '""')}"`,
+          r.score,
+          new Date(r.created_at).toISOString().split('T')[0],
+        ])
+      })
+    const csv = rows.map(r => r.join(',')).join('\n')
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = `pickedbyai-scores-${new Date().toISOString().split('T')[0]}.csv`
+    a.click()
+  }
+
+  function showDeleteConfirm() {
+    document.getElementById('delete-confirm-wrap').classList.add('show')
+    document.getElementById('delete-confirm-input').focus()
+  }
+
+  function checkDeleteInput() {
+    const val = document.getElementById('delete-confirm-input').value.trim()
+    const btn = document.getElementById('delete-final-btn')
+    btn.classList.toggle('ready', val === 'DELETE')
+  }
+
+  async function confirmDeleteAccount() {
+    const val = document.getElementById('delete-confirm-input').value.trim()
+    if (val !== 'DELETE') return
+    await deleteAccount()
+  }
+
+  function showLogin() {
+    document.getElementById('screen-login').style.display = 'flex'
+    document.getElementById('screen-dashboard').style.display = 'none'
+    document.getElementById('nav-user').style.display = 'none'
+    document.getElementById('nav-account-label').style.display = ''
+  }
+
+  function showDashboard(user) {
+    document.getElementById('screen-login').style.display = 'none'
+    document.getElementById('screen-dashboard').style.display = 'block'
+    document.getElementById('nav-user').style.display = 'flex'
+    document.getElementById('nav-account-label').style.display = 'none'
+    if (user.user_metadata?.avatar_url) {
+      document.getElementById('nav-avatar').src = user.user_metadata.avatar_url
+    }
+    // Email hint in dropdown (mask middle: a***@gmail.com)
+    const emailHint = user.email ? maskEmail(user.email) : ''
+    const ddEmail = document.getElementById('nav-dropdown-email')
+    if (ddEmail) ddEmail.textContent = emailHint
+    loadBetaStatus()
+    // Load domains first so domain-only rows appear in My Products
+    loadVerifiedDomains().then(() => loadHistory())
+  }
+
+  async function loadVerifiedDomains() {
+    try {
+      const { data: { session } } = await sb.auth.getSession()
+      if (!session) return
+      const res = await fetch(`${API_URL}/v1/domains/list`, {
+        headers: { 'Authorization': `Bearer ${session.access_token}` },
+      })
+      if (!res.ok) return
+      const data = await res.json()
+      allDomains = data.domains || []
+      verifiedDomains = allDomains.filter(d => d.status === 'verified')
+    } catch { /* non-critical */ }
+  }
+
+  function isOwnedDomain(productUrl) {
+    if (!productUrl || !verifiedDomains.length) return null
+    try {
+      const inputHost = new URL(productUrl.startsWith('http') ? productUrl : 'https://' + productUrl).hostname.replace(/^www\./, '')
+      return verifiedDomains.find(d => {
+        try {
+          const ownHost = new URL(d.domain_url).hostname.replace(/^www\./, '')
+          return inputHost === ownHost
+        } catch { return false }
+      }) || null
+    } catch { return null }
+  }
+
+  function maskEmail(email) {
+    const [local, domain] = email.split('@')
+    if (!domain) return email
+    return local.charAt(0) + '***@' + domain
+  }
+
+  // ── Beta Program ───────────────────────────────────────────
+  let betaStatus = 'none'
+
+  async function loadBetaStatus() {
+    const session = await sb.auth.getSession()
+    const token = session?.data?.session?.access_token
+    if (!token) {
+      // No token — show banner anyway (default to none)
+      renderBetaBanner({ status: 'none', count: 0, spots_left: 100 })
+      return
+    }
+    try {
+      const res = await fetch(`${API_URL}/v1/beta/status`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      })
+      if (!res.ok) {
+        renderBetaBanner({ status: 'none', count: 0, spots_left: 100 })
+        return
+      }
+      const data = await res.json()
+      betaStatus = data.status
+      renderBetaBanner(data)
+    } catch (err) {
+      console.error('[beta status]', err)
+      renderBetaBanner({ status: 'none', count: 0, spots_left: 100 })
+    }
+  }
+
+  function renderBetaBanner(data) {
+    const { status, count, spots_left } = data
+    const ctaSection = document.getElementById('beta-cta-section')
+    const joinedMsg = document.getElementById('beta-joined-msg')
+    const badge = document.getElementById('beta-spots-badge')
+    const isSoldOut = spots_left != null && spots_left <= 0
+
+    if (status === 'joined') {
+      ctaSection.style.display = 'none'
+      joinedMsg.style.display = 'block'
+    } else if (status === 'declined') {
+      ctaSection.style.display = 'none'
+      joinedMsg.style.display = 'none'
+    } else {
+      ctaSection.style.display = 'block'
+      joinedMsg.style.display = 'none'
+      if (isSoldOut) {
+        if (badge) { badge.textContent = 'SOLD OUT'; badge.style.color = '#ef4444'; }
+        const btn = document.getElementById('beta-join-btn')
+        if (btn) {
+          btn.disabled = true
+          btn.textContent = 'SOLD OUT'
+          btn.style.background = '#2a2a2a'
+          btn.style.color = '#555'
+          btn.style.cursor = 'not-allowed'
+        }
+        const checkbox = document.getElementById('beta-terms-check')
+        if (checkbox) checkbox.disabled = true
+      } else {
+        if (badge && spots_left != null) badge.textContent = `${spots_left} spot${spots_left !== 1 ? 's' : ''} left`
+      }
+    }
+  }
+
+  async function betaJoin() {
+    const checked = document.getElementById('beta-terms-check').checked
+    if (!checked) {
+      document.getElementById('beta-terms-check').style.outline = '2px solid #ef4444'
+      setTimeout(() => { document.getElementById('beta-terms-check').style.outline = '' }, 1500)
+      return
+    }
+    const btn = document.getElementById('beta-join-btn')
+    btn.disabled = true
+    btn.textContent = 'Joining...'
+
+    const session = await sb.auth.getSession()
+    const token = session?.data?.session?.access_token
+    if (!token) { btn.disabled = false; btn.textContent = 'Join Beta'; return }
+
+    try {
+      const res = await fetch(`${API_URL}/v1/beta/join`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ terms_agreed: true }),
+      })
+      if (res.ok) {
+        betaStatus = 'joined'
+        document.getElementById('beta-cta-section').style.display = 'none'
+        document.getElementById('beta-joined-msg').style.display = 'block'
+      } else if (res.status === 409) {
+        btn.disabled = true
+        btn.textContent = 'SOLD OUT'
+        btn.style.background = '#2a2a2a'
+        btn.style.color = '#555'
+        btn.style.cursor = 'not-allowed'
+        const badge = document.getElementById('beta-spots-badge')
+        if (badge) { badge.textContent = 'SOLD OUT'; badge.style.color = '#ef4444'; }
+      } else {
+        btn.disabled = false
+        btn.textContent = 'Join Beta'
+      }
+    } catch (err) {
+      console.error('[beta join]', err)
+      btn.disabled = false
+      btn.textContent = 'Join Beta'
+    }
+  }
+
+  async function betaDecline() {
+    const session = await sb.auth.getSession()
+    const token = session?.data?.session?.access_token
+    if (!token) return
+
+    document.getElementById('beta-cta-section').style.display = 'none'
+    betaStatus = 'declined'
+
+    try {
+      await fetch(`${API_URL}/v1/beta/decline`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      })
+    } catch (err) {
+      console.error('[beta decline]', err)
+    }
+  }
+
+  async function betaUnjoin() {
+    const session = await sb.auth.getSession()
+    const token = session?.data?.session?.access_token
+    if (!token) return
+
+    try {
+      const res = await fetch(`${API_URL}/v1/beta/decline`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      })
+      if (res.ok) {
+        betaStatus = 'declined'
+        document.getElementById('beta-joined-msg').style.display = 'none'
+      }
+    } catch (err) {
+      console.error('[beta unjoin]', err)
+    }
+  }
+
+  // ── Rate Limit ─────────────────────────────────────────────
+  function checkRateLimit(productName) {
+    const today = new Date().toISOString().split('T')[0]
+    const key = `pba_rl_${productName}_${today}`
+    const count = parseInt(localStorage.getItem(key) || '0')
+    const penaltyKey = `pba_penalty_${productName}`
+    const penaltyUntil = localStorage.getItem(penaltyKey)
+
+    if (penaltyUntil && new Date() < new Date(penaltyUntil)) {
+      const hrs = Math.ceil((new Date(penaltyUntil) - new Date()) / 3600000)
+      return { blocked: true, reason: `Too many checks. Cooldown for ${hrs} more hours.` }
+    }
+    if (count >= 3) {
+      const until = new Date(Date.now() + 48 * 3600 * 1000).toISOString()
+      localStorage.setItem(penaltyKey, until)
+      return { blocked: true, reason: 'Daily check limit reached. Cooldown for 48 hours.' }
+    }
+    localStorage.setItem(key, String(count + 1))
+    return { blocked: false }
+  }
+
+  // ── Check ──────────────────────────────────────────────────
+  function updateCheckBtn() {
+    const product = document.getElementById('input-product').value.trim()
+    const url = document.getElementById('input-url').value.trim()
+    const btn = document.getElementById('btn-check')
+    if (btn.disabled) return
+    btn.textContent = (product && !url) ? 'Skip & Check' : 'Check'
+  }
+
+  async function runCheck() {
+    const product = document.getElementById('input-product').value.trim()
+    const url = document.getElementById('input-url').value.trim()
+    if (!product) { document.getElementById('input-product').focus(); return }
+    await runCheckForce()
+  }
+
+  async function runCheckForce() {
+    const product = document.getElementById('input-product').value.trim()
+    const url = document.getElementById('input-url').value.trim()
+    if (!product) { document.getElementById('input-product').focus(); return }
+
+    // Rate limit: 로그인 상태일 때만 적용 (스테이징에서는 비활성화)
+    if (currentUser && !IS_STAGING) {
+      const rl = checkRateLimit(product)
+      if (rl.blocked) {
+        alert(rl.reason)
+        return
+      }
+    }
+
+    const btn = document.getElementById('btn-check')
+    btn.disabled = true
+    btn.innerHTML = '<span class="spinner"></span>'
+    document.getElementById('check-result').style.display = 'none'
+    resetSaveButtons()
+    lastCheckResult = null
+
+    try {
+      const res = await fetch(`${API_URL}/v1/check`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product, url: url || undefined }),
+      })
+      const data = await res.json()
+      showResult(data)
+      // 빅파이 1.5: unified_v15(4차원 단일) 우선. probe_score/score 이원 폐기.
+      // sum(dimensions) === final.score 수학적 일관성 보장.
+      const unified = data.unified_v15 || null
+      const savedScore = unified ? unified.score : data.score
+      lastCheckResult = { product, url: url || null, score: savedScore, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null, unified }
+      if (currentUser) {
+        // Optimistic update: 새 점수를 즉시 My Products에 반영 (프로덕션 방식)
+        // 빅파이 1.5: unified_v15도 반드시 동반 저장 (확장 패널 4차원 렌더용)
+        const existingIdx = allProducts.findIndex(p => p.product_name === product)
+        if (existingIdx >= 0) {
+          allProducts[existingIdx] = {
+            ...allProducts[existingIdx],
+            score: savedScore,
+            dimensions: data.dimensions || allProducts[existingIdx].dimensions,
+            ai_probe: data.aiProbe || allProducts[existingIdx].ai_probe,
+            results: data.results || allProducts[existingIdx].results,
+            unified_v15: unified || allProducts[existingIdx].unified_v15 || null,
+            created_at: new Date().toISOString(),
+            _domainOnly: false,
+          }
+        } else {
+          allProducts.push({ product_name: product, product_url: url || null, score: savedScore, dimensions: data.dimensions || null, ai_probe: data.aiProbe || null, results: data.results || [], unified_v15: unified || null, created_at: new Date().toISOString() })
+        }
+        renderMineTab(allProducts, allHistoryData)
+        try { await saveHistory('mine') } catch(e) { console.error('[saveHistory] failed', e) }
+      }
+    } catch (err) {
+      alert('Check failed. Please try again.')
+    } finally {
+      btn.disabled = false
+      btn.textContent = 'Check'
+    }
+  }
+
+  function resetSaveButtons() {
+    const mm = document.getElementById('mine-registered-msg'); if (mm) mm.remove()
+  }
+
+  function showResult(data) {
+    const { score, results, product, dimensions, aiProbe, sources, probe_count, probe_breakdown, unified_v15 } = data
+    document.getElementById('result-product').textContent = product
+
+    // 빅파이 1.5: 4차원 단일 체계 (sum(dimensions) === final.score 수학적 보장).
+    // unified_v15 있으면 우선. 없으면 raw score 단일 fallback. probe_score 이원 시스템 폐기.
+    const unified = unified_v15 || null
+    const displayScore = unified ? unified.score : score
+    document.getElementById('result-score').textContent = Math.round(displayScore)
+    document.getElementById('result-bar').style.width = Math.round(Math.min(displayScore, 100)) + '%'
+
+    // 빅파이 1.5: 위(CAV)는 일부 정보만. Badge / Daily Pulse / Quadrant / Engine Grades는
+    // 소유주 확인된 My Products 확장 패널에서만 제공. (CEO 지시 2026-04-17 밤)
+    document.getElementById('result-badge').innerHTML = ''
+    const _pulseEl = document.getElementById('result-daily-pulse')
+    const _extrasEl = document.getElementById('result-v15-extras')
+    if (_pulseEl) { _pulseEl.innerHTML = ''; _pulseEl.style.display = 'none' }
+    if (_extrasEl) { _extrasEl.innerHTML = ''; _extrasEl.style.display = 'none' }
+
+    // Dimensions — unified(4차원) 우선, fallback 5차원 ENGINE-05
+    const dims = document.getElementById('result-dimensions')
+    if (unified && unified.dimensions && unified.dimensions.length) {
+      dims.innerHTML = unified.dimensions.map(d => renderDimRowV15(d)).join('')
+    } else if (dimensions && dimensions.length) {
+      dims.innerHTML = dimensions.map(d => renderDimRowV5(d)).join('')
+    } else {
+      dims.innerHTML = (results || []).map(r => renderDimRow(r, true)).join('')
+    }
+
+    // ENGINE-06: AI Probe 카드 (probe_breakdown + 실시간 probe)
+    const probeContainer = document.getElementById('result-ai-probe')
+    if (probeContainer) {
+      const probeLabels = { perplexity: 'Perplexity', gpt: 'ChatGPT', gemini: 'Gemini' }
+
+      // 누적 probe_breakdown (역사적 데이터)
+      let breakdownHtml = ''
+      if (probe_breakdown && probe_breakdown.length) {
+        breakdownHtml = probe_breakdown.map(p => {
+          const lbl = escHtml(probeLabels[p.ai] || p.ai)
+          const color = p.rate >= 60 ? '#4ade80' : p.rate >= 30 ? '#FFD700' : '#ef4444'
+          return `<div style="display:flex;align-items:center;gap:0.5rem;padding:0.25rem 0;">
+            <span style="color:#555;font-size:0.75rem;min-width:80px;">${lbl}</span>
+            <div style="flex:1;height:4px;background:#222;border-radius:2px;overflow:hidden;">
+              <div style="height:100%;width:${p.rate}%;background:${color};border-radius:2px;"></div>
+            </div>
+            <span style="color:${color};font-size:0.75rem;font-weight:700;min-width:32px;text-align:right;">${p.rate}%</span>
+            <span style="color:#444;font-size:0.68rem;">${p.recognized}/${p.total}</span>
+          </div>`
+        }).join('')
+        // probe_breakdown에 없는 AI는 aiProbe 실시간 결과로 보완 (예: Gemini 신규 추가)
+        if (aiProbe && aiProbe.length) {
+          const coveredAIs = new Set(probe_breakdown.map(p => p.ai))
+          aiProbe.filter(p => !coveredAIs.has(p.ai)).forEach(p => {
+            const lbl = escHtml(probeLabels[p.ai] || p.ai)
+            const color = p.recognized ? (p.recommended ? '#4ade80' : '#FFD700') : '#555'
+            const label = p.recognized ? (p.recommended ? 'Recommended' : 'Known') : 'Unknown'
+            breakdownHtml += `<div style="display:flex;align-items:center;gap:0.5rem;padding:0.25rem 0;">
+              <span style="color:#555;font-size:0.75rem;min-width:80px;">${lbl}</span>
+              <span style="color:${color};font-size:0.75rem;font-weight:600;">${label}</span>
+            </div>`
+          })
+        }
+      } else if (aiProbe && aiProbe.length) {
+        // fallback: 이번 체크의 실시간 결과
+        breakdownHtml = aiProbe.map(p => {
+          const lbl = escHtml(probeLabels[p.ai] || p.ai)
+          const color = p.recognized ? (p.recommended ? '#4ade80' : '#FFD700') : '#555'
+          const label = p.recognized ? (p.recommended ? 'Recommended' : 'Known') : 'Unknown'
+          return `<div style="display:flex;align-items:center;gap:0.5rem;padding:0.25rem 0;">
+            <span style="color:#555;font-size:0.75rem;min-width:80px;">${lbl}</span>
+            <span style="color:${color};font-size:0.75rem;font-weight:600;">${label}</span>
+          </div>`
+        }).join('')
+      }
+
+      const headerLabel = probe_count >= 3
+        ? `Direct AI Measurement <span style="color:#555;font-weight:400;">(${probe_count} probes)</span>`
+        : `AI Recognition <span style="color:#555;font-weight:400;">${probe_count > 0 ? `(${probe_count} probe${probe_count>1?'s':''} — collecting...)` : ''}</span>`
+
+      // AI probe breakdown lives in My Products panel, not in CAV check result
+      probeContainer.style.display = 'none'
+    }
+
+    // Grounding note
+    const hasUngrounded = (results || []).some(r => !r.grounded)
+    document.getElementById('result-grounded-note').style.display = hasUngrounded ? 'block' : 'none'
+
+    // Owner lock section hidden in CAV — full data lives in My Products panel
+    const ownerLockEl = document.getElementById('result-owner-lock')
+    if (ownerLockEl) ownerLockEl.style.display = 'none'
+
+    document.getElementById('check-result').style.display = 'block'
+    // Show non-logged CTAs
+    const isGuest = !currentUser
+    const ctaEl = document.getElementById('mlp-track-cta')
+    if (ctaEl) ctaEl.style.display = isGuest ? 'block' : 'none'
+    const rEmail = document.getElementById('result-email-cta')
+    if (rEmail) rEmail.style.display = isGuest ? 'block' : 'none'
+    const guideEl = document.getElementById('guide-email-cta')
+    if (guideEl) guideEl.style.display = isGuest ? 'block' : 'none'
+    // Show feedback CTA for everyone
+    const fbCta = document.getElementById('feedback-cta')
+    if (fbCta) { fbCta.style.display = 'block'; document.getElementById('feedback-ask').style.display = 'flex'; document.getElementById('feedback-comment').style.display = 'none'; document.getElementById('feedback-thanks').style.display = 'none'; }
+
+  }
+
+  // ENGINE-05 dimension row with score bar
+  function renderDimRowV5(d) {
+    const maxScores = { 'Web Presence': 25, 'Source Authority': 20, 'Recommendation Signals': 20, 'Community Validation': 20, 'Competitive Context': 15 }
+    const max = maxScores[d.label] || 20
+    const pct = Math.round(d.score / max * 100)
+    const color = d.found ? '#4ade80' : '#e05252'
+    const tips = {
+      'Web Presence': 'Get mentioned on directories, blogs, and tech sites. Each independent domain strengthens your signal.',
+      'Source Authority': 'Aim for coverage on high-authority sites like Product Hunt, G2, TechCrunch, or major tech blogs.',
+      'Recommendation Signals': 'Get listed in "best tools" roundups and earn explicit recommendations from reviewers.',
+      'Community Validation': 'Build presence on Reddit, Product Hunt, Indie Hackers. Genuine reviews and discussions matter most.',
+      'Competitive Context': 'Create comparison content or get listed on AlternativeTo. "vs" articles boost this signal.',
+    }
+    const tip = (tips[d.label] || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;')
+    const tipIcon = tip ? `<span class="dim-tip" data-tip="${tip}">?</span>` : ''
+    const metaHtml = d.meta ? `<span style="color:#444;font-size:0.7rem;margin-left:0.5rem;">${escHtml(d.meta)}</span>` : ''
+    return `
+      <div style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.82rem;color:#ccc;display:flex;align-items:center;gap:4px;">${escHtml(d.label)}${metaHtml}${tipIcon}</span>
+          <span style="font-size:0.75rem;font-weight:700;color:${color};">${d.score}/${max}</span>
+        </div>
+        <div style="margin-top:0.3rem;height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${d.found ? '#4ade80' : '#333'};border-radius:2px;transition:width 0.6s;"></div>
+        </div>
+      </div>`
+  }
+
+  // 빅파이 1.5 · 4차원 단일 체계 행 렌더러 (Recognition 35 / Category 35 / CoRec 20 / Web 10)
+  function renderDimRowV15(d) {
+    const max = d.max || 0
+    const pct = max > 0 ? Math.round(d.score / max * 100) : 0
+    const achieved = max > 0 ? d.score / max : 0
+    const color = achieved >= 0.5 ? '#4ade80' : d.score > 0 ? '#FFD700' : '#e05252'
+    const barBg = d.score > 0 ? color : '#333'
+    const tips = {
+      recognition: 'Direct AI Recognition · Whether Gemini + Perplexity directly recognize or recommend your product. Known(5) + Recommended(+12.5) = up to 17.5 per engine.',
+      category:    'Category Ranking · Top-10 appearance in "best {category}" queries. 1st = 35 pts, 10th = 3 pts.',
+      corec:       'Co-Recommendation Graph · How often you are recommended alongside competitors. Parsed from accumulated probe_logs. New products need collection time.',
+      web:         'Web Authority Proxy · Tavily Tier-1/2 citations. SEO-to-AI transition signal (capped at 10).',
+    }
+    const tip = (tips[d.id] || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;')
+    const tipIcon = tip ? `<span class="dim-tip" data-tip="${tip}">?</span>` : ''
+    return `
+      <div style="padding:0.6rem 0;border-bottom:1px solid #1a1a1a;">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <span style="font-size:0.82rem;color:#ccc;display:flex;align-items:center;gap:4px;">${escHtml(d.label)}${tipIcon}</span>
+          <span style="font-size:0.75rem;font-weight:700;color:${color};">${d.score}/${max}</span>
+        </div>
+        <div style="margin-top:0.3rem;height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden;">
+          <div style="height:100%;width:${pct}%;background:${barBg};border-radius:2px;transition:width 0.6s;"></div>
+        </div>
+      </div>`
+  }
+
+  // 순수 HTML 반환: Daily Pulse 카드 (위/아래 공통 재사용)
+  function buildDailyPulseHtml(unified) {
+    if (!unified) return ''
+    const pulseText = (unified.insights && unified.insights.daily_pulse) || ''
+    const topIssue = (unified.insights && unified.insights.top_issue) || ''
+    if (!pulseText) return ''
+    return `
+      <div style="margin:0.5rem 0 0.9rem;padding:0.8rem 1rem;background:#111;border:1px solid #1e1e1e;border-left:3px solid #FFD700;border-radius:6px;">
+        <div style="font-size:0.62rem;color:#FFD700;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:0.3rem;">Daily Pulse</div>
+        <div style="font-size:0.88rem;color:#eee;line-height:1.5;">${escHtml(pulseText)}</div>
+        ${topIssue ? `<div style="margin-top:0.4rem;font-size:0.72rem;color:#888;">${escHtml(topIssue)}</div>` : ''}
+      </div>`
+  }
+
+  // 순수 HTML 반환: Pass Indicator + 2D Quadrant + Engine Grades (위/아래 공통 재사용)
+  function buildUnifiedExtrasHtml(unified) {
+    if (!unified) return ''
+    const passIcons  = { perfect: '🏆', strong: '🟢', emerging: '🟡', invisible: '🔴' }
+    const passLabels = { perfect: 'PERFECT', strong: 'STRONG', emerging: 'EMERGING', invisible: 'INVISIBLE' }
+    const passIcon  = passIcons[unified.pass_indicator]  || '🔴'
+    const passLabel = passLabels[unified.pass_indicator] || 'INVISIBLE'
+    const gradeColors = { A: '#4ade80', B: '#86efac', C: '#FFD700', D: '#f59e0b', F: '#555' }
+    const enginesHtml = (unified.engine_grades || []).map(eg => {
+      const color = gradeColors[eg.grade] || '#555'
+      const name = (eg.engine || '').charAt(0).toUpperCase() + (eg.engine || '').slice(1)
+      return `
+        <div style="display:flex;align-items:center;gap:0.45rem;flex-wrap:wrap;">
+          <span style="font-size:0.72rem;color:#888;min-width:70px;">${escHtml(name)}</span>
+          <span style="display:inline-block;min-width:22px;text-align:center;font-size:0.72rem;font-weight:700;color:${color};background:#0f0f0f;border:1px solid ${color};border-radius:4px;padding:2px 8px;">${escHtml(eg.grade || 'F')}</span>
+          <span style="font-size:0.7rem;color:#666;">${escHtml(eg.description || '')}</span>
+        </div>`
+    }).join('')
+    const q = unified.quadrant || { x: 0, y: 0, label: 'Invisible' }
+    const qColors = { Leader: '#4ade80', Niche: '#FFD700', Challenger: '#86efac', Invisible: '#555' }
+    const qColor = qColors[q.label] || '#555'
+    return `
+      <div style="margin-top:0.75rem;padding:0.8rem 1rem;background:#0d0d0d;border:1px solid #1e1e1e;border-radius:8px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.7rem;flex-wrap:wrap;gap:0.5rem;">
+          <div style="display:flex;align-items:center;gap:0.5rem;">
+            <span style="font-size:1.1rem;">${passIcon}</span>
+            <span style="font-size:0.78rem;font-weight:700;letter-spacing:0.08em;color:#ccc;">${passLabel}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.4rem;">
+            <span style="font-size:0.66rem;color:#666;text-transform:uppercase;letter-spacing:0.1em;">Quadrant</span>
+            <span style="font-size:0.72rem;font-weight:700;color:${qColor};background:#0f0f0f;border:1px solid ${qColor};border-radius:4px;padding:2px 8px;">${escHtml(q.label)}</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.38rem;">${enginesHtml}</div>
+      </div>`
+  }
+
+  // 빅파이 1.5 보조 시각화: Daily Pulse + Pass Indicator + 2D Quadrant + Engine Grades
+  function renderUnifiedExtras(unified) {
+    const pulseEl = document.getElementById('result-daily-pulse')
+    const extrasEl = document.getElementById('result-v15-extras')
+    if (!pulseEl || !extrasEl) return
+    if (!unified) {
+      pulseEl.style.display = 'none'
+      extrasEl.style.display = 'none'
+      return
+    }
+    pulseEl.innerHTML = buildDailyPulseHtml(unified)
+    pulseEl.style.display = 'block'
+    extrasEl.innerHTML = buildUnifiedExtrasHtml(unified)
+    extrasEl.style.display = 'block'
+  }
+
+
+  // ── localStorage Set helpers ───────────────────────────────
+  function getMineSet() {
+    try { return new Set(JSON.parse(localStorage.getItem('pba_mine') || '[]')) } catch { return new Set() }
+  }
+  function saveMineSet(s) { localStorage.setItem('pba_mine', JSON.stringify([...s])) }
+
+  // ── Save to History (shared) ───────────────────────────────
+  async function saveHistory(tag) {
+    if (!lastCheckResult || !currentUser) return
+    const today = new Date().toISOString().split('T')[0]
+    const { data: todayCheck } = await sb
+      .from('scores').select('id')
+      .eq('user_id', currentUser.id)
+      .eq('product_name', lastCheckResult.product)
+      .gte('created_at', today + 'T00:00:00.000Z')
+      .limit(1)
+    if (todayCheck && todayCheck.length > 0) {
+      // Update today's existing record with latest score
+      await sb.from('scores').update({
+        score: Math.round(lastCheckResult.score),
+        results: lastCheckResult.results,
+        dimensions: lastCheckResult.dimensions || null,
+        ai_probe: lastCheckResult.aiProbe || null,
+        unified_v15: lastCheckResult.unified || null,
+      }).eq('id', todayCheck[0].id)
+      setSavedBtn()
+      loadHistory()
+      return
+    }
+    // Max 5 total
+    const { data: existing } = await sb.from('scores').select('product_name').eq('user_id', currentUser.id)
+    const distinctProducts = [...new Set((existing || []).map(r => r.product_name))]
+    if (!distinctProducts.includes(lastCheckResult.product) && distinctProducts.length >= 5) {
+      return  // Max 5 products reached — silently skip
+    }
+    await sb.from('scores').insert({
+      user_id: currentUser.id,
+      product_name: lastCheckResult.product,
+      product_url: lastCheckResult.url,
+      score: Math.round(lastCheckResult.score),
+      results: lastCheckResult.results,
+      dimensions: lastCheckResult.dimensions || null,
+      ai_probe: lastCheckResult.aiProbe || null,
+      unified_v15: lastCheckResult.unified || null,
+    })
+    loadHistory()
+  }
+
+  function setSavedBtn() { /* no-op: save button removed */ }
+
+  // ── autoSave for Refresh Score ─────────────────────────────
+  async function autoSave(tag) {
+    if (!lastCheckResult || !currentUser) return
+    const today = new Date().toISOString().split('T')[0]
+    const { data: todayCheck } = await sb
+      .from('scores').select('id, score')
+      .eq('user_id', currentUser.id)
+      .eq('product_name', lastCheckResult.product)
+      .gte('created_at', today + 'T00:00:00.000Z')
+      .limit(1)
+    if (todayCheck && todayCheck.length > 0) {
+      const existing = todayCheck[0]
+      await sb.from('scores').update({
+        score: Math.round(lastCheckResult.score),
+        results: lastCheckResult.results,
+        dimensions: lastCheckResult.dimensions || null,
+        ai_probe: lastCheckResult.aiProbe || null,
+        unified_v15: lastCheckResult.unified || null,
+      }).eq('id', existing.id)
+      loadHistory()
+      return
+    }
+    await sb.from('scores').insert({
+      user_id: currentUser.id,
+      product_name: lastCheckResult.product,
+      product_url: lastCheckResult.url,
+      score: Math.round(lastCheckResult.score),
+      results: lastCheckResult.results,
+      dimensions: lastCheckResult.dimensions || null,
+      ai_probe: lastCheckResult.aiProbe || null,
+      unified_v15: lastCheckResult.unified || null,
+    })
+    loadHistory()
+  }
+
+  // ── Delete product (all history) ───────────────────────────
+  async function deleteProduct(productName) {
+    if (!currentUser) return
+    if (!confirm(`Remove "${productName}" and all its history?`)) return
+    const { error } = await sb
+      .from('scores').delete()
+      .eq('user_id', currentUser.id)
+      .eq('product_name', productName)
+    if (error) { alert('Delete failed: ' + error.message); return }
+    // Also remove from localStorage tags
+    const mineSet = getMineSet(); mineSet.delete(productName); saveMineSet(mineSet)
+    loadHistory()
+  }
+
+  // ── Toggle detail panel ─────────────────────────────────────
+  function toggleDetail(idx) {
+    const el = document.getElementById(`prod-detail-${idx}`)
+    if (!el) return
+    const opening = el.style.display === 'none'
+    el.style.display = opening ? 'block' : 'none'
+    if (opening) {
+      const coRecsEl = document.getElementById(`co-recs-val-${idx}`)
+      if (coRecsEl && coRecsEl.dataset.loaded !== '1') {
+        const product = coRecsEl.dataset.product
+        fetch(`${API_URL}/v1/co-recs?product=${encodeURIComponent(product)}`)
+          .then(r => r.json())
+          .then(d => {
+            const recs = d.co_recommendations_top || []
+            coRecsEl.textContent = recs.length ? recs.join(', ') : 'No data yet'
+            coRecsEl.style.color = recs.length ? '#888' : '#333'
+            coRecsEl.dataset.loaded = '1'
+          })
+          .catch(() => { coRecsEl.textContent = '—'; coRecsEl.dataset.loaded = '1' })
+      }
+    }
+  }
+
+  // ── Refresh product score ───────────────────────────────────
+  async function refreshProduct(name, url, checkedAt, idx, tag) {
+    if (isSameDay(checkedAt)) {
+      alert('Already refreshed today. Come back tomorrow!')
+      return
+    }
+    const btn = document.getElementById(`refresh-btn-${idx}`)
+    if (btn) { btn.disabled = true; btn.textContent = 'Refreshing...' }
+    try {
+      const res = await fetch(`${API_URL}/v1/check`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ product: name, url: url || undefined }),
+      })
+      const data = await res.json()
+      lastCheckResult = { product: name, url: url || null, score: data.score, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null }
+      await autoSave(tag)
+    } catch (err) {
+      alert('Refresh failed. Please try again.')
+      if (btn) { btn.disabled = false; btn.textContent = 'Refresh Score' }
+    }
+  }
+
+  // ── Badge Embed (Tools tab) ────────────────────────────────
+  function buildBadgeSnippet(tier, score, size, shape) {
+    const crownPath = '<rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/>'
+    const tierMap = {
+      gold:   { color: '#FFD700', bg: '#0d0a00', border: '#FFD700', label: 'PICKED BY AI ✓', tierName: 'GOLD', pulse: 'animation:pba-pulse 2.5s ease infinite;' },
+      silver: { color: '#C0C0C0', bg: '#0a0a0a', border: '#C0C0C0', label: 'SEEN BY AI',     tierName: 'SILVER', pulse: '' },
+      bronze: { color: '#CD7F32', bg: '#0d0800', border: '#CD7F32', label: 'NOTICED BY AI',  tierName: 'BRONZE', pulse: '' },
+    }
+    const sizeMap = {
+      S: { pad: '8px 14px',  cw: 14, ch: 11, titlePx: 10, subPx: 7,  gap: 9  },
+      M: { pad: '12px 18px', cw: 18, ch: 14, titlePx: 12, subPx: 8,  gap: 11 },
+      L: { pad: '15px 22px', cw: 22, ch: 18, titlePx: 14, subPx: 9,  gap: 13 },
+    }
+    const t = tierMap[tier] || tierMap.gold
+    const s = sizeMap[size] || sizeMap.M
+    const radius = shape === 'Square' ? '6px' : '9px'
+    const scoreText = (score != null && score > 0) ? `${score} · ` : ''
+    const subText = `${scoreText}${t.tierName} · pickedby.ai`
+    const crownSvg = `<svg width="${s.cw}" height="${s.ch}" viewBox="0 0 20 16" fill="${t.color}" xmlns="http://www.w3.org/2000/svg">${crownPath}</svg>`
+    return `<style>@keyframes pba-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0)}50%{box-shadow:0 0 14px 4px rgba(255,215,0,0.25)}}</style><a href="https://pickedby.ai?utm_source=badge&utm_medium=embed&utm_campaign=badge_embed" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:${s.gap}px;text-decoration:none;background:${t.bg};border:2px solid ${t.border};border-radius:${radius};padding:${s.pad};font-family:monospace;box-sizing:border-box;${t.pulse}">${crownSvg}<div style="display:flex;flex-direction:column;gap:2px;"><span style="color:${t.color};font-size:${s.titlePx}px;font-weight:800;letter-spacing:0.08em;white-space:nowrap;">${t.label}</span><span style="color:${t.color};opacity:0.55;font-size:${s.subPx}px;font-weight:600;letter-spacing:0.1em;white-space:nowrap;">${subText}</span></div></a>`
+  }
+
+  function updateBadgePreview() {
+    const tierSel = document.getElementById('badge-tier-select')?.value || 'auto'
+    const size    = document.getElementById('badge-size-select')?.value || 'M'
+    const shape   = document.getElementById('badge-shape-select')?.value || 'Rectangle'
+    let effectiveTier = tierSel
+    let score = null
+    if (tierSel === 'auto') {
+      const mineSet = getMineSet()
+      const mineProducts = allProducts.filter(p => mineSet.has(p.product_name))
+      if (mineProducts.length > 0) {
+        const maxScore = Math.max(...mineProducts.map(p => p.score))
+        score = maxScore
+        effectiveTier = maxScore >= 75 ? 'gold' : maxScore >= 50 ? 'silver' : 'bronze'
+      } else { effectiveTier = 'gold'; score = 100 }
+    }
+    // Lock badge embed unless at least one My Products product is verified
+    const mineSetV = getMineSet()
+    const hasVerified = [...mineSetV].some(p => localStorage.getItem(`pba_verified_${p}`) === '1')
+    const lockNotice = document.getElementById('badge-lock-notice')
+    const copyBtn = document.getElementById('badge-copy-btn')
+    if (lockNotice) lockNotice.style.display = hasVerified ? 'none' : 'block'
+    if (copyBtn) {
+      copyBtn.disabled = !hasVerified
+      copyBtn.style.opacity = hasVerified ? '1' : '0.35'
+      copyBtn.style.cursor = hasVerified ? 'pointer' : 'not-allowed'
+    }
+
+    // Show GOLD / SILVER / BRONZE examples side by side
+    const previewEl = document.getElementById('badge-preview-inner')
+    const codeEl = document.getElementById('badge-code-display')
+    if (!previewEl || !codeEl) return
+    const tiers = ['gold', 'silver', 'bronze']
+    const exampleScores = { gold: 82, silver: 57, bronze: 40 }
+    previewEl.innerHTML = tiers.map(t => {
+      const exScore = t === effectiveTier ? score : exampleScores[t]
+      return `<div style="display:inline-flex;flex-direction:column;align-items:center;gap:0.35rem;">
+        ${buildBadgeSnippet(t, exScore, size, shape)}
+        <span style="font-size:0.6rem;color:#444;text-transform:uppercase;letter-spacing:0.04em;">${t}</span>
+      </div>`
+    }).join('')
+    // Copy HTML uses user's actual badge
+    const html = buildBadgeSnippet(effectiveTier, score, size, shape)
+    codeEl.textContent = html
+  }
+
+  function copyBadgeEmbed(btn) {
+    const codeEl = document.getElementById('badge-code-display')
+    if (!codeEl) return
+    navigator.clipboard.writeText(codeEl.textContent).then(() => {
+      const orig = btn.textContent
+      btn.textContent = '✓ Copied!'
+      btn.style.color = '#4ade80'; btn.style.borderColor = '#4ade80'
+      setTimeout(() => { btn.textContent = orig; btn.style.color = '#FFD700'; btn.style.borderColor = '#FFD700' }, 2000)
+    }).catch(() => alert('Copy failed. Please select and copy manually.'))
+  }
+
+  // badge embed in product expand panel (history rows)
+  function copyBadgeHtml(btn, score) {
+    const tier = score >= 75 ? 'gold' : score >= 50 ? 'silver' : 'bronze'
+    const html = buildBadgeSnippet(tier, score, 'M', 'Rectangle')
+    navigator.clipboard.writeText(html).then(() => {
+      const orig = btn.textContent
+      btn.textContent = '✓ Copied!'
+      btn.style.color = '#4ade80'; btn.style.borderColor = '#4ade80'
+      setTimeout(() => { btn.textContent = orig; btn.style.color = '#FFD700'; btn.style.borderColor = '#FFD700' }, 2000)
+    }).catch(() => alert('Copy failed. Please select and copy manually.'))
+  }
+
+  // ── VERIFY-01: Ownership Verification ────────────────────
+  function genVerifyToken(userId, productName) {
+    const raw = (userId || '').slice(0, 8) + (productName || '').toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 12)
+    return btoa(raw).replace(/[^a-zA-Z0-9]/g, '').slice(0, 20).toLowerCase()
+  }
+
+  function copyVerifyTag(idx) {
+    const block = document.getElementById(`verify-block-${idx}`)
+    if (!block) return
+    const token = block.dataset.verifyToken
+    const tag = `<meta name="pickedby-site-verification" content="${token}">`
+    const btn = block.querySelector('[data-copy-verify]')
+    navigator.clipboard.writeText(tag).then(() => {
+      if (btn) { const o = btn.textContent; btn.textContent = '✓ Copied'; setTimeout(() => btn.textContent = o, 2000) }
+    }).catch(() => alert('Copy failed'))
+  }
+
+  async function runVerify(idx) {
+    const block = document.getElementById(`verify-block-${idx}`)
+    if (!block) return
+    const token = block.dataset.verifyToken
+    const url = block.dataset.verifyUrl
+    const statusEl = document.getElementById(`verify-status-${idx}`)
+    if (!statusEl) return
+    statusEl.textContent = 'Checking...'
+    statusEl.style.color = '#888'
+    try {
+      const res = await fetch(`${API_URL}/v1/verify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, token })
+      })
+      const data = await res.json()
+      if (data.verified) {
+        statusEl.innerHTML = '✓ Verified!'
+        statusEl.style.color = '#4ade80'
+        localStorage.setItem(`pba_verified_${block.dataset.product}`, '1')
+        block.style.display = 'none' // hide verify section entirely
+        updateBadgePreview() // unlock badge embed immediately
+      } else {
+        statusEl.textContent = '✗ Meta tag not found on page'
+        statusEl.style.color = '#ef4444'
+      }
+    } catch {
+      statusEl.textContent = 'Error — check connection and try again'
+      statusEl.style.color = '#ef4444'
+    }
+  }
+
+  // ── Share: copy link (product list item) ───────────────────
+  function copyLinkProduct(score, name, btn) {
+    const url = `https://pickedby.ai?utm_source=share&utm_medium=link&utm_campaign=copy_product&utm_content=${encodeURIComponent(name)}`
+    navigator.clipboard.writeText(url).then(() => {
+      const orig = btn.textContent
+      btn.textContent = '✓ Copied!'
+      setTimeout(() => { btn.textContent = orig }, 2000)
+    }).catch(() => alert('Copy failed'))
+  }
+
+  // ── Share: LinkedIn (product list item) ─────────────────────
+  function shareLinkedInProduct(score, name) {
+    const tier = score >= 75 ? '🥇 PICKED BY AI' : score >= 50 ? '🥈 SEEN BY AI' : score >= 25 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
+    const url = `https://pickedby.ai?utm_source=linkedin&utm_medium=social&utm_campaign=share&utm_content=${encodeURIComponent(name)}`
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank', 'width=600,height=500')
+  }
+
+  // ── Tool sub-nav switching ─────────────────────────────────
+  function switchTool(tool) {
+    document.getElementById('tool-panel-badge').style.display = tool === 'badge' ? 'block' : 'none'
+    document.getElementById('tool-panel-llms').style.display = tool === 'llms' ? 'block' : 'none'
+    document.getElementById('tool-tab-badge').classList.toggle('active', tool === 'badge')
+    document.getElementById('tool-tab-llms').classList.toggle('active', tool === 'llms')
+    if (tool === 'badge') updateBadgePreview()
+  }
+
+  // ── llms.txt Generator (Tools tab) ────────────────────────
+  let llmsGeneratedText = ''
+
+  function generateLlmsTool() {
+    const name = document.getElementById('lt-name').value.trim()
+    const url = document.getElementById('lt-url').value.trim()
+    const tagline = document.getElementById('lt-tagline').value.trim()
+    const category = document.getElementById('lt-category').value.trim()
+    const audience = document.getElementById('lt-audience').value.trim()
+    const featuresRaw = document.getElementById('lt-features').value.trim()
+    const author = document.getElementById('lt-author').value.trim()
+
+    if (!name || !tagline) { alert('Product name and Description are required.'); return }
+
+    const features = featuresRaw ? featuresRaw.split('\n').map(f => f.trim()).filter(Boolean) : []
+    const today = new Date().toISOString().split('T')[0]
+    const lines = []
+    lines.push(`# ${name}`, ``, `> ${tagline}`, ``)
+    if (url) lines.push(`## Product URL`, `- ${url}`, ``)
+    if (category) lines.push(`## Category`, `- ${category}`, ``)
+    if (audience) lines.push(`## Target Audience`, `- ${audience}`, ``)
+    if (features.length > 0) { lines.push(`## Key Features`); features.forEach(f => lines.push(`- ${f}`)); lines.push(``) }
+    if (author) lines.push(`## Creator`, `- ${author}`, ``)
+    lines.push(`## About This File`, `- Format: llms.txt — standard for AI discoverability`, `- Purpose: Help AI systems (ChatGPT, Claude, Perplexity, Gemini) accurately describe and recommend this product`, `- Generated: ${today} via pickedby.ai`)
+
+    llmsGeneratedText = lines.join('\n')
+    document.getElementById('lt-output').textContent = llmsGeneratedText
+    document.getElementById('lt-output-section').style.display = 'block'
+    document.getElementById('lt-howto-section').style.display = 'block'
+    document.getElementById('lt-output-section').scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  function copyLlmsTool(btn) {
+    if (!llmsGeneratedText) return
+    navigator.clipboard.writeText(llmsGeneratedText).then(() => {
+      const orig = btn.textContent
+      btn.textContent = '✓ Copied!'
+      btn.style.color = '#4ade80'; btn.style.borderColor = '#4ade80'
+      setTimeout(() => { btn.textContent = orig; btn.style.color = '#FFD700'; btn.style.borderColor = '#FFD700' }, 2000)
+    })
+  }
+
+  function downloadLlmsTool() {
+    if (!llmsGeneratedText) return
+    const name = document.getElementById('lt-name').value.trim().replace(/[^a-z0-9]/gi, '-').toLowerCase() || 'product'
+    const blob = new Blob([llmsGeneratedText], { type: 'text/plain' })
+    const a = document.createElement('a')
+    a.href = URL.createObjectURL(blob)
+    a.download = 'llms.txt'
+    a.click()
+    URL.revokeObjectURL(a.href)
+  }
+
+  // ── Tab switching ──────────────────────────────────────────
+  function switchTab(tab) {
+    activeTab = tab
+    document.querySelectorAll('.dash-tab').forEach((btn, i) => {
+      btn.classList.toggle('active', ['mine','tools'][i] === tab)
+    })
+    document.getElementById('tab-mine').style.display = tab === 'mine' ? 'block' : 'none'
+    document.getElementById('tab-tools').style.display = tab === 'tools' ? 'block' : 'none'
+
+    if (tab === 'tools') updateBadgePreview()
+  }
+
+  // ── History (load all) ─────────────────────────────────────
+  async function loadHistory() {
+    document.getElementById('mine-loading').style.display = 'block'
+    document.getElementById('mine-empty').style.display = 'none'
+    document.getElementById('mine-table').style.display = 'none'
+
+    const { data, error } = await sb
+      .from('scores')
+      .select('*')
+      .eq('user_id', currentUser.id)
+      .order('created_at', { ascending: false })
+      .limit(200)
+
+    document.getElementById('mine-loading').style.display = 'none'
+
+    const scores = (!error && data) ? data : []
+    allHistoryData = scores
+
+    // One row per product (latest check per product)
+    const latestMap = {}
+    for (const row of scores) {
+      if (!latestMap[row.product_name]) latestMap[row.product_name] = row
+    }
+    allProducts = Object.values(latestMap)
+
+    // Merge: add domain-only rows (registered but no score yet)
+    const scoredNames = new Set(allProducts.map(p => p.product_name))
+    for (const domain of allDomains) {
+      if (domain.product_name && !scoredNames.has(domain.product_name)) {
+        allProducts.push({
+          product_name: domain.product_name,
+          product_url: domain.domain_url,
+          score: null,
+          created_at: domain.created_at,
+          user_id: currentUser.id,
+          _domainOnly: true,
+          _domainStatus: domain.status,
+        })
+      }
+    }
+
+    if (allProducts.length === 0) {
+      document.getElementById('mine-empty').style.display = 'block'
+      return
+    }
+
+    // Sync: ensure all DB products are in localStorage mine set
+    const mineSet = getMineSet()
+    let synced = false
+    for (const p of allProducts) { if (!mineSet.has(p.product_name)) { mineSet.add(p.product_name); synced = true } }
+    if (synced) saveMineSet(mineSet)
+
+    // Update slot counts (exclude domain-only from slot count)
+    const slotEl = document.getElementById('mine-slot-count')
+    if (slotEl) slotEl.textContent = `(${Object.keys(latestMap).length}/5)`
+
+    // Render Mine
+    renderMineTab(allProducts, scores)
+
+    // Update tools badge preview
+    if (activeTab === 'tools') updateBadgePreview()
+  }
+
+  // 빅파이 1.5: 72h 유예 폐지. My Products = verified-only (localStorage pba_verified_{name}='1' 또는 domains verified).
+  // 기존 UNVERIFIED_EXPIRY_MS 상수 삭제. 관련 expiry 계산·UI도 buildRowHtml에서 제거.
+
+  function getVerifiedProductNames() {
+    // Check both domains table and legacy localStorage
+    const fromDomains = new Set(verifiedDomains.map(d => d.product_name).filter(Boolean))
+    const mineSet = getMineSet()
+    const fromLs = new Set([...mineSet].filter(p => localStorage.getItem(`pba_verified_${p}`) === '1'))
+    return new Set([...fromDomains, ...fromLs])
+  }
+
+  function renderMineTab(products, allData) {
+    const verifiedNames = getVerifiedProductNames()
+    // 빅파이 1.5: verified-only 필터. _domainOnly(도메인만 등록된 pending) 또는 verified만 My Products에 표시.
+    // 72h unverified 유예 폐지 — 소유권 증명 완료된 제품만 영구 유지.
+    const visible = products.filter(p => {
+      if (p._domainOnly) return true
+      return verifiedNames.has(p.product_name)
+    })
+
+    if (visible.length === 0) {
+      document.getElementById('mine-empty').style.display = 'block'
+      document.getElementById('mine-table').style.display = 'none'
+      document.getElementById('trend-chart-wrap').style.display = 'none'
+      return
+    }
+    document.getElementById('mine-empty').style.display = 'none'
+    document.getElementById('mine-table').style.display = 'block'
+
+    const rows = visible.map((row, idx) => buildRowHtml(row, idx, 'mine', verifiedNames))
+    document.getElementById('mine-rows').innerHTML = rows.join('')
+
+    // Chart: visible products only (exclude domain-only rows — no scores yet)
+    const visibleNames = new Set(visible.filter(p => !p._domainOnly).map(p => p.product_name))
+    const mineData = allData.filter(r => visibleNames.has(r.product_name))
+    if (mineData.length === 0) {
+      document.getElementById('trend-chart-wrap').style.display = 'none'
+    } else {
+      renderTrendChart(mineData)
+    }
+  }
+
+  async function runCheckFromList(name, url) {
+    const inp = document.getElementById('input-product')
+    const urlInp = document.getElementById('input-url')
+    if (inp) { inp.value = name; inp.dispatchEvent(new Event('input')) }
+    if (urlInp) urlInp.value = url || ''
+    // Run check immediately (no user interaction needed)
+    await runCheckForce()
+    // Scroll result into view
+    const resultEl = document.getElementById('check-result')
+    if (resultEl && resultEl.style.display !== 'none') {
+      resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
+  function buildRowHtml(row, idx, tag, verifiedNames) {
+    // Domain-only row: registered domain but no score yet
+    if (row._domainOnly) {
+      const isVerified = row._domainStatus === 'verified'
+      const statusBadge = isVerified
+        ? '<span style="color:#4ade80;font-size:0.72rem;">✓ Verified</span>'
+        : '<span style="color:#f59e0b;font-size:0.72rem;">Pending</span>'
+      return `
+        <div style="border-bottom:1px solid #1f1f1f;">
+          <div style="display:grid;grid-template-columns:1fr auto auto auto auto;gap:0.5rem;align-items:center;padding:0.8rem 0;">
+            <div>
+              <div style="font-size:0.95rem;font-weight:600;">${escHtml(row.product_name)}</div>
+              ${row.product_url ? `<div style="font-size:0.75rem;color:#555;">${escHtml(row.product_url)}</div>` : ''}
+            </div>
+            <div style="text-align:center;"><span style="font-size:0.78rem;color:#444;">—</span></div>
+            <div style="text-align:center;"><span style="font-size:0.7rem;color:#555;font-style:italic;">No check yet</span></div>
+            <div style="text-align:center;">${statusBadge}</div>
+            <div style="text-align:right;">
+              <button onclick="runCheckFromList('${escHtml(row.product_name).replace(/'/g,"\\'")}','${(row.product_url||'').replace(/'/g,"\\'")}');event.stopPropagation()"
+                style="background:#FFD700;color:#0a0a0a;border:none;padding:0.3rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.72rem;font-family:inherit;font-weight:700;white-space:nowrap;">
+                Run Check →
+              </button>
+            </div>
+          </div>
+        </div>
+      `
+    }
+
+    const score = row.score
+    let badge = ''
+    if (score >= 81) badge = '<span class="badge-gold">PICKED</span>'
+    else if (score >= 61) badge = '<span class="badge-silver">SEEN</span>'
+    else if (score >= 36) badge = '<span class="badge-bronze">NOTICED</span>'
+    else badge = '<span class="badge-none">—</span>'
+
+    let badgeFull = ''
+    if (score >= 75) badgeFull = '<span class="badge-gold">PICKED BY AI</span>'
+    else if (score >= 50) badgeFull = '<span class="badge-silver">SEEN BY AI</span>'
+    else if (score >= 25) badgeFull = '<span class="badge-bronze">NOTICED BY AI</span>'
+    else badgeFull = '<span class="badge-none">NOT VISIBLE</span>'
+
+    const date = formatDate(row.created_at)
+    const barColor = score >= 75 ? '#FFD700' : score >= 50 ? '#C0C0C0' : score >= 25 ? '#CD7F32' : '#444'
+    const isToday = isSameDay(row.created_at)
+
+    const results = row.results || []
+    const hasUngrounded = results.some(r => !r.grounded)
+    const verifyToken = genVerifyToken(currentUser?.id || '', row.product_name)
+    const isVerified = (verifiedNames && verifiedNames.has(row.product_name)) || localStorage.getItem(`pba_verified_${row.product_name}`) === '1'
+    // 빅파이 1.5: 72h 유예 폐지. My Products 리스트는 verified 또는 _domainOnly만 도달하므로 expiry 계산 제거.
+    // 빅파이 1.5: unified_v15 있으면 위(CAV)와 동일한 4차원 UI. 없으면 레거시 5차원 fallback.
+    const unified = row.unified_v15 || null
+    const dims = row.dimensions
+    const dimsHtml = unified && unified.dimensions && unified.dimensions.length
+      ? unified.dimensions.map(d => renderDimRowV15(d)).join('')
+      : (dims && dims.length
+          ? dims.map(d => renderDimRowV5(d)).join('')
+          : results.map(r => renderDimRow(r, false)).join(''))
+    const dailyPulseHtml = buildDailyPulseHtml(unified)
+    const extrasHtml = unified
+      ? buildUnifiedExtrasHtml(unified)
+      : // 레거시 폴백: 구 AI Probe Direct Measurement 블록
+        (function() {
+          const aiProbeData = row.ai_probe || []
+          if (!aiProbeData.length) return ''
+          const probeLabels = { perplexity: 'Perplexity', gpt: 'ChatGPT', gemini: 'Gemini' }
+          return `
+      <div style="margin-top:0.75rem;padding:0.75rem 1rem;background:#111;border:1px solid #1e1e1e;border-radius:8px;">
+        <div style="font-size:0.7rem;color:#FFD700;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">Direct AI Measurement</div>
+        ${aiProbeData.map(p => {
+          const lbl = escHtml(probeLabels[p.ai] || p.ai)
+          const color = p.recognized ? (p.recommended ? '#4ade80' : '#FFD700') : '#555'
+          const label = p.recognized ? (p.recommended ? '✓ Recommended' : '◎ Known') : '✗ Unknown'
+          return `<div style="display:flex;align-items:center;justify-content:space-between;padding:0.3rem 0;border-bottom:1px solid #1a1a1a;">
+            <span style="color:#888;font-size:0.8rem;">${lbl}</span>
+            <span style="color:${color};font-size:0.8rem;font-weight:600;">${label}</span>
+          </div>`
+        }).join('')}
+      </div>`
+        })()
+    // Momentum: compare latest vs previous check for this product
+    const productHistory = allHistoryData
+      .filter(r => r.product_name === row.product_name)
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    let momentumHtml = ''
+    if (productHistory.length >= 2) {
+      const prev = productHistory[1].score
+      const diff = score - prev
+      const pct = prev > 0 ? Math.abs(Math.round((diff / prev) * 100)) : 0
+      if (diff > 0) momentumHtml = `<span style="color:#4ade80;font-size:0.7rem;font-weight:700;margin-left:4px;">↑${pct}%</span>`
+      else if (diff < 0) momentumHtml = `<span style="color:#ef4444;font-size:0.7rem;font-weight:700;margin-left:4px;">↓${pct}%</span>`
+      else momentumHtml = `<span style="color:#555;font-size:0.7rem;margin-left:4px;">→</span>`
+    }
+
+    const isMine = tag === 'mine'
+
+    // Status column (mine only) — 빅파이 1.5: verified-only 리스트이므로 verified 또는 domainOnly(pending)만 도달.
+    const statusHtml = isMine ? `
+      <div style="text-align:center;font-size:0.72rem;">
+        ${isVerified ? '<span style="color:#4ade80;">✓ Verified</span>' : '<span style="color:#333;">—</span>'}
+      </div>` : ''
+
+    // Grid columns differ by tab
+    const gridCols = isMine
+      ? 'display:grid;grid-template-columns:1fr auto auto auto auto;gap:0.5rem;'
+      : 'display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;'
+
+    // Expand panel detail
+    const embedSection = isMine && score >= 25 ? `
+      <div style="margin-top:0.85rem;padding:0.6rem 0.8rem;background:#0d0d0d;border-radius:6px;border:1px solid #1e1e1e;">
+        <div style="font-size:0.7rem;color:#555;margin-bottom:0.4rem;">📎 Embed this badge on your page</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <code style="flex:1;font-size:0.62rem;color:#555;background:#080808;padding:0.3rem 0.5rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">&lt;a href="https://pickedby.ai?utm_source=badge&amp;utm_medium=embed&amp;utm_campaign=badge_expand"&gt;${score>=75?'PICKED BY AI ✓':score>=50?'SEEN BY AI':'NOTICED BY AI'}&lt;/a&gt;</code>
+          <button onclick="copyBadgeHtml(this,${score});event.stopPropagation()" style="flex-shrink:0;background:none;border:1px solid #FFD700;color:#FFD700;padding:0.3rem 0.65rem;border-radius:4px;cursor:pointer;font-size:0.7rem;font-family:inherit;white-space:nowrap;">Copy HTML</button>
+        </div>
+      </div>` : ''
+
+    const verifySection = isMine && row.product_url ? `
+      <div id="verify-block-${idx}" data-verify-token="${verifyToken}" data-verify-url="${escHtml(row.product_url)}" data-product="${escHtml(row.product_name)}" style="margin-top:0.5rem;padding:0.6rem 0.8rem;background:#0d0d0d;border-radius:6px;border:1px dashed #1e1e1e;${isVerified?'display:none;':''}">
+        ${isVerified ? '' : `
+        <div style="font-size:0.7rem;color:#555;margin-bottom:0.4rem;">🔒 Verify ownership — add to your site's &lt;head&gt;:</div>
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem;">
+          <code style="flex:1;font-size:0.6rem;color:#777;background:#080808;padding:0.3rem 0.5rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">&lt;meta name="pickedby-site-verification" content="${verifyToken}"&gt;</code>
+          <button data-copy-verify onclick="copyVerifyTag(${idx});event.stopPropagation()" style="flex-shrink:0;background:none;border:1px solid #444;color:#888;padding:0.3rem 0.6rem;border-radius:4px;cursor:pointer;font-size:0.68rem;font-family:inherit;white-space:nowrap;">Copy</button>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <button data-verify-btn onclick="runVerify(${idx});event.stopPropagation()" style="background:none;border:1px solid #4ade80;color:#4ade80;padding:0.3rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.7rem;font-family:inherit;">✓ I've added it — Verify Now</button>
+          <span id="verify-status-${idx}" style="font-size:0.7rem;"></span>
+        </div>`}
+      </div>` : ''
+
+    return `
+      <div style="border-bottom:1px solid #1f1f1f;">
+        <div onclick="toggleDetail(${idx})" style="cursor:pointer;${gridCols}align-items:center;padding:0.8rem 0;transition:background 0.15s;" onmouseover="this.style.background='#111'" onmouseout="this.style.background='transparent'">
+          <div>
+            <div style="font-size:0.95rem;font-weight:600;">${escHtml(row.product_name)}</div>
+            ${row.product_url ? `<div style="font-size:0.75rem;color:#555;">${escHtml(row.product_url)}</div>` : ''}
+          </div>
+          <div style="text-align:center;line-height:1.2;"><span style="font-size:1.05rem;font-weight:700;color:${barColor};">${score}</span>${momentumHtml}</div>
+          <div style="text-align:center;">${badge}</div>
+          ${statusHtml}
+          <div style="text-align:right;font-size:0.8rem;color:#666;">${date}</div>
+        </div>
+        <div id="prod-detail-${idx}" style="display:none;background:#0f0f0f;border-radius:0.5rem;padding:1.25rem;margin-bottom:0.75rem;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem;">
+            <div>
+              <span style="font-size:1rem;font-weight:700;">${escHtml(row.product_name)}</span>
+              <span style="margin-left:8px;">${badgeFull}</span>
+            </div>
+            <div style="text-align:right;">
+              <span style="font-size:2rem;font-weight:800;color:${barColor};">${score}</span>
+              <span style="color:#555;font-size:0.8rem;">/100</span>
+              ${momentumHtml ? `<div style="margin-top:2px;">${momentumHtml.replace('margin-left:4px', 'margin-left:0')}<span style="color:#444;font-size:0.68rem;margin-left:4px;">vs last check</span></div>` : (productHistory.length === 1 ? '<div style="color:#555;font-size:0.68rem;margin-top:2px;">First check</div>' : '')}
+            </div>
+          </div>
+          <div class="score-bar-bg" style="margin-bottom:1rem;">
+            <div class="score-bar-fill" style="width:${Math.round(score/100*100)}%;background:${barColor};"></div>
+          </div>
+          ${dailyPulseHtml}
+          ${dimsHtml}
+          ${extrasHtml}
+          ${hasUngrounded ? `<p style="font-size:0.72rem;color:#555;margin-top:0.75rem;">ℹ️ Results based on AI training data only (real-time search unavailable in your region).</p>` : ''}
+          ${isMine ? (isVerified ? `
+          <div style="margin-top:0.75rem;padding:0.75rem 1rem;background:#111;border:1px solid #1a3a1a;border-radius:8px;">
+            <div style="font-size:0.7rem;color:#4ade80;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">🔓 OWNER DATA — ${escHtml(row.product_name)}</div>
+            <div style="font-size:0.75rem;color:#555;line-height:1.8;">
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;">
+                <span style="display:inline-flex;align-items:center;">Score Momentum<span class="dim-tip" data-tip="Point change in your AI Visibility Score since the last daily probe. Positive = more AIs are recognizing and recommending you.">?</span></span>
+                <span style="color:${productHistory.length >= 2 ? (score - productHistory[1].score > 0 ? '#4ade80' : score - productHistory[1].score < 0 ? '#ef4444' : '#888') : '#888'};">
+                  ${productHistory.length >= 2 ? (score - productHistory[1].score > 0 ? '↑' + (score - productHistory[1].score) + ' pts vs last check' : score - productHistory[1].score < 0 ? '↓' + Math.abs(score - productHistory[1].score) + ' pts vs last check' : 'No change') : 'First check'}
+                </span>
+              </div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span style="display:inline-flex;align-items:center;">AI Co-mentions<span class="dim-tip" data-tip="Products AIs recommend alongside yours. High co-mention density signals strong category positioning.">?</span></span><span id="co-recs-val-${idx}" data-product="${escHtml(row.product_name)}" style="color:#333;font-size:0.72rem;max-width:60%;text-align:right;">Loading...</span></div>
+              <div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span style="display:inline-flex;align-items:center;">Query Coverage<span class="dim-tip" data-tip="The % of real AI search queries in your product category where your product appears in the response. Higher coverage = broader AI discoverability.">?</span></span><span style="color:#333;">Collecting data...</span></div>
+            </div>
+          </div>` : `
+          <div style="margin-top:0.75rem;padding:0.75rem 1rem;background:#111;border:1px solid #222;border-radius:8px;">
+            <div style="font-size:0.7rem;color:#555;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.6rem;">🔒 OWNER-ONLY DATA</div>
+            <div style="font-size:0.75rem;color:#333;line-height:1.8;">
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>Query Coverage</span><span>---</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>co_recommendations</span><span>---</span></div>
+              <div style="display:flex;justify-content:space-between;border-bottom:1px solid #1a1a1a;padding:0.25rem 0;"><span>Weekly Score Trend</span><span>---</span></div>
+              <div style="display:flex;justify-content:space-between;padding:0.25rem 0;"><span>Improvement Guide TOP 3</span><span>---</span></div>
+            </div>
+          </div>`) : ''}
+          ${embedSection}
+          ${verifySection}
+          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-top:1rem;align-items:center;">
+            <button onclick="copyLinkProduct(${score},'${escHtml(row.product_name).replace(/'/g,"\\'")}',this);event.stopPropagation()"
+              style="background:none;border:1px solid #FFD700;color:#FFD700;padding:0.5rem 1rem;border-radius:0.375rem;cursor:pointer;font-size:0.82rem;font-family:inherit;">
+              📋 Copy Link
+            </button>
+            <button onclick="shareLinkedInProduct(${score},'${escHtml(row.product_name).replace(/'/g,"\\'")}');event.stopPropagation()"
+              style="background:none;border:1px solid #FFD700;color:#FFD700;padding:0.5rem 1rem;border-radius:0.375rem;cursor:pointer;font-size:0.82rem;font-family:inherit;">
+              in LinkedIn
+            </button>
+            <button onclick="deleteProduct('${escHtml(row.product_name).replace(/'/g,"\\'")}');event.stopPropagation()"
+              style="background:none;border:none;cursor:pointer;color:#444;font-size:0.82rem;margin-left:auto;" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='#444'">
+              Delete product
+            </button>
+          </div>
+        </div>
+      </div>
+    `
+  }
+
+  // ── Share: Copy Link ───────────────────────────────────────
+  function copyLink() {
+    if (!lastCheckResult) return
+    const name = lastCheckResult.product
+    const url = `https://pickedby.ai?utm_source=share&utm_medium=link&utm_campaign=copy_cav&utm_content=${encodeURIComponent(name)}`
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.getElementById('btn-copy-link')
+      const orig = btn.textContent
+      btn.textContent = '✓ Copied!'
+      setTimeout(() => { btn.textContent = orig }, 2000)
+    }).catch(() => alert('Copy failed'))
+  }
+
+  // ── Share: LinkedIn ────────────────────────────────────────
+  function shareLinkedIn() {
+    if (!lastCheckResult) return
+    const url = `https://pickedby.ai?utm_source=linkedin&utm_medium=social&utm_campaign=share`
+    window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank', 'width=600,height=500')
+  }
+
+  // ── Share: Copy Score Image ────────────────────────────────
+  async function copyScoreImage() {
+    if (!lastCheckResult) return
+    const score = lastCheckResult.score
+    const name = lastCheckResult.product
+    const tier = score >= 75 ? 'PICKED BY AI' : score >= 50 ? 'SEEN BY AI' : score >= 25 ? 'NOTICED BY AI' : 'NOT YET VISIBLE'
+    const tierColor = score >= 75 ? '#4ade80' : score >= 50 ? '#FFD700' : score >= 25 ? '#f97316' : '#ef4444'
+    const barColor = score >= 60 ? '#4ade80' : score >= 30 ? '#FFD700' : '#ef4444'
+
+    const W = 800, H = 420
+    const canvas = document.createElement('canvas')
+    canvas.width = W; canvas.height = H
+    const c = canvas.getContext('2d')
+
+    // Background
+    c.fillStyle = '#0a0a0a'
+    c.fillRect(0, 0, W, H)
+
+    // Border
+    c.strokeStyle = '#FFD70033'
+    c.lineWidth = 1.5
+    c.strokeRect(1, 1, W - 2, H - 2)
+
+    // Crown SVG rects (scaled, top-left)
+    const crownX = 48, crownY = 44, crownScale = 3.2
+    c.fillStyle = '#FFD700'
+    const crownParts = [
+      [0,0,2,4],[9,0,2,4],[18,0,2,4],
+      [0,4,20,2],[0,6,2,6],[18,6,2,6],
+      [4,8,2,2],[9,8,2,2],[14,8,2,2],
+      [0,12,20,2],[2,14,16,2]
+    ]
+    crownParts.forEach(([x,y,w,h]) => {
+      c.fillRect(crownX + x * crownScale, crownY + y * crownScale, w * crownScale, h * crownScale)
+    })
+
+    // Logo text
+    c.font = 'bold 18px monospace'
+    c.fillStyle = '#FFD700'
+    c.fillText('picked', crownX + 20 * crownScale + 12, crownY + 36)
+    c.fillStyle = '#888'
+    c.fillText('by', crownX + 20 * crownScale + 12 + c.measureText('picked').width, crownY + 36)
+    c.fillStyle = '#FFD700'
+    c.fillText('.ai', crownX + 20 * crownScale + 12 + c.measureText('pickedby').width, crownY + 36)
+
+    // Product name
+    c.font = '600 22px -apple-system, sans-serif'
+    c.fillStyle = '#888'
+    c.fillText('AI Visibility Score for', 48, 130)
+    c.font = '700 30px -apple-system, sans-serif'
+    c.fillStyle = '#ffffff'
+    const maxNameW = W - 96
+    let displayName = name
+    while (c.measureText(displayName).width > maxNameW && displayName.length > 10) {
+      displayName = displayName.slice(0, -1)
+    }
+    if (displayName !== name) displayName += '…'
+    c.fillText(displayName, 48, 170)
+
+    // Score number
+    c.font = '900 96px -apple-system, sans-serif'
+    c.fillStyle = '#FFD700'
+    c.fillText(`${score}`, 48, 290)
+    c.font = '400 28px -apple-system, sans-serif'
+    c.fillStyle = '#555'
+    c.fillText('/ 100', 48 + c.measureText(`${score}`).width + 8, 285)
+
+    // Tier label
+    c.font = '700 20px -apple-system, sans-serif'
+    c.fillStyle = tierColor
+    c.fillText(tier, 48, 328)
+
+    // Score bar background
+    const barY = 352, barH = 12, barW = W - 96
+    c.fillStyle = '#1a1a1a'
+    c.beginPath()
+    c.roundRect(48, barY, barW, barH, 6)
+    c.fill()
+
+    // Score bar fill
+    c.fillStyle = barColor
+    c.beginPath()
+    c.roundRect(48, barY, Math.round(barW * score / 100), barH, 6)
+    c.fill()
+
+    // pickedby.ai URL
+    c.font = '400 16px -apple-system, sans-serif'
+    c.fillStyle = '#444'
+    c.textAlign = 'right'
+    c.fillText('pickedby.ai', W - 48, H - 36)
+
+    // Copy to clipboard
+    const btn = document.getElementById('btn-copy-image')
+    try {
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/png'))
+      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
+      const orig = btn.textContent
+      btn.textContent = '✓ Copied!'
+      setTimeout(() => { btn.textContent = orig }, 2000)
+    } catch (err) {
+      // Fallback: download the image
+      const a = document.createElement('a')
+      a.download = `pickedbyai-score-${name.replace(/\s+/g,'-')}.png`
+      a.href = canvas.toDataURL('image/png')
+      a.click()
+      const orig = btn.textContent
+      btn.textContent = '✓ Downloaded!'
+      setTimeout(() => { btn.textContent = orig }, 2000)
+    }
+  }
+
+  // ── NEW-02: Trend Chart (per-product multi-line, max 5) ───
+  let trendChartInstance = null
+  const CHART_PALETTE = ['#FFD700', '#4ade80', '#60a5fa', '#f472b6', '#a78bfa']
+
+  function renderTrendChart(data) {
+    const wrap = document.getElementById('trend-chart-wrap')
+    if (!data || data.length === 0) {
+      wrap.style.display = 'none'
+      return
+    }
+
+    // Limit to last 30 days
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+    const recentData = data.filter(r => new Date(r.created_at) >= thirtyDaysAgo)
+    if (recentData.length === 0) { wrap.style.display = 'none'; return }
+
+    wrap.style.height = '180px'
+    wrap.innerHTML = '<canvas id="trend-chart"></canvas>'
+
+    const productDayMap = {}
+    const seenOrder = []
+    for (const row of recentData) {
+      const name = row.product_name
+      const day = formatDate(row.created_at)
+      if (!productDayMap[name]) { productDayMap[name] = {}; seenOrder.push(name) }
+      if (productDayMap[name][day] === undefined) productDayMap[name][day] = row.score
+    }
+
+    const products = seenOrder.slice(0, 5)
+
+    const daySet = new Set()
+    ;[...recentData].reverse().forEach(r =>
+      daySet.add(formatDate(r.created_at))
+    )
+    const allDays = [...daySet]
+
+    const datasets = products.map((name, i) => ({
+      label: name.length > 24 ? name.slice(0, 22) + '…' : name,
+      data: allDays.map(day => productDayMap[name]?.[day] ?? null),
+      borderColor: CHART_PALETTE[i],
+      backgroundColor: 'transparent',
+      pointBackgroundColor: CHART_PALETTE[i],
+      pointRadius: 3,
+      pointHoverRadius: 5,
+      borderWidth: 2,
+      tension: 0.3,
+      spanGaps: false,
+      clip: false,
+    }))
+
+    wrap.style.display = 'block'
+    if (trendChartInstance) trendChartInstance.destroy()
+
+    trendChartInstance = new Chart(document.getElementById('trend-chart'), {
+      type: 'line',
+      data: { labels: allDays, datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: { padding: { top: 6, bottom: 2 } },
+        plugins: {
+          legend: {
+            display: products.length > 0,
+            position: 'bottom',
+            labels: {
+              color: '#888', font: { size: 11 },
+              padding: 12, boxWidth: 8, boxHeight: 8,
+            }
+          },
+          tooltip: {
+            callbacks: {
+              label: ctx => ctx.parsed.y !== null
+                ? ` ${ctx.dataset.label}: ${ctx.parsed.y}/100`
+                : null
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { color: '#555', font: { size: 10 } }, grid: { color: '#1a1a1a' } },
+          y: {
+            min: 0, max: 100,
+            ticks: { color: '#555', font: { size: 10 }, stepSize: 20 },
+            grid: { color: '#1a1a1a' },
+          },
+        },
+      }
+    })
+  }
+
+  // ── Dimension metadata ───────────────────────────────────────
+  const DIM_META = {
+    'Web Presence': {
+      tip: 'How many independent third-party domains mention your product. The baseline — if AI sees no external mentions, nothing else matters.',
+      hint: 'Add your product to directories, publish a blog post, or get mentioned on any indexed page.',
+    },
+    'Source Authority': {
+      tip: 'Quality matters as much as quantity. Mentions on Tier-1 sites (TechCrunch, G2, ProductHunt) carry far more weight than unknown blogs.',
+      hint: 'Get listed on curated directories (AlternativeTo, SaaSHub, ProductHunt) and earn coverage on authoritative tech publications.',
+    },
+    'Recommendation Signals': {
+      tip: 'Your product appears in "best of" or "top recommended" lists, or earns explicit recommendation language. This directly drives AI referral traffic.',
+      hint: 'Reach out for inclusion in "Top X tools for Y" roundup articles. Guest posts and PR mentions help too.',
+    },
+    'Community Validation': {
+      tip: 'Reviews on Product Hunt, Reddit, G2 act as trust signals for AI. More credible community mentions = higher AI confidence in recommending you.',
+      hint: 'Encourage users to post on Product Hunt or Reddit. Even a few genuine reviews significantly boost this signal.',
+    },
+    'Competitive Context': {
+      tip: '"X vs Y" and "alternatives to X" content signals market relevance. Being compared means AI treats your product as a legitimate category player.',
+      hint: 'Create comparison content on your own blog (e.g. "vs. competitors"). Getting listed on AlternativeTo helps immediately.',
+    },
+    // Legacy labels (backward compat for old stored results)
+    'Direct name search': {
+      tip: 'How many independent third-party domains mention your product. The baseline — if AI sees no external mentions, nothing else matters.',
+      hint: 'Add your product to directories, publish a blog post, or get mentioned on any indexed page.',
+    },
+    'Best-of recommendation': {
+      tip: 'Your product appears in "best of" or "top recommended" lists, or earns explicit recommendation language. This directly drives AI referral traffic.',
+      hint: 'Reach out for inclusion in "Top X tools for Y" roundup articles. Guest posts and PR mentions help too.',
+    },
+    'Category ranking': {
+      tip: 'Quality matters as much as quantity. Mentions on Tier-1 sites (TechCrunch, G2, ProductHunt) carry far more weight than unknown blogs.',
+      hint: 'Get listed on curated directories (AlternativeTo, SaaSHub, ProductHunt) and earn coverage on authoritative tech publications.',
+    },
+    'Reviews & mentions': {
+      tip: 'Reviews on Product Hunt, Reddit, G2 act as trust signals for AI. More credible community mentions = higher AI confidence in recommending you.',
+      hint: 'Encourage users to post on Product Hunt or Reddit. Even a few genuine reviews significantly boost this signal.',
+    },
+    'Comparison searches': {
+      tip: '"X vs Y" and "alternatives to X" content signals market relevance. Being compared means AI treats your product as a legitimate category player.',
+      hint: 'Create comparison content on your own blog (e.g. "vs. competitors"). Getting listed on AlternativeTo helps immediately.',
+    },
+  }
+
+  function renderDimRow(r, compact = false) {
+    const meta = DIM_META[r.label] || {}
+    const tip = (meta.tip || '').replace(/'/g, '&#39;').replace(/"/g, '&quot;')
+    const hint = meta.hint || ''
+    const rankSuffix = (r.found && r.rank) ? ` <span style="color:#888;font-weight:400;font-size:0.78em;">#${r.rank}</span>` : ''
+    const labelStyle = compact
+      ? 'font-size:0.82rem;color:#aaa;display:flex;align-items:center;gap:2px;'
+      : 'font-size:0.88rem;color:#aaa;display:flex;align-items:center;gap:2px;'
+    const valStyle = compact
+      ? 'font-size:0.85rem;font-weight:600;'
+      : 'font-size:0.88rem;font-weight:600;'
+    const rowStyle = compact
+      ? 'display:flex;justify-content:space-between;align-items:center;padding:0.5rem 0;border-bottom:1px solid #1e1e1e;'
+      : 'display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0;border-bottom:1px solid #1a1a1a;'
+    return `
+      <div style="${rowStyle}">
+        <div>
+          <span style="${labelStyle}">
+            ${escHtml(r.label || '')}
+            ${tip ? `<span class="dim-tip" data-tip="${tip}">?</span>` : ''}
+          </span>
+          ${!r.found && hint ? `<div class="dim-no-hint">${escHtml(hint)}</div>` : ''}
+        </div>
+        <span style="${valStyle}${r.found ? 'color:#4ade80;' : 'color:#ef4444;'}">${r.found ? '✓ YES' : '✗ NO'}${rankSuffix}</span>
+      </div>`
+  }
+
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+  }
+
+  // ── Profile dropdown ──────────────────────────────────────
+  function toggleDropdown() {
+    document.getElementById('nav-dropdown').classList.toggle('open')
+  }
+  document.addEventListener('click', (e) => {
+    const btn = document.getElementById('nav-avatar-btn')
+    const dd = document.getElementById('nav-dropdown')
+    if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
+      dd.classList.remove('open')
+    }
+  })
+
+  // ── Verify Ownership Popup ────────────────────────────────
+  let _verifyPopupToken = ''
+
+  function showVerifyPopup(product, url) {
+    if (!currentUser) return
+    _verifyPopupToken = `<meta name="pickedby-site-verification" content="${genVerifyToken(currentUser.id, product)}">`
+    const el = document.getElementById('verify-popup-token-code')
+    if (el) el.textContent = _verifyPopupToken
+    const titleEl = document.getElementById('verify-popup-product-name')
+    if (titleEl) titleEl.textContent = `"${product}"`
+    document.getElementById('verify-popup').style.display = 'flex'
+  }
+
+  function closeVerifyPopup() {
+    document.getElementById('verify-popup').style.display = 'none'
+  }
+
+  function copyVerifyPopupToken() {
+    if (!_verifyPopupToken) return
+    navigator.clipboard.writeText(_verifyPopupToken).then(() => {
+      const btn = document.getElementById('verify-popup-copy-btn')
+      if (!btn) return
+      btn.textContent = '✓ Copied!'
+      btn.style.color = '#4ade80'; btn.style.borderColor = '#4ade80'
+      setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = '#888'; btn.style.borderColor = '#444' }, 2000)
+    })
+  }
+
+  // ── Enter key on inputs ────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    ['input-product', 'input-url'].forEach(id => {
+      document.getElementById(id)?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') runCheck()
+      })
+    })
+  })
+
+  // ── Marketing Consent Modal ────────────────────────────────
+  function showConsentModal() {
+    document.getElementById('consent-modal').style.display = 'flex'
+  }
+
+  async function handleConsentSubmit() {
+    const checked = document.getElementById('consent-checkbox').checked
+    if (checked && currentUser?.email) {
+      fetch(`${API_URL}/v1/subscribe`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: currentUser.email, source: 'google-signup' }),
+      }).catch(() => {})
+    }
+    localStorage.setItem('pba_consent_shown', '1')
+    localStorage.setItem('pba_marketing_consent', checked ? '1' : '0')
+    document.getElementById('consent-modal').style.display = 'none'
+  }
+
+  function handleConsentSkip() {
+    localStorage.setItem('pba_consent_shown', '1')
+    localStorage.setItem('pba_marketing_consent', '0')
+    document.getElementById('consent-modal').style.display = 'none'
+  }
+
+  // ── Init ───────────────────────────────────────────────────
+  sb.auth.onAuthStateChange((_event, session) => {
+    if (session?.user) {
+      currentUser = session.user
+      showDashboard(session.user)
+      if (_event === 'SIGNED_IN' && !localStorage.getItem('pba_consent_shown')) {
+        setTimeout(() => showConsentModal(), 0)
+      }
+    } else {
+      showLogin()
+    }
+  })
+
+  // ── FEEDBACK-01: Was this helpful? ─────────────────────────
+  let _fbVote = ''
+  function submitFeedback(vote) {
+    _fbVote = vote
+    if (typeof gtag === 'function') {
+      gtag('event', 'feedback_vote', {
+        vote: vote,
+        product: lastCheckResult ? lastCheckResult.product : '',
+        score: lastCheckResult ? lastCheckResult.score : 0,
+      })
+    }
+    document.getElementById('feedback-ask').style.display = 'none'
+    document.getElementById('feedback-comment').style.display = 'block'
+    document.getElementById('feedback-text').focus()
+  }
+  function submitFeedbackComment() {
+    const text = (document.getElementById('feedback-text').value || '').trim()
+    if (typeof gtag === 'function') {
+      gtag('event', 'feedback_comment', {
+        vote: _fbVote,
+        comment: text.slice(0, 280),
+        product: lastCheckResult ? lastCheckResult.product : '',
+        score: lastCheckResult ? lastCheckResult.score : 0,
+      })
+    }
+    document.getElementById('feedback-comment').style.display = 'none'
+    document.getElementById('feedback-thanks').style.display = 'block'
+  }
+
+  // ── EMAIL-CAPTURE-01: Flow 1 — send score report ──────────
+  async function submitResultEmail() {
+    const input = document.getElementById('result-email-input')
+    const email = (input.value || '').trim()
+    if (!email) return
+    const btn = document.getElementById('result-email-btn')
+    if (btn) { btn.disabled = true; btn.textContent = '...' }
+    try {
+      const r = await fetch(API_URL + '/v1/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          product: lastCheckResult ? lastCheckResult.product : '',
+          score: lastCheckResult ? lastCheckResult.score : 0,
+          source: 'result-email',
+          results: lastCheckResult ? lastCheckResult.results : [],
+        }),
+      })
+      if (r.ok) {
+        document.getElementById('result-email-ok').style.display = 'block'
+        if (input) input.style.display = 'none'
+        if (btn) btn.style.display = 'none'
+      } else {
+        if (btn) { btn.disabled = false; btn.textContent = 'SEND REPORT' }
+      }
+    } catch(e) {
+      if (btn) { btn.disabled = false; btn.textContent = 'SEND REPORT' }
+    }
+  }
+
+  function toggleGuideBtn() {
+    const cb = document.getElementById('guide-consent')
+    const btn = document.getElementById('guide-email-btn')
+    if (!cb || !btn) return
+    const checked = cb.checked
+    btn.disabled = !checked
+    btn.style.background = checked ? '#fff' : '#444'
+    btn.style.color = checked ? '#000' : '#888'
+    btn.style.cursor = checked ? 'pointer' : 'not-allowed'
+  }
+
+  // ── EMAIL-CAPTURE-01: Flow 2 — send guide ─────────────────
+  async function submitGuideEmail() {
+    const input = document.getElementById('guide-email-input')
+    const email = (input.value || '').trim()
+    if (!email) return
+    const btn = document.getElementById('guide-email-btn')
+    if (btn) { btn.disabled = true; btn.textContent = '...' }
+    try {
+      const r = await fetch(API_URL + '/v1/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          source: 'guide',
+          marketing_consent: true,
+          product: lastCheckResult ? lastCheckResult.product : undefined,
+          score: lastCheckResult ? lastCheckResult.score : undefined,
+          results: lastCheckResult ? lastCheckResult.results : undefined,
+        }),
+      })
+      if (r.ok) {
+        document.getElementById('guide-email-ok').style.display = 'block'
+        if (input) input.style.display = 'none'
+        if (btn) btn.style.display = 'none'
+      } else {
+        if (btn) { btn.disabled = false; btn.textContent = 'GET GUIDE' }
+      }
+    } catch(e) {
+      if (btn) { btn.disabled = false; btn.textContent = 'GET GUIDE' }
+    }
+  }
+</script>
+
+<!-- ── Settings Modal ───────────────────────────────── -->
+<div id="settings-overlay" class="settings-overlay" onclick="if(event.target===this)closeSettings()">
+  <div class="settings-box">
+    <div class="settings-title">
+      <span>Settings</span>
+      <button class="settings-close" onclick="closeSettings()">×</button>
+    </div>
+
+    <!-- Account -->
+    <div class="settings-section">
+      <div class="settings-section-label">ACCOUNT</div>
+      <div class="settings-row">
+        <span class="settings-row-label">Email</span>
+        <span class="settings-row-value" id="settings-email"></span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-row-label">Plan</span>
+        <span class="settings-row-value" style="color:#FFD700;">Free</span>
+      </div>
+      <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:6px;">
+        <span class="settings-row-label">Timezone</span>
+        <select id="settings-timezone" onchange="saveTimezone(this.value)" style="background:#0a0a0a;color:#ccc;border:1px solid #2a2a2a;border-radius:8px;padding:0.45rem 0.6rem;font-size:0.82rem;font-family:inherit;cursor:pointer;width:100%;">
+        </select>
+        <div style="font-size:0.7rem;color:#555;margin-top:1px;">Affects chart dates &amp; score timestamps</div>
+      </div>
+    </div>
+
+    <!-- Notifications -->
+    <div class="settings-section">
+      <div class="settings-section-label">NOTIFICATIONS</div>
+      <div class="settings-row">
+        <div>
+          <div class="settings-row-label">Marketing emails</div>
+          <div style="font-size:0.75rem;color:#555;margin-top:2px;">Weekly AI visibility reports &amp; product updates</div>
+        </div>
+        <div class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" id="settings-marketing-toggle" onchange="toggleMarketing()">
+            <span class="toggle-track"></span>
+            <span class="toggle-thumb"></span>
+          </label>
+          <span class="toggle-label" id="settings-marketing-label">Off</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Beta Program -->
+    <div class="settings-section" id="settings-beta-section">
+      <div class="settings-section-label">BETA PROGRAM</div>
+      <div id="settings-beta-joined" style="display:none;">
+        <div class="settings-row" style="margin-bottom:0.5rem;">
+          <div>
+            <div class="settings-row-label">Beta tester</div>
+            <div style="font-size:0.75rem;color:#555;margin-top:2px;">You have lifetime free access to Phase 2</div>
+          </div>
+          <span style="font-size:0.7rem;color:#FFD700;border:1px solid #3a2800;padding:2px 8px;border-radius:10px;">Active</span>
+        </div>
+        <!-- Beta cancel warning (hidden by default) -->
+        <div id="beta-cancel-warning" style="display:none;background:#1a0a0a;border:1px solid #3a1a1a;border-radius:8px;padding:0.85rem 1rem;margin-top:0.75rem;">
+          <div style="font-size:0.82rem;color:#ef4444;font-weight:600;margin-bottom:0.4rem;">⚠️ This cannot be undone</div>
+          <div style="font-size:0.78rem;color:#aaa;line-height:1.6;margin-bottom:0.85rem;">Once you leave the beta, your spot is gone permanently. <strong style="color:#ddd;">You will not be able to rejoin</strong> — even if spots are still available. Your lifetime free access to Phase 2 will be revoked.</div>
+          <div style="display:flex;gap:0.6rem;">
+            <button onclick="settingsBetaCancel()" style="background:#ef4444;color:#fff;font-weight:700;padding:0.45rem 0.9rem;border-radius:6px;border:none;cursor:pointer;font-size:0.78rem;font-family:inherit;">Yes, leave beta</button>
+            <button onclick="hideBetaCancelWarning()" style="background:none;border:1px solid #2a2a2a;color:#888;padding:0.45rem 0.9rem;border-radius:6px;cursor:pointer;font-size:0.78rem;font-family:inherit;">Keep my beta access</button>
+          </div>
+        </div>
+        <button id="beta-cancel-trigger" onclick="showBetaCancelWarning()" style="background:none;border:1px solid #2a2a2a;color:#888;padding:0.45rem 0.9rem;border-radius:8px;cursor:pointer;font-size:0.78rem;font-family:inherit;transition:all 0.15s;margin-top:0.5rem;" onmouseover="this.style.borderColor='#555';this.style.color='#ccc'" onmouseout="this.style.borderColor='#2a2a2a';this.style.color='#888'">Cancel beta participation</button>
+      </div>
+      <div id="settings-beta-not-joined" style="display:none;">
+        <div style="font-size:0.82rem;color:#888;margin-bottom:0.75rem;line-height:1.5;">Join the beta to get lifetime free access to Phase 2 features.</div>
+        <button onclick="settingsBetaJoin()" style="background:#FFD700;color:#0a0a0a;font-weight:700;padding:0.5rem 1rem;border-radius:8px;border:none;cursor:pointer;font-size:0.82rem;font-family:inherit;">Join Beta</button>
+      </div>
+    </div>
+
+    <!-- Data -->
+    <div class="settings-section">
+      <div class="settings-section-label">DATA &amp; PRIVACY</div>
+      <button onclick="exportCSV()" style="width:100%;background:none;border:1px solid #2a2a2a;color:#ccc;padding:0.65rem;border-radius:8px;cursor:pointer;font-size:0.85rem;font-family:inherit;text-align:left;transition:border-color 0.15s;" onmouseover="this.style.borderColor='#444'" onmouseout="this.style.borderColor='#2a2a2a'">
+        Export score history (CSV) →
+      </button>
+    </div>
+
+    <!-- Danger Zone -->
+    <div class="settings-section">
+      <div class="settings-section-label" style="color:#3a1a1a;">DANGER ZONE</div>
+      <button class="danger-btn" onclick="showDeleteConfirm()" style="width:auto;padding:0.4rem 0.9rem;font-size:0.78rem;">Delete account</button>
+      <div class="delete-confirm-wrap" id="delete-confirm-wrap">
+        <div style="font-size:0.8rem;color:#888;margin-top:0.75rem;line-height:1.6;">
+          This will permanently delete all your score history and cannot be undone.<br>
+          Type <strong style="color:#ef4444;">DELETE</strong> to confirm.
+        </div>
+        <input type="text" class="delete-confirm-input" id="delete-confirm-input" placeholder="Type DELETE" oninput="checkDeleteInput()" autocomplete="off" />
+        <button class="delete-final-btn" id="delete-final-btn" onclick="confirmDeleteAccount()">Permanently delete my account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Marketing Consent Modal ────────────────────────── -->
+<div id="consent-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:9999;align-items:center;justify-content:center;padding:1.25rem;">
+  <div style="background:#111;border:1px solid #2a2a2a;border-radius:14px;padding:2rem;max-width:400px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+    <div style="font-size:1.5rem;margin-bottom:0.75rem;">👋</div>
+    <div style="font-size:1rem;font-weight:700;margin-bottom:0.5rem;">Welcome to pickedby.ai!</div>
+    <div style="font-size:0.82rem;color:#888;margin-bottom:1.5rem;line-height:1.6;">Track your AI Visibility Score over time with free weekly reports — no manual checking needed.</div>
+    <label style="display:flex;align-items:flex-start;gap:0.65rem;cursor:pointer;margin-bottom:1.5rem;">
+      <input type="checkbox" id="consent-checkbox" checked style="width:16px;height:16px;margin-top:2px;accent-color:#FFD700;flex-shrink:0;" />
+      <span style="font-size:0.82rem;color:#bbb;line-height:1.5;">Yes, send me free weekly AI Visibility reports for my products. Unsubscribe anytime.</span>
+    </label>
+    <button onclick="handleConsentSubmit()" style="width:100%;background:#FFD700;color:#000;border:none;padding:0.75rem;border-radius:8px;cursor:pointer;font-size:0.9rem;font-weight:700;font-family:inherit;transition:opacity 0.15s;">Continue to Dashboard →</button>
+    <button onclick="handleConsentSkip()" style="width:100%;background:none;border:none;color:#444;padding:0.5rem;cursor:pointer;font-size:0.78rem;font-family:inherit;margin-top:0.25rem;">No thanks</button>
+  </div>
+</div>
+
+<!-- ── Verify Ownership Popup ─────────────────────────── -->
+<div id="verify-popup" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9000;align-items:center;justify-content:center;padding:1.25rem;">
+  <div style="background:#111;border:1px solid #2a2a2a;border-radius:14px;padding:2rem;max-width:460px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);">
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:0.5rem;">
+      <span style="font-size:1.4rem;">✓</span>
+      <div style="font-size:1rem;font-weight:700;">Saved to My Products!</div>
+    </div>
+    <div style="font-size:0.82rem;color:#666;margin-bottom:1.5rem;line-height:1.6;">
+      Verify ownership within <span style="color:#FFD700;font-weight:700;">48 hours</span> or this product will be automatically removed.
+    </div>
+
+    <div style="background:#0a0a0a;border:1px solid #1e1e1e;border-radius:8px;padding:1rem 1.1rem;margin-bottom:1.25rem;">
+      <div style="font-size:0.78rem;font-weight:600;color:#aaa;margin-bottom:0.75rem;">How to verify ownership</div>
+      <div style="font-size:0.75rem;color:#555;margin-bottom:0.4rem;">1. Add this tag inside your site's <code style="color:#888;">&lt;head&gt;</code>:</div>
+      <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:1rem;">
+        <code id="verify-popup-token-code" style="flex:1;font-size:0.62rem;color:#777;background:#080808;padding:0.4rem 0.6rem;border-radius:5px;border:1px solid #1a1a1a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;"></code>
+        <button id="verify-popup-copy-btn" onclick="copyVerifyPopupToken()" style="flex-shrink:0;background:none;border:1px solid #444;color:#888;padding:0.35rem 0.7rem;border-radius:5px;cursor:pointer;font-size:0.72rem;font-family:inherit;white-space:nowrap;transition:all 0.1s;">Copy</button>
+      </div>
+      <div style="font-size:0.75rem;color:#555;">2. Go to <b style="color:#aaa;">My Products</b> tab → expand the product → click <b style="color:#aaa;">"Verify Now"</b></div>
+      <div style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid #1a1a1a;font-size:0.7rem;color:#444;">Works with any site — Gumroad, Etsy, Notion, your own domain, etc.</div>
+    </div>
+
+    <div id="verify-popup-product-name" style="font-size:0.72rem;color:#444;margin-bottom:1.25rem;"></div>
+
+    <div style="display:flex;gap:0.75rem;justify-content:flex-end;">
+      <button onclick="closeVerifyPopup()" style="background:none;border:1px solid #2a2a2a;color:#666;padding:0.5rem 1.25rem;border-radius:7px;cursor:pointer;font-size:0.82rem;font-family:inherit;">Later</button>
+      <button onclick="closeVerifyPopup();switchTab('mine')" style="background:#FFD700;color:#000;border:none;padding:0.5rem 1.4rem;border-radius:7px;cursor:pointer;font-size:0.82rem;font-weight:700;font-family:inherit;">Go to My Products →</button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer style="margin-top:3.5rem;text-align:center;padding:1.5rem 1rem 2rem;font-size:0.78rem;color:#333;border-top:1px solid #181818;">
+  <p><a href="/" style="display:inline-flex;align-items:center;gap:5px;text-decoration:none;vertical-align:middle;"><svg width="14" height="11" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg><span style="font-family:'Press Start 2P',monospace;font-size:0.45rem;"><span style="color:#FFD700;">picked</span><span style="color:#888;">by</span><span style="color:#FFD700;">.ai</span></span></a> &nbsp;·&nbsp; The AI Visibility Platform &nbsp;·&nbsp; <a href="/blog/" style="color:#333;text-decoration:none;">Blog</a> &nbsp;·&nbsp; <a href="https://www.linkedin.com/in/pickedbyai/" target="_blank" rel="noopener" style="color:#333;text-decoration:none;">LinkedIn</a> &nbsp;·&nbsp; <a href="/privacy" style="color:#333;text-decoration:none;">Privacy</a> &nbsp;·&nbsp; <a href="/terms" style="color:#333;text-decoration:none;">Terms</a></p>
+</footer>
+
+</body>
+</html>

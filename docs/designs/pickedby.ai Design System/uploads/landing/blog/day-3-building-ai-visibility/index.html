@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 3: We're Still at Score 12 — Here's What We Learned — pickedby.ai</title>
+  <meta name="description" content="Three days after scoring 12/100 on our own AI visibility tool, we share what we did, what didn't move the needle yet, and what we expect to change first." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pickedby.ai/blog/day-3-building-ai-visibility/" />
+  <meta property="og:title" content="Day 3: We're Still at Score 12 — Here's What We Learned" />
+  <meta property="og:description" content="Three days after scoring 12/100, we ran the tool again. The score hasn't moved. Here's why that's expected — and what moves next." />
+  <meta property="og:url" content="https://pickedby.ai/blog/day-3-building-ai-visibility/" />
+  <meta property="og:type" content="article" />
+  <meta property="og:image" content="https://pickedby.ai/blog/day-3-building-ai-visibility/cover.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="article:published_time" content="2026-04-13" />
+  <meta property="article:author" content="pickedby.ai" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@pickedbyAI" />
+  <meta name="twitter:title" content="Day 3: We're Still at Score 12 — Here's What We Learned" />
+  <meta name="twitter:description" content="Three days of action. Score unchanged. Here's what AI visibility actually looks like in practice." />
+  <meta name="keywords" content="AI visibility score, building in public, GEO generative engine optimization, pickedby.ai, AI discovery, ChatGPT product recommendation, how to improve AI visibility" />
+  <meta name="author" content="pickedby.ai" />
+  <meta property="og:site_name" content="pickedby.ai" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickedby.ai/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pickedby.ai/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Day 3: We're Still at Score 12", "item": "https://pickedby.ai/blog/day-3-building-ai-visibility/" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Day 3: We're Still at Score 12 — Here's What We Learned",
+    "description": "Three days after scoring 12/100 on our own AI visibility tool, we share what we did, what didn't move the needle yet, and what we expect to change first.",
+    "datePublished": "2026-04-13",
+    "author": { "@type": "Organization", "name": "pickedby.ai", "url": "https://pickedby.ai" },
+    "publisher": { "@type": "Organization", "name": "pickedby.ai", "url": "https://pickedby.ai" },
+    "url": "https://pickedby.ai/blog/day-3-building-ai-visibility/",
+    "mainEntityOfPage": "https://pickedby.ai/blog/day-3-building-ai-visibility/"
+  }
+  </script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2H007YWM9F"></script>
+  <!-- Contentsquare (Hotjar) -->
+  <script src="https://t.contentsquare.net/uxa/539b28e3d0a6f.js" async></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_personalization: 'denied' });
+    gtag('js', new Date());
+    gtag('config', 'G-2H007YWM9F');
+    if (localStorage.getItem('cookie_consent') === 'accepted') {
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+    }
+  </script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #000; --bg2: #0d0d0d; --bg3: #161616;
+      --yellow: #FFD700; --yellow2: #b39700;
+      --text: #e8e8e8; --muted: #888; --border: #1f1f1f;
+    }
+    body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; line-height: 1.7; }
+    a { color: var(--yellow); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); max-width: 1280px; margin: 0 auto; }
+    .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: var(--yellow); text-decoration: none; }
+    .nav-links a { color: var(--muted); }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .article-wrap { max-width: 680px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+    .article-tag { font-family: 'Press Start 2P', monospace; font-size: 0.38rem; color: var(--yellow); letter-spacing: 0.1em; margin-bottom: 1.25rem; }
+    .article-tag a { color: var(--yellow); text-decoration: none; }
+    h1 { font-size: 1.9rem; font-weight: 800; line-height: 1.25; margin-bottom: 1.25rem; }
+    .article-meta { font-size: 0.78rem; color: #555; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .article-body h2 { font-size: 1.2rem; font-weight: 700; margin: 2.5rem 0 0.85rem; color: var(--text); }
+    .article-body h3 { font-size: 1rem; font-weight: 700; margin: 1.75rem 0 0.6rem; color: var(--text); }
+    .article-body p { font-size: 0.95rem; color: #ccc; margin-bottom: 1.15rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0.5rem 0 1.25rem 1.2rem; }
+    .article-body li { font-size: 0.95rem; color: #ccc; margin-bottom: 0.65rem; line-height: 1.75; }
+    .article-body strong { color: var(--text); }
+    .article-body em { color: var(--muted); font-style: italic; }
+    .callout { background: var(--bg2); border-left: 3px solid var(--yellow); padding: 1rem 1.25rem; margin: 1.75rem 0; }
+    .callout p { margin-bottom: 0; color: #bbb; font-size: 0.92rem; }
+    .callout.red { border-left-color: #ef4444; }
+    .ai-output { background: #0a0a0a; border: 1px solid #2a2a2a; padding: 1.25rem 1.5rem; margin: 1.75rem 0; font-size: 0.88rem; color: #999; line-height: 1.8; }
+    .ai-output .ai-label { font-family: 'Press Start 2P', monospace; font-size: 0.32rem; color: #333; letter-spacing: 0.1em; margin-bottom: 0.75rem; display: block; }
+    .score-box { background: var(--bg2); border: 1px solid #2a2a2a; padding: 1.5rem 2rem; margin: 1.75rem 0; display: flex; align-items: center; gap: 1.5rem; }
+    .score-num { font-family: 'Press Start 2P', monospace; font-size: 2rem; color: #ef4444; flex-shrink: 0; }
+    .score-num.same { color: #ef4444; }
+    .score-label { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+    .score-label strong { color: var(--text); display: block; margin-bottom: 0.25rem; }
+    .update-badge { display: inline-block; background: #1a1a1a; border: 1px solid #333; color: var(--yellow); font-family: 'Press Start 2P', monospace; font-size: 0.32rem; padding: 0.35rem 0.75rem; letter-spacing: 0.1em; margin-bottom: 1rem; }
+    .timeline { margin: 1.75rem 0; }
+    .timeline-item { display: flex; gap: 1.25rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+    .timeline-item:last-child { border-bottom: none; }
+    .timeline-day { font-family: 'Press Start 2P', monospace; font-size: 0.38rem; color: var(--yellow); flex-shrink: 0; width: 52px; padding-top: 0.2rem; }
+    .timeline-content { font-size: 0.88rem; color: #bbb; line-height: 1.7; }
+    .timeline-content strong { color: var(--text); display: block; margin-bottom: 0.25rem; }
+    .dim-table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: 0.85rem; }
+    .dim-table th { text-align: left; padding: 0.6rem 0.85rem; border-bottom: 1px solid #2a2a2a; color: var(--muted); font-weight: 600; }
+    .dim-table td { padding: 0.75rem 0.85rem; border-bottom: 1px solid var(--border); color: #bbb; vertical-align: top; }
+    .dim-table tr:last-child td { border-bottom: none; }
+    .status-done { color: #22c55e; font-size: 0.8rem; }
+    .status-wait { color: #888; font-size: 0.8rem; }
+    .status-lag { color: #f59e0b; font-size: 0.8rem; }
+    .cta-box { background: var(--bg2); border: 1px solid #2a2a2a; padding: 2rem; margin: 3rem 0; text-align: center; }
+    .cta-box h3 { font-family: 'Press Start 2P', monospace; font-size: 0.55rem; color: var(--yellow); margin-bottom: 0.75rem; line-height: 1.7; }
+    .cta-box p { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.25rem; }
+    .btn-cta { display: inline-block; background: var(--yellow); color: #000; font-family: 'Press Start 2P', monospace; font-size: 0.42rem; padding: 0.75rem 1.5rem; box-shadow: 3px 3px 0 var(--yellow2); text-decoration: none; }
+    .btn-cta:hover { text-decoration: none; opacity: 0.9; }
+    .share-section { margin: 2.5rem 0 0; padding: 1.5rem 0; border-top: 1px solid var(--border); }
+    .share-label { font-family: 'Press Start 2P', monospace; font-size: 0.38rem; color: #444; letter-spacing: 0.1em; margin-bottom: 0.85rem; }
+    .share-buttons { display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .share-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.55rem 1.1rem; font-size: 0.82rem; border-radius: 4px; cursor: pointer; text-decoration: none; border: 1px solid #2a2a2a; background: var(--bg2); color: var(--text); transition: border-color 0.2s; font-family: inherit; }
+    .share-btn:hover { border-color: #444; color: #fff; text-decoration: none; }
+    .prev-next { display: flex; gap: 1rem; margin: 3rem 0 0; padding-top: 2rem; border-top: 1px solid var(--border); font-size: 0.82rem; }
+    .prev-next a { color: var(--muted); flex: 1; }
+    .prev-next a:hover { color: var(--text); text-decoration: none; }
+    .prev-next .label { font-family: 'Press Start 2P', monospace; font-size: 0.35rem; color: #333; display: block; margin-bottom: 0.4rem; letter-spacing: 0.08em; }
+    footer { border-top: 1px solid var(--border); padding: 1.5rem 2rem; text-align: center; font-size: 0.75rem; color: #444; }
+    footer a { color: #555; text-decoration: underline; }
+    @media (max-width: 600px) {
+      .nav { padding: 1rem; }
+      .article-wrap { padding: 2rem 1rem 4rem; }
+      h1 { font-size: 1.4rem; }
+      .score-box { flex-direction: column; gap: 0.75rem; text-align: center; }
+      .dim-table { font-size: 0.78rem; }
+    }
+  
+/* Mobile nav */
+.nav-burger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; color: #FFD700; font-size: 1.4rem; line-height: 1; }
+.nav-mobile { display: none; flex-direction: column; gap: 0; border-bottom: 1px solid #1f1f1f; background: #0d0d0d; max-width: 1280px; margin: 0 auto; }
+.nav-mobile.open { display: flex; }
+.nav-mobile a { padding: 0.85rem 2rem; color: #888; text-decoration: none; font-size: 0.9rem; border-top: 1px solid #1f1f1f; }
+.nav-mobile a:hover { color: #fff; background: #161616; }
+@media (max-width: 767px) {
+  .nav { padding: 0.85rem 1rem; }
+  .nav-logo { font-size: 0.7rem; }
+  .nav-links > a, .nav-links > div { display: none !important; }
+  .nav-burger { display: block; }
+}
+  </style>
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="/" class="nav-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
+      <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+      <span><span style="color:var(--yellow);">picked</span><span style="color:#fff;">by</span><span style="color:var(--yellow);">.ai</span></span>
+    </a>
+    <div class="nav-links">
+      <div style="position:relative;">
+        <button onclick="var m=this.nextElementSibling;m.style.display=m.style.display==='block'?'none':'block';" style="background:none;border:none;cursor:pointer;color:#888;font-size:0.9rem;padding:0;font-family:inherit;letter-spacing:0.02em;">ABOUT &#9660;</button>
+        <div style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:#0d0d0d;border:1px solid #2a2a2a;min-width:160px;z-index:100;">
+          <a href="/manifesto/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;border-bottom:1px solid #1f1f1f;">Manifesto</a>
+          <a href="/methodology/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;border-bottom:1px solid #1f1f1f;">How We Score</a>
+          <a href="/blog/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;">Blog</a>
+        </div>
+      </div>
+      <a href="/dashboard.html" style="color:#000;background:#FFD700;border:none;padding:0.45rem 1.1rem;border-radius:6px;font-weight:700;font-size:0.88rem;letter-spacing:0.03em;text-decoration:none;box-shadow:0 0 12px rgba(255,215,0,0.35);">Dashboard</a>
+      <button class="nav-burger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">&#9776;</button>
+    </div>
+  </nav>
+  <div class="nav-mobile">
+    <a href="/manifesto/">Manifesto</a>
+    <a href="/methodology/">How We Score</a>
+    <a href="/blog/">Blog</a>
+    <a href="/dashboard.html">Dashboard</a>
+  </div>
+
+  <article class="article-wrap">
+
+    <div class="update-badge">PROOF-01 · DAY 3</div>
+    <div class="article-tag"><a href="/blog/">BLOG</a> &nbsp;·&nbsp; BUILDING IN PUBLIC</div>
+    <h1>Day 3: We're Still at Score 12 — Here's What We Learned</h1>
+    <div class="article-meta">April 13, 2026 &nbsp;·&nbsp; 5 min read &nbsp;·&nbsp; by pickedby.ai</div>
+
+    <div class="article-body">
+
+      <p>Three days ago we published our <a href="/blog/we-scored-12-on-our-own-tool/">Day 0 post</a>: we ran pickedby.ai through our own tool and scored 12/100. Perplexity said it had never heard of us. GPT said the same.</p>
+
+      <p>We promised to document every step — what we do, what moves the needle, what doesn't.</p>
+
+      <p>Here's Day 3.</p>
+
+      <div class="score-box">
+        <div class="score-num same">12</div>
+        <div class="score-label">
+          <strong>pickedby.ai — April 13, 2026</strong>
+          Score: 12/100 · Tier: Invisible (0–35)<br>
+          Perplexity: Still no recognition<br>
+          GPT-4o: Still no recognition
+        </div>
+      </div>
+
+      <p>The score hasn't moved. We expected that. Here's why — and what we're watching.</p>
+
+      <h2>What we actually did in 3 days</h2>
+
+      <p>Building in public means showing the real log, not the highlight reel. Here's the actual sequence:</p>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <div class="timeline-day">DAY 0</div>
+          <div class="timeline-content">
+            <strong>Published the score publicly</strong>
+            Score 12, both AIs unaware. Posted to Reddit (r/SideProject), Indie Hackers, X. The Day 0 post went live.
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-day">DAY 1</div>
+          <div class="timeline-content">
+            <strong>Published "We Asked 4 AIs to Redesign Our Product"</strong>
+            Fed our system to Perplexity, Grok, Gemini, and ChatGPT and asked each one: what's wrong with this? They all gave the same answer. <a href="/blog/we-asked-4-ais-to-redesign-our-product/">We built the fix in one day.</a>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-day">DAY 2</div>
+          <div class="timeline-content">
+            <strong>Full SEO audit — internal links, meta tags, sitemap</strong>
+            Found 3 blog posts missing from our sitemap. Fixed meta descriptions across 10 posts (all were over 150 characters — bad for AI snippets). Added internal links between every post. Small details. But AI crawlers notice them.
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-day">DAY 3</div>
+          <div class="timeline-content">
+            <strong>This post</strong>
+            Score re-check. Still 12. Documentation continues.
+          </div>
+        </div>
+      </div>
+
+      <h2>Why the score hasn't moved — and why that's normal</h2>
+
+      <p>AI visibility is a lag indicator. This is one of the most important things to understand about it — and one of the reasons most creators never actually track it.</p>
+
+      <p>When you publish a blog post, Google takes days to crawl it. AI training pipelines take weeks to months to re-index. Community signals (Reddit threads, ProductHunt votes, Indie Hackers discussions) take time to accumulate weight. The actions we took in Day 1–2 are real — they're just not reflected in today's score yet.</p>
+
+      <div class="callout">
+        <p>Think of it like planting seeds. You don't harvest on Day 3. But if you don't plant on Day 1, you'll have nothing to harvest on Day 90.</p>
+      </div>
+
+      <p>The score measures five dimensions. Here's where each one stands right now:</p>
+
+      <table class="dim-table">
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th>Action taken</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Web Presence</strong><br><em>Does content about you exist?</em></td>
+            <td>4 new blog posts published. Sitemap expanded to 13 URLs.</td>
+            <td><span class="status-lag">⏳ Crawl lag</span></td>
+          </tr>
+          <tr>
+            <td><strong>Source Authority</strong><br><em>Are trusted sources covering you?</em></td>
+            <td>Posted on Reddit, IH. No external coverage yet.</td>
+            <td><span class="status-wait">◦ Pending</span></td>
+          </tr>
+          <tr>
+            <td><strong>Recommendation Signals</strong><br><em>Do "best of" lists mention you?</em></td>
+            <td>Submitted to a few directories. Not yet picked up.</td>
+            <td><span class="status-wait">◦ Pending</span></td>
+          </tr>
+          <tr>
+            <td><strong>Community Validation</strong><br><em>Do forums, reviews, threads exist?</em></td>
+            <td>Reddit post live. PH launch pending.</td>
+            <td><span class="status-lag">⏳ Accumulating</span></td>
+          </tr>
+          <tr>
+            <td><strong>Competitive Context</strong><br><em>Is your product discussed relative to others?</em></td>
+            <td>Not yet. Comparison content is next.</td>
+            <td><span class="status-wait">◦ Not started</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>What we expect to move first</h2>
+
+      <p>Based on how AI training pipelines work, community validation moves fastest. Reddit threads, forum mentions, and Product Hunt pages get crawled and re-indexed more aggressively than personal blogs.</p>
+
+      <p>That's why our next action is a Product Hunt launch — not because we need the traffic, but because PH is a source that Perplexity and Claude treat as authoritative. A live PH listing with any votes is a harder signal than ten blog posts.</p>
+
+      <p>Web presence signals should start moving in 2–4 weeks as our new content gets indexed. We'll re-check the score then.</p>
+
+      <h2>The thing most creators miss</h2>
+
+      <p>Here's what this experiment has already proven, even with a score still at 12:</p>
+
+      <p>Most creators don't know their Day 0. They don't have a baseline. They write content, they post on social, they launch things — and they have no idea whether any of it is changing how AI perceives them.</p>
+
+      <p>You can't improve what you don't measure. And you can't measure what you never started tracking.</p>
+
+      <div class="callout">
+        <p>The value of the tool isn't the score. It's the baseline. Knowing your 12 is the first move. Everything else is just playing the game without knowing the score.</p>
+      </div>
+
+      <p>We didn't build pickedby.ai to give creators a number to brag about. We built it so they could answer a question that actually matters: <em>does AI know I exist?</em></p>
+
+      <p>If the answer is no — now you know. That's Day 0. And Day 0 is where it starts.</p>
+
+      <h2>What's next</h2>
+
+      <p>We'll re-run the score in 2 weeks and publish the results here — whatever they are. If we've moved from 12 to 15, we'll explain exactly what caused it. If we're still at 12, we'll explain why.</p>
+
+      <p>The whole point is to show the real thing, not the polished version.</p>
+
+      <p>If you want to follow along, check your own score first. That's your Day 0. Bookmark it. Come back in two weeks.</p>
+
+    </div>
+
+    <div class="cta-box">
+      <h3>FIND YOUR DAY 0</h3>
+      <p>Run your product through the same tool. 10 seconds, no signup, free forever.</p>
+      <a href="/dashboard.html" class="btn-cta">CHECK YOUR SCORE →</a>
+    </div>
+
+    <div class="share-section">
+      <div class="share-label">SHARE</div>
+      <div class="share-buttons">
+        <a class="share-btn" href="https://twitter.com/intent/tweet?text=Day+3+of+building+in+public%3A+still+score+12%2F100+on+our+own+AI+visibility+tool.+Score+hasn%27t+moved.+Here%27s+what+we+learned.+%40pickedbyAI&url=https%3A%2F%2Fpickedby.ai%2Fblog%2Fday-3-building-ai-visibility%2F" target="_blank" rel="noopener">𝕏 Share</a>
+        <button class="share-btn" onclick="navigator.clipboard.writeText('https://pickedby.ai/blog/day-3-building-ai-visibility/').then(()=>{this.textContent='✓ Copied';setTimeout(()=>{this.textContent='Copy link';},2000)})">Copy link</button>
+      </div>
+    </div>
+
+    <div class="prev-next">
+      <a href="/blog/we-scored-12-on-our-own-tool/">
+        <span class="label">← PREVIOUS</span>
+        We Scored 12/100 on Our Own AI Visibility Tool — Day 0
+      </a>
+      <a href="/blog/we-asked-4-ais-to-redesign-our-product/" style="text-align:right;">
+        <span class="label">RELATED →</span>
+        We Asked 4 AI Models to Redesign Our Product
+      </a>
+    </div>
+
+  </article>
+
+  <footer>
+    <p><a href="/" style="display:inline-flex;align-items:center;gap:5px;text-decoration:none;vertical-align:middle;"><svg width="14" height="11" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg><span style="font-family:'Press Start 2P',monospace;font-size:0.45rem;"><span style="color:#FFD700;">picked</span><span style="color:#888;">by</span><span style="color:#FFD700;">.ai</span></span></a> &nbsp;·&nbsp; <a href="/">Check your AI score</a> &nbsp;·&nbsp; <a href="https://www.linkedin.com/in/pickedbyai/" target="_blank" rel="noopener">LinkedIn</a> &nbsp;·&nbsp; <a href="/privacy">Privacy</a> &nbsp;·&nbsp; <a href="/terms">Terms</a></p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--pba-bg);color:var(--pba-fg);font-family:var(--pba-font-body)}
+  .grid{display:grid;grid-template-columns:repeat(9,1fr);height:180px;padding:12px;gap:0;box-sizing:border-box}
+  .sw{display:flex;flex-direction:column;justify-content:flex-end;padding:8px 6px;border:1px solid var(--pba-border);border-right:none}
+  .sw:last-child{border-right:1px solid var(--pba-border)}
+  .name{font-family:var(--pba-font-pixel);font-size:6px;letter-spacing:0.1em}
+  .hex{font-family:var(--pba-font-mono);font-size:8px;margin-top:3px}
+</style></head><body>
+<div class="grid">
+  <div class="sw" style="background:#000000"><div class="name" style="color:#888">BG-0</div><div class="hex" style="color:#666">#000000</div></div>
+  <div class="sw" style="background:#0a0a0a"><div class="name" style="color:#888">BG</div><div class="hex" style="color:#666">#0A0A0A</div></div>
+  <div class="sw" style="background:#141414"><div class="name" style="color:#aaa">BG-2</div><div class="hex" style="color:#666">#141414</div></div>
+  <div class="sw" style="background:#1a1a1a"><div class="name" style="color:#aaa">BG-4</div><div class="hex" style="color:#666">#1A1A1A</div></div>
+  <div class="sw" style="background:#2a2a2a"><div class="name" style="color:#bbb">BORDER</div><div class="hex" style="color:#888">#2A2A2A</div></div>
+  <div class="sw" style="background:#555"><div class="name" style="color:#111">FG-5</div><div class="hex" style="color:#111">#555555</div></div>
+  <div class="sw" style="background:#888"><div class="name" style="color:#000">FG-3</div><div class="hex" style="color:#000">#888888</div></div>
+  <div class="sw" style="background:#cccccc"><div class="name" style="color:#000">FG-1</div><div class="hex" style="color:#000">#CCCCCC</div></div>
+  <div class="sw" style="background:#ffffff"><div class="name" style="color:#000">FG-BOLD</div><div class="hex" style="color:#000">#FFFFFF</div></div>
+</div>
+</body></html>

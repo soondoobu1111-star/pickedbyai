@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--pba-bg);color:var(--pba-fg);font-family:var(--pba-font-body)}
+  .wrap{padding:22px;display:flex;flex-direction:column;gap:14px}
+  .lb{font-family:var(--pba-font-pixel);font-size:6.5px;color:var(--pba-fg-5);letter-spacing:0.15em;margin-bottom:4px}
+  .row{display:flex;gap:10px}
+  input,select{background:#141414;border:1px solid #2a2a2a;color:#fff;font-family:var(--pba-font-body);font-size:13px;padding:10px 12px;outline:none;flex:1}
+  input:focus{border-color:var(--pba-gold)}
+  select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='%23888'><path d='M0 0h10L5 6z'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+  .tog{display:inline-flex;background:#141414;border:1px solid #2a2a2a;padding:3px}
+  .tog button{background:transparent;border:none;color:var(--pba-fg-3);font-family:var(--pba-font-pixel);font-size:8px;letter-spacing:0.1em;padding:6px 12px;cursor:pointer}
+  .tog .on{background:var(--pba-gold);color:#000}
+  .chk{display:inline-flex;align-items:center;gap:8px;font-size:12px;color:var(--pba-fg-2)}
+  .box{width:14px;height:14px;border:1px solid #2a2a2a;background:#0d0d0d;display:inline-grid;place-items:center;color:var(--pba-gold);font-size:11px}
+  .box.on{background:var(--pba-gold);color:#000;border-color:var(--pba-gold)}
+</style></head><body>
+<div class="wrap">
+  <div>
+    <div class="lb">URL INPUT</div>
+    <div class="row"><input placeholder="https://your-product.com" value="https://pickedby.ai"><button style="font-family:var(--pba-font-pixel);font-size:9px;letter-spacing:0.1em;background:var(--pba-gold);color:#000;border:none;padding:0 18px;cursor:pointer;box-shadow:3px 3px 0 #b39700">CHECK</button></div>
+  </div>
+  <div class="row" style="gap:20px;align-items:center;margin-top:4px">
+    <div class="tog"><button class="on">CHATGPT</button><button>PERPLEXITY</button><button>GEMINI</button></div>
+    <label class="chk"><span class="box on">✓</span> Include Claude</label>
+    <label class="chk"><span class="box"></span> Share results</label>
+  </div>
+</div>
+</body></html>

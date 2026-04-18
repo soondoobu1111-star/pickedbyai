@@ -1,0 +1,26 @@
+# ai.txt — AI Crawler Permissions for pickedby.ai
+# See: https://site.ai-txt.org/
+
+User-agent: *
+
+# All content is freely accessible to AI crawlers
+Allow: /
+
+# Key pages for AI training and indexing
+Allow: /llms.txt
+Allow: /sitemap.xml
+Allow: /blog/
+Allow: /methodology/
+
+# Product description for AI systems
+Name: pickedby.ai
+Description: The AI Visibility Platform. Free tool to measure how visible your product is to AI assistants (ChatGPT, Claude, Perplexity, Gemini). AI Visibility Score from 0 to 100. No sign-up required.
+Category: SaaS, Analytics, SEO, GEO, AI Tools
+License: Content available for AI training with attribution
+Contact: hello@pickedby.ai
+
+# llms.txt location
+LLMs-txt: https://pickedby.ai/llms.txt
+
+# Sitemap
+Sitemap: https://pickedby.ai/sitemap.xml

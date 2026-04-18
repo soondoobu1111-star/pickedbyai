@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1280">
+<title>pickedby.ai — Dashboard UI Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css">
+<link rel="stylesheet" href="dashboard.css">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="root" data-screen-label="Dashboard"></div>
+
+<script type="text/babel" src="Sidebar.jsx"></script>
+<script type="text/babel" src="ScoreCard.jsx"></script>
+<script type="text/babel" src="ProbeTable.jsx"></script>
+
+<script type="text/babel">
+const PRODUCTS = [
+  { name: 'pickedby.ai',      score: 87, delta: +14, last: '3D AGO' },
+  { name: 'thunova.kr',       score: 64, delta: +6,  last: '5D AGO' },
+  { name: 'notion-tools.co',  score: 41, delta: -3,  last: '1W AGO' },
+  { name: 'gumroad-indie.com',score: 22, delta: +2,  last: '2W AGO' },
+];
+
+const DIMS = [
+  { name: 'Web Presence',          value: 23, max: 25, detail: '92% — ranked #1–3 on 14 shortlisted queries' },
+  { name: 'Source Authority',      value: 17, max: 20, detail: 'Cited by Perplexity from 3 trusted domains' },
+  { name: 'Recommendation Signals',value: 15, max: 20, detail: 'Positive mentions in 11 of 50 probes' },
+  { name: 'Community Validation',  value: 14, max: 20, detail: 'Reddit + HN + ProductHunt footprint detected' },
+  { name: 'Competitive Context',   value:  8, max: 15, detail: 'Co-recommended with 4 alternatives' },
+];
+
+const PROBES = [
+  { q: 'best AI visibility tracker for indie makers', model: 'CHATGPT', found: true,  rank: 1, sentiment:  0.82 },
+  { q: 'google search console for chatgpt',            model: 'PPLX',    found: true,  rank: 2, sentiment:  0.71 },
+  { q: 'how to measure llm brand mentions',            model: 'CLAUDE',  found: true,  rank: 3, sentiment:  0.58 },
+  { q: 'llms.txt generator free online',               model: 'CHATGPT', found: true,  rank: 1, sentiment:  0.91 },
+  { q: 'tools to track AI recommendations',            model: 'PPLX',    found: true,  rank: 2, sentiment:  0.64 },
+  { q: 'is my product recommended by AI',              model: 'GEMINI',  found: false, rank: 0, sentiment:  0    },
+  { q: 'gumroad seller AI SEO 2026',                   model: 'CLAUDE',  found: true,  rank: 4, sentiment:  0.22 },
+  { q: 'check ChatGPT mentions for my brand',          model: 'CHATGPT', found: true,  rank: 1, sentiment:  0.79 },
+  { q: 'perplexity visibility audit',                  model: 'GEMINI',  found: false, rank: 0, sentiment:  0    },
+  { q: 'GEO platform 2026',                            model: 'PPLX',    found: true,  rank: 5, sentiment:  0.12 },
+];
+
+function App() {
+  const [active, setActive] = React.useState('products');
+  const [selectedIdx, setSelectedIdx] = React.useState(0);
+  const [model, setModel] = React.useState('all');
+  const p = PRODUCTS[selectedIdx];
+  const filteredProbes = model === 'all' ? PROBES : PROBES.filter(r => r.model.toLowerCase().startsWith(model.slice(0, 4)));
+
+  return (
+    <div className="db-app">
+      <Sidebar active={active} onNav={setActive}/>
+      <main className="db-main">
+        <TopBar product={p.name} delta={p.delta} model={model} onModel={setModel}/>
+
+        <div className="dash-card" style={{ padding: 0 }}>
+          <div className="db-card-head db-card-head-compact">
+            <div>
+              <div className="db-eyebrow">MY PRODUCTS · {PRODUCTS.length} TRACKED</div>
+              <div className="db-card-sub">Click a product to drill in</div>
+            </div>
+            <button className="pba-btn pba-btn-primary pba-btn-sm">+ ADD PRODUCT</button>
+          </div>
+          <div className="db-prods" style={{ border: 'none', borderRadius: 0 }}>
+            {PRODUCTS.map((pr, i) => (
+              <ProductRow key={pr.name} {...pr} active={i === selectedIdx} onOpen={() => setSelectedIdx(i)}/>
+            ))}
+          </div>
+        </div>
+
+        <ScoreCard product={p.name} score={p.score} dims={DIMS}/>
+        <ProbeTable rows={filteredProbes}/>
+        <ToolsPanel/>
+      </main>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+</script>
+</body>
+</html>

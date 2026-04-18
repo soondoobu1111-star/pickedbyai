@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html,body{margin:0;background:var(--pba-bg);color:var(--pba-fg);font-family:var(--pba-font-body)}
+  .wrap{padding:18px;display:flex;gap:18px;align-items:center;justify-content:center;height:240px;box-sizing:border-box}
+  .ring{--v:87;--c:#00E676;width:190px;height:190px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--v)*1%),#222 0);display:grid;place-items:center;position:relative}
+  .ring::after{content:'';position:absolute;inset:10px;border-radius:50%;background:#0a0a0a}
+  .val{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:2px}
+  .val .n{font-family:var(--pba-font-body);font-weight:800;font-size:48px;color:#fff;line-height:1;letter-spacing:-1px}
+  .val .d{font-family:var(--pba-font-pixel);font-size:7px;color:var(--pba-fg-4);letter-spacing:0.15em}
+  .val .t{font-family:var(--pba-font-pixel);font-size:8px;color:#00E676;letter-spacing:0.15em;margin-top:4px}
+  .side{display:flex;flex-direction:column;gap:10px;flex:1;max-width:280px}
+  .lb{font-family:var(--pba-font-pixel);font-size:6.5px;color:var(--pba-fg-5);letter-spacing:0.15em}
+  .row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--pba-border-faint);font-size:12px}
+  .row:last-child{border-bottom:none}
+  .row span:first-child{color:var(--pba-fg-3)}
+  .row b{color:#fff;font-weight:600;font-family:var(--pba-font-mono)}
+</style></head><body>
+<div class="wrap">
+  <div class="ring">
+    <div class="val"><div class="n">87</div><div class="d">/ 100</div><div class="t">✦ PICKED</div></div>
+  </div>
+  <div class="side">
+    <div class="lb">DIMENSION BREAKDOWN</div>
+    <div class="row"><span>Mention rate</span><b>92%</b></div>
+    <div class="row"><span>Ranking position</span><b>#2 avg</b></div>
+    <div class="row"><span>Sentiment</span><b style="color:#00E676">+0.81</b></div>
+    <div class="row"><span>Query coverage</span><b>38 / 50</b></div>
+    <div class="row"><span>Co-recommendation</span><b>11</b></div>
+  </div>
+</div>
+</body></html>

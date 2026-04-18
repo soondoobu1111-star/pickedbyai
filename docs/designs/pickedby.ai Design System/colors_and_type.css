@@ -1,0 +1,198 @@
+/* pickedby.ai — colors & type tokens
+ * Dark-only. Gold accent used sparingly for CTAs and key data.
+ * Body: Inter. Logo / tokens / metric labels: Press Start 2P.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@font-face {
+  font-family: 'Press Start 2P';
+  src: url('fonts/PressStart2P-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  /* ── SURFACES (dark only, no light mode ever) ── */
+  --pba-bg:        #0a0a0a;   /* app bg */
+  --pba-bg-0:      #000000;   /* deeper bg (landing) */
+  --pba-bg-1:      #0d0d0d;   /* slight raise */
+  --pba-bg-2:      #141414;   /* cards */
+  --pba-bg-3:      #161616;   /* inputs / nested */
+  --pba-bg-4:      #1a1a1a;   /* hover / slight raise on card */
+
+  /* ── BORDERS ── */
+  --pba-border:        #2a2a2a;   /* primary card border */
+  --pba-border-soft:   #222222;   /* section dividers on bg-0 */
+  --pba-border-faint:  #1f1f1f;   /* hairlines */
+  --pba-border-dim:    #181818;   /* between list items */
+
+  /* ── FOREGROUND ── */
+  --pba-fg:       #f5f5f5;   /* primary text */
+  --pba-fg-bold:  #ffffff;   /* headlines, strong */
+  --pba-fg-1:     #cccccc;   /* body on card */
+  --pba-fg-2:     #aaaaaa;   /* secondary */
+  --pba-fg-3:     #888888;   /* muted / nav */
+  --pba-fg-4:     #666666;   /* captions */
+  --pba-fg-5:     #555555;   /* placeholder / hints */
+  --pba-fg-6:     #444444;   /* footer, disabled labels */
+  --pba-fg-7:     #333333;   /* extremely subtle */
+
+  /* ── BRAND ── */
+  --pba-gold:        #FFD700;   /* PRIMARY — CTAs & key data only */
+  --pba-gold-dim:    #b39700;   /* shadow offset under buttons */
+  --pba-gold-soft:   #FFE55C;   /* hover / pulse highlight */
+  --pba-gold-bg:     #0a0800;   /* tinted gold surface */
+  --pba-gold-border: #3a2800;   /* gold-tinted borders */
+
+  /* ── SCORE / SEMANTIC ── */
+  --pba-red:    #FF3D3D;   /* invisible / destructive */
+  --pba-orange: #FF9100;   /* noticed */
+  --pba-yellow: #FFEB3B;   /* seen — mid-tier score */
+  --pba-green:  #00E676;   /* picked / success / live */
+  --pba-green-dim: #4ade80;
+
+  /* Badge tiers */
+  --pba-gold-tier:   #FFD700;
+  --pba-silver-tier: #C0C0C0;
+  --pba-bronze-tier: #CD7F32;
+
+  /* ── FONTS ── */
+  --pba-font-body:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --pba-font-pixel: 'Press Start 2P', monospace;   /* logo, eyebrows, metric labels, button labels */
+  --pba-font-mono:  'JetBrains Mono', 'Courier New', monospace;
+
+  /* ── TYPE SCALE — body ── */
+  --pba-t-display: 2.25rem;   /* 36px hero h1 */
+  --pba-t-h1:      1.5rem;    /* 24px */
+  --pba-t-h2:      1.15rem;   /* 18px section title */
+  --pba-t-h3:      1rem;      /* 16px card title */
+  --pba-t-body:    0.92rem;   /* 14.7px body */
+  --pba-t-sm:      0.82rem;   /* 13px */
+  --pba-t-xs:      0.75rem;   /* 12px secondary */
+  --pba-t-xxs:     0.7rem;    /* 11px caption */
+
+  /* ── TYPE SCALE — pixel labels (Press Start 2P is big at nominal size) ── */
+  --pba-t-pixel-lg:  0.85rem;   /* logo in nav */
+  --pba-t-pixel-md:  0.65rem;   /* button labels */
+  --pba-t-pixel-sm:  0.5rem;    /* section eyebrow */
+  --pba-t-pixel-xs:  0.42rem;   /* micro labels / METRIC NAME */
+  --pba-t-pixel-xxs: 0.35rem;   /* progress bar denom */
+
+  /* ── SPACING (4pt base, analytics-dense) ── */
+  --pba-sp-1: 0.25rem;   /* 4  */
+  --pba-sp-2: 0.5rem;    /* 8  */
+  --pba-sp-3: 0.75rem;   /* 12 */
+  --pba-sp-4: 1rem;      /* 16 */
+  --pba-sp-5: 1.25rem;   /* 20 */
+  --pba-sp-6: 1.5rem;    /* 24 */
+  --pba-sp-7: 1.75rem;   /* 28 */
+  --pba-sp-8: 2rem;      /* 32 */
+  --pba-sp-10: 2.5rem;   /* 40 */
+  --pba-sp-12: 3rem;     /* 48 */
+
+  /* ── RADIUS — minimal, often 0 for cards; pill buttons rare ── */
+  --pba-r-0:   0;           /* landing cards — zero radius */
+  --pba-r-1:   4px;         /* chips, tiny badges */
+  --pba-r-2:   6px;         /* small buttons, inputs on dashboard */
+  --pba-r-3:   8px;         /* dashboard cards (dashboard-only) */
+  --pba-r-4:   12px;        /* modal */
+  --pba-r-pill: 999px;      /* score progress bars, live dots */
+
+  /* ── NO SHADOWS. Instead, chunky pixel button offset. ── */
+  --pba-btn-offset:      3px 3px 0 var(--pba-gold-dim);
+  --pba-btn-offset-lg:   4px 4px 0 var(--pba-gold-dim);
+
+  /* ── LETTERSPACING ── */
+  --pba-ls-tight:  -0.5px;    /* big headlines */
+  --pba-ls-pixel:  0.1em;     /* pixel font labels */
+  --pba-ls-eyebrow: 0.2em;    /* pixel eyebrows */
+}
+
+/* ============================================================
+ * SEMANTIC TYPE CLASSES
+ * Use these instead of re-declaring fonts/sizes everywhere.
+ * ============================================================ */
+
+.pba-h1 {
+  font-family: var(--pba-font-body);
+  font-size: var(--pba-t-display);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: var(--pba-ls-tight);
+  color: var(--pba-fg-bold);
+}
+
+.pba-h2 {
+  font-family: var(--pba-font-body);
+  font-size: var(--pba-t-h2);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--pba-fg-bold);
+}
+
+.pba-h3 {
+  font-family: var(--pba-font-body);
+  font-size: var(--pba-t-h3);
+  font-weight: 700;
+  color: var(--pba-fg-bold);
+}
+
+.pba-body {
+  font-family: var(--pba-font-body);
+  font-size: var(--pba-t-body);
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--pba-fg-1);
+}
+
+.pba-muted {
+  font-family: var(--pba-font-body);
+  font-size: var(--pba-t-sm);
+  color: var(--pba-fg-4);
+  line-height: 1.55;
+}
+
+.pba-caption {
+  font-family: var(--pba-font-body);
+  font-size: var(--pba-t-xs);
+  color: var(--pba-fg-5);
+  line-height: 1.5;
+}
+
+/* Pixel — used for logo, metric labels, section eyebrows, button labels */
+.pba-pixel {
+  font-family: var(--pba-font-pixel);
+  letter-spacing: var(--pba-ls-pixel);
+  text-transform: uppercase;
+}
+
+.pba-eyebrow {
+  font-family: var(--pba-font-pixel);
+  font-size: var(--pba-t-pixel-sm);
+  color: var(--pba-gold);
+  letter-spacing: var(--pba-ls-eyebrow);
+  text-transform: uppercase;
+}
+
+.pba-metric-label {
+  font-family: var(--pba-font-pixel);
+  font-size: var(--pba-t-pixel-xs);
+  color: var(--pba-fg-4);
+  letter-spacing: var(--pba-ls-pixel);
+  text-transform: uppercase;
+}
+
+/* Mono — for code / llms.txt / API */
+.pba-mono {
+  font-family: var(--pba-font-mono);
+  font-size: var(--pba-t-xs);
+  color: var(--pba-fg-2);
+}
+
+/* highlighted inline value — use sparingly, for key data only */
+.pba-hi {
+  color: var(--pba-gold);
+  font-style: normal;
+}
