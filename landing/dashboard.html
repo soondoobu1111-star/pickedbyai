@@ -1119,6 +1119,7 @@
       lastCheckResult = { product, url: url || null, score: savedScore, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null, unified }
       if (currentUser) {
         // Optimistic update: 새 점수를 즉시 My Products에 반영 (프로덕션 방식)
+        // 빅파이 1.5: unified_v15도 반드시 동반 저장 (확장 패널 4차원 렌더용)
         const existingIdx = allProducts.findIndex(p => p.product_name === product)
         if (existingIdx >= 0) {
           allProducts[existingIdx] = {
@@ -1127,14 +1128,15 @@
             dimensions: data.dimensions || allProducts[existingIdx].dimensions,
             ai_probe: data.aiProbe || allProducts[existingIdx].ai_probe,
             results: data.results || allProducts[existingIdx].results,
+            unified_v15: unified || allProducts[existingIdx].unified_v15 || null,
             created_at: new Date().toISOString(),
             _domainOnly: false,
           }
         } else {
-          allProducts.push({ product_name: product, product_url: url || null, score: savedScore, dimensions: data.dimensions || null, ai_probe: data.aiProbe || null, results: data.results || [], created_at: new Date().toISOString() })
+          allProducts.push({ product_name: product, product_url: url || null, score: savedScore, dimensions: data.dimensions || null, ai_probe: data.aiProbe || null, results: data.results || [], unified_v15: unified || null, created_at: new Date().toISOString() })
         }
         renderMineTab(allProducts, allHistoryData)
-        try { await saveHistory('mine') } catch(e) { /* silent */ }
+        try { await saveHistory('mine') } catch(e) { console.error('[saveHistory] failed', e) }
       }
     } catch (err) {
       alert('Check failed. Please try again.')
