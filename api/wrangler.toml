@@ -16,7 +16,9 @@ ENVIRONMENT = "production"
 name = "pickedbyai-api-staging"
 
 [env.staging.triggers]
-crons = ["0 2 * * *"]  # 스테이징도 동일 cron
+# T5 D2 RETRY-01: 일일 refresh + 매 1분 retry queue 처리 (1분 × 5회 = 총 5분)
+# 프로덕션은 D11 DEPLOY-GATE-01 통과 후 동일 적용 예정
+crons = ["0 2 * * *", "* * * * *"]
 
 [env.staging.vars]
 ENVIRONMENT = "staging"

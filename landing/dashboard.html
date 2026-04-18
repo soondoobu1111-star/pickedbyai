@@ -1095,7 +1095,91 @@ body.shell-on .shell-scrim.open { display: block; }
     if (shellEmail) shellEmail.textContent = emailHint
     loadBetaStatus()
     // Load domains first so domain-only rows appear in My Products
-    loadVerifiedDomains().then(() => loadHistory())
+    loadVerifiedDomains().then(async () => {
+      // T5 D2 ONBOARD-01: 도메인 한 개도 없는 로그인 유저 → 온보딩 리디렉션
+      const skip = new URLSearchParams(location.search).has('skip_onboarding')
+      if (!allDomains.length && !skip) {
+        window.location.href = '/onboarding.html'
+        return
+      }
+      await loadHistory()
+      // T5 D2 RETRY-01: 온보딩에서 넘어온 첫 verified 체크 배너 표시
+      const params = new URLSearchParams(location.search)
+      if (params.get('auto_check') === '1' && verifiedDomains.length) {
+        triggerAutoCheckBanner(verifiedDomains[0])
+        // URL 정리 (새로고침 시 배너 중복 방지)
+        const cleanUrl = location.pathname + location.hash
+        history.replaceState(null, '', cleanUrl)
+      }
+    })
+  }
+
+  // ── T5 D2 RETRY-01: 자동 체크 진행 배너 + 폴링 ─────────────
+  function triggerAutoCheckBanner(domain) {
+    if (!domain || document.getElementById('auto-check-banner')) return
+    const banner = document.createElement('div')
+    banner.id = 'auto-check-banner'
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:10000;' +
+      'background:#0a0800;border-bottom:1px solid #3a2800;color:#FFD700;' +
+      "font-family:'Press Start 2P',monospace;font-size:0.55rem;letter-spacing:0.15em;" +
+      'text-align:center;padding:0.75rem 1rem;display:flex;gap:0.5rem;' +
+      'justify-content:center;align-items:center;flex-wrap:wrap;'
+    document.body.prepend(banner)
+    document.body.style.paddingTop = '40px'
+
+    const startTime = Date.now()
+    const MAX_SEC = 300 // 5분
+    function render(state) {
+      if (state === 'done') {
+        banner.innerHTML = '<span style="color:#00E676;">✓ CHECK COMPLETE</span>' +
+          ' <a href="javascript:location.reload()" style="color:#FFD700;text-decoration:underline;">RELOAD</a>'
+        return
+      }
+      if (state === 'timeout') {
+        banner.innerHTML = '<span style="color:#FF9100;">TAKING LONGER THAN USUAL</span>' +
+          ' <a href="javascript:location.reload()" style="color:#FFD700;text-decoration:underline;">RELOAD</a> TO CHECK'
+        return
+      }
+      const elapsed = Math.floor((Date.now() - startTime) / 1000)
+      const remaining = Math.max(0, MAX_SEC - elapsed)
+      const min = Math.floor(remaining / 60), sec = remaining % 60
+      banner.innerHTML = '<span>▶ RUNNING FIRST CHECK · ' + min + ':' + String(sec).padStart(2, '0') + '</span>' +
+        '<span style="color:#888;">·</span>' +
+        '<span style="color:#888;font-size:0.5rem;text-transform:none;letter-spacing:0.05em;">' + (domain.product_name || '') + '</span>'
+    }
+    render('running')
+
+    const tick = setInterval(() => {
+      const elapsed = (Date.now() - startTime) / 1000
+      if (elapsed >= MAX_SEC) {
+        clearInterval(tick); clearInterval(poll)
+        pollCheckStatus(domain).then(done => render(done ? 'done' : 'timeout'))
+        return
+      }
+      render('running')
+    }, 1000)
+
+    // 30초마다 조기 완료 감지
+    const poll = setInterval(async () => {
+      const done = await pollCheckStatus(domain)
+      if (done) {
+        clearInterval(tick); clearInterval(poll)
+        render('done')
+      }
+    }, 30_000)
+  }
+
+  async function pollCheckStatus(domain) {
+    try {
+      const { data: { session } } = await sb.auth.getSession()
+      if (!session) return false
+      const res = await fetch(`${API_URL}/v1/domains/${domain.id}/retry-status`, {
+        headers: { 'Authorization': `Bearer ${session.access_token}` },
+      })
+      if (!res.ok) return false
+      const data = await res.json()
+      return data.retry_state === null
+    } catch { return false }
   }
 
   async function loadVerifiedDomains() {

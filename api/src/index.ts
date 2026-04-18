@@ -2,6 +2,12 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { buildDimensionContext, computeUnified } from './unifiedScoreAdapter'
 import type { UnifiedScoreResult } from './unifiedScore'
+import {
+  recordCheckResult,
+  fetchDueRetries,
+  fetchDomainById,
+  type SingleCheckResult,
+} from './retryAdapter'
 
 type Bindings = {
   BREVO_API_KEY: string
@@ -1968,7 +1974,7 @@ app.post('/v1/domains/verify', async (c) => {
     }
   } catch { /* timeout or fetch error */ }
 
-  // 2) JSON 파일 확인 (메타태그 실패 시)
+  // 2) HTML/JSON 파일 확인 (메타태그 실패 시)
   if (!verified) {
     try {
       const jsonRes = await fetch(`${domain.domain_url}/.well-known/pickedby.json`, {
@@ -1979,7 +1985,26 @@ app.post('/v1/domains/verify', async (c) => {
         const json = await jsonRes.json() as { verification?: string }
         if (json.verification === expectedToken) {
           verified = true
-          method = 'json'
+          method = 'html'
+        }
+      }
+    } catch { /* timeout or fetch error */ }
+  }
+
+  // 3) DNS TXT 확인 (T5 D2 — Google DNS-over-HTTPS)
+  if (!verified) {
+    try {
+      const host = new URL(domain.domain_url).hostname
+      const dnsRes = await fetch(
+        `https://dns.google/resolve?name=${encodeURIComponent(host)}&type=TXT`,
+        { headers: { 'Accept': 'application/dns-json' }, signal: AbortSignal.timeout(8000) }
+      )
+      if (dnsRes.ok) {
+        const json = await dnsRes.json() as { Answer?: Array<{ data: string }> }
+        const records = (json.Answer || []).map(a => (a.data || '').replace(/^"|"$/g, '').replace(/"\s+"/g, ''))
+        if (records.some(r => r.includes(`pickedby-site-verification=${expectedToken}`) || r.includes(expectedToken))) {
+          verified = true
+          method = 'dns'
         }
       }
     } catch { /* timeout or fetch error */ }
@@ -1999,10 +2024,71 @@ app.post('/v1/domains/verify', async (c) => {
   if (!verified) {
     return c.json({
       verified: false,
-      error: 'Token not found. Make sure the meta tag or JSON file is publicly accessible.',
+      error: 'Token not found. Make sure the meta tag, HTML file, or DNS TXT record is publicly accessible.',
     }, 400)
   }
-  return c.json({ verified: true, method, domain_url: domain.domain_url })
+
+  // T5 D2 RETRY-01 — 검증 성공 직후 첫 자동 체크 비동기 트리거
+  c.executionCtx.waitUntil((async () => {
+    try {
+      const d = await fetchDomainById(c.env, domain.id)
+      if (!d) return
+      const result = await runInternalCheck(c.env, d.product_name, d.domain_url)
+      const outcome = await recordCheckResult(c.env, d, result)
+      console.log(`[VERIFY→AUTO_CHECK] ${d.product_name} attempt=${outcome.attempt} tier=${outcome.tier} completed=${outcome.completed}`)
+    } catch (err) {
+      console.error('[VERIFY→AUTO_CHECK] error:', err)
+    }
+  })())
+
+  return c.json({ verified: true, method, domain_url: domain.domain_url, auto_check: 'queued' })
+})
+
+// POST /v1/domains/:id/auto-check — 수동 재트리거 (T5 D2)
+app.post('/v1/domains/:id/auto-check', async (c) => {
+  const auth = c.req.header('Authorization')
+  if (!auth?.startsWith('Bearer ')) return c.json({ error: 'unauthorized' }, 401)
+  const token = auth.slice(7)
+  const user = await verifyToken(token, c.env)
+  if (!user) return c.json({ error: 'unauthorized' }, 401)
+
+  const domainId = c.req.param('id')
+  const d = await fetchDomainById(c.env, domainId)
+  if (!d) return c.json({ error: 'domain not found or not verified' }, 404)
+  if (d.user_id !== user.id) return c.json({ error: 'forbidden' }, 403)
+
+  c.executionCtx.waitUntil((async () => {
+    try {
+      const result = await runInternalCheck(c.env, d.product_name, d.domain_url)
+      const outcome = await recordCheckResult(c.env, d, result)
+      console.log(`[AUTO_CHECK] ${d.product_name} attempt=${outcome.attempt} tier=${outcome.tier}`)
+    } catch (err) {
+      console.error('[AUTO_CHECK] error:', err)
+    }
+  })())
+
+  return c.json({ queued: true, domain_id: domainId, message: 'Check started. Result in up to ~5 minutes.' })
+})
+
+// GET /v1/domains/:id/retry-status — FE 진행 상황 조회 (T5 D2)
+app.get('/v1/domains/:id/retry-status', async (c) => {
+  const auth = c.req.header('Authorization')
+  if (!auth?.startsWith('Bearer ')) return c.json({ error: 'unauthorized' }, 401)
+  const token = auth.slice(7)
+  const user = await verifyToken(token, c.env)
+  if (!user) return c.json({ error: 'unauthorized' }, 401)
+
+  const domainId = c.req.param('id')
+  const d = await fetchDomainById(c.env, domainId)
+  if (!d) return c.json({ error: 'domain not found' }, 404)
+  if (d.user_id !== user.id) return c.json({ error: 'forbidden' }, 403)
+
+  return c.json({
+    domain_id: domainId,
+    retry_state: d.retry_state,
+    last_check_success_at: d.last_check_success_at,
+    consecutive_failures: d.consecutive_failures,
+  })
 })
 
 // GET /v1/domains/list — 내 도메인 목록
@@ -2027,9 +2113,86 @@ app.get('/v1/domains/list', async (c) => {
   return c.json({ domains })
 })
 
+// ── T5 D2 RETRY-01: 내부 체크 실행기 (auto-check + retry queue 공유) ──
+async function runInternalCheck(
+  env: Bindings,
+  productName: string,
+  productUrl: string | undefined,
+): Promise<SingleCheckResult> {
+  try {
+    const [engineResult] = await Promise.all([
+      runEngine(env, productName, productUrl),
+    ])
+    const ai = engineResult.aiProbe || []
+    const engines_succeeded: string[] = []
+    const engines_failed: string[] = []
+    for (const p of ai) {
+      if (p.recognized || p.recommended || (p.snippet && p.snippet.length > 20)) {
+        engines_succeeded.push(p.ai)
+      } else {
+        engines_failed.push(p.ai)
+      }
+    }
+    let unified: UnifiedScoreResult | null = null
+    if (env.UNIFIED_SCORE_V15 === 'true') {
+      try {
+        const tavilySources = (engineResult.sources || []).map(s => ({
+          url: s.url, tier: s.tier, isOwn: s.isOwn,
+        }))
+        const ctx = await buildDimensionContext(env, {
+          productName, productUrl, tavilySources, aiProbes: ai,
+        })
+        unified = computeUnified(ctx)
+      } catch (err) {
+        console.error('[runInternalCheck] unified error:', err)
+      }
+    }
+    return {
+      success: engines_succeeded.length > 0,
+      fully_successful: engines_failed.length === 0 && engines_succeeded.length > 0,
+      engines_succeeded,
+      engines_failed,
+      unified_score: unified?.score ?? null,
+      unified_payload: unified,
+      error: null,
+    }
+  } catch (err) {
+    return {
+      success: false,
+      fully_successful: false,
+      engines_succeeded: [],
+      engines_failed: ['gemini', 'perplexity'],
+      unified_score: null,
+      unified_payload: null,
+      error: err instanceof Error ? err.message : String(err),
+    }
+  }
+}
+
+async function processRetryQueue(env: Bindings): Promise<void> {
+  const due = await fetchDueRetries(env, 20)
+  if (!due.length) return
+  console.log(`[RETRY_QUEUE] ${due.length} domains due`)
+  for (const d of due) {
+    try {
+      const result = await runInternalCheck(env, d.product_name, d.domain_url)
+      const outcome = await recordCheckResult(env, d, result)
+      console.log(`[RETRY_QUEUE] ${d.product_name} attempt=${outcome.attempt} tier=${outcome.tier} completed=${outcome.completed}`)
+    } catch (err) {
+      console.error(`[RETRY_QUEUE] ${d.id} error:`, err)
+    }
+  }
+}
+
 export default {
   fetch: app.fetch,
-  async scheduled(_event: ScheduledEvent, env: Bindings, ctx: ExecutionContext) {
+  async scheduled(event: ScheduledEvent, env: Bindings, ctx: ExecutionContext) {
+    // 매 1분 cron → retry queue 처리 (T5 D2 RETRY-01)
+    if (event.cron === '* * * * *') {
+      ctx.waitUntil(processRetryQueue(env))
+      return
+    }
+    // 일일 02:00 UTC cron → 전체 refresh (기존)
     ctx.waitUntil(dailyRefresh(env))
   },
 }
