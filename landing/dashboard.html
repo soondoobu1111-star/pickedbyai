@@ -405,8 +405,19 @@ body.shell-on .shell-scrim.open { display: block; }
       <span class="cur" id="shell-crumb-cur">Overview</span>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--pba-fg-4);">
+  <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--pba-fg-4);">
     <span id="shell-topbar-email" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;"></span>
+    <!-- BUG-UI-SHELL-ACCOUNT-01 복구: Shell topbar 에 계정 드롭다운 (Settings/Sign Out) -->
+    <div class="nav-profile" style="position:relative;">
+      <button class="nav-avatar-btn" id="shell-avatar-btn" onclick="toggleDropdown()" aria-label="Account menu" style="background:none;border:none;padding:0;cursor:pointer;">
+        <img id="shell-avatar" src="" alt="" style="width:28px;height:28px;border-radius:50%;border:1px solid #333;display:block;">
+      </button>
+      <div class="nav-dropdown" id="shell-nav-dropdown">
+        <div class="nav-dropdown-email" id="shell-nav-dropdown-email"></div>
+        <button onclick="openSettings()">Settings</button>
+        <button onclick="signOut()" style="color:#ef4444;">Sign Out</button>
+      </div>
+    </div>
   </div>
 </header>
 
@@ -1084,11 +1095,16 @@ body.shell-on .shell-scrim.open { display: block; }
     document.getElementById('nav-account-label').style.display = 'none'
     if (user.user_metadata?.avatar_url) {
       document.getElementById('nav-avatar').src = user.user_metadata.avatar_url
+      const shellAvatar = document.getElementById('shell-avatar')
+      if (shellAvatar) shellAvatar.src = user.user_metadata.avatar_url
     }
     // Email hint in dropdown (mask middle: a***@gmail.com)
     const emailHint = user.email ? maskEmail(user.email) : ''
     const ddEmail = document.getElementById('nav-dropdown-email')
     if (ddEmail) ddEmail.textContent = emailHint
+    // BUG-UI-SHELL-ACCOUNT-01: Shell 드롭다운에도 email 주입
+    const shellDdEmail = document.getElementById('shell-nav-dropdown-email')
+    if (shellDdEmail) shellDdEmail.textContent = emailHint
     // D4-INT: activate Shell (sidebar + topbar) and populate email
     document.body.classList.add('shell-on')
     const shellEmail = document.getElementById('shell-topbar-email')
@@ -2687,15 +2703,24 @@ body.shell-on .shell-scrim.open { display: block; }
     return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
   }
 
-  // ── Profile dropdown ──────────────────────────────────────
+  // ── Profile dropdown (legacy nav + shell topbar 공용) ─────
   function toggleDropdown() {
-    document.getElementById('nav-dropdown').classList.toggle('open')
+    // Shell 활성화 상태면 shell-nav-dropdown 토글, 아니면 nav-dropdown
+    const shellOn = document.body.classList.contains('shell-on')
+    const targetId = shellOn ? 'shell-nav-dropdown' : 'nav-dropdown'
+    const el = document.getElementById(targetId)
+    if (el) el.classList.toggle('open')
   }
   document.addEventListener('click', (e) => {
-    const btn = document.getElementById('nav-avatar-btn')
-    const dd = document.getElementById('nav-dropdown')
-    if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
-      dd.classList.remove('open')
+    // 두 드롭다운 모두 체크 (외부 클릭 시 닫기)
+    const entries = [
+      { btn: document.getElementById('nav-avatar-btn'), dd: document.getElementById('nav-dropdown') },
+      { btn: document.getElementById('shell-avatar-btn'), dd: document.getElementById('shell-nav-dropdown') },
+    ]
+    for (const { btn, dd } of entries) {
+      if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
+        dd.classList.remove('open')
+      }
     }
   })
 
