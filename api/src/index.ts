@@ -976,6 +976,22 @@ async function dailyRefresh(env: Bindings) {
       const recognized = validProbes.filter((p: AIProbeResult) => p.recognized).length
       const probe_score = validProbes.length >= 3 ? Math.round(recognized / validProbes.length * 100) : -1
       const savedScore = probe_score >= 0 ? probe_score : result.score
+      // 빅파이 1.5 SCORE-UNIFY-FIX-01: cron도 unified_v15 저장
+      let cronUnifiedV15: UnifiedScoreResult | null = null
+      if (env.UNIFIED_SCORE_V15 === 'true') {
+        try {
+          const tavilySources = (result.sources || []).map((s: SourceInfo) => ({ url: s.url, tier: s.tier, isOwn: s.isOwn }))
+          const ctx = await buildDimensionContext(env, {
+            productName: task.product_name,
+            productUrl: task.product_url ?? undefined,
+            tavilySources,
+            aiProbes: result.aiProbe,
+          })
+          cronUnifiedV15 = computeUnified(ctx)
+        } catch (err) {
+          console.error('[CRON] unified_v15 error:', err)
+        }
+      }
       await fetch(`${sbUrl}/rest/v1/scores`, {
         method: 'POST',
         headers: { ...headers, 'Prefer': 'return=minimal' },
@@ -987,9 +1003,10 @@ async function dailyRefresh(env: Bindings) {
           results: result.results,
           dimensions: result.dimensions,
           ai_probe: result.aiProbe,
+          unified_v15: cronUnifiedV15,
         }),
       })
-      console.log(`[CRON] ✓ ${task.product_name} score=${savedScore} (probe=${probe_score}, raw=${result.score})`)
+      console.log(`[CRON] ✓ ${task.product_name} score=${savedScore} unified=${cronUnifiedV15 ? cronUnifiedV15.score : 'skip'}`)
       // Small delay between scans
       await new Promise(r => setTimeout(r, 2000))
     } catch (err) {
