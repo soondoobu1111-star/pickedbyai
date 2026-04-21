@@ -1854,8 +1854,9 @@ app.post('/v1/unsubscribe', async (c) => {
 app.post('/v1/admin/run-cron', async (c) => {
   const auth = c.req.header('X-Admin-Key')
   if (auth !== c.env.SUPABASE_SERVICE_KEY) return c.json({ error: 'unauthorized' }, 401)
-  await dailyRefresh(c.env)
-  return c.json({ ok: true, message: 'daily refresh complete' })
+  // CF Workers 30초 제한 회피 — 백그라운드 실행 (스케줄 트리거와 동일 패턴)
+  c.executionCtx.waitUntil(dailyRefresh(c.env))
+  return c.json({ ok: true, message: 'daily refresh triggered (background)' })
 })
 
 // ── Domain Verification ────────────────────────────────────────
