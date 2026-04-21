@@ -404,10 +404,21 @@ body.shell-on .shell-scrim.open { display: block; }
       <span class="sep">/</span>
       <span class="cur" id="shell-crumb-cur">Overview</span>
     </div>
+    <!-- D3 DOMAIN-SEL-01 (CEO 2026-04-21 B2): 도메인 드롭다운 (현재 제품명 + 목록 + Register 통합) -->
+    <div id="shell-domain-picker" style="position:relative;margin-left:0.85rem;">
+      <button id="shell-domain-btn" onclick="toggleDomainPicker()" style="background:#0d0d0d;color:#f5f5f5;border:1px solid #2a2a2a;padding:0.38rem 0.7rem 0.38rem 0.8rem;font-size:0.78rem;cursor:pointer;border-radius:6px;font-family:inherit;display:flex;align-items:center;gap:0.5rem;white-space:nowrap;">
+        <span id="shell-domain-label" style="font-weight:600;">Select a product</span>
+        <span style="color:#666;font-size:0.65rem;">▼</span>
+      </button>
+      <div id="shell-domain-menu" style="display:none;position:absolute;top:calc(100% + 6px);left:0;min-width:240px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:8px;padding:0.4rem;box-shadow:0 8px 24px rgba(0,0,0,0.6);z-index:500;">
+        <div id="shell-domain-list" style="display:flex;flex-direction:column;gap:2px;"></div>
+        <div style="height:1px;background:#1a1a1a;margin:0.4rem 0;"></div>
+        <a href="/register" style="display:block;padding:0.45rem 0.6rem;font-size:0.78rem;color:#FFD700;text-decoration:none;border-radius:5px;" onmouseover="this.style.background='#141414'" onmouseout="this.style.background='transparent'">+ Register new domain</a>
+      </div>
+    </div>
   </div>
   <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--pba-fg-4);">
-    <!-- B안 2026-04-21: Quick Check 버튼 (모든 메뉴에서 접근 가능) -->
-    <button id="shell-quick-check-btn" onclick="openQuickCheck()" style="background:#FFD700;color:#0a0a0a;border:none;padding:0.42rem 0.85rem;font-weight:700;font-size:0.76rem;cursor:pointer;border-radius:6px;font-family:inherit;box-shadow:2px 2px 0 #b39700;white-space:nowrap;">+ Check</button>
+    <!-- B안 Rev 2026-04-21: + Check 버튼은 Recently Added 섹션으로 이동. 헤더 우측은 계정 드롭다운만. -->
     <!-- shell-topbar-email 제거 2026-04-21: 드롭다운 내부 shell-nav-dropdown-email 과 중복 -->
     <!-- BUG-UI-SHELL-ACCOUNT-01 복구: Shell topbar 에 계정 드롭다운 (Settings/Sign Out) -->
     <div class="nav-profile" style="position:relative;">
@@ -670,14 +681,14 @@ body.shell-on .shell-scrim.open { display: block; }
         </div>
       </div>
 
-      <!-- Row 5: Section 7 · Recently Added (B안 2026-04-21 — My Products 요약 대체) -->
+      <!-- Row 5: Section 7 · Recently Added (B안 Rev 2026-04-21 — "+ Check" 버튼 이동) -->
       <div class="card mb-4" style="padding:1.3rem 1.4rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
           <div>
             <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.3rem;">RECENTLY ADDED</div>
             <div style="font-size:0.82rem;color:#888;">Your tracked products · top 5 latest</div>
           </div>
-          <a href="/register" style="font-size:0.72rem;color:#FFD700;text-decoration:none;border:1px solid #333;padding:0.3rem 0.7rem;border-radius:5px;">+ Register</a>
+          <button onclick="openQuickCheck()" style="background:#FFD700;color:#0a0a0a;border:none;padding:0.4rem 0.85rem;font-weight:700;font-size:0.76rem;cursor:pointer;border-radius:6px;font-family:inherit;box-shadow:2px 2px 0 #b39700;white-space:nowrap;">+ Check</button>
         </div>
         <div id="d5-recent-list" style="display:flex;flex-direction:column;gap:0.5rem;">
           <div style="color:#555;font-size:0.8rem;padding:0.5rem 0;">No products yet.</div>
@@ -1697,25 +1708,29 @@ body.shell-on .shell-scrim.open { display: block; }
       const savedScore = unified ? unified.score : data.score
       lastCheckResult = { product, url: url || null, score: savedScore, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null, unified }
       if (currentUser) {
-        // Optimistic update: 새 점수를 즉시 My Products에 반영 (프로덕션 방식)
-        // 빅파이 1.5: unified_v15도 반드시 동반 저장 (확장 패널 4차원 렌더용)
-        const existingIdx = allProducts.findIndex(p => p.product_name === product)
-        if (existingIdx >= 0) {
-          allProducts[existingIdx] = {
-            ...allProducts[existingIdx],
-            score: savedScore,
-            dimensions: data.dimensions || allProducts[existingIdx].dimensions,
-            ai_probe: data.aiProbe || allProducts[existingIdx].ai_probe,
-            results: data.results || allProducts[existingIdx].results,
-            unified_v15: unified || allProducts[existingIdx].unified_v15 || null,
-            created_at: new Date().toISOString(),
-            _domainOnly: false,
+        // 빅파이 1.5 OWNER-ONLY-01 (2026-04-21 재확인): verified 제품만 allProducts/DB에 저장.
+        // 단순 검색(비검증)은 결과만 보여주고 My Products/Recently Added/Domain Picker에 들어가지 않음.
+        const isVerified = (verifiedDomains || []).some(d => (d.product_name || '').toLowerCase() === product.toLowerCase())
+          || localStorage.getItem(`pba_verified_${product}`) === '1'
+        if (isVerified) {
+          const existingIdx = allProducts.findIndex(p => p.product_name === product)
+          if (existingIdx >= 0) {
+            allProducts[existingIdx] = {
+              ...allProducts[existingIdx],
+              score: savedScore,
+              dimensions: data.dimensions || allProducts[existingIdx].dimensions,
+              ai_probe: data.aiProbe || allProducts[existingIdx].ai_probe,
+              results: data.results || allProducts[existingIdx].results,
+              unified_v15: unified || allProducts[existingIdx].unified_v15 || null,
+              created_at: new Date().toISOString(),
+              _domainOnly: false,
+            }
+          } else {
+            allProducts.push({ product_name: product, product_url: url || null, score: savedScore, dimensions: data.dimensions || null, ai_probe: data.aiProbe || null, results: data.results || [], unified_v15: unified || null, created_at: new Date().toISOString() })
           }
-        } else {
-          allProducts.push({ product_name: product, product_url: url || null, score: savedScore, dimensions: data.dimensions || null, ai_probe: data.aiProbe || null, results: data.results || [], unified_v15: unified || null, created_at: new Date().toISOString() })
+          renderMineTab(allProducts, allHistoryData)
+          try { await saveHistory('mine') } catch(e) { console.error('[saveHistory] failed', e) }
         }
-        renderMineTab(allProducts, allHistoryData)
-        try { await saveHistory('mine') } catch(e) { console.error('[saveHistory] failed', e) }
       }
       // B안 2026-04-21: 체크 완료 훅 — Quick Check 모달 닫기 + 토스트 + Overview 점수 링 자동 갱신
       if (typeof closeQuickCheck === 'function') closeQuickCheck()
@@ -1971,16 +1986,22 @@ body.shell-on .shell-scrim.open { display: block; }
   // Uses representative product (first verified, fallback: top-score).
   // ═══════════════════════════════════════════════════════════
   function pickRepresentativeProduct() {
+    // OWNER-ONLY-01 (2026-04-21 재확인): verified 소유 제품만 대표 후보.
+    // non-verified 는 단순 검색 결과이므로 Overview/Recently Added/Domain Picker 어디에도 등장하지 않는다.
     const verifiedNames = new Set(
       (verifiedDomains || []).map(d => (d.product_name || '').toLowerCase()).filter(Boolean)
     )
+    // D3 2026-04-21: 유저가 드롭다운에서 명시 선택한 제품이 verified 이면 최우선
+    if (_selectedDomainName && verifiedNames.has(_selectedDomainName.toLowerCase())) {
+      const sel = (allProducts || []).find(p => (p.product_name || '').toLowerCase() === _selectedDomainName.toLowerCase())
+      if (sel) return sel
+    }
+    const scoreOf = (p) => Number(p.unified_v15?.score ?? p.score) || 0
     const verifiedProducts = (allProducts || []).filter(p => verifiedNames.has((p.product_name || '').toLowerCase()))
     if (verifiedProducts.length > 0) {
-      return [...verifiedProducts].sort((a,b) => (b.score || 0) - (a.score || 0))[0]
+      return [...verifiedProducts].sort((a,b) => scoreOf(b) - scoreOf(a))[0]
     }
-    if ((allProducts || []).length > 0) {
-      return [...allProducts].sort((a,b) => (b.score || 0) - (a.score || 0))[0]
-    }
+    // 🔴 non-verified fallback 제거 — verified 제품 없으면 Empty State 로 유도
     return null
   }
 
@@ -2119,24 +2140,34 @@ body.shell-on .shell-scrim.open { display: block; }
     if (youMarker) { youMarker.style.left = benchYou + '%'; youMarker.style.display = 'block' }
     if (avgLbl) avgLbl.textContent = `category avg: ${benchAvg}`
 
-    // Section 7 · Recently Added (B안 2026-04-21)
+    // Section 7 · Recently Added (B안 2026-04-21 · OWNER-ONLY-01 재확인 2026-04-21 밤)
+    // verified 소유 제품만 표시 — 단순 검색(비검증)은 My Products/Recently Added 어디에도 들어가지 않음.
     const recentList = document.getElementById('d5-recent-list')
     if (recentList) {
+      const _verifiedNames = new Set(
+        (verifiedDomains || []).map(d => (d.product_name || '').toLowerCase()).filter(Boolean)
+      )
       const recent = [...(allProducts || [])]
-        .filter(p => !p._domainOnly)
+        .filter(p => !p._domainOnly && _verifiedNames.has((p.product_name || '').toLowerCase()))
         .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
         .slice(0, 5)
       if (recent.length === 0) {
         recentList.innerHTML = '<div style="color:#555;font-size:0.8rem;padding:0.5rem 0;">No products yet. Use <b style="color:#FFD700;">+ Check</b> to add one.</div>'
       } else {
+        // 빅파이 1.5 정합: unified_v15.score 우선 (row.score는 레거시 Tavily fallback으로 33 하드코딩 버그 있음)
+        const passLabels = { perfect: 'PERFECT', strong: 'STRONG', emerging: 'EMERGING', invisible: 'INVISIBLE' }
+        const passColors = { perfect: '#FFD700', strong: '#4ade80', emerging: '#f59e0b', invisible: '#e05252' }
         recentList.innerHTML = recent.map(p => {
-          const s = Math.round(Number(p.score) || 0)
-          const badge = s >= 81 ? ['GOLD', '#FFD700'] : s >= 61 ? ['SILVER', '#C0C0C0'] : s >= 36 ? ['BRONZE', '#CD7F32'] : ['—', '#555']
+          const u = p.unified_v15 || null
+          const s = Math.round(Number(u?.score ?? p.score) || 0)
+          const pi = u?.pass_indicator || (s >= 81 ? 'perfect' : s >= 61 ? 'strong' : s >= 36 ? 'emerging' : 'invisible')
+          const badgeLabel = passLabels[pi] || '—'
+          const badgeColor = passColors[pi] || '#555'
           const when = p.created_at ? new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: getUserTimezone() }) : '—'
           return `
             <div style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.75rem;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;">
               <div style="display:flex;align-items:center;gap:0.7rem;min-width:0;flex:1;">
-                <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:${badge[1]};border:1px solid ${badge[1]};padding:3px 6px;border-radius:3px;letter-spacing:0.15em;white-space:nowrap;">${badge[0]}</span>
+                <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:${badgeColor};border:1px solid ${badgeColor};padding:3px 6px;border-radius:3px;letter-spacing:0.15em;white-space:nowrap;">${badgeLabel}</span>
                 <span style="font-size:0.83rem;color:#e5e5e5;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(p.product_name || '—')}</span>
               </div>
               <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
@@ -2590,6 +2621,10 @@ body.shell-on .shell-scrim.open { display: block; }
     // Shell Phase B: refresh Overview if active
     if (typeof renderD5Overview === 'function') {
       try { renderD5Overview() } catch(e) { console.error('[D5] loadHistory render failed', e) }
+    }
+    // D3: domain picker label + menu refresh (loaded products → dropdown)
+    if (typeof refreshDomainLabel === 'function') {
+      try { refreshDomainLabel() } catch(e) {}
     }
   }
 
@@ -3389,6 +3424,79 @@ body.shell-on .shell-scrim.open { display: block; }
     } catch(e) {
       if (btn) { btn.disabled = false; btn.textContent = 'GET GUIDE' }
     }
+  }
+
+  // ═══════════════════════════════════════════════════════════
+  // D3 DOMAIN-SEL-01 (CEO 2026-04-21 B2) · 헤더 도메인 드롭다운
+  // ═══════════════════════════════════════════════════════════
+  let _selectedDomainName = null // null이면 대표(verified 우선→최고점) 자동 선택
+
+  function toggleDomainPicker() {
+    const menu = document.getElementById('shell-domain-menu')
+    if (!menu) return
+    const isOpen = menu.style.display !== 'none'
+    if (isOpen) {
+      menu.style.display = 'none'
+      return
+    }
+    renderDomainMenu()
+    menu.style.display = 'block'
+  }
+
+  function renderDomainMenu() {
+    const list = document.getElementById('shell-domain-list')
+    if (!list) return
+    // OWNER-ONLY-01 재확인 (2026-04-21 밤): verified 소유 제품만 드롭다운에 표시.
+    const verifiedNames = new Set((verifiedDomains || []).map(d => (d.product_name || '').toLowerCase()).filter(Boolean))
+    const items = (allProducts || [])
+      .filter(p => !p._domainOnly && verifiedNames.has((p.product_name || '').toLowerCase()))
+      .map(p => {
+        const s = Math.round(Number(p.unified_v15?.score ?? p.score) || 0)
+        return { name: p.product_name, verified: true, score: s }
+      })
+    // 최고점 순 (모두 verified)
+    items.sort((a, b) => b.score - a.score)
+    if (items.length === 0) {
+      list.innerHTML = '<div style="padding:0.55rem 0.6rem;font-size:0.76rem;color:#555;">No verified domains yet.<br>Register + verify to add.</div>'
+      return
+    }
+    const currentName = (_selectedDomainName || pickRepresentativeProduct()?.product_name || '').toLowerCase()
+    list.innerHTML = items.map(it => {
+      const sel = (it.name || '').toLowerCase() === currentName
+      return `
+        <button onclick="selectDomain(${JSON.stringify(it.name).replace(/"/g, '&quot;')})" style="display:flex;align-items:center;justify-content:space-between;gap:0.6rem;padding:0.5rem 0.6rem;background:${sel ? '#141414' : 'transparent'};border:none;border-radius:5px;color:#f5f5f5;cursor:pointer;font-family:inherit;text-align:left;width:100%;" onmouseover="this.style.background='#141414'" onmouseout="this.style.background='${sel ? '#141414' : 'transparent'}'">
+          <span style="display:flex;align-items:center;gap:0.4rem;min-width:0;flex:1;">
+            <span style="color:#FFD700;font-size:0.7rem;visibility:${sel ? 'visible' : 'hidden'};">✓</span>
+            <span style="font-size:0.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(it.name || '—')}</span>
+            ${it.verified ? '<span style="font-size:0.56rem;color:#4ade80;border:1px solid #1a3a1a;padding:1px 5px;border-radius:3px;letter-spacing:0.08em;">✓</span>' : ''}
+          </span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:#FFD700;font-weight:700;">${it.score}</span>
+        </button>`
+    }).join('')
+  }
+
+  function selectDomain(name) {
+    _selectedDomainName = name
+    const lbl = document.getElementById('shell-domain-label')
+    if (lbl) lbl.textContent = name
+    const menu = document.getElementById('shell-domain-menu')
+    if (menu) menu.style.display = 'none'
+    if (typeof renderD5Overview === 'function') renderD5Overview()
+  }
+
+  // Close domain menu on outside click
+  document.addEventListener('click', function(e) {
+    const picker = document.getElementById('shell-domain-picker')
+    const menu = document.getElementById('shell-domain-menu')
+    if (!picker || !menu || menu.style.display === 'none') return
+    if (!picker.contains(e.target)) menu.style.display = 'none'
+  })
+
+  function refreshDomainLabel() {
+    const lbl = document.getElementById('shell-domain-label')
+    if (!lbl) return
+    const prod = pickRepresentativeProduct()
+    lbl.textContent = _selectedDomainName || prod?.product_name || 'Select a product'
   }
 
   // ═══════════════════════════════════════════════════════════
