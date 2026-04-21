@@ -406,7 +406,9 @@ body.shell-on .shell-scrim.open { display: block; }
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--pba-fg-4);">
-    <span id="shell-topbar-email" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;"></span>
+    <!-- B안 2026-04-21: Quick Check 버튼 (모든 메뉴에서 접근 가능) -->
+    <button id="shell-quick-check-btn" onclick="openQuickCheck()" style="background:#FFD700;color:#0a0a0a;border:none;padding:0.42rem 0.85rem;font-weight:700;font-size:0.76rem;cursor:pointer;border-radius:6px;font-family:inherit;box-shadow:2px 2px 0 #b39700;white-space:nowrap;">+ Check</button>
+    <!-- shell-topbar-email 제거 2026-04-21: 드롭다운 내부 shell-nav-dropdown-email 과 중복 -->
     <!-- BUG-UI-SHELL-ACCOUNT-01 복구: Shell topbar 에 계정 드롭다운 (Settings/Sign Out) -->
     <div class="nav-profile" style="position:relative;">
       <button class="nav-avatar-btn" id="shell-avatar-btn" onclick="toggleDropdown()" aria-label="Account menu" style="background:none;border:none;padding:0;cursor:pointer;">
@@ -420,6 +422,38 @@ body.shell-on .shell-scrim.open { display: block; }
     </div>
   </div>
 </header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     B안 2026-04-21 · Quick Check Modal
+     Shell topbar "+ Check" 버튼 클릭 시 오버레이로 표시.
+     기존 #check-form-card 를 대체. inputs IDs 재사용(input-product/input-url/btn-check).
+     체크 완료 후 모달 자동 닫힘 → 토스트 표시 → Overview 점수 링 자동 갱신.
+     ═══════════════════════════════════════════════════════════ -->
+<div id="quick-check-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9999;align-items:flex-start;justify-content:center;padding:6rem 1rem 1rem;" onclick="if(event.target===this)closeQuickCheck()">
+  <div style="background:#0a0a0a;border:1px solid #2a2a2a;border-radius:10px;padding:1.6rem 1.8rem;max-width:520px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.8);">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+      <div>
+        <div style="font-family:'Press Start 2P',monospace;font-size:8px;color:#FFD700;letter-spacing:0.22em;margin-bottom:4px;">✦ QUICK CHECK</div>
+        <h2 style="font-size:1rem;font-weight:700;color:#f5f5f5;margin:0;">Check AI Visibility</h2>
+      </div>
+      <button onclick="closeQuickCheck()" style="background:none;border:none;color:#666;font-size:1.4rem;cursor:pointer;line-height:1;padding:0.25rem;">×</button>
+    </div>
+    <p style="font-size:0.8rem;color:#888;margin:0 0 1rem;line-height:1.55;">Check any product. Results will update your Overview automatically.</p>
+    <div style="display:flex;flex-direction:column;gap:0.6rem;">
+      <input id="input-product" class="input-field" placeholder="Product name (e.g. Notion Budget Tracker)" oninput="updateCheckBtn()" style="width:100%;box-sizing:border-box;" />
+      <input id="input-url" class="input-field" placeholder="URL (optional)" oninput="updateCheckBtn()" style="width:100%;box-sizing:border-box;" />
+      <button class="btn-primary" id="btn-check" onclick="runCheck()" style="width:100%;padding:0.65rem;font-weight:700;">Check</button>
+    </div>
+    <div style="margin-top:0.85rem;padding-top:0.85rem;border-top:1px solid #1a1a1a;text-align:center;">
+      <a href="/register" style="font-size:0.75rem;color:#FFD700;text-decoration:none;">+ Register Your Domain</a>
+      <span style="color:#333;margin:0 0.5rem;">·</span>
+      <span style="font-size:0.7rem;color:#555;">Registered domains check daily at 00:00 KST</span>
+    </div>
+  </div>
+</div>
+
+<!-- Toast (B안 2026-04-21: 체크 완료 알림) -->
+<div id="pba-toast" style="display:none;position:fixed;bottom:24px;right:24px;background:#0a0a0a;border:1px solid #FFD700;color:#f5f5f5;padding:0.85rem 1.1rem;border-radius:6px;box-shadow:4px 4px 0 #b39700;font-size:0.82rem;z-index:10000;max-width:340px;line-height:1.5;"></div>
 
 <!-- NAV (legacy — retained for logged-out and Phase B parity; hidden when shell-on) -->
   <nav class="nav">
@@ -636,23 +670,26 @@ body.shell-on .shell-scrim.open { display: block; }
         </div>
       </div>
 
+      <!-- Row 5: Section 7 · Recently Added (B안 2026-04-21 — My Products 요약 대체) -->
+      <div class="card mb-4" style="padding:1.3rem 1.4rem;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
+          <div>
+            <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.3rem;">RECENTLY ADDED</div>
+            <div style="font-size:0.82rem;color:#888;">Your tracked products · top 5 latest</div>
+          </div>
+          <a href="/register" style="font-size:0.72rem;color:#FFD700;text-decoration:none;border:1px solid #333;padding:0.3rem 0.7rem;border-radius:5px;">+ Register</a>
+        </div>
+        <div id="d5-recent-list" style="display:flex;flex-direction:column;gap:0.5rem;">
+          <div style="color:#555;font-size:0.8rem;padding:0.5rem 0;">No products yet.</div>
+        </div>
+      </div>
+
     </div><!-- /d5-main-grid -->
   </div><!-- /shell-d5-overview -->
 
-  <!-- Check form -->
-  <div id="check-form-card" class="card mb-6">
-    <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
-      <h2 style="font-size:0.95rem;font-weight:700;">Check AI Visibility</h2>
-      <a href="/register" style="font-size:0.75rem;color:#FFD700;border:1px solid #333;padding:0.3rem 0.75rem;border-radius:6px;text-decoration:none;font-weight:600;white-space:nowrap;">+ Register Your Domain</a>
-    </div>
-    <div class="flex gap-3 flex-wrap">
-      <input id="input-product" class="input-field" placeholder="Product name (e.g. Notion Budget Tracker)" style="flex:1;min-width:200px;" oninput="updateCheckBtn()" />
-      <input id="input-url" class="input-field" placeholder="URL (optional)" style="flex:1;min-width:160px;" oninput="updateCheckBtn()" />
-      <button class="btn-primary" id="btn-check" onclick="runCheck()">Check</button>
-    </div>
-  </div>
+  <!-- B안 2026-04-21: Check form 카드 제거 — Shell topbar "+ Check" 버튼 모달로 대체 (input IDs 재사용) -->
 
-  <!-- Check result -->
+  <!-- Check result (hidden — data still populated by showResult(), but not visually shown; Overview auto-refreshes instead) -->
   <div id="check-result" class="card mb-6" style="display:none;">
     <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
       <div>
@@ -1028,10 +1065,24 @@ body.shell-on .shell-scrim.open { display: block; }
         <div class="section-title">Actions — What should you do next?</div>
         <div class="section-sub">Action Items · Weekly Narrative · Improvement Guide</div>
       </div>
-      <div style="text-align:center;padding:3rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;">
+      <div style="text-align:center;padding:3rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;margin-bottom:1.25rem;">
         <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ COMING D9A · 04-26 SUN</div>
         <div style="font-size:15px;color:#f5f5f5;font-weight:500;margin-bottom:6px;">Today's playbook</div>
         <div style="font-size:12.5px;color:#666;line-height:1.7;max-width:460px;margin:0 auto;">Three rule-based Action Items from your weakest dimension, Weekly Narrative (5 templates: Big Mover / Stagnant / Regression / Breakthrough / First Week), completed action log, and a next-tier progress gauge.</div>
+      </div>
+      <!-- B안 2026-04-21: Guide Email CTA 이식 (Overview에서 이동) -->
+      <div style="padding:1rem 1.1rem;background:#0d0d0d;border:1px solid #FFD70022;border-radius:8px;">
+        <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.25rem;">🚀 Free Guide: How to Improve Your AI Visibility Score</div>
+        <div style="font-size:0.78rem;color:#888;margin-bottom:0.65rem;">Your personalized improvement plan — sent to your inbox based on your actual score.</div>
+        <label style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.65rem;cursor:pointer;">
+          <input type="checkbox" id="actions-guide-consent" onchange="toggleActionsGuideBtn()" style="margin-top:2px;accent-color:#FFD700;cursor:pointer;" />
+          <span style="font-size:0.73rem;color:#888;line-height:1.5;">I agree to receive marketing emails from pickedby.ai. You can unsubscribe at any time.</span>
+        </label>
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
+          <input type="email" id="actions-guide-email" placeholder="your@email.com" style="flex:1;min-width:180px;padding:0.45rem 0.7rem;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:4px;font-size:0.82rem;" />
+          <button onclick="submitActionsGuideEmail()" id="actions-guide-btn" disabled style="background:#444;color:#888;border:none;padding:0.45rem 1rem;font-weight:700;font-size:0.75rem;cursor:not-allowed;border-radius:4px;white-space:nowrap;">GET GUIDE</button>
+        </div>
+        <div id="actions-guide-ok" style="display:none;color:#4ade80;font-size:0.75rem;margin-top:0.4rem;">✓ Guide is on its way!</div>
       </div>
     </div>
   </div>
@@ -1666,6 +1717,15 @@ body.shell-on .shell-scrim.open { display: block; }
         renderMineTab(allProducts, allHistoryData)
         try { await saveHistory('mine') } catch(e) { console.error('[saveHistory] failed', e) }
       }
+      // B안 2026-04-21: 체크 완료 훅 — Quick Check 모달 닫기 + 토스트 + Overview 점수 링 자동 갱신
+      if (typeof closeQuickCheck === 'function') closeQuickCheck()
+      if (typeof showToast === 'function') {
+        const badgeLabel = savedScore >= 81 ? 'Gold' : savedScore >= 61 ? 'Silver' : savedScore >= 36 ? 'Bronze' : 'No tier'
+        showToast(`✓ Checked: ${product} — ${Math.round(savedScore)}/100 (${badgeLabel})`)
+      }
+      if (document.body.classList.contains('shell-on') && typeof shellNavigateTo === 'function') {
+        shellNavigateTo('overview')
+      }
     } catch (err) {
       alert('Check failed. Please try again.')
     } finally {
@@ -2058,6 +2118,35 @@ body.shell-on .shell-scrim.open { display: block; }
     if (avgLine) { avgLine.style.left = benchAvg + '%'; avgLine.style.display = 'block' }
     if (youMarker) { youMarker.style.left = benchYou + '%'; youMarker.style.display = 'block' }
     if (avgLbl) avgLbl.textContent = `category avg: ${benchAvg}`
+
+    // Section 7 · Recently Added (B안 2026-04-21)
+    const recentList = document.getElementById('d5-recent-list')
+    if (recentList) {
+      const recent = [...(allProducts || [])]
+        .filter(p => !p._domainOnly)
+        .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))
+        .slice(0, 5)
+      if (recent.length === 0) {
+        recentList.innerHTML = '<div style="color:#555;font-size:0.8rem;padding:0.5rem 0;">No products yet. Use <b style="color:#FFD700;">+ Check</b> to add one.</div>'
+      } else {
+        recentList.innerHTML = recent.map(p => {
+          const s = Math.round(Number(p.score) || 0)
+          const badge = s >= 81 ? ['GOLD', '#FFD700'] : s >= 61 ? ['SILVER', '#C0C0C0'] : s >= 36 ? ['BRONZE', '#CD7F32'] : ['—', '#555']
+          const when = p.created_at ? new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: getUserTimezone() }) : '—'
+          return `
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.75rem;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;">
+              <div style="display:flex;align-items:center;gap:0.7rem;min-width:0;flex:1;">
+                <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:${badge[1]};border:1px solid ${badge[1]};padding:3px 6px;border-radius:3px;letter-spacing:0.15em;white-space:nowrap;">${badge[0]}</span>
+                <span style="font-size:0.83rem;color:#e5e5e5;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escHtml(p.product_name || '—')}</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.75rem;flex-shrink:0;">
+                <span style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:#FFD700;font-weight:700;">${s}</span>
+                <span style="font-size:0.7rem;color:#555;font-family:'JetBrains Mono',monospace;">${when}</span>
+              </div>
+            </div>`
+        }).join('')
+      }
+    }
   }
 
 
@@ -3229,6 +3318,47 @@ body.shell-on .shell-scrim.open { display: block; }
     btn.style.cursor = checked ? 'pointer' : 'not-allowed'
   }
 
+  // B안 2026-04-21: Actions pane Guide CTA 전용 핸들러 (Overview에서 이식)
+  function toggleActionsGuideBtn() {
+    const cb = document.getElementById('actions-guide-consent')
+    const btn = document.getElementById('actions-guide-btn')
+    if (!cb || !btn) return
+    const checked = cb.checked
+    btn.disabled = !checked
+    btn.style.background = checked ? '#FFD700' : '#444'
+    btn.style.color = checked ? '#000' : '#888'
+    btn.style.cursor = checked ? 'pointer' : 'not-allowed'
+  }
+  async function submitActionsGuideEmail() {
+    const input = document.getElementById('actions-guide-email')
+    const email = (input.value || '').trim()
+    if (!email) return
+    const btn = document.getElementById('actions-guide-btn')
+    if (btn) { btn.disabled = true; btn.textContent = '...' }
+    try {
+      const r = await fetch(API_URL + '/v1/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          source: 'actions-guide',
+          marketing_consent: true,
+          product: lastCheckResult ? lastCheckResult.product : undefined,
+          score: lastCheckResult ? lastCheckResult.score : undefined,
+        }),
+      })
+      if (r.ok) {
+        document.getElementById('actions-guide-ok').style.display = 'block'
+        if (input) input.style.display = 'none'
+        if (btn) btn.style.display = 'none'
+      } else {
+        if (btn) { btn.disabled = false; btn.textContent = 'GET GUIDE' }
+      }
+    } catch(e) {
+      if (btn) { btn.disabled = false; btn.textContent = 'GET GUIDE' }
+    }
+  }
+
   // ── EMAIL-CAPTURE-01: Flow 2 — send guide ─────────────────
   async function submitGuideEmail() {
     const input = document.getElementById('guide-email-input')
@@ -3262,6 +3392,40 @@ body.shell-on .shell-scrim.open { display: block; }
   }
 
   // ═══════════════════════════════════════════════════════════
+  // B안 2026-04-21 · Quick Check Modal + Toast
+  // ═══════════════════════════════════════════════════════════
+  function openQuickCheck() {
+    const ov = document.getElementById('quick-check-overlay')
+    if (!ov) return
+    ov.style.display = 'flex'
+    // autofocus product input
+    setTimeout(() => document.getElementById('input-product')?.focus(), 50)
+    // close on Escape
+    document.addEventListener('keydown', _qcEscHandler)
+  }
+  function closeQuickCheck() {
+    const ov = document.getElementById('quick-check-overlay')
+    if (!ov) return
+    ov.style.display = 'none'
+    document.removeEventListener('keydown', _qcEscHandler)
+    // clear form for next use
+    const p = document.getElementById('input-product'); if (p) p.value = ''
+    const u = document.getElementById('input-url'); if (u) u.value = ''
+    if (typeof updateCheckBtn === 'function') updateCheckBtn()
+  }
+  function _qcEscHandler(e) { if (e.key === 'Escape') closeQuickCheck() }
+
+  let _toastTimer = null
+  function showToast(msg, durationMs) {
+    const el = document.getElementById('pba-toast')
+    if (!el) return
+    el.textContent = msg
+    el.style.display = 'block'
+    if (_toastTimer) clearTimeout(_toastTimer)
+    _toastTimer = setTimeout(() => { el.style.display = 'none' }, durationMs || 3400)
+  }
+
+  // ═══════════════════════════════════════════════════════════
   // D4-INT UI-SHELL-INTEGRATE-01 · Phase B · Shell Navigation
   // 6 real panes: Overview (D5 6-section) / Trend / Rivals /
   // Journey / Actions / Tools. Legacy #tab-mine shown only under
@@ -3276,8 +3440,12 @@ body.shell-on .shell-scrim.open { display: block; }
     actions:  { crumb: 'Actions' },
     tools:    { crumb: 'Tools' },
   };
-  // Elements visible only in Overview mode (beta-banner stays for all as system announcement)
-  const OVERVIEW_ONLY_IDS = ['shell-d5-overview', 'check-form-card', 'check-result', 'guide-email-cta'];
+  // Elements visible only in Overview mode
+  // CEO 2026-04-21 B안: check-form 제거(모달로 이동) · check-result 숨김(토스트+자동갱신) ·
+  // guide-email-cta 숨김(Actions pane 복제) · history-card는 Tools 전용
+  const OVERVIEW_ONLY_IDS = ['beta-banner', 'beta-joined-msg', 'shell-d5-overview'];
+  // Always-hidden in Shell mode (data persists but not visually shown)
+  const SHELL_ALWAYS_HIDDEN_IDS = ['check-result', 'guide-email-cta'];
 
   function shellNavigateTo(key) {
     if (!SHELL_NAV[key]) key = 'overview';
@@ -3300,15 +3468,20 @@ body.shell-on .shell-scrim.open { display: block; }
       if (inOverview) el.style.removeProperty('display');
       else el.style.display = 'none';
     });
+    // 3b. Always-hidden in Shell mode (B안 2026-04-21)
+    SHELL_ALWAYS_HIDDEN_IDS.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    });
 
-    // 4. History card + inner tabs
+    // 4. History card + inner tabs (B안: Tools 전용)
     const historyCard = document.getElementById('history-card');
     const tabMine = document.getElementById('tab-mine');
     const tabTools = document.getElementById('tab-tools');
     const dashTabsBar = document.querySelector('.dash-tabs-bar');
     if (dashTabsBar) dashTabsBar.style.display = 'none'; // sidebar replaces this bar
-    if (historyCard) historyCard.style.display = (key === 'overview' || key === 'tools') ? 'block' : 'none';
-    if (tabMine) tabMine.style.display = (key === 'overview') ? 'block' : 'none';
+    if (historyCard) historyCard.style.display = (key === 'tools') ? 'block' : 'none';
+    if (tabMine) tabMine.style.display = 'none'; // D3 에서 Shell 도메인 드롭다운으로 재설계
     if (tabTools) tabTools.style.display = (key === 'tools') ? 'block' : 'none';
 
     // 5. New panes (Trend/Rivals/Journey/Actions)
