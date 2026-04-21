@@ -2,15 +2,15 @@
 
 > For DMs, partnerships, community introductions, and press outreach.
 > Copy-paste ready. Adapt tone per channel.
+> Last updated: 2026-04-21 (🔴 5-AI coverage positioning + scope expanded to products AND content)
 
 ---
 
 ## Short Version (DM / Comment / Bio)
 
 ```
-Does ChatGPT recommend your product? Most digital creators are invisible to AI search.
-
-pickedby.ai checks in 10 seconds — free, no signup.
+Do GPT, Gemini, Claude, Grok, Perplexity recommend your product or content?
+Most creators are invisible to AI search. pickedby.ai checks in 10 seconds — free, no signup.
 
 → pickedby.ai
 ```
@@ -20,26 +20,25 @@ pickedby.ai checks in 10 seconds — free, no signup.
 ## Medium Version (Community Post / Email)
 
 ```
-37% of people now start searches in AI tools instead of Google.
-But most digital products don't exist in AI's world.
+Search has moved to AI. AI referral traffic is up 527% YoY.
+But most products and content don't exist in AI's answers.
 
-pickedby.ai tells you if ChatGPT, Perplexity, and other AI models
-know about and recommend your product.
+pickedby.ai tells you if all 5 major AIs — GPT, Gemini, Claude, Grok,
+Perplexity — know about and recommend your product or content.
 
-Enter any product name → get an AI Visibility Score (0-100) in 10 seconds.
+Enter any URL → get an AI Visibility Score (0-100) in 10 seconds.
 Free. No signup. No credit card.
 
-We check 5 dimensions:
-• Web Presence — are you mentioned online?
-• Source Authority — do high-quality sites cover you?
-• Recommendation Signals — are you in "best of" roundups?
-• Community Validation — Reddit, forums, real reviews
-• Competitive Context — how do you compare to alternatives?
+We measure 4 dimensions (100-point unified score):
+• Direct Recognition (35) — do AIs know you exist?
+• Category Ranking (35) — do you appear for "best {category}" queries?
+• Co-Recommendation (20) — are you mentioned alongside competitors?
+• Web Authority (10) — do high-signal sources cite you?
 
-Plus we directly ask ChatGPT and Perplexity: "Do you know this product?"
+Daily automated re-measurement + Daily Pulse insights per AI engine.
 
-Built for Gumroad sellers, Etsy creators, Notion template makers,
-and anyone selling digital products online.
+Built for anyone discoverable in AI answers: SaaS products, Gumroad
+templates, blog posts, YouTube channels, newsletters, personal brands.
 
 → Try free: pickedby.ai
 ```
@@ -50,17 +49,18 @@ and anyone selling digital products online.
 
 ### The Problem
 
-AI search is replacing Google for product discovery. 37% of users now start with ChatGPT or Perplexity instead of Google. But there's no way for digital creators to know if AI recommends their products — and no affordable tool to fix it.
+AI search is replacing Google for product and content discovery. AI referral traffic is up 527% YoY. Users now ask GPT, Gemini, Claude, Grok, and Perplexity for recommendations instead of searching Google. But there's no tool for creators, publishers, and brands to know if AI recommends their products or content — and no affordable way to fix it.
 
-24 GEO (Generative Engine Optimization) tools exist. All target enterprises. The cheapest is $29/month. Most are $300+/month. None serve indie creators.
+24 GEO (Generative Engine Optimization) tools exist. All target enterprises. The cheapest is $29/month. Most are $300+/month. **None cover all 5 major AIs, and none serve products + content together.**
 
 ### The Solution
 
-**pickedby.ai** — the first AI Visibility Score built for digital creators.
+**pickedby.ai** — the AI Visibility Platform covering all 5 major AIs, for products AND content.
 
-- Enter any product name → score (0-100) in 10 seconds
+- Enter any URL → score (0-100) in 10 seconds
 - Free, no signup required
-- 5-dimension breakdown + direct AI probe (ChatGPT & Perplexity)
+- 4-dimension unified score + direct AI probe across GPT · Gemini · Claude · Grok · Perplexity
+- Daily automated re-measurement + per-engine insights
 - Actionable improvement guide
 
 ### Key Numbers
@@ -69,10 +69,11 @@ AI search is replacing Google for product discovery. 37% of users now start with
 |--------|-------|
 | Time to result | 10 seconds |
 | Cost to user | Free (Phase 1) |
-| AI models checked | ChatGPT, Perplexity, Gemini |
-| Score dimensions | 5 |
-| Running cost | ~$0/month (Cloudflare Workers) |
-| Competitors in creator space | 0 |
+| AI models covered | **5 major AIs: GPT · Gemini · Claude · Grok · Perplexity** (beta runs Gemini + Perplexity; v2.0 adds GPT/Claude/Grok) |
+| Score dimensions | 4 (Recognition 35 + Category 35 + Co-Rec 20 + Web 10 = 100) |
+| Measurement frequency | Daily auto-refresh at user's local midnight |
+| Running cost | ~$5/month (Cloudflare Workers + Supabase) |
+| Competitors covering 5 AIs + products/content | **0** |
 
 ### Target Market
 

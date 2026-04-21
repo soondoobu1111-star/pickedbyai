@@ -1,20 +1,26 @@
 # pickedby.ai (PBA) 사업계획서
-> 최종 업데이트: 2026-04-14 (X 정지 대응 + MLP-Slim 완료 + 경쟁사 추가 + LinkedIn 전환 반영) | 기반: pickedby_ai_full_report.json + whitepaper.md
+> 최종 업데이트: 2026-04-21 (🔴 범위 확장: 제품 → 제품+콘텐츠. CEO 최종 확정) | 기반: pickedby_ai_full_report.json + whitepaper.md + vision-brief-v2.md
 > **전략 상위 문서**: `pickedbyAI/docs/whitepaper.md` (Moat 전략, 시장 래더, 가설 검증 포함)
+> **비전 진실 소스**: `pickedbyAI/docs/vision-brief-v2.md` (v2.0 — Google Stack 비전)
 
 ---
 
-## 1. 한 줄 정의
+## 1. 한 줄 정의 (2026-04-21 최종)
 
-**"AI 시대의 구글 서치콘솔 — 디지털 제품 크리에이터 전용"**
+**"AI 추천 시대의 서치콘솔 — 5대 AI(GPT·Gemini·Claude·Grok·Perplexity)가 내 제품·콘텐츠를 추천하는지 측정·분석·최적화하는 플랫폼"**
 
-AI가 내 제품을 추천하는지 확인하고, 추천받을 준비를 자동으로 해주는 플랫폼.
+> 🔴 **5대 AI 커버 원칙 (2026-04-21 CEO 확정)**: 외부 카피는 항상 5대 AI 전체를 표기합니다. 특정 1~2개 엔진만 언급해 "한정 도구"로 오독되는 것을 막기 위함입니다.
+
+- 단순 "제품 점수 계산기"가 아닙니다. 측정 단위는 **제품 + 콘텐츠** 모두입니다.
+- SaaS 제품 · Gumroad 템플릿 · 블로그 글 · YouTube 채널 · 뉴스 기사 · 퍼스널 브랜드 · Etsy 스토어 · Substack 뉴스레터 등 **AI 답변에서 발견되기를 원하는 모든 것**이 대상입니다.
+- Google Search Console이 "웹의 페이지"를 위한 것이라면, pickedby.ai는 **"AI 답변에서 발견 가능한 모든 것"**을 위한 것입니다.
+- 카테고리 야망: AI 가시성 플랫폼의 **카테고리 리더**. GSC/GA4가 구글 검색에 대해 그러하듯이.
 
 ---
 
 ## 2. 문제
 
-ChatGPT, Claude, Perplexity가 쇼핑 추천의 주요 채널이 되고 있다.
+GPT · Gemini · Claude · Grok · Perplexity 등 주요 AI가 쇼핑·콘텐츠 추천의 핵심 채널로 자리잡고 있다.
 
 - AI 레퍼럴 트래픽 YoY **+527%** (Semrush, 2025)
 - Claude 전환율 **16.8%** (구글 1.76~2.8% 대비 10배)
@@ -27,13 +33,14 @@ ChatGPT, Claude, Perplexity가 쇼핑 추천의 주요 채널이 되고 있다.
 
 ## 3. 솔루션
 
-**pickedby.ai** = 크리에이터가 URL/제품명을 입력하면:
+**pickedby.ai** = 누구나 URL/제품명/콘텐츠 주소를 입력하면:
 
-1. **10초 무료**: AI 추천 여부 + AI Visibility Score (0-100)
-2. **즉시 진단**: 5개 차원(인지도/추천도/카테고리 순위/리뷰/비교 언급) 시각화
-3. **배지**: Score별 "Picked by AI" Gold/Silver/Bronze 배지 발급
-4. **원클릭 처방**: llms.txt 자동 생성, Schema.org JSON-LD 자동 생성 (Phase 2)
-5. **알림**: 내 제품이 AI에서 언급되면 이메일 알림 (Phase 2)
+1. **10초 무료**: AI 추천 여부 + AI Visibility Score (0-100, 4차원 단일 체계)
+2. **즉시 진단**: 4개 차원 — Recognition 35 + Category 35 + Co-Recommendation 20 + Web Authority 10 = 100점 (빅파이 1.5 확정)
+3. **배지**: Pass Indicator (🏆 PERFECT / 🟢 STRONG / 🟡 EMERGING / 🔴 INVISIBLE) + Gold/Silver/Bronze 배지 발급
+4. **일일 자동 측정**: cron KST 00:00 자동 실행 → Daily Pulse 카드 + Movement Feed
+5. **원클릭 처방**: llms.txt 자동 생성, 4개 Sources 풀셋 진단 (sitemap/rss/robots/llms — 빅파이 1.5.2)
+6. **알림**: 내 제품·콘텐츠가 AI에서 언급되면 이메일 알림 (Phase 2)
 
 ---
 
@@ -42,11 +49,13 @@ ChatGPT, Claude, Perplexity가 쇼핑 추천의 주요 채널이 되고 있다.
 | 지표 | 수치 | 출처 |
 |------|------|------|
 | 디지털 제품 셀러 수 | 200-300만 명 | Gumroad/Etsy/LS 합산 추정 |
+| 글로벌 콘텐츠 퍼블리셔 | 5,000만+ 블로그 + 5,000만+ 유튜버 + 50만+ 뉴스레터 | Statista/Ahrefs |
 | 크리에이터 이코노미 규모 | $1,910-2,540억 (2025) | Goldman Sachs |
-| GEO/AEO 도구 시장 투자 | $3억+ | 24개 도구 합산 |
-| 크리에이터 타겟 GEO 도구 | **0개** | 직접 조사 |
+| GEO/AEO 도구 시장 CAGR | **40.6%**, 2034년 $171.5억 전망 | 시장 조사 |
+| 크리에이터·콘텐츠 타겟 GEO 도구 | **0개** | 직접 조사 (24개 전수 확인) |
 
-**핵심**: 24개 GEO 도구 전부 기업/브랜드 타겟. 크리에이터 세그먼트 완전 공백.
+**핵심**: 24개 GEO 도구 전부 기업/브랜드 타겟. **제품·콘텐츠 둘 다 포괄하는 플랫폼은 전 세계 0개**.
+**확장 가능 시장**: "AI 답변에서 발견되기를 원하는 모든 개인·조직" = 전 세계 수억 명.
 
 ---
 
@@ -166,7 +175,7 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 | BE | TypeScript + Hono + CF Workers | perceptdot 스택 재활용 |
 | DB | Supabase PostgreSQL | 이메일/스코어/히스토리 저장, 무료 티어 |
 | AI (ENGINE-04) | CF Workers AI (llama-3.2-3b) + Tavily 웹검색 | 패턴매칭, ~4초 |
-| AI Probe (ENGINE-05) | **Perplexity Sonar + GPT-4o-mini + Gemini 2.5 Flash** | **직접 AI 쿼리, 2026-04-10 프로덕션 배포 완료** ✅ |
+| AI Probe (ENGINE-05 → ENGINE-07 UnifiedScore) | **5대 AI(GPT·Gemini·Claude·Grok·Perplexity) 전체 커버 (베타 2엔진 Gemini+Perplexity 가동, 정식 v2.0에서 +GPT·Claude·Grok)** | 베타 2엔진 무료 운영, 정식 5대 유료 |
 | 이메일 | Brevo | 무료 300통/일 |
 | 결제 | Paddle | Phase 2 (PAY-PB-01). 글로벌 크리에이터 타겟 |
 | 배포 | CF Pages + CF Workers | pickedby.ai / api.pickedby.ai |

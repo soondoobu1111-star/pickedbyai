@@ -1,7 +1,15 @@
 # pickedby.ai White Paper
-> **버전:** 1.2 | **작성일:** 2026-04-07 | **최종 갱신:** 2026-04-08 (스코어 max 82 확정, 등급 임계값, llms.txt 출시, Dashboard 3탭, Paddle 결제, BLOG-SEO Wave 1 완료)
+> **버전:** 1.3 | **작성일:** 2026-04-07 | **최종 갱신:** 2026-04-21 (🔴 범위 확장: 제품→제품+콘텐츠 · 🔴 5대 AI 커버 포지셔닝 확정 · 빅파이 1.5 4차원 스코어 반영)
 > **갱신 주기:** 매 Phase 전환 시 + 전략적 피벗 시
 > **목적:** 사업 방향성의 단일 진실 소스. 왜 이 사업을 하는가, 어디로 가는가, 어떻게 방어하는가.
+
+---
+
+## 🔴 핵심 포지셔닝 규칙 (2026-04-21 CEO 확정)
+
+1. **범위**: 측정 단위는 **제품 + 콘텐츠** 모두. "AI 답변에서 발견되기를 원하는 모든 것." 단순 제품 계산기가 아님.
+2. **AI 커버**: **5대 AI(GPT · Gemini · Claude · Grok · Perplexity) 전체 커버**가 표준 포지셔닝. 외부 카피에서 단일·2엔진 한정 표기 금지. 베타 2엔진은 단계적 실행 경로일 뿐, 제품 정의는 5대 전체.
+3. **카테고리 야망**: GSC/GA4가 구글에 그러하듯, pickedby.ai는 **AI 답변 영역의 #1 Visibility Platform**이 되는 것이 목표.
 
 ---
 
@@ -381,19 +389,24 @@ ENGINE-05 (2026-04-08 설계 완료, 구현 예정):
   핵심 변경: 다중 쿼리 3회, 소스 Tier 등급, 자기참조 차단, 그라데이션 점수
 ```
 
-**AI Probe (2026-04-08 실증 완료, 즉시 도입 확정)**
+**AI Probe — 5대 AI 전체 커버 (2026-04-21 CEO 확정 포지셔닝)**
 ```
-Phase 3에서 앞당김 (제1원칙 분석: 키만 등록하면 즉시 가능)
+표준 커버: GPT · Gemini · Claude · Grok · Perplexity 5대 AI
 
-Perplexity Sonar: 실시간 웹 기반 AI 인지 + citations 반환 (~$0.001/쿼리)
-GPT-4o-mini: 학습 데이터 기반 인지 (~$0.001/쿼리)
-Gemini + Search Grounding: Google 생태계 인지 (기존 Relay Worker 재활용)
+[베타 가동 (무료 범위 내)]
+Gemini: Relay Worker (자체 운영, 무료)
+Perplexity Sonar: 공식 API (기존 $10 예산 내)
 
-실험 결과 (2026-04-08):
+[빅파이 2.0 정식 (유료 자체 부담)]
+GPT (OpenAI 4o): 공식 API
+Claude (Anthropic): 공식 API
+Grok (xAI): 공식 API
+
+실험 결과 (2026-04-08, 2엔진 기준):
 - Perplexity: pickedby.ai 상세 인지 (점수체계·5차원·타겟까지 정확 설명)
 - GPT: pickedby.ai 모름 (학습데이터 cutoff 한계)
 - 카테고리 추천: GPT=전통SEO, Perplexity=GEO전문도구 (겹침 0%)
-→ "어떤 AI에서 보이고 어떤 AI에서 안 보이는지" 자체가 핵심 가치
+→ "어떤 AI에서 보이고 어떤 AI에서 안 보이는지"를 5대 전체에서 비교하는 것 자체가 핵심 가치
 ```
 
 **아키텍처 (ENGINE-05 + AI Probe)**

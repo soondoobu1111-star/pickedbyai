@@ -22,7 +22,11 @@ If the answer is "no," do not do it. If the answer is unclear, ask the founder b
 ## 1. Service Direction (The Real Vision)
 
 ### One-line definition
-**"The Google Stack for AI Recommendations"** — infrastructure that lets creators, brands, and businesses **measure, analyze, optimize, and (eventually) buy** their visibility inside AI-driven recommendations.
+**"The Google Stack for AI Recommendations"** — infrastructure that lets creators, content publishers, brands, and businesses **measure, analyze, optimize, and (eventually) buy** the visibility of their **products AND content** inside AI-driven recommendations.
+
+> 🔴 **Scope update (2026-04-21, CEO confirmed):** The unit of measurement is not just "products." It's **anything that wants to be discovered by AI** — a SaaS product, a Gumroad template, a blog post, a YouTube channel, a news article, a personal brand, an Etsy shop, a D2C store, or a Substack newsletter. If Search Console is for "pages on the web," pickedby.ai is for **"anything discoverable in AI answers."**
+>
+> 🔴 **AI coverage rule (2026-04-21, CEO confirmed):** pickedby.ai's standard positioning is **"covers all 5 major AIs: GPT · Gemini · Claude · Grok · Perplexity."** External copy (landing, application, marketing, blog, pitch) must always reflect 5-AI coverage. Never describe the product as limited to a single AI or 2 engines. The 2-engine beta (Gemini + Perplexity) is a staged execution reality, not the product definition. v2.0 launch adds GPT/Claude/Grok.
 
 ### The three-layer roadmap
 
@@ -42,8 +46,8 @@ If the answer is "no," do not do it. If the answer is unclear, ask the founder b
 
 ### Target strategy (do not misread)
 - **Phase 1 entry point = digital creators** (Gumroad / Etsy / Notion) — they are the **first seed segment**, not the **only customer**.
-- **Phase 2 expansion = indie SaaS, D2C brands, marketing agencies**
-- **Phase 3 endgame = every online seller** (i.e. Google Ads' entire customer base)
+- **Phase 2 expansion = indie SaaS, D2C brands, marketing agencies, content publishers** (blogs · newsletters · YouTube · Substack · news media)
+- **Phase 3 endgame = anyone discoverable by AI** — products, content, brands, personal presence. The entire AI answer surface.
 
 **🚨 Mandatory copy fix:** Remove "Not for agencies. Built for creators." immediately. That sentence is actively pushing future customers away.
 
