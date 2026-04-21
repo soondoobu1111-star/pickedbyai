@@ -2197,10 +2197,12 @@ body.shell-on .shell-scrim.open { display: block; }
       .eq('product_name', lastCheckResult.product)
       .gte('created_at', today + 'T00:00:00.000Z')
       .limit(1)
+    // BUG-SCORE-FIELD-LEGACY-01 fix (2026-04-22): unified.score 우선 저장 (빅파이 1.5 단일 시스템)
+    const __persistScore = Math.round(lastCheckResult.unified?.score ?? lastCheckResult.score)
     if (todayCheck && todayCheck.length > 0) {
       // Update today's existing record with latest score
       await sb.from('scores').update({
-        score: Math.round(lastCheckResult.score),
+        score: __persistScore,
         results: lastCheckResult.results,
         dimensions: lastCheckResult.dimensions || null,
         ai_probe: lastCheckResult.aiProbe || null,
@@ -2220,7 +2222,7 @@ body.shell-on .shell-scrim.open { display: block; }
       user_id: currentUser.id,
       product_name: lastCheckResult.product,
       product_url: lastCheckResult.url,
-      score: Math.round(lastCheckResult.score),
+      score: __persistScore,
       results: lastCheckResult.results,
       dimensions: lastCheckResult.dimensions || null,
       ai_probe: lastCheckResult.aiProbe || null,
@@ -2241,10 +2243,12 @@ body.shell-on .shell-scrim.open { display: block; }
       .eq('product_name', lastCheckResult.product)
       .gte('created_at', today + 'T00:00:00.000Z')
       .limit(1)
+    // BUG-SCORE-FIELD-LEGACY-01 fix (2026-04-22): unified.score 우선 저장
+    const __persistScore = Math.round(lastCheckResult.unified?.score ?? lastCheckResult.score)
     if (todayCheck && todayCheck.length > 0) {
       const existing = todayCheck[0]
       await sb.from('scores').update({
-        score: Math.round(lastCheckResult.score),
+        score: __persistScore,
         results: lastCheckResult.results,
         dimensions: lastCheckResult.dimensions || null,
         ai_probe: lastCheckResult.aiProbe || null,
@@ -2257,7 +2261,7 @@ body.shell-on .shell-scrim.open { display: block; }
       user_id: currentUser.id,
       product_name: lastCheckResult.product,
       product_url: lastCheckResult.url,
-      score: Math.round(lastCheckResult.score),
+      score: __persistScore,
       results: lastCheckResult.results,
       dimensions: lastCheckResult.dimensions || null,
       ai_probe: lastCheckResult.aiProbe || null,

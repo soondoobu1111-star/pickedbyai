@@ -975,7 +975,7 @@ async function dailyRefresh(env: Bindings) {
       const validProbes = result.aiProbe.filter((p: AIProbeResult) => p.ai !== 'test')
       const recognized = validProbes.filter((p: AIProbeResult) => p.recognized).length
       const probe_score = validProbes.length >= 3 ? Math.round(recognized / validProbes.length * 100) : -1
-      const savedScore = probe_score >= 0 ? probe_score : result.score
+      let savedScore = probe_score >= 0 ? probe_score : result.score
       // 빅파이 1.5 SCORE-UNIFY-FIX-01: cron도 unified_v15 저장
       let cronUnifiedV15: UnifiedScoreResult | null = null
       if (env.UNIFIED_SCORE_V15 === 'true') {
@@ -988,6 +988,9 @@ async function dailyRefresh(env: Bindings) {
             aiProbes: result.aiProbe,
           })
           cronUnifiedV15 = computeUnified(ctx)
+          // BUG-SCORE-FIELD-LEGACY-01 fix (2026-04-22): unified 성공 시 score도 통일
+          // 빅파이 1.5 §2 "단일 시스템" — scores.score = unified_v15.score
+          savedScore = Math.round(cronUnifiedV15.score)
         } catch (err) {
           console.error('[CRON] unified_v15 error:', err)
         }

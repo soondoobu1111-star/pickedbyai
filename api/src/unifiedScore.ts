@@ -235,17 +235,22 @@ export function computeWebAuthority(ctx: DimensionContext): DimensionScore {
 
 // ===== 보조 시각화 계산 =====
 
+// BUG-PASS-INDICATOR-01 fix (B안, 2026-04-22 CEO 승인):
+// signal 단독 평가 시 AI 1개만 recommended여도 'strong' 승격되는 노이즈 발생.
+// signal(인식) AND score(종합) 양쪽 증거가 일관될 때만 상위 배지 부여.
+// 근거: 빅파이 1.5 §4-3 "보조 시각화" 원칙 유지하면서 UX 불일치 제거.
 export function computePassIndicator(
   gemini?: { recognized: boolean; recommended: boolean },
   perplexity?: { recognized: boolean; recommended: boolean },
+  finalScore?: number,
 ): PassIndicator {
   const g = gemini?.recommended ? 2 : gemini?.recognized ? 1 : 0
   const p = perplexity?.recommended ? 2 : perplexity?.recognized ? 1 : 0
   const total = g + p
-  // max total = 4 (both recommended)
-  if (total >= 4) return 'perfect'
-  if (total >= 2) return 'strong'
-  if (total >= 1) return 'emerging'
+  const score = finalScore ?? 0
+  if (total >= 4 && score >= 60) return 'perfect'
+  if (total >= 2 && score >= 35) return 'strong'
+  if (total >= 1 && score >= 15) return 'emerging'
   return 'invisible'
 }
 
@@ -318,7 +323,7 @@ export function assembleUnifiedScore(
     console.error(`[UnifiedScore] INVARIANT VIOLATION: final score ${finalScore} > ${TOTAL_MAX}`)
   }
 
-  const pass = computePassIndicator(ctx.geminiResponse, ctx.perplexityResponse)
+  const pass = computePassIndicator(ctx.geminiResponse, ctx.perplexityResponse, finalScore)
 
   const recognitionDim = dimensions.find(d => d.id === 'recognition')
   const categoryDim = dimensions.find(d => d.id === 'category')
