@@ -18,7 +18,10 @@ name = "pickedbyai-api-staging"
 [env.staging.triggers]
 # T5 D2 RETRY-01: 일일 refresh + 매 1분 retry queue 처리 (1분 × 5회 = 총 5분)
 # 2026-04-21 CEO 승인: dailyRefresh 시각 UTC 02:00 → UTC 15:00 (= KST 00:00 자정)
-crons = ["0 15 * * *", "* * * * *"]
+# 2026-04-22 CRON-CONFLICT-FIX: "0 15 * * *" 와 "* * * * *" 가 UTC 15:00:00 정각 동시 매칭 →
+# CF Workers가 event.cron에 "* * * * *"만 전달하여 retry queue만 실행 + dailyRefresh 누락 확인됨.
+# 1분 오프셋 "1 15 * * *" (= KST 00:01)로 충돌 완전 회피.
+crons = ["1 15 * * *", "* * * * *"]
 
 [env.staging.vars]
 ENVIRONMENT = "staging"
