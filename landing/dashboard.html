@@ -681,6 +681,29 @@ body.shell-on .shell-scrim.open { display: block; }
         </div>
       </div>
 
+      <!-- Row 1.5: Volume card (빅파이 1.5.1 · 2026-04-22 CEO 승인 · 누적체계) -->
+      <div class="card mb-4" id="d5-volume-card" style="padding:1.3rem 1.4rem;display:none;cursor:pointer;" onclick="if(typeof shellNavigateTo==='function')shellNavigateTo('trend')">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.7rem;flex-wrap:wrap;gap:0.5rem;">
+          <div>
+            <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:0.3rem;">AI MENTIONS · 7D</div>
+            <div style="font-size:0.78rem;color:#888;">Absolute volume · click for trend →</div>
+          </div>
+          <div id="d5-vol-ratio" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:#888;">—</div>
+        </div>
+        <div style="display:grid;grid-template-columns:auto 1fr;gap:1.1rem;align-items:center;">
+          <div>
+            <div id="d5-vol-total" style="font-family:'JetBrains Mono',monospace;font-size:2.4rem;font-weight:800;color:#FFD700;line-height:1;">—</div>
+            <div id="d5-vol-delta" style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#888;margin-top:0.25rem;">—</div>
+          </div>
+          <div style="position:relative;height:56px;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:6px;">
+            <canvas id="d5-vol-sparkline" style="width:100%;height:100%;"></canvas>
+          </div>
+        </div>
+        <div id="d5-vol-breakdown" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:0.5rem;margin-top:0.9rem;">
+          <!-- mentions / citations / sources / co-rec 4 small stats -->
+        </div>
+      </div>
+
       <!-- Row 4.1: Section 7 · 7-day Mini Trend (UI-OVERVIEW-12FULL 2026-04-22) -->
       <div class="card mb-4" id="d5-mini-trend-card" style="padding:1.3rem 1.4rem;display:none;cursor:pointer;" onclick="if(typeof shellNavigateTo==='function')shellNavigateTo('trend')">
         <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.7rem;">
@@ -1094,6 +1117,34 @@ body.shell-on .shell-scrim.open { display: block; }
         <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="trend-overlay-score" checked style="accent-color:#FFD700;"> Total Score</label>
         <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="trend-overlay-recognition" style="accent-color:#4ade80;"> Recognition</label>
         <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="trend-overlay-category" style="accent-color:#60a5fa;"> Category</label>
+      </div>
+    </div>
+
+    <!-- ═══ Volume Trend (빅파이 1.5.1 · 2026-04-22 CEO 승인 · 누적체계) ═══ -->
+    <div class="card mb-6" style="padding:1.3rem 1.4rem;">
+      <div class="section-header" style="margin-bottom:1rem;">
+        <div class="section-title">Volume Trend — How much are you mentioned?</div>
+        <div class="section-sub">Absolute counts · mentions · citations · sources · co-recommendations</div>
+      </div>
+      <div id="volume-tabs" style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+        <button data-volume-tab="daily" class="volume-tab-btn on" style="background:#FFD700;color:#0a0a0a;border:none;padding:0.45rem 0.9rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:6px;font-family:inherit;">Daily (30d)</button>
+        <button data-volume-tab="weekly" class="volume-tab-btn" style="background:#0d0d0d;color:#888;border:1px solid #2a2a2a;padding:0.45rem 0.9rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:6px;font-family:inherit;">Weekly (12w)</button>
+        <button data-volume-tab="monthly" class="volume-tab-btn" style="background:#0d0d0d;color:#888;border:1px solid #2a2a2a;padding:0.45rem 0.9rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:6px;font-family:inherit;">Monthly (12mo)</button>
+      </div>
+      <div id="volume-empty" style="display:none;text-align:center;padding:2.5rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;">
+        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ NO VOLUME DATA YET</div>
+        <div style="font-size:13px;color:#aaa;line-height:1.6;max-width:500px;margin:0 auto;">Daily cron runs 5 AI probes per product. After tomorrow's run, volume numbers start accumulating. Come back in 24h.</div>
+      </div>
+      <div id="volume-chart-wrap" style="display:none;position:relative;height:240px;margin-bottom:1rem;">
+        <canvas id="volume-chart"></canvas>
+      </div>
+      <div id="volume-stats" style="display:none;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.5rem;margin-bottom:1rem;"></div>
+      <div id="volume-layers" style="display:none;gap:1rem;align-items:center;flex-wrap:wrap;">
+        <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#666;letter-spacing:0.2em;">LAYERS:</div>
+        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="volume-layer-mentions" checked style="accent-color:#FFD700;"> Mentions</label>
+        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="volume-layer-citations" style="accent-color:#4ade80;"> Citations</label>
+        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="volume-layer-sources" style="accent-color:#60a5fa;"> Sources</label>
+        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="volume-layer-corec" style="accent-color:#f472b6;"> Co-Rec peers</label>
       </div>
     </div>
   </div>
@@ -2242,6 +2293,8 @@ body.shell-on .shell-scrim.open { display: block; }
     try { renderD5Last24h(prodHistory, unified) } catch (e) { console.error('[12FULL] last24h', e) }
     try { renderD5ActionTop(unified) } catch (e) { console.error('[12FULL] action-top', e) }
     try { renderD5VerifiedBadge(prod, !!vMatch) } catch (e) { console.error('[12FULL] verified', e) }
+    // 빅파이 1.5.1 Volume Metrics (async, fire-and-forget)
+    try { loadD5VolumeCard(prod.product_name).catch(e => console.error('[volume] card', e)) } catch (e) { console.error('[volume] card outer', e) }
 
     // Section 12 · Recently Added (B안 2026-04-21 · OWNER-ONLY-01 재확인 2026-04-21 밤)
     // verified 소유 제품만 표시 — 단순 검색(비검증)은 My Products/Recently Added 어디에도 들어가지 않음.
@@ -2664,6 +2717,246 @@ body.shell-on .shell-scrim.open { display: block; }
           <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:${color};border:1px solid ${color};padding:3px 6px;border-radius:3px;letter-spacing:0.15em;white-space:nowrap;">${typeBadge}</span>
         </div>`
     }).join('')
+  }
+
+
+  // ─────────────────────────────────────────────────────────────
+  // 빅파이 1.5.1 Volume Metrics (2026-04-22 CEO 승인)
+  // 누적체계 추세 차트 — probe_logs 기반 절대량
+  // ─────────────────────────────────────────────────────────────
+  let volumeChart = null
+  let volumeCurrentTab = 'daily'
+  let volumeCurrentProduct = null
+  let volumeLastSeries = null
+
+  async function fetchVolume(product, tab) {
+    if (!product) return null
+    let session = null
+    try { const { data } = await sb.auth.getSession(); session = data?.session } catch (_) {}
+    if (!session?.access_token) return null
+    try {
+      const res = await fetch(`${API_URL}/v1/scores/volume?product=${encodeURIComponent(product)}&tab=${tab}`, {
+        headers: { Authorization: `Bearer ${session.access_token}` }
+      })
+      if (!res.ok) throw new Error('HTTP ' + res.status)
+      return await res.json()
+    } catch (e) {
+      console.error('[volume] fetch failed', e)
+      return null
+    }
+  }
+
+  // Overview Volume 카드 (비동기 로드)
+  async function loadD5VolumeCard(product) {
+    const card = document.getElementById('d5-volume-card')
+    const totalEl = document.getElementById('d5-vol-total')
+    const deltaEl = document.getElementById('d5-vol-delta')
+    const ratioEl = document.getElementById('d5-vol-ratio')
+    const breakdownEl = document.getElementById('d5-vol-breakdown')
+    const canvas = document.getElementById('d5-vol-sparkline')
+    if (!card || !totalEl || !canvas) return
+    if (!product) { card.style.display = 'none'; return }
+
+    const data = await fetchVolume(product, 'daily')
+    if (!data || !Array.isArray(data.series)) { card.style.display = 'none'; return }
+    const series = data.series
+    const last7 = series.slice(-7)
+    const mentions7d = last7.reduce((s, b) => s + (Number(b.mentions) || 0), 0)
+    const citations7d = last7.reduce((s, b) => s + (Number(b.citation_count) || 0), 0)
+    const sources7d = last7.reduce((s, b) => s + (Number(b.source_diversity) || 0), 0)
+    const corec7d = last7.reduce((m, b) => Math.max(m, Number(b.corec_degree) || 0), 0)
+    const prev7 = series.slice(-14, -7)
+    const prevMentions = prev7.reduce((s, b) => s + (Number(b.mentions) || 0), 0)
+    const delta7d = mentions7d - prevMentions
+
+    if (mentions7d === 0 && citations7d === 0 && corec7d === 0) {
+      // 아직 데이터 없음 — 카드 숨김 (empty state)
+      card.style.display = 'none'
+      return
+    }
+    card.style.display = 'block'
+    totalEl.textContent = mentions7d
+    deltaEl.textContent = (delta7d > 0 ? '+' : '') + delta7d + ' vs prev 7d'
+    deltaEl.style.color = delta7d > 0 ? '#4ade80' : delta7d < 0 ? '#e05252' : '#888'
+    const bench = data.benchmark?.ratio_pct
+    if (ratioEl) ratioEl.textContent = (bench != null) ? `${bench}% of category avg` : 'benchmark pending'
+
+    // Breakdown 4 stats
+    if (breakdownEl) {
+      const items = [
+        { label: 'MENTIONS', val: mentions7d, color: '#FFD700' },
+        { label: 'CITATIONS', val: citations7d, color: '#4ade80' },
+        { label: 'SOURCES', val: sources7d, color: '#60a5fa' },
+        { label: 'CO-REC', val: corec7d, color: '#f472b6' },
+      ]
+      breakdownEl.innerHTML = items.map(it => `
+        <div style="padding:0.45rem 0.5rem;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:4px;text-align:center;">
+          <div style="font-family:'Press Start 2P',monospace;font-size:5px;color:#666;letter-spacing:0.18em;margin-bottom:0.2rem;">${it.label}</div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:${it.color};font-weight:700;">${it.val}</div>
+        </div>`).join('')
+    }
+
+    // Sparkline last 14d mentions
+    const last14 = series.slice(-14)
+    const ctx = canvas.getContext('2d')
+    const rect = canvas.getBoundingClientRect()
+    const dpr = window.devicePixelRatio || 1
+    canvas.width = Math.max(1, Math.floor(rect.width * dpr))
+    canvas.height = Math.max(1, Math.floor(rect.height * dpr))
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.scale(dpr, dpr)
+    const w = rect.width, h = rect.height
+    ctx.clearRect(0, 0, w, h)
+    const vals = last14.map(b => Number(b.mentions) || 0)
+    const maxV = Math.max(...vals, 1)
+    const stepX = last14.length > 1 ? w / (last14.length - 1) : w
+    ctx.strokeStyle = delta7d > 0 ? '#4ade80' : delta7d < 0 ? '#e05252' : '#FFD700'
+    ctx.lineWidth = 2; ctx.beginPath()
+    vals.forEach((v, i) => {
+      const x = i * stepX
+      const y = h - (v / maxV) * (h - 6) - 3
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
+    })
+    ctx.stroke()
+    ctx.fillStyle = '#FFD700'
+    vals.forEach((v, i) => {
+      const x = i * stepX
+      const y = h - (v / maxV) * (h - 6) - 3
+      ctx.beginPath(); ctx.arc(x, y, 1.8, 0, Math.PI * 2); ctx.fill()
+    })
+  }
+
+  // Trend pane Volume 섹션
+  async function loadVolumePane(product, tab) {
+    volumeCurrentTab = tab || 'daily'
+    volumeCurrentProduct = product
+    const empty = document.getElementById('volume-empty')
+    const chartWrap = document.getElementById('volume-chart-wrap')
+    const statsWrap = document.getElementById('volume-stats')
+    const layersWrap = document.getElementById('volume-layers')
+    if (empty) empty.style.display = 'none'
+    if (chartWrap) chartWrap.style.display = 'none'
+    if (statsWrap) statsWrap.style.display = 'none'
+    if (layersWrap) layersWrap.style.display = 'none'
+
+    if (!product) { if (empty) empty.style.display = 'block'; return }
+    const data = await fetchVolume(product, volumeCurrentTab)
+    if (!data || !Array.isArray(data.series)) { if (empty) empty.style.display = 'block'; return }
+    const series = data.series
+    const anyNonZero = series.some(b => (Number(b.mentions) || 0) + (Number(b.citation_count) || 0) + (Number(b.corec_degree) || 0) > 0)
+    if (!anyNonZero) { if (empty) empty.style.display = 'block'; return }
+    volumeLastSeries = series
+    if (chartWrap) chartWrap.style.display = 'block'
+    if (statsWrap) statsWrap.style.display = 'grid'
+    if (layersWrap) layersWrap.style.display = 'flex'
+    drawVolumeChart(series)
+    renderVolumeStats(data.stats || {})
+  }
+
+  function drawVolumeChart(series) {
+    const canvas = document.getElementById('volume-chart')
+    if (!canvas || typeof Chart === 'undefined') return
+    if (volumeChart) { try { volumeChart.destroy() } catch (_) {} volumeChart = null }
+    const labels = series.map(b => b.bucket_start)
+    const mentionsOn = document.getElementById('volume-layer-mentions')?.checked ?? true
+    const citationsOn = document.getElementById('volume-layer-citations')?.checked ?? false
+    const sourcesOn = document.getElementById('volume-layer-sources')?.checked ?? false
+    const corecOn = document.getElementById('volume-layer-corec')?.checked ?? false
+    const datasets = []
+    if (mentionsOn) datasets.push({
+      label: 'Mentions', data: series.map(b => Number(b.mentions) || 0),
+      borderColor: '#FFD700', backgroundColor: 'transparent',
+      pointBackgroundColor: '#FFD700', pointRadius: 3, pointHoverRadius: 5, borderWidth: 2, tension: 0.3,
+    })
+    if (citationsOn) datasets.push({
+      label: 'Citations', data: series.map(b => Number(b.citation_count) || 0),
+      borderColor: '#4ade80', backgroundColor: 'transparent',
+      pointBackgroundColor: '#4ade80', pointRadius: 3, pointHoverRadius: 5, borderWidth: 2, tension: 0.3,
+    })
+    if (sourcesOn) datasets.push({
+      label: 'Sources (unique)', data: series.map(b => Number(b.source_diversity) || 0),
+      borderColor: '#60a5fa', backgroundColor: 'transparent',
+      pointBackgroundColor: '#60a5fa', pointRadius: 3, pointHoverRadius: 5, borderWidth: 2, tension: 0.3,
+    })
+    if (corecOn) datasets.push({
+      label: 'Co-Rec peers', data: series.map(b => Number(b.corec_degree) || 0),
+      borderColor: '#f472b6', backgroundColor: 'transparent',
+      pointBackgroundColor: '#f472b6', pointRadius: 3, pointHoverRadius: 5, borderWidth: 2, tension: 0.3,
+    })
+    volumeChart = new Chart(canvas, {
+      type: 'line',
+      data: { labels, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        layout: { padding: { top: 6, bottom: 2 } },
+        plugins: {
+          legend: { display: datasets.length > 0, position: 'bottom', labels: { color: '#888', font: { size: 11 }, padding: 12, boxWidth: 8, boxHeight: 8 } },
+          tooltip: {
+            callbacks: {
+              title: items => items?.[0]?.label || '',
+              label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y}`,
+              afterBody: items => {
+                const idx = items?.[0]?.dataIndex ?? -1
+                const row = series[idx]
+                if (!row) return []
+                const lines = []
+                if (row.total_probes != null) lines.push(`Probes: ${row.total_probes}`)
+                if (row.recognition_rate != null) lines.push(`Recog rate: ${row.recognition_rate}%`)
+                return lines
+              }
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { color: '#555', font: { size: 10 } }, grid: { color: '#1a1a1a' } },
+          y: { min: 0, ticks: { color: '#555', font: { size: 10 } }, grid: { color: '#1a1a1a' } }
+        }
+      }
+    })
+  }
+
+  function renderVolumeStats(stats) {
+    const wrap = document.getElementById('volume-stats')
+    if (!wrap) return
+    const growth = stats.growth_pct
+    const delta = Number(stats.delta_first_last ?? 0)
+    const items = [
+      { label: 'TOTAL', val: stats.mentions_total ?? 0, color: '#FFD700' },
+      { label: 'PEAK', val: stats.mentions_peak ?? 0, color: '#FFD700', sub: stats.mentions_peak_day },
+      { label: 'RECOG %', val: (stats.recognition_rate_avg ?? 0) + '%', color: '#4ade80' },
+      { label: 'Δ MENTIONS', val: (delta > 0 ? '+' : '') + delta, color: delta > 0 ? '#4ade80' : delta < 0 ? '#e05252' : '#888' },
+      { label: 'GROWTH', val: (growth == null ? '—' : (growth > 0 ? '+' : '') + growth + '%'), color: growth == null ? '#888' : (growth > 0 ? '#4ade80' : '#e05252') },
+      { label: 'CITATIONS', val: stats.citation_count_total ?? 0, color: '#60a5fa' },
+      { label: 'CO-REC MAX', val: stats.corec_degree_max ?? 0, color: '#f472b6' },
+    ]
+    wrap.innerHTML = items.map(it => `
+      <div style="padding:0.55rem 0.6rem;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;text-align:center;">
+        <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#666;letter-spacing:0.18em;margin-bottom:0.25rem;">${it.label}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;color:${it.color};font-weight:700;">${escHtml(String(it.val))}</div>
+        ${it.sub ? `<div style="font-size:0.62rem;color:#666;margin-top:0.15rem;">${escHtml(String(it.sub))}</div>` : ''}
+      </div>`).join('')
+  }
+
+  function initVolumeTabs() {
+    document.querySelectorAll('.volume-tab-btn').forEach(btn => {
+      if (btn.__bound) return; btn.__bound = true
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.volumeTab
+        if (!tab) return
+        document.querySelectorAll('.volume-tab-btn').forEach(b => {
+          const on = b.dataset.volumeTab === tab
+          b.classList.toggle('on', on)
+          b.style.background = on ? '#FFD700' : '#0d0d0d'
+          b.style.color = on ? '#0a0a0a' : '#888'
+          b.style.border = on ? 'none' : '1px solid #2a2a2a'
+        })
+        const prod = volumeCurrentProduct || (typeof pickRepresentativeProduct === 'function' ? (pickRepresentativeProduct()?.product_name || null) : null)
+        if (prod) loadVolumePane(prod, tab)
+      })
+    });
+    ['volume-layer-mentions','volume-layer-citations','volume-layer-sources','volume-layer-corec'].forEach(id => {
+      const el = document.getElementById(id)
+      if (el && !el.__bound) { el.__bound = true; el.addEventListener('change', () => { if (volumeLastSeries) drawVolumeChart(volumeLastSeries) }) }
+    })
   }
 
 
@@ -4094,13 +4387,19 @@ body.shell-on .shell-scrim.open { display: block; }
       try { renderD5Overview(); } catch(e) { console.error('[D5] render failed', e); }
     }
 
-    // 6b. D6 Trend pane (2026-04-22)
+    // 6b. D6 Trend pane (2026-04-22) + 빅파이 1.5.1 Volume section
     if (key === 'trend') {
       if (typeof initTrendTabs === 'function') { try { initTrendTabs(); } catch(_) {} }
-      if (typeof loadTrendPane === 'function' && typeof pickRepresentativeProduct === 'function') {
+      if (typeof initVolumeTabs === 'function') { try { initVolumeTabs(); } catch(_) {} }
+      if (typeof pickRepresentativeProduct === 'function') {
         const prod = pickRepresentativeProduct();
         const name = prod && prod.product_name ? prod.product_name : null;
-        try { loadTrendPane(name, (typeof trendCurrentTab === 'string' ? trendCurrentTab : 'daily')); } catch(e) { console.error('[trend] enter pane', e); }
+        if (typeof loadTrendPane === 'function') {
+          try { loadTrendPane(name, (typeof trendCurrentTab === 'string' ? trendCurrentTab : 'daily')); } catch(e) { console.error('[trend] enter pane', e); }
+        }
+        if (typeof loadVolumePane === 'function') {
+          try { loadVolumePane(name, (typeof volumeCurrentTab === 'string' ? volumeCurrentTab : 'daily')); } catch(e) { console.error('[volume] enter pane', e); }
+        }
       }
     }
 

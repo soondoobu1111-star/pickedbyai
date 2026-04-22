@@ -1887,6 +1887,157 @@ function computeTrendStats(series: TrendBucket[]) {
   return { min, max, avg, delta_first_last: Math.round(delta), streak_days: streak }
 }
 
+// ── GET /v1/scores/volume ─────────────────────────────────────
+// 빅파이 1.5.1 (2026-04-22 CEO 승인) — Volume Metrics 누적체계
+// probe_logs 기반 절대량 추세 (mentions / citations / sources / co-rec)
+// daily 30bucket×1d · weekly 12×7d · monthly 12×30d
+app.get('/v1/scores/volume', async (c) => {
+  const authHeader = c.req.header('Authorization') || ''
+  const token = authHeader.replace(/^Bearer\s+/i, '')
+  if (!token) return c.json({ error: 'unauthorized' }, 401)
+  const user = await verifyToken(token, c.env)
+  if (!user) return c.json({ error: 'invalid token' }, 401)
+
+  const product = (c.req.query('product') || '').trim()
+  const tabRaw = (c.req.query('tab') || 'daily').trim()
+  const tab = (['daily','weekly','monthly'].includes(tabRaw) ? tabRaw : 'daily') as 'daily'|'weekly'|'monthly'
+  if (!product || product.length > 200) return c.json({ error: 'product required' }, 400)
+
+  const days = tab === 'daily' ? 30 : tab === 'weekly' ? 84 : 365
+  const since = new Date(Date.now() - days * 86400000).toISOString()
+  const sbUrl = user.supabaseUrl
+
+  const url = `${sbUrl}/rest/v1/probe_logs?user_id=eq.${encodeURIComponent(user.id)}&product_id=eq.${encodeURIComponent(product)}&created_at=gte.${encodeURIComponent(since)}&select=ai_source,recognized,recommended,detected_rank,query_template,co_recommendations,citations,created_at&order=created_at.asc`
+  const res = await fetch(url, { headers: { 'apikey': c.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}` } })
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '')
+    console.error('[volume] supabase error', res.status, errText)
+    return c.json({ error: 'db error' }, 500)
+  }
+  const rows = await res.json() as Array<ProbeLogRow>
+
+  const series = buildVolumeSeries(rows, tab)
+  const stats = computeVolumeStats(series)
+  return c.json({ product, tab, series, stats, benchmark: { category_avg_mentions_period: null, ratio_pct: null } })
+})
+
+// ── Volume helpers (빅파이 1.5.1 · 2026-04-22) ───────────────
+type ProbeLogRow = {
+  ai_source: string
+  recognized: boolean
+  recommended: boolean
+  detected_rank: number | null
+  query_template: string
+  co_recommendations: string[] | null
+  citations: string[] | null
+  created_at: string
+}
+
+type VolumeBucket = {
+  bucket_start: string
+  mentions: number
+  recognition_rate: number
+  category_hits: number
+  citation_count: number
+  source_diversity: number
+  corec_degree: number
+  total_probes: number
+}
+
+function hostOf(urlStr: string): string | null {
+  try { return new URL(urlStr).hostname.replace(/^www\./, '') } catch { return null }
+}
+
+function buildVolumeSeries(rows: ProbeLogRow[], tab: 'daily'|'weekly'|'monthly'): VolumeBucket[] {
+  const bucketSize = tab === 'daily' ? 1 : tab === 'weekly' ? 7 : 30
+  const bucketCount = tab === 'daily' ? 30 : 12
+  const now = Date.now()
+  const series: VolumeBucket[] = []
+  for (let i = bucketCount - 1; i >= 0; i--) {
+    const bucketEnd = now - i * bucketSize * 86400000
+    const bucketStart = bucketEnd - bucketSize * 86400000
+    const bucketRows = rows.filter(r => {
+      const t = new Date(r.created_at).getTime()
+      return t >= bucketStart && t < bucketEnd
+    })
+    if (bucketRows.length === 0) {
+      series.push({
+        bucket_start: toKSTDate(bucketStart),
+        mentions: 0, recognition_rate: 0, category_hits: 0,
+        citation_count: 0, source_diversity: 0, corec_degree: 0, total_probes: 0,
+      })
+      continue
+    }
+    const mentions = bucketRows.filter(r => r.recognized === true).length
+    const recognitionRate = Math.round((mentions / bucketRows.length) * 100)
+    const categoryHits = bucketRows.filter(r => {
+      const tpl = (r.query_template || '').toLowerCase()
+      return (tpl.startsWith('best_') || tpl.startsWith('top_')) && r.detected_rank != null
+    }).length
+    let citationCount = 0
+    const citationHosts = new Set<string>()
+    const corecSet = new Set<string>()
+    for (const r of bucketRows) {
+      const cites = Array.isArray(r.citations) ? r.citations : []
+      citationCount += cites.length
+      for (const u of cites) {
+        const h = hostOf(typeof u === 'string' ? u : '')
+        if (h) citationHosts.add(h)
+      }
+      const peers = Array.isArray(r.co_recommendations) ? r.co_recommendations : []
+      for (const p of peers) {
+        const name = typeof p === 'string' ? p.trim().toLowerCase() : ''
+        if (name && name.length < 200) corecSet.add(name)
+      }
+    }
+    series.push({
+      bucket_start: toKSTDate(bucketStart),
+      mentions,
+      recognition_rate: recognitionRate,
+      category_hits: categoryHits,
+      citation_count: citationCount,
+      source_diversity: citationHosts.size,
+      corec_degree: corecSet.size,
+      total_probes: bucketRows.length,
+    })
+  }
+  return series
+}
+
+function computeVolumeStats(series: VolumeBucket[]) {
+  if (series.length === 0) {
+    return { mentions_total: 0, mentions_peak: 0, mentions_peak_day: null, recognition_rate_avg: 0, citation_count_total: 0, source_diversity_total: 0, corec_degree_max: 0, delta_first_last: 0, growth_pct: null as number | null }
+  }
+  const mentionsTotal = series.reduce((s, b) => s + b.mentions, 0)
+  let peak = 0, peakDay: string | null = null
+  for (const b of series) {
+    if (b.mentions > peak) { peak = b.mentions; peakDay = b.bucket_start }
+  }
+  const withProbes = series.filter(b => b.total_probes > 0)
+  const recAvg = withProbes.length > 0
+    ? Math.round(withProbes.reduce((s, b) => s + b.recognition_rate, 0) / withProbes.length)
+    : 0
+  const citationTotal = series.reduce((s, b) => s + b.citation_count, 0)
+  const sourceTotal = series.reduce((s, b) => s + b.source_diversity, 0)
+  const corecMax = series.reduce((m, b) => Math.max(m, b.corec_degree), 0)
+  const delta = series.length >= 2 ? series[series.length - 1].mentions - series[0].mentions : 0
+  let growth: number | null = null
+  if (series.length >= 2 && series[0].mentions > 0) {
+    growth = Math.round((delta / series[0].mentions) * 100)
+  }
+  return {
+    mentions_total: mentionsTotal,
+    mentions_peak: peak,
+    mentions_peak_day: peakDay,
+    recognition_rate_avg: recAvg,
+    citation_count_total: citationTotal,
+    source_diversity_total: sourceTotal,
+    corec_degree_max: corecMax,
+    delta_first_last: delta,
+    growth_pct: growth,
+  }
+}
+
 // ── GET /v1/beta-count ────────────────────────────────────────
 // Returns current beta tester count (source = 'beta-100')
 app.get('/v1/beta-count', async (c) => {
