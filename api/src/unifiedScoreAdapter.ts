@@ -31,7 +31,12 @@ export type AdapterEnv = {
   PERPLEXITY_API_KEY?: string
   SUPABASE_SERVICE_KEY?: string
   SUPABASE_URL?: string
+  GEMINI_RELAY?: { fetch: (req: Request) => Promise<Response> }
+  GEMINI_RELAY_URL?: string
+  GEMINI_API_KEY?: string
 }
+
+const DEFAULT_GEMINI_RELAY_URL = 'https://pickedbyai-gemini-relay.perceptdot.workers.dev/relay'
 
 export type EngineInputs = {
   productName: string
@@ -135,7 +140,11 @@ async function inferCategoryAndRank(
   category: string | null
   rankings: Array<{ engine: string; rank: number | null; query: string }>
 }> {
-  const category = extractCategoryHint(productName, aiProbes)
+  // 2026-04-23: 패턴 추출 실패 시 Gemini Relay(무료)로 fallback
+  let category = extractCategoryHint(productName, aiProbes)
+  if (!category) {
+    category = await inferCategoryViaGemini(env, productName, aiProbes)
+  }
   if (!category || !env.PERPLEXITY_API_KEY) {
     return { category, rankings: [] }
   }
@@ -200,8 +209,10 @@ const TYPE_AS_CATEGORY: Record<string, string> = {
 /**
  * Probe snippet에서 카테고리 힌트 추출.
  * 1단계: "{name} is a X tool" 패턴 + 수식어 stop words 제거
- * 2단계: stop words 제거 후 빈 경우 type 단어 자체를 카테고리로 사용
- * 마크다운 제거 후 적용. 실패 시 null.
+ * 2단계: "{name} — a/an X for Y" / "{name}, an X, ..." 대시·콤마 패턴
+ * 3단계: "X tool for Y" 일반 패턴 (제품명 근처 문장)
+ * 4단계: stop words 제거 후 빈 경우 type 단어 자체를 카테고리로 사용
+ * 마크다운 제거 후 적용. 실패 시 null → Gemini Relay fallback에서 재시도.
  */
 function extractCategoryHint(
   productName: string,
@@ -209,7 +220,7 @@ function extractCategoryHint(
 ): string | null {
   const nameEsc = escapeRegex(productName)
   const TYPE_WORDS = 'tool|platform|app|software|service|solution|workspace|suite|engine|assistant|model'
-  // 최대 4단어 수식어 허용 (stop words 후처리로 제거)
+  // "is a/an X tool" 패턴 (원본)
   const pattern = new RegExp(
     `(?:${nameEsc}|[Ii]t|[Tt]his(?:\\s+tool)?|which)\\s+is\\s+(?:an?\\s+)?` +
     `((?:[a-z][a-z\\-]{1,25}\\s+){0,3}[a-z][a-z\\-]{2,25})` +
@@ -222,28 +233,116 @@ function extractCategoryHint(
     `(?:[a-z][a-z\\-\\s]{0,60}\\s+)?(${TYPE_WORDS})`,
     'i',
   )
+  // "{name} — a/an X for/that/which Y" 대시/em-dash 패턴 (2026-04-23 추가)
+  const dashPattern = new RegExp(
+    `${nameEsc}\\s*[\\-\\u2014\\u2013:]\\s*(?:an?\\s+)?` +
+    `((?:[a-z][a-z\\-]{1,25}\\s+){0,3}[a-z][a-z\\-]{2,25})` +
+    `\\s+(?:for|that|which|${TYPE_WORDS})`,
+    'i',
+  )
+  // "{name}, an X," 콤마 동격 패턴 (2026-04-23 추가)
+  const commaPattern = new RegExp(
+    `${nameEsc}\\s*,\\s*(?:an?\\s+)` +
+    `((?:[a-z][a-z\\-]{1,25}\\s+){0,3}[a-z][a-z\\-]{2,25})` +
+    `\\s+(?:${TYPE_WORDS}|for|that|which),`,
+    'i',
+  )
+
+  const extractCore = (raw: string): string | null => {
+    const words = raw.trim().toLowerCase().split(/\s+/).filter(w => !CATEGORY_STOP_WORDS.has(w))
+    if (words.length === 0) return null
+    const cat = words.join(' ')
+    if (cat.length > 2 && cat.length < 40) return cat
+    return null
+  }
 
   for (const p of probes) {
     if (!p.snippet) continue
     const cleaned = p.snippet.replace(/\*{1,3}([^*\n]*)\*{1,3}/g, '$1')
 
-    const m = pattern.exec(cleaned)
-    if (m && m[1]) {
-      // stop words 제거 후 남은 핵심어
-      const words = m[1].trim().toLowerCase().split(/\s+/).filter(w => !CATEGORY_STOP_WORDS.has(w))
-      if (words.length > 0) {
-        const cat = words.join(' ')
-        if (cat.length > 2 && cat.length < 40) return cat
+    for (const pat of [pattern, dashPattern, commaPattern]) {
+      const m = pat.exec(cleaned)
+      if (m && m[1]) {
+        const core = extractCore(m[1])
+        if (core) return core
       }
-      // 수식어만 있어 핵심어 없으면 type 단어 fallback
-      const tm = typePattern.exec(cleaned)
-      if (tm && tm[1]) {
-        const typeFallback = TYPE_AS_CATEGORY[tm[1].toLowerCase()]
-        if (typeFallback) return typeFallback
-      }
+    }
+    // 수식어만 있어 핵심어 없으면 type 단어 fallback
+    const tm = typePattern.exec(cleaned)
+    if (tm && tm[1]) {
+      const typeFallback = TYPE_AS_CATEGORY[tm[1].toLowerCase()]
+      if (typeFallback) return typeFallback
     }
   }
   return null
+}
+
+/**
+ * 2026-04-23 Category Hint Rescue — 패턴 추출 실패 시 Gemini Relay로 카테고리 직접 질의.
+ * 비용: $0 (Gemini Relay 무료 티어, Service Binding).
+ * 실패 시 null 반환 → Category Ranking = 0 (기존 동작).
+ */
+async function inferCategoryViaGemini(
+  env: AdapterEnv,
+  productName: string,
+  probes: Array<{ ai: string; snippet: string }>,
+): Promise<string | null> {
+  const snippetCtx = probes
+    .map(p => p.snippet || '')
+    .filter(s => s.length > 20)
+    .join('\n---\n')
+    .slice(0, 1400)
+  const safeName = productName.replace(/[\n\r\t]/g, ' ').slice(0, 120)
+  const prompt =
+    `Classify the product category in 2-4 lowercase words. Use common category phrasing.\n\n` +
+    `Product name: ${safeName}\n` +
+    (snippetCtx ? `AI descriptions:\n${snippetCtx}\n\n` : '\n') +
+    `Rules:\n` +
+    `- Answer ONLY the category phrase (no punctuation, no extra words).\n` +
+    `- Examples: "note-taking app", "ai search engine", "code editor", "task manager", "crm platform", "ai visibility platform".\n` +
+    `- If unclear, answer exactly: unknown\n\n` +
+    `Category:`
+
+  const body = JSON.stringify({ prompt, useSearch: false })
+  try {
+    let text = ''
+    if (env.GEMINI_RELAY) {
+      const res = await env.GEMINI_RELAY.fetch(
+        new Request('https://relay/relay', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body,
+        }),
+      )
+      if (!res.ok) return null
+      const json = (await res.json()) as { text?: string }
+      text = json.text || ''
+    } else {
+      const relayUrl = env.GEMINI_RELAY_URL || DEFAULT_GEMINI_RELAY_URL
+      const res = await fetch(relayUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body,
+        signal: AbortSignal.timeout(8000),
+      })
+      if (!res.ok) return null
+      const json = (await res.json()) as { text?: string }
+      text = json.text || ''
+    }
+    const cleaned = text
+      .toLowerCase()
+      .replace(/^category[:\s]+/i, '')
+      .replace(/["'`.]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+    if (!cleaned || cleaned === 'unknown' || cleaned.length < 3 || cleaned.length > 40) return null
+    // 허용 문자 제한 (영문 소문자·숫자·하이픈·공백)
+    if (!/^[a-z0-9][a-z0-9\s\-]+[a-z0-9]$/.test(cleaned)) return null
+    return cleaned
+  } catch (err) {
+    console.error('[UNIFIED_V15] inferCategoryViaGemini error:', err)
+    return null
+  }
 }
 
 /**

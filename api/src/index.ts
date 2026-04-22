@@ -1836,6 +1836,9 @@ function buildTrendSeries(
       if (!Array.isArray(dims)) continue
       for (const d of dims) {
         const key = String(d?.id || '').toLowerCase()
+        // 2026-04-23: 'not_measured' 상태는 집계 제외 → FE에서 라인 숨김 + 안내
+        const status = (d?.breakdown as any)?.status
+        if (status === 'not_measured' || status === 'insufficient_data') continue
         if (key in dimSum && typeof d?.score === 'number') {
           dimSum[key] += d.score
           dimCount[key]++

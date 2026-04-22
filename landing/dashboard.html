@@ -1118,6 +1118,10 @@ body.shell-on .shell-scrim.open { display: block; }
         <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="trend-overlay-recognition" style="accent-color:#4ade80;"> Recognition</label>
         <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="trend-overlay-category" style="accent-color:#60a5fa;"> Category</label>
       </div>
+      <div id="trend-category-notice" style="display:none;margin-top:0.7rem;padding:0.7rem 0.9rem;background:#0d0d0d;border:1px dashed #3a3a1a;border-radius:6px;">
+        <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#60a5fa;letter-spacing:0.18em;margin-bottom:0.35rem;">◇ CATEGORY AWAITING</div>
+        <div style="font-size:0.75rem;color:#aaa;line-height:1.55;">AI didn't surface a clear category label for this product yet. The auto-inferrer runs again on every Check — once a category hint appears, ranking measurement kicks in automatically.</div>
+      </div>
     </div>
 
     <!-- ═══ Volume Trend (빅파이 1.5.1 · 2026-04-22 CEO 승인 · 누적체계) ═══ -->
@@ -1132,8 +1136,14 @@ body.shell-on .shell-scrim.open { display: block; }
         <button data-volume-tab="monthly" class="volume-tab-btn" style="background:#0d0d0d;color:#888;border:1px solid #2a2a2a;padding:0.45rem 0.9rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:6px;font-family:inherit;">Monthly (12mo)</button>
       </div>
       <div id="volume-empty" style="display:none;text-align:center;padding:2.5rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ NO VOLUME DATA YET</div>
-        <div style="font-size:13px;color:#aaa;line-height:1.6;max-width:500px;margin:0 auto;">Daily cron runs 5 AI probes per product. After tomorrow's run, volume numbers start accumulating. Come back in 24h.</div>
+        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:10px;">✦ BUILDING UP VOLUME</div>
+        <div style="font-size:13px;color:#e5e5e5;line-height:1.65;max-width:540px;margin:0 auto 14px;font-weight:500;">Volume metrics track how often AI systems mention you across daily probes. You need <strong style="color:#FFD700;">3–5 days of probe history</strong> before trends become meaningful.</div>
+        <div style="display:inline-flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;font-size:11px;color:#888;">
+          <span style="padding:4px 10px;background:#141414;border:1px solid #2a2a2a;border-radius:4px;">Daily cron · 00:00 KST</span>
+          <span style="padding:4px 10px;background:#141414;border:1px solid #2a2a2a;border-radius:4px;">5 probes / product / day</span>
+          <span style="padding:4px 10px;background:#141414;border:1px solid #2a2a2a;border-radius:4px;">Runs automatically</span>
+        </div>
+        <div style="margin-top:14px;font-size:11.5px;color:#666;line-height:1.55;max-width:520px;margin-left:auto;margin-right:auto;">Tip: Run a manual Check now to seed today's probe log. Tomorrow's cron will then have a baseline to compare against.</div>
       </div>
       <div id="volume-chart-wrap" style="display:none;position:relative;height:240px;margin-bottom:1rem;">
         <canvas id="volume-chart"></canvas>
@@ -2544,6 +2554,15 @@ body.shell-on .shell-scrim.open { display: block; }
     }
   }
 
+  // X축 라벨 축약: "2026-04-23" → "04-23" (1월 1일만 연도 표시)
+  function formatChartDateTick(label) {
+    if (typeof label !== 'string') return ''
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(label)
+    if (!m) return label
+    if (m[2] === '01' && m[3] === '01') return m[1]
+    return `${m[2]}-${m[3]}`
+  }
+
   function drawTrendChartV2(series, _tab) {
     const canvas = document.getElementById('trend-chart-v2')
     if (!canvas || typeof Chart === 'undefined') return
@@ -2552,6 +2571,12 @@ body.shell-on .shell-scrim.open { display: block; }
     const scoreOn = document.getElementById('trend-overlay-score')?.checked ?? true
     const recOn = document.getElementById('trend-overlay-recognition')?.checked ?? false
     const catOn = document.getElementById('trend-overlay-category')?.checked ?? false
+    // Category 데이터 가용성 검사 (전부 null이면 overlay 무효)
+    const catHasData = series.some(b => b?.dimensions?.category != null)
+    const catNotice = document.getElementById('trend-category-notice')
+    if (catNotice) {
+      catNotice.style.display = (catOn && !catHasData) ? 'block' : 'none'
+    }
     const datasets = []
     if (scoreOn) datasets.push({
       label: 'Total Score',
@@ -2565,7 +2590,7 @@ body.shell-on .shell-scrim.open { display: block; }
       borderColor: '#4ade80', backgroundColor: 'transparent',
       pointBackgroundColor: '#4ade80', pointRadius: 3, pointHoverRadius: 5, borderWidth: 2, tension: 0.3, spanGaps: true,
     })
-    if (catOn) datasets.push({
+    if (catOn && catHasData) datasets.push({
       label: 'Category (35)', data: series.map(b => b?.dimensions?.category),
       borderColor: '#60a5fa', backgroundColor: 'transparent',
       pointBackgroundColor: '#60a5fa', pointRadius: 3, pointHoverRadius: 5, borderWidth: 2, tension: 0.3, spanGaps: true,
@@ -2576,12 +2601,15 @@ body.shell-on .shell-scrim.open { display: block; }
       options: {
         responsive: true, maintainAspectRatio: false,
         layout: { padding: { top: 6, bottom: 2 } },
+        interaction: { mode: 'index', intersect: false },
         plugins: {
           legend: { display: datasets.length > 0, position: 'bottom', labels: { color: '#888', font: { size: 11 }, padding: 12, boxWidth: 8, boxHeight: 8 } },
           tooltip: {
+            mode: 'index',
+            intersect: false,
             callbacks: {
               title: items => items?.[0]?.label || '',
-              label: ctx => ctx.parsed.y !== null ? ` ${ctx.dataset.label}: ${ctx.parsed.y}` : null,
+              label: ctx => ctx.parsed.y !== null && ctx.parsed.y !== undefined ? ` ${ctx.dataset.label}: ${ctx.parsed.y}` : null,
               afterBody: items => {
                 const idx = items?.[0]?.dataIndex ?? -1
                 const row = series[idx]
@@ -2595,7 +2623,13 @@ body.shell-on .shell-scrim.open { display: block; }
           }
         },
         scales: {
-          x: { ticks: { color: '#555', font: { size: 10 } }, grid: { color: '#1a1a1a' } },
+          x: {
+            ticks: {
+              color: '#555', font: { size: 10 }, maxRotation: 0, autoSkip: true, autoSkipPadding: 14,
+              callback: function(_value, index) { return formatChartDateTick(labels[index]) }
+            },
+            grid: { color: '#1a1a1a' }
+          },
           y: { min: 0, max: 100, ticks: { color: '#555', font: { size: 10 }, stepSize: 20 }, grid: { color: '#1a1a1a' } }
         }
       }
@@ -2888,9 +2922,12 @@ body.shell-on .shell-scrim.open { display: block; }
       options: {
         responsive: true, maintainAspectRatio: false,
         layout: { padding: { top: 6, bottom: 2 } },
+        interaction: { mode: 'index', intersect: false },
         plugins: {
           legend: { display: datasets.length > 0, position: 'bottom', labels: { color: '#888', font: { size: 11 }, padding: 12, boxWidth: 8, boxHeight: 8 } },
           tooltip: {
+            mode: 'index',
+            intersect: false,
             callbacks: {
               title: items => items?.[0]?.label || '',
               label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y}`,
@@ -2907,7 +2944,13 @@ body.shell-on .shell-scrim.open { display: block; }
           }
         },
         scales: {
-          x: { ticks: { color: '#555', font: { size: 10 } }, grid: { color: '#1a1a1a' } },
+          x: {
+            ticks: {
+              color: '#555', font: { size: 10 }, maxRotation: 0, autoSkip: true, autoSkipPadding: 14,
+              callback: function(_value, index) { return formatChartDateTick(labels[index]) }
+            },
+            grid: { color: '#1a1a1a' }
+          },
           y: { min: 0, ticks: { color: '#555', font: { size: 10 } }, grid: { color: '#1a1a1a' } }
         }
       }
