@@ -52,13 +52,8 @@ type SupaEnv = {
   ENVIRONMENT?: string
 }
 
-const SUPA_STAGING = 'https://xzecybljfipmmzzzfnit.supabase.co'
-const SUPA_PROD = 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
-
-function supaUrl(env: SupaEnv): string {
-  if (env.ENVIRONMENT === 'staging') return SUPA_STAGING
-  return env.SUPABASE_URL || SUPA_PROD
-}
+// 2026-04-22 refactor: 공통 ./supabaseEnv.getSbUrl 로 교체.
+import { getSbUrl as supaUrl } from './supabaseEnv'
 
 function serviceHeaders(env: SupaEnv) {
   return {

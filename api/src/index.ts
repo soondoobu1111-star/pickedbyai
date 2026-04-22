@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { buildDimensionContext, computeUnified } from './unifiedScoreAdapter'
 import type { UnifiedScoreResult } from './unifiedScore'
+import { getSbUrl, SUPABASE_URL_STAGING as SB_URL_STAGING } from './supabaseEnv'
 import {
   recordCheckResult,
   fetchDueRetries,
@@ -836,8 +837,10 @@ async function logProbes(
     response_ms: Date.now() - opts.startMs,
     model_version: null,
   }))
+  // BUG-PROBE-LOGS-HARDCODED-URL fix (2026-04-22): 공통 헬퍼 supabaseEnv.getSbUrl 사용.
+  const sbUrl = getSbUrl(env)
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/probe_logs`, {
+    const res = await fetch(`${sbUrl}/rest/v1/probe_logs`, {
       method: 'POST',
       headers: {
         'apikey': env.SUPABASE_SERVICE_KEY,
@@ -922,8 +925,7 @@ app.post('/v1/check', async (c) => {
 
 // ── Daily cron: auto-refresh all tracked products ─────────────
 async function dailyRefresh(env: Bindings) {
-  const SUPABASE_URL_STAGING = 'https://xzecybljfipmmzzzfnit.supabase.co'
-  const sbUrl = (env as any).ENVIRONMENT === 'staging' ? SUPABASE_URL_STAGING : (env.SUPABASE_URL || SUPABASE_URL)
+  const sbUrl = getSbUrl(env)
   const today = new Date().toISOString().split('T')[0]
   const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
 
@@ -1478,14 +1480,14 @@ app.post('/v1/subscribe', async (c) => {
 
 // ── Auth helper ───────────────────────────────────────────────
 // Tries both prod and staging Supabase URLs to support both environments
-const SUPABASE_URL_STAGING = 'https://xzecybljfipmmzzzfnit.supabase.co'
+// 2026-04-22 refactor: SUPABASE_URL_STAGING은 공통 ./supabaseEnv 모듈에서 SB_URL_STAGING 로 import.
 // Staging anon key is public (embedded in FE HTML) — safe to hardcode here
 const SUPABASE_ANON_KEY_STAGING = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZWN5YmxqZmlwbW16enpmbml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NTY4NjAsImV4cCI6MjA5MTAzMjg2MH0.pYqbBfJ7hwgKFgUSjvlhRlaOBIG4RqAgwDVTNUat03w'
 
 async function verifyToken(token: string, env: Bindings): Promise<{ id: string; email: string; supabaseUrl: string; anonKey: string } | null> {
   const candidates = [
     { url: SUPABASE_URL, apikey: env.SUPABASE_ANON_KEY },
-    { url: SUPABASE_URL_STAGING, apikey: SUPABASE_ANON_KEY_STAGING },
+    { url: SB_URL_STAGING, apikey: SUPABASE_ANON_KEY_STAGING },
   ]
   for (const { url, apikey } of candidates) {
     try {
