@@ -681,7 +681,48 @@ body.shell-on .shell-scrim.open { display: block; }
         </div>
       </div>
 
-      <!-- Row 5: Section 7 · Recently Added (B안 Rev 2026-04-21 — "+ Check" 버튼 이동) -->
+      <!-- Row 4.1: Section 7 · 7-day Mini Trend (UI-OVERVIEW-12FULL 2026-04-22) -->
+      <div class="card mb-4" id="d5-mini-trend-card" style="padding:1.3rem 1.4rem;display:none;cursor:pointer;" onclick="if(typeof shellNavigateTo==='function')shellNavigateTo('trend')">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.7rem;">
+          <div>
+            <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.3rem;">7-DAY MOMENTUM</div>
+            <div style="font-size:0.82rem;color:#888;">Click for full trend →</div>
+          </div>
+          <div id="d5-mini-trend-delta" style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;color:#FFD700;font-weight:700;">—</div>
+        </div>
+        <div style="position:relative;height:80px;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:8px;">
+          <canvas id="d5-mini-trend-canvas" style="width:100%;height:100%;"></canvas>
+        </div>
+      </div>
+
+      <!-- Row 4.2: Section 8 · Next Milestone + Section 9 · Last 24h (UI-OVERVIEW-12FULL 2026-04-22) -->
+      <div class="card mb-4" style="padding:1.3rem 1.4rem;">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.1rem;">
+          <div>
+            <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.5rem;">NEXT MILESTONE</div>
+            <div id="d5-ms-label" style="font-size:0.85rem;color:#f5f5f5;font-weight:600;margin-bottom:0.3rem;">—</div>
+            <div id="d5-ms-gap" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:#888;margin-bottom:0.5rem;">—</div>
+            <div style="position:relative;height:6px;background:#1a1a1a;border-radius:3px;overflow:hidden;">
+              <div id="d5-ms-bar" style="height:100%;width:0%;background:#FFD700;transition:width 0.8s;"></div>
+            </div>
+          </div>
+          <div>
+            <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.5rem;">LAST 24H</div>
+            <div id="d5-last24h-list" style="display:flex;flex-direction:column;gap:0.25rem;">
+              <div style="color:#555;font-size:0.78rem;">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Row 4.3: Section 10 · Actions Top 1 (UI-OVERVIEW-12FULL 2026-04-22) -->
+      <div class="card mb-4" id="d5-action-top" style="padding:1.1rem 1.3rem;border:1px solid #FFD70022;display:none;">
+        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:0.4rem;">DO THIS TODAY</div>
+        <div id="d5-action-text" style="font-size:0.88rem;color:#f5f5f5;line-height:1.55;margin-bottom:0.7rem;">—</div>
+        <button onclick="if(typeof shellNavigateTo==='function')shellNavigateTo('actions')" style="background:#0d0d0d;color:#FFD700;border:1px solid #FFD700;padding:0.4rem 0.9rem;font-weight:700;font-size:0.74rem;cursor:pointer;border-radius:6px;font-family:inherit;">See full playbook →</button>
+      </div>
+
+      <!-- Row 5: Section 12 · Recently Added (B안 Rev 2026-04-21 — "+ Check" 버튼 이동) -->
       <div class="card mb-4" style="padding:1.3rem 1.4rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
           <div>
@@ -1024,17 +1065,35 @@ body.shell-on .shell-scrim.open { display: block; }
        "Coming D{n}" tag. Real implementation arrives on scheduled days.
        ═══════════════════════════════════════════════════════════ -->
 
-  <!-- Pane: Trend (D6 · 04-23 목) -->
+  <!-- Pane: Trend (D6 TREND-01 · 2026-04-22 구현) -->
   <div id="shell-pane-trend" class="shell-pane" style="display:none;">
-    <div class="card mb-6">
-      <div class="section-header">
+    <div class="card mb-6" style="padding:1.3rem 1.4rem;">
+      <div class="section-header" style="margin-bottom:1rem;">
         <div class="section-title">Trend — How is it changing?</div>
-        <div class="section-sub">3-tab chart · Movement Feed · Projection · Streak</div>
+        <div class="section-sub">Daily 14d (live) · Weekly 12w · Monthly 12mo (after 30d data)</div>
       </div>
-      <div style="text-align:center;padding:3rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ COMING D6 · 04-23 THU</div>
-        <div style="font-size:15px;color:#f5f5f5;font-weight:500;margin-bottom:6px;">Trend dashboard</div>
-        <div style="font-size:12.5px;color:#666;line-height:1.7;max-width:460px;margin:0 auto;">Daily 14d / Weekly 12w / Monthly 12mo line charts with per-engine overlay (Gemini · Perplexity), reference lines, 14-day projection, and inflection markers.</div>
+      <div id="trend-tabs" style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
+        <button data-trend-tab="daily" class="trend-tab-btn on" style="background:#FFD700;color:#0a0a0a;border:none;padding:0.45rem 0.9rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:6px;font-family:inherit;">Daily (14d)</button>
+        <button data-trend-tab="weekly" class="trend-tab-btn" style="background:#0d0d0d;color:#888;border:1px solid #2a2a2a;padding:0.45rem 0.9rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:6px;font-family:inherit;">Weekly (12w)</button>
+        <button data-trend-tab="monthly" class="trend-tab-btn" style="background:#0d0d0d;color:#888;border:1px solid #2a2a2a;padding:0.45rem 0.9rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:6px;font-family:inherit;">Monthly (12mo)</button>
+      </div>
+      <div id="trend-empty" style="display:none;text-align:center;padding:3rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;">
+        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ NO TREND DATA</div>
+        <div style="font-size:13px;color:#aaa;line-height:1.6;max-width:460px;margin:0 auto;">Come back tomorrow to see your first trend point. Daily cron captures a new score every day at midnight KST.</div>
+      </div>
+      <div id="trend-teaser" style="display:none;text-align:center;padding:2.5rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;">
+        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ BUILDING UP</div>
+        <div id="trend-teaser-msg" style="font-size:13px;color:#aaa;line-height:1.6;max-width:500px;margin:0 auto;">—</div>
+      </div>
+      <div id="trend-chart-v2-wrap" style="display:none;position:relative;height:260px;margin-bottom:1rem;">
+        <canvas id="trend-chart-v2"></canvas>
+      </div>
+      <div id="trend-stats" style="display:none;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.5rem;margin-bottom:1rem;"></div>
+      <div id="trend-engine-toggle" style="display:none;gap:1rem;align-items:center;flex-wrap:wrap;">
+        <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#666;letter-spacing:0.2em;">OVERLAY:</div>
+        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="trend-overlay-score" checked style="accent-color:#FFD700;"> Total Score</label>
+        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="trend-overlay-recognition" style="accent-color:#4ade80;"> Recognition</label>
+        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="trend-overlay-category" style="accent-color:#60a5fa;"> Category</label>
       </div>
     </div>
   </div>
@@ -1054,18 +1113,49 @@ body.shell-on .shell-scrim.open { display: block; }
     </div>
   </div>
 
-  <!-- Pane: Journey (D6 · 04-23 목) -->
+  <!-- Pane: Journey (D6 JOURNEY-01 · 2026-04-22 구현 · MVP scores 기반) -->
   <div id="shell-pane-journey" class="shell-pane" style="display:none;">
-    <div class="card mb-6">
-      <div class="section-header">
+    <div class="card mb-4" style="padding:1.3rem 1.4rem;">
+      <div class="section-header" style="margin-bottom:1rem;">
         <div class="section-title">Journey — How far have you come?</div>
-        <div class="section-sub">Hero's Arc · Timeline · Streak · Milestones</div>
+        <div class="section-sub">Hero's Arc · 4 stages of AI recognition</div>
       </div>
-      <div style="text-align:center;padding:3rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ COMING D6 · 04-23 THU</div>
-        <div style="font-size:15px;color:#f5f5f5;font-weight:500;margin-bottom:6px;">Your growth story</div>
-        <div style="font-size:12.5px;color:#666;line-height:1.7;max-width:460px;margin:0 auto;">Hero's Arc growth curve, chronological Timeline of key events (first check → tier rise → milestones), Streak counters, and a Milestones badge wall.</div>
+      <div id="journey-empty" style="display:none;text-align:center;padding:2rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;">
+        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ NO JOURNEY YET</div>
+        <div style="font-size:13px;color:#aaa;line-height:1.6;max-width:440px;margin:0 auto;">Run your first check to start the journey. Each tier advancement becomes a milestone.</div>
       </div>
+      <div id="heros-arc" style="display:none;position:relative;padding:1.5rem 0.5rem 1.2rem;">
+        <div id="heros-arc-stages" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;position:relative;">
+          <div class="arc-stage" data-stage="invisible" style="text-align:center;padding:0.7rem 0.4rem;background:#0d0d0d;border:1px solid #e05252;border-radius:6px;opacity:0.4;">
+            <div style="font-size:1.2rem;margin-bottom:0.25rem;">🔴</div>
+            <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#e05252;letter-spacing:0.18em;">INVISIBLE</div>
+            <div style="font-size:0.65rem;color:#555;margin-top:0.3rem;">&lt; 15</div>
+          </div>
+          <div class="arc-stage" data-stage="emerging" style="text-align:center;padding:0.7rem 0.4rem;background:#0d0d0d;border:1px solid #f59e0b;border-radius:6px;opacity:0.4;">
+            <div style="font-size:1.2rem;margin-bottom:0.25rem;">🟡</div>
+            <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#f59e0b;letter-spacing:0.18em;">EMERGING</div>
+            <div style="font-size:0.65rem;color:#555;margin-top:0.3rem;">15 – 34</div>
+          </div>
+          <div class="arc-stage" data-stage="strong" style="text-align:center;padding:0.7rem 0.4rem;background:#0d0d0d;border:1px solid #4ade80;border-radius:6px;opacity:0.4;">
+            <div style="font-size:1.2rem;margin-bottom:0.25rem;">🟢</div>
+            <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#4ade80;letter-spacing:0.18em;">STRONG</div>
+            <div style="font-size:0.65rem;color:#555;margin-top:0.3rem;">35 – 59</div>
+          </div>
+          <div class="arc-stage" data-stage="perfect" style="text-align:center;padding:0.7rem 0.4rem;background:#0d0d0d;border:1px solid #FFD700;border-radius:6px;opacity:0.4;">
+            <div style="font-size:1.2rem;margin-bottom:0.25rem;">🏆</div>
+            <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#FFD700;letter-spacing:0.18em;">PERFECT</div>
+            <div style="font-size:0.65rem;color:#555;margin-top:0.3rem;">60 +</div>
+          </div>
+        </div>
+        <div id="heros-arc-summary" style="margin-top:1rem;padding:0.7rem 0.9rem;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;font-size:0.8rem;color:#ccc;line-height:1.6;">—</div>
+      </div>
+    </div>
+    <div class="card mb-4" style="padding:1.3rem 1.4rem;">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.9rem;">
+        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;">TIMELINE</div>
+        <div id="journey-timeline-count" style="font-size:0.72rem;color:#555;font-family:'JetBrains Mono',monospace;">—</div>
+      </div>
+      <div id="journey-timeline" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
     </div>
   </div>
 
@@ -2140,7 +2230,20 @@ body.shell-on .shell-scrim.open { display: block; }
     if (youMarker) { youMarker.style.left = benchYou + '%'; youMarker.style.display = 'block' }
     if (avgLbl) avgLbl.textContent = `category avg: ${benchAvg}`
 
-    // Section 7 · Recently Added (B안 2026-04-21 · OWNER-ONLY-01 재확인 2026-04-21 밤)
+    // ── UI-OVERVIEW-12FULL (2026-04-22) Sections 7-11 ──────────
+    // history for this product (sorted asc by created_at)
+    const prodHistory = (allHistoryData || [])
+      .filter(r => (r.product_name || '').toLowerCase() === (prod.product_name || '').toLowerCase())
+      .slice()
+      .sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+
+    try { renderD5MiniTrend(prodHistory) } catch (e) { console.error('[12FULL] mini-trend', e) }
+    try { renderD5NextMilestone(score, pi) } catch (e) { console.error('[12FULL] milestone', e) }
+    try { renderD5Last24h(prodHistory, unified) } catch (e) { console.error('[12FULL] last24h', e) }
+    try { renderD5ActionTop(unified) } catch (e) { console.error('[12FULL] action-top', e) }
+    try { renderD5VerifiedBadge(prod, !!vMatch) } catch (e) { console.error('[12FULL] verified', e) }
+
+    // Section 12 · Recently Added (B안 2026-04-21 · OWNER-ONLY-01 재확인 2026-04-21 밤)
     // verified 소유 제품만 표시 — 단순 검색(비검증)은 My Products/Recently Added 어디에도 들어가지 않음.
     const recentList = document.getElementById('d5-recent-list')
     if (recentList) {
@@ -2178,6 +2281,389 @@ body.shell-on .shell-scrim.open { display: block; }
         }).join('')
       }
     }
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // UI-OVERVIEW-12FULL helpers (2026-04-22, D5 + Section 7-11)
+  // ─────────────────────────────────────────────────────────────
+
+  // Section 7 — 7-day mini sparkline (click → Trend pane)
+  function renderD5MiniTrend(history) {
+    const card = document.getElementById('d5-mini-trend-card')
+    const canvas = document.getElementById('d5-mini-trend-canvas')
+    const deltaEl = document.getElementById('d5-mini-trend-delta')
+    if (!card || !canvas || !deltaEl) return
+    const recent7 = (history || []).slice(-7)
+    if (recent7.length < 2) { card.style.display = 'none'; return }
+    card.style.display = 'block'
+    const scoreOf = r => Number(r?.unified_v15?.score ?? r?.score) || 0
+    const first = scoreOf(recent7[0])
+    const last = scoreOf(recent7[recent7.length - 1])
+    const delta = Math.round(last - first)
+    deltaEl.textContent = (delta > 0 ? '+' : '') + delta + ' (7d)'
+    deltaEl.style.color = delta > 0 ? '#4ade80' : delta < 0 ? '#e05252' : '#888'
+    const ctx = canvas.getContext('2d')
+    const rect = canvas.getBoundingClientRect()
+    const dpr = window.devicePixelRatio || 1
+    canvas.width = Math.max(1, Math.floor(rect.width * dpr))
+    canvas.height = Math.max(1, Math.floor(rect.height * dpr))
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.scale(dpr, dpr)
+    const w = rect.width, h = rect.height
+    ctx.clearRect(0, 0, w, h)
+    const scores = recent7.map(scoreOf)
+    const minS = Math.max(0, Math.min(...scores) - 5)
+    const maxS = Math.min(100, Math.max(...scores) + 5)
+    const range = Math.max(1, maxS - minS)
+    const stepX = (recent7.length - 1) > 0 ? w / (recent7.length - 1) : w
+    ctx.strokeStyle = delta > 0 ? '#4ade80' : delta < 0 ? '#e05252' : '#FFD700'
+    ctx.lineWidth = 2; ctx.beginPath()
+    scores.forEach((s, i) => {
+      const x = i * stepX
+      const y = h - ((s - minS) / range) * (h - 6) - 3
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y)
+    })
+    ctx.stroke()
+    ctx.fillStyle = '#FFD700'
+    scores.forEach((s, i) => {
+      const x = i * stepX
+      const y = h - ((s - minS) / range) * (h - 6) - 3
+      ctx.beginPath(); ctx.arc(x, y, 2.2, 0, Math.PI * 2); ctx.fill()
+    })
+  }
+
+  // Section 8 — Next milestone progress (B안 Pass Indicator 일관성)
+  function renderD5NextMilestone(score, pi) {
+    const labelEl = document.getElementById('d5-ms-label')
+    const gapEl = document.getElementById('d5-ms-gap')
+    const barEl = document.getElementById('d5-ms-bar')
+    if (!labelEl || !gapEl || !barEl) return
+    let target, label, base
+    if (score >= 60) { target = 100; label = 'PERFECT ceiling'; base = 60 }
+    else if (score >= 35) { target = 60; label = 'PERFECT (≥60 + ≥4 signals)'; base = 35 }
+    else if (score >= 15) { target = 35; label = 'STRONG (≥35 + ≥2 signals)'; base = 15 }
+    else { target = 15; label = 'EMERGING (≥15 + ≥1 signal)'; base = 0 }
+    const gap = Math.max(0, target - score)
+    const pct = Math.min(100, Math.max(0, ((score - base) / Math.max(1, target - base)) * 100))
+    labelEl.textContent = 'Next: ' + label
+    gapEl.textContent = gap + ' pts + recognition signal'
+    barEl.style.width = pct + '%'
+  }
+
+  // Section 9 — Last 24h dimensional deltas
+  function renderD5Last24h(history, unified) {
+    const listEl = document.getElementById('d5-last24h-list')
+    if (!listEl) return
+    if (!history || history.length < 2) {
+      listEl.innerHTML = '<div style="color:#888;font-size:0.78rem;">First data point captured — check back tomorrow for Δ.</div>'
+      return
+    }
+    const today = history[history.length - 1]
+    const yesterday = history[history.length - 2]
+    const dimMap = arr => {
+      const m = {}
+      for (const d of (Array.isArray(arr) ? arr : [])) if (d && d.id) m[d.id] = Number(d.score) || 0
+      return m
+    }
+    const T = dimMap(today?.unified_v15?.dimensions)
+    const Y = dimMap(yesterday?.unified_v15?.dimensions)
+    const scoreT = Number(today?.unified_v15?.score ?? today?.score) || 0
+    const scoreY = Number(yesterday?.unified_v15?.score ?? yesterday?.score) || 0
+    const rows = [
+      { label: 'Score', dT: scoreT, dY: scoreY },
+      { label: 'Recognition', dT: T.recognition || 0, dY: Y.recognition || 0 },
+      { label: 'Category', dT: T.category || 0, dY: Y.category || 0 },
+      { label: 'Co-Rec', dT: T.corec || 0, dY: Y.corec || 0 },
+      { label: 'Web', dT: T.web || 0, dY: Y.web || 0 },
+    ]
+    listEl.innerHTML = rows.map(r => {
+      const d = Math.round((r.dT - r.dY) * 10) / 10
+      const arrow = d > 0 ? '↑' : d < 0 ? '↓' : '↔'
+      const color = d > 0 ? '#4ade80' : d < 0 ? '#e05252' : '#888'
+      const sign = d > 0 ? '+' : ''
+      return `<div style="display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;">
+        <span style="color:#aaa;">${escHtml(r.label)}</span>
+        <span style="font-family:'JetBrains Mono',monospace;color:${color};font-weight:600;">${arrow} ${sign}${d}</span>
+      </div>`
+    }).join('')
+  }
+
+  // Section 10 — Actions Top 1 (rule-based, no LLM)
+  function renderD5ActionTop(unified) {
+    const card = document.getElementById('d5-action-top')
+    const text = document.getElementById('d5-action-text')
+    if (!card || !text) return
+    const dims = unified?.dimensions || []
+    if (!Array.isArray(dims) || dims.length === 0) { card.style.display = 'none'; return }
+    const worst = dims.slice().sort((a, b) => {
+      const aPct = a.max ? (Number(a.score) || 0) / a.max : 0
+      const bPct = b.max ? (Number(b.score) || 0) / b.max : 0
+      return aPct - bPct
+    })[0]
+    const templates = {
+      recognition: 'Recognition is your biggest gap. Get mentioned on Tier-1 sites (TechCrunch, G2, Product Hunt) — AI models pick up on these first.',
+      category: 'Category ranking needs work. Publish a comparison article ("X vs Y") or get listed in a "top 10 tools" roundup.',
+      corec: 'Co-recommendation is thin. Pitch yourself for inclusion in "best of" lists alongside well-known peers.',
+      web: 'Web authority is low. Build independent backlinks — directories, reviews, guest posts on third-party domains.',
+    }
+    const msg = templates[worst?.id] || unified?.insights?.top_issue || 'Keep running checks to surface the next action.'
+    text.textContent = msg
+    card.style.display = 'block'
+  }
+
+  // Section 11 — Verified badge state (pending/unverified CTA)
+  function renderD5VerifiedBadge(prod, isVerified) {
+    const vEl = document.getElementById('d5-rep-verified')
+    if (!vEl) return
+    vEl.style.display = 'inline-block'
+    vEl.style.cursor = isVerified ? 'default' : 'pointer'
+    if (isVerified) {
+      vEl.textContent = '✓ VERIFIED'
+      vEl.style.color = '#4ade80'
+      vEl.style.border = '1px solid #4ade80'
+      vEl.title = 'Domain ownership verified'
+      vEl.onclick = null
+    } else {
+      vEl.textContent = 'UNVERIFIED'
+      vEl.style.color = '#f59e0b'
+      vEl.style.border = '1px solid #f59e0b'
+      vEl.title = 'Click to register your domain'
+      vEl.onclick = () => { window.location.href = '/register.html' }
+    }
+    vEl.style.background = '#0d0d0d'
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // D6 TREND-01 (2026-04-22) — /v1/scores/trend + Chart.js
+  // ─────────────────────────────────────────────────────────────
+  let trendChartV2 = null
+  let trendCurrentTab = 'daily'
+  let trendCurrentProduct = null
+  let trendLastSeries = null
+
+  async function loadTrendPane(product, tab) {
+    trendCurrentTab = tab || 'daily'
+    trendCurrentProduct = product
+    const empty = document.getElementById('trend-empty')
+    const teaser = document.getElementById('trend-teaser')
+    const teaserMsg = document.getElementById('trend-teaser-msg')
+    const chartWrap = document.getElementById('trend-chart-v2-wrap')
+    const statsWrap = document.getElementById('trend-stats')
+    const toggleWrap = document.getElementById('trend-engine-toggle')
+    if (empty) empty.style.display = 'none'
+    if (teaser) teaser.style.display = 'none'
+    if (chartWrap) chartWrap.style.display = 'none'
+    if (statsWrap) statsWrap.style.display = 'none'
+    if (toggleWrap) toggleWrap.style.display = 'none'
+
+    if (!product) { if (empty) empty.style.display = 'block'; return }
+
+    let session = null
+    try { const { data } = await sb.auth.getSession(); session = data?.session } catch (_) {}
+    if (!session?.access_token) { if (empty) empty.style.display = 'block'; return }
+
+    try {
+      const res = await fetch(`${API_URL}/v1/scores/trend?product=${encodeURIComponent(product)}&tab=${trendCurrentTab}`, {
+        headers: { Authorization: `Bearer ${session.access_token}` }
+      })
+      if (!res.ok) throw new Error('HTTP ' + res.status)
+      const data = await res.json()
+      const series = Array.isArray(data?.series) ? data.series : []
+      const withScore = series.filter(b => typeof b.score === 'number')
+      if (withScore.length === 0) { if (empty) empty.style.display = 'block'; return }
+      if (trendCurrentTab !== 'daily' && withScore.length < 3) {
+        if (teaser) {
+          teaser.style.display = 'block'
+          if (teaserMsg) teaserMsg.textContent = trendCurrentTab === 'weekly'
+            ? `Weekly rolling average needs ≥3 weeks of data. You have ${withScore.length} so far — keep running daily checks.`
+            : `Monthly rolling average needs ≥3 months of data. You have ${withScore.length} so far — keep running daily checks.`
+        }
+        return
+      }
+      trendLastSeries = series
+      if (chartWrap) chartWrap.style.display = 'block'
+      if (statsWrap) statsWrap.style.display = 'grid'
+      if (toggleWrap) toggleWrap.style.display = 'flex'
+      drawTrendChartV2(series, trendCurrentTab)
+      renderTrendStats(data.stats || {})
+    } catch (e) {
+      console.error('[trend] load failed', e)
+      if (empty) empty.style.display = 'block'
+    }
+  }
+
+  function drawTrendChartV2(series, _tab) {
+    const canvas = document.getElementById('trend-chart-v2')
+    if (!canvas || typeof Chart === 'undefined') return
+    if (trendChartV2) { try { trendChartV2.destroy() } catch (_) {} trendChartV2 = null }
+    const labels = series.map(b => b.bucket_start)
+    const scoreOn = document.getElementById('trend-overlay-score')?.checked ?? true
+    const recOn = document.getElementById('trend-overlay-recognition')?.checked ?? false
+    const catOn = document.getElementById('trend-overlay-category')?.checked ?? false
+    const datasets = []
+    if (scoreOn) datasets.push({
+      label: 'Total Score',
+      data: series.map(b => b.score),
+      borderColor: '#FFD700', backgroundColor: 'transparent',
+      pointBackgroundColor: series.map(b => b.data_quality === 'missing' ? '#333' : '#FFD700'),
+      pointRadius: 4, pointHoverRadius: 6, borderWidth: 2, tension: 0.3, spanGaps: true,
+    })
+    if (recOn) datasets.push({
+      label: 'Recognition (35)', data: series.map(b => b?.dimensions?.recognition),
+      borderColor: '#4ade80', backgroundColor: 'transparent',
+      pointBackgroundColor: '#4ade80', pointRadius: 3, pointHoverRadius: 5, borderWidth: 2, tension: 0.3, spanGaps: true,
+    })
+    if (catOn) datasets.push({
+      label: 'Category (35)', data: series.map(b => b?.dimensions?.category),
+      borderColor: '#60a5fa', backgroundColor: 'transparent',
+      pointBackgroundColor: '#60a5fa', pointRadius: 3, pointHoverRadius: 5, borderWidth: 2, tension: 0.3, spanGaps: true,
+    })
+    trendChartV2 = new Chart(canvas, {
+      type: 'line',
+      data: { labels, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        layout: { padding: { top: 6, bottom: 2 } },
+        plugins: {
+          legend: { display: datasets.length > 0, position: 'bottom', labels: { color: '#888', font: { size: 11 }, padding: 12, boxWidth: 8, boxHeight: 8 } },
+          tooltip: {
+            callbacks: {
+              title: items => items?.[0]?.label || '',
+              label: ctx => ctx.parsed.y !== null ? ` ${ctx.dataset.label}: ${ctx.parsed.y}` : null,
+              afterBody: items => {
+                const idx = items?.[0]?.dataIndex ?? -1
+                const row = series[idx]
+                if (!row) return []
+                const lines = []
+                if (row.data_quality === 'missing') lines.push('⚠ No data this day (cron missed)')
+                if (row.pass_indicator) lines.push(`Indicator: ${String(row.pass_indicator).toUpperCase()}`)
+                return lines
+              }
+            }
+          }
+        },
+        scales: {
+          x: { ticks: { color: '#555', font: { size: 10 } }, grid: { color: '#1a1a1a' } },
+          y: { min: 0, max: 100, ticks: { color: '#555', font: { size: 10 }, stepSize: 20 }, grid: { color: '#1a1a1a' } }
+        }
+      }
+    })
+  }
+
+  function renderTrendStats(stats) {
+    const wrap = document.getElementById('trend-stats')
+    if (!wrap) return
+    const delta = Number(stats.delta_first_last ?? 0)
+    const items = [
+      { label: 'MIN', val: stats.min ?? 0, color: '#aaa' },
+      { label: 'MAX', val: stats.max ?? 0, color: '#FFD700' },
+      { label: 'AVG', val: stats.avg ?? 0, color: '#aaa' },
+      { label: 'Δ', val: (delta > 0 ? '+' : '') + delta, color: delta > 0 ? '#4ade80' : delta < 0 ? '#e05252' : '#888' },
+      { label: 'STREAK', val: (stats.streak_days ?? 0) + 'd', color: '#FFD700' },
+    ]
+    wrap.innerHTML = items.map(it => `
+      <div style="padding:0.55rem 0.6rem;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;text-align:center;">
+        <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#666;letter-spacing:0.18em;margin-bottom:0.25rem;">${it.label}</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;color:${it.color};font-weight:700;">${escHtml(String(it.val))}</div>
+      </div>`).join('')
+  }
+
+  function initTrendTabs() {
+    document.querySelectorAll('.trend-tab-btn').forEach(btn => {
+      if (btn.__bound) return; btn.__bound = true
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.trendTab
+        if (!tab) return
+        document.querySelectorAll('.trend-tab-btn').forEach(b => {
+          const on = b.dataset.trendTab === tab
+          b.classList.toggle('on', on)
+          b.style.background = on ? '#FFD700' : '#0d0d0d'
+          b.style.color = on ? '#0a0a0a' : '#888'
+          b.style.border = on ? 'none' : '1px solid #2a2a2a'
+        })
+        const prod = trendCurrentProduct || (typeof pickRepresentativeProduct === 'function' ? (pickRepresentativeProduct()?.product_name || null) : null)
+        if (prod) loadTrendPane(prod, tab)
+      })
+    });
+    ['trend-overlay-score','trend-overlay-recognition','trend-overlay-category'].forEach(id => {
+      const el = document.getElementById(id)
+      if (el && !el.__bound) { el.__bound = true; el.addEventListener('change', () => { if (trendLastSeries) drawTrendChartV2(trendLastSeries, trendCurrentTab) }) }
+    })
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // D6 JOURNEY-01 (2026-04-22) — Hero's Arc + Timeline (scores-based MVP)
+  // ─────────────────────────────────────────────────────────────
+  const PASS_RANK = { invisible: 0, emerging: 1, strong: 2, perfect: 3 }
+
+  function computeHerosArc(history) {
+    const sorted = (history || []).slice().sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+    const events = []
+    let prevPi = null
+    for (const row of sorted) {
+      const u = row.unified_v15 || null
+      const pi = u?.pass_indicator || null
+      const s = Number(u?.score ?? row.score) || 0
+      if (!pi) continue
+      if (!prevPi) {
+        events.push({ date: row.created_at, type: 'start', pi, score: s, label: 'First check', note: `Started at ${String(pi).toUpperCase()} (${s})` })
+      } else if (pi !== prevPi) {
+        const up = (PASS_RANK[pi] ?? 0) > (PASS_RANK[prevPi] ?? 0)
+        events.push({ date: row.created_at, type: up ? 'upgrade' : 'downgrade', pi, score: s, label: `${String(prevPi).toUpperCase()} → ${String(pi).toUpperCase()}`, note: `Score: ${s}` })
+      }
+      prevPi = pi
+    }
+    return { current: prevPi, events }
+  }
+
+  function renderJourneyPane(history) {
+    const empty = document.getElementById('journey-empty')
+    const arc = document.getElementById('heros-arc')
+    const summary = document.getElementById('heros-arc-summary')
+    const timeline = document.getElementById('journey-timeline')
+    const countEl = document.getElementById('journey-timeline-count')
+    if (!arc || !timeline) return
+    if (!history || history.length === 0) {
+      if (empty) empty.style.display = 'block'
+      arc.style.display = 'none'
+      timeline.innerHTML = ''
+      if (countEl) countEl.textContent = '—'
+      return
+    }
+    if (empty) empty.style.display = 'none'
+    arc.style.display = 'block'
+    const { current, events } = computeHerosArc(history)
+    document.querySelectorAll('.arc-stage').forEach(s => {
+      const on = s.dataset.stage === current
+      s.style.opacity = on ? '1' : '0.35'
+      s.style.boxShadow = on ? '3px 3px 0 #b39700' : 'none'
+    })
+    if (summary) {
+      const lastRow = history[history.length - 1]
+      const scoreLast = Number(lastRow?.unified_v15?.score ?? lastRow?.score) || 0
+      summary.innerHTML = `Current stage: <b style="color:#FFD700;">${String(current || 'invisible').toUpperCase()}</b> · Score <b style="color:#FFD700;">${scoreLast}</b> · Tier transitions: <b style="color:#FFD700;">${events.length}</b>`
+    }
+    if (countEl) countEl.textContent = events.length + (events.length === 1 ? ' milestone' : ' milestones')
+    if (events.length === 0) {
+      timeline.innerHTML = '<div style="color:#555;font-size:0.78rem;padding:0.5rem 0;">No tier transitions yet. Keep running checks to unlock milestones.</div>'
+      return
+    }
+    const passIcons = { perfect: '🏆', strong: '🟢', emerging: '🟡', invisible: '🔴' }
+    const passColors = { perfect: '#FFD700', strong: '#4ade80', emerging: '#f59e0b', invisible: '#e05252' }
+    timeline.innerHTML = events.slice().reverse().map(ev => {
+      const icon = passIcons[ev.pi] || '•'
+      const color = passColors[ev.pi] || '#888'
+      const when = new Date(ev.date).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: getUserTimezone() })
+      const typeBadge = ev.type === 'upgrade' ? '↑ UP' : ev.type === 'downgrade' ? '↓ DOWN' : 'START'
+      return `
+        <div style="display:flex;align-items:center;gap:0.8rem;padding:0.55rem 0.75rem;background:#0d0d0d;border:1px solid ${color}33;border-radius:6px;">
+          <span style="font-size:1rem;">${icon}</span>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.82rem;color:#e5e5e5;font-weight:600;">${escHtml(ev.label)}</div>
+            <div style="font-size:0.72rem;color:#777;font-family:'JetBrains Mono',monospace;">${escHtml(when)} · ${escHtml(ev.note)}</div>
+          </div>
+          <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:${color};border:1px solid ${color};padding:3px 6px;border-radius:3px;letter-spacing:0.15em;white-space:nowrap;">${typeBadge}</span>
+        </div>`
+    }).join('')
   }
 
 
@@ -3606,6 +4092,28 @@ body.shell-on .shell-scrim.open { display: block; }
     // 6. Render D5 Overview when entering overview (data may have loaded already)
     if (inOverview && typeof renderD5Overview === 'function') {
       try { renderD5Overview(); } catch(e) { console.error('[D5] render failed', e); }
+    }
+
+    // 6b. D6 Trend pane (2026-04-22)
+    if (key === 'trend') {
+      if (typeof initTrendTabs === 'function') { try { initTrendTabs(); } catch(_) {} }
+      if (typeof loadTrendPane === 'function' && typeof pickRepresentativeProduct === 'function') {
+        const prod = pickRepresentativeProduct();
+        const name = prod && prod.product_name ? prod.product_name : null;
+        try { loadTrendPane(name, (typeof trendCurrentTab === 'string' ? trendCurrentTab : 'daily')); } catch(e) { console.error('[trend] enter pane', e); }
+      }
+    }
+
+    // 6c. D6 Journey pane (2026-04-22)
+    if (key === 'journey') {
+      if (typeof renderJourneyPane === 'function' && typeof pickRepresentativeProduct === 'function') {
+        const prod = pickRepresentativeProduct();
+        const hist = prod ? ((typeof allHistoryData !== 'undefined' ? allHistoryData : []) || [])
+          .filter(r => (r.product_name || '').toLowerCase() === (prod.product_name || '').toLowerCase())
+          .slice()
+          .sort((a,b) => new Date(a.created_at) - new Date(b.created_at)) : [];
+        try { renderJourneyPane(hist); } catch(e) { console.error('[journey] enter pane', e); }
+      }
     }
 
     // 7. URL hash

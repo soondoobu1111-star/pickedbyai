@@ -1752,6 +1752,141 @@ app.get('/v1/events', async (c) => {
   return c.json({ events })
 })
 
+// ── GET /v1/scores/trend ──────────────────────────────────────
+// D6 TREND-01: 3-tab time series from scores.unified_v15
+// daily=14 buckets×1d, weekly=12 buckets×7d, monthly=12 buckets×30d
+// score_snapshots 미활용 (Phase 2 이후 전환)
+app.get('/v1/scores/trend', async (c) => {
+  const authHeader = c.req.header('Authorization') || ''
+  const token = authHeader.replace(/^Bearer\s+/i, '')
+  if (!token) return c.json({ error: 'unauthorized' }, 401)
+  const user = await verifyToken(token, c.env)
+  if (!user) return c.json({ error: 'invalid token' }, 401)
+
+  const product = (c.req.query('product') || '').trim()
+  const tabRaw = (c.req.query('tab') || 'daily').trim()
+  const tab = (['daily','weekly','monthly'].includes(tabRaw) ? tabRaw : 'daily') as 'daily'|'weekly'|'monthly'
+  if (!product || product.length > 200) return c.json({ error: 'product required' }, 400)
+
+  const days = tab === 'daily' ? 14 : tab === 'weekly' ? 84 : 365
+  const since = new Date(Date.now() - days * 86400000).toISOString()
+  const sbUrl = user.supabaseUrl
+
+  const url = `${sbUrl}/rest/v1/scores?user_id=eq.${encodeURIComponent(user.id)}&product_name=eq.${encodeURIComponent(product)}&created_at=gte.${encodeURIComponent(since)}&unified_v15=not.is.null&select=created_at,unified_v15,score&order=created_at.asc`
+  const res = await fetch(url, { headers: { 'apikey': c.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}` } })
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '')
+    console.error('[trend] supabase error', res.status, errText)
+    return c.json({ error: 'db error' }, 500)
+  }
+  const rows = await res.json() as Array<{ created_at: string; unified_v15: any; score: number | null }>
+
+  const series = buildTrendSeries(rows, tab)
+  const stats = computeTrendStats(series)
+  return c.json({ product, tab, series, stats })
+})
+
+// ── Trend helpers (D6 TREND-01) ──────────────────────────────
+type TrendBucket = {
+  bucket_start: string
+  score: number | null
+  dimensions: { recognition: number|null; category: number|null; corec: number|null; web: number|null }
+  pass_indicator: string | null
+  engine_grades: { gemini: string|null; perplexity: string|null }
+  data_quality: 'solid'|'partial'|'missing'
+}
+
+function toKSTDate(ms: number): string {
+  const kst = new Date(ms + 9 * 60 * 60 * 1000)
+  return kst.toISOString().slice(0, 10)
+}
+
+function buildTrendSeries(
+  rows: Array<{ created_at: string; unified_v15: any; score: number | null }>,
+  tab: 'daily'|'weekly'|'monthly'
+): TrendBucket[] {
+  const bucketSize = tab === 'daily' ? 1 : tab === 'weekly' ? 7 : 30
+  const bucketCount = tab === 'daily' ? 14 : 12
+  const now = Date.now()
+  const series: TrendBucket[] = []
+  for (let i = bucketCount - 1; i >= 0; i--) {
+    const bucketEnd = now - i * bucketSize * 86400000
+    const bucketStart = bucketEnd - bucketSize * 86400000
+    const bucketRows = rows.filter(r => {
+      const t = new Date(r.created_at).getTime()
+      return t >= bucketStart && t < bucketEnd
+    })
+    if (bucketRows.length === 0) {
+      series.push({
+        bucket_start: toKSTDate(bucketStart),
+        score: null,
+        dimensions: { recognition: null, category: null, corec: null, web: null },
+        pass_indicator: null,
+        engine_grades: { gemini: null, perplexity: null },
+        data_quality: 'missing',
+      })
+      continue
+    }
+    const scoreSum = bucketRows.reduce((s, r) => s + (Number(r.unified_v15?.score) || 0), 0)
+    const avgScore = Math.round(scoreSum / bucketRows.length)
+    const dimSum: Record<string, number> = { recognition: 0, category: 0, corec: 0, web: 0 }
+    const dimCount: Record<string, number> = { recognition: 0, category: 0, corec: 0, web: 0 }
+    for (const r of bucketRows) {
+      const dims = r.unified_v15?.dimensions
+      if (!Array.isArray(dims)) continue
+      for (const d of dims) {
+        const key = String(d?.id || '').toLowerCase()
+        if (key in dimSum && typeof d?.score === 'number') {
+          dimSum[key] += d.score
+          dimCount[key]++
+        }
+      }
+    }
+    const avgDims = {
+      recognition: dimCount.recognition > 0 ? Math.round(dimSum.recognition / dimCount.recognition * 10) / 10 : null,
+      category: dimCount.category > 0 ? Math.round(dimSum.category / dimCount.category * 10) / 10 : null,
+      corec: dimCount.corec > 0 ? Math.round(dimSum.corec / dimCount.corec * 10) / 10 : null,
+      web: dimCount.web > 0 ? Math.round(dimSum.web / dimCount.web * 10) / 10 : null,
+    }
+    const last = bucketRows[bucketRows.length - 1]
+    const eg: { gemini: string|null; perplexity: string|null } = { gemini: null, perplexity: null }
+    const egList = last.unified_v15?.engine_grades
+    if (Array.isArray(egList)) {
+      for (const e of egList) {
+        const k = String(e?.engine || '').toLowerCase()
+        if (k === 'gemini' || k === 'perplexity') eg[k as 'gemini'|'perplexity'] = e?.grade || null
+      }
+    }
+    series.push({
+      bucket_start: toKSTDate(bucketStart),
+      score: avgScore,
+      dimensions: avgDims,
+      pass_indicator: last.unified_v15?.pass_indicator || null,
+      engine_grades: eg,
+      data_quality: bucketRows.length >= bucketSize ? 'solid' : 'partial',
+    })
+  }
+  return series
+}
+
+function computeTrendStats(series: TrendBucket[]) {
+  const withScore = series.filter(b => typeof b.score === 'number') as Array<TrendBucket & { score: number }>
+  if (withScore.length === 0) {
+    return { min: 0, max: 0, avg: 0, delta_first_last: 0, streak_days: 0 }
+  }
+  const scores = withScore.map(b => b.score)
+  const min = Math.min(...scores)
+  const max = Math.max(...scores)
+  const avg = Math.round(scores.reduce((s, v) => s + v, 0) / scores.length)
+  const delta = withScore[withScore.length - 1].score - withScore[0].score
+  let streak = 0
+  for (let i = series.length - 1; i >= 0; i--) {
+    if (series[i].data_quality === 'missing') break
+    streak++
+  }
+  return { min, max, avg, delta_first_last: Math.round(delta), streak_days: streak }
+}
+
 // ── GET /v1/beta-count ────────────────────────────────────────
 // Returns current beta tester count (source = 'beta-100')
 app.get('/v1/beta-count', async (c) => {
