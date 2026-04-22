@@ -1754,7 +1754,7 @@ app.get('/v1/events', async (c) => {
 
 // ── GET /v1/scores/trend ──────────────────────────────────────
 // D6 TREND-01: 3-tab time series from scores.unified_v15
-// daily=14 buckets×1d, weekly=12 buckets×7d, monthly=12 buckets×30d
+// daily=30 buckets×1d, weekly=12 buckets×7d, monthly=12 buckets×30d
 // score_snapshots 미활용 (Phase 2 이후 전환)
 app.get('/v1/scores/trend', async (c) => {
   const authHeader = c.req.header('Authorization') || ''
@@ -1768,7 +1768,7 @@ app.get('/v1/scores/trend', async (c) => {
   const tab = (['daily','weekly','monthly'].includes(tabRaw) ? tabRaw : 'daily') as 'daily'|'weekly'|'monthly'
   if (!product || product.length > 200) return c.json({ error: 'product required' }, 400)
 
-  const days = tab === 'daily' ? 14 : tab === 'weekly' ? 84 : 365
+  const days = tab === 'daily' ? 30 : tab === 'weekly' ? 84 : 365
   const since = new Date(Date.now() - days * 86400000).toISOString()
   const sbUrl = user.supabaseUrl
 
@@ -1806,7 +1806,7 @@ function buildTrendSeries(
   tab: 'daily'|'weekly'|'monthly'
 ): TrendBucket[] {
   const bucketSize = tab === 'daily' ? 1 : tab === 'weekly' ? 7 : 30
-  const bucketCount = tab === 'daily' ? 14 : 12
+  const bucketCount = tab === 'daily' ? 30 : 12
   const now = Date.now()
   const series: TrendBucket[] = []
   for (let i = bucketCount - 1; i >= 0; i--) {
