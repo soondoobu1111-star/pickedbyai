@@ -2341,14 +2341,15 @@ app.post('/v1/domains/register', async (c) => {
     'Content-Type': 'application/json',
   }
 
-  // 무료: 유저당 1개 도메인 제한 확인
+  // 무료: 유저당 도메인 제한 (staging=3, prod=1)
+  const domainLimit = ((c.env as any).ENVIRONMENT === 'staging') ? 3 : 1
   const existingRes = await fetch(
     `${supabaseUrl}/rest/v1/domains?status=neq.failed&select=id`,
     { headers }
   )
   const existing: Array<{ id: string }> = existingRes.ok ? await existingRes.json() : []
-  if (existing.length >= 1) {
-    return c.json({ error: 'Free plan allows 1 domain. Upgrade for more.' }, 403)
+  if (existing.length >= domainLimit) {
+    return c.json({ error: `Free plan allows ${domainLimit} domain${domainLimit > 1 ? 's' : ''}. Upgrade for more.` }, 403)
   }
 
   // 이미 등록된 도메인 체크
