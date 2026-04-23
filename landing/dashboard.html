@@ -470,6 +470,7 @@ body.shell-on .shell-scrim.open { display: block; }
            data-error-callback="onTurnstileError"
            data-theme="dark"
            data-size="flexible"
+           data-language="en"
            data-retry="auto"
            data-refresh-expired="auto"
            style="margin-top:0.25rem;"></div>
@@ -1944,14 +1945,11 @@ body.shell-on .shell-scrim.open { display: block; }
           try { await saveHistory('mine') } catch(e) { console.error('[saveHistory] failed', e) }
         }
       }
-      // B안 2026-04-21: 체크 완료 훅 — Quick Check 모달 닫기 + 토스트 + Overview 점수 링 자동 갱신
+      // 체크 완료 훅 — Quick Check 모달 닫기 + 결과 카드 스크롤 (toast 제거, overview 이동 제거)
       if (typeof closeQuickCheck === 'function') closeQuickCheck()
-      if (typeof showToast === 'function') {
-        const badgeLabel = savedScore >= 81 ? 'PERFECT' : savedScore >= 61 ? 'STRONG' : savedScore >= 36 ? 'EMERGING' : 'INVISIBLE'
-        showToast(`✓ Checked: ${product} — ${Math.round(savedScore)}/100 (${badgeLabel})`)
-      }
-      if (document.body.classList.contains('shell-on') && typeof shellNavigateTo === 'function') {
-        shellNavigateTo('overview')
+      const resultEl = document.getElementById('check-result')
+      if (resultEl) {
+        setTimeout(() => resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150)
       }
     } catch (err) {
       alert('Check failed. Please try again.')
