@@ -4675,9 +4675,7 @@ body.shell-on .shell-scrim.open { display: block; }
     btn.style.cursor = checked ? 'pointer' : 'not-allowed'
   }
 
-  // B안 2026-04-21: Actions pane Guide CTA 전용 핸들러 (Overview에서 이식)
-  function toggleActionsGuideBtn() {
-    // Guide toggle — 계정 이메일 자동 사용
+  // Guide toggle — 계정 이메일 자동 사용 (이메일 입력란 제거, on/off 토글)
   async function toggleGuideSubscription(enabled) {
     const ok = document.getElementById('actions-guide-ok')
     const email = currentUser?.email
