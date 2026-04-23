@@ -2553,14 +2553,15 @@ app.get('/v1/domains/list', async (c) => {
 
   const user = await verifyToken(token, c.env)
   if (!user) return c.json({ error: 'unauthorized' }, 401)
-  const { supabaseUrl, anonKey } = user
+  const { supabaseUrl } = user
 
+  // Service key로 조회 + user_id 필터 (RLS 바이패스 — JWT auth.uid() 매칭 이슈 회피)
   const headers = {
-    'apikey': anonKey,
-    'Authorization': `Bearer ${token}`,
+    'apikey': c.env.SUPABASE_ANON_KEY,
+    'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
   }
   const res = await fetch(
-    `${supabaseUrl}/rest/v1/domains?select=id,product_name,domain_url,status,sdk_installed,llms_installed,verified_at,created_at&order=created_at.desc`,
+    `${supabaseUrl}/rest/v1/domains?user_id=eq.${encodeURIComponent(user.id)}&select=id,product_name,domain_url,status,sdk_installed,llms_installed,verified_at,created_at&order=created_at.desc`,
     { headers }
   )
   const domains = res.ok ? await res.json() : []
