@@ -1180,44 +1180,68 @@ body.shell-on .shell-scrim.open { display: block; }
     </div>
   </div>
 
-  <!-- Pane: Rivals (D8 RIVALS-01 · 2026-04-25) -->
+  <!-- Pane: Rivals — redesigned 2026-04-28 -->
   <div id="shell-pane-rivals" class="shell-pane" style="display:none;">
 
-    <!-- Fallback: no probe data yet -->
-    <div id="rivals-empty" style="display:none;text-align:center;padding:3rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;margin-bottom:1.5rem;">
-      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ NO RIVAL DATA YET</div>
-      <div style="font-size:14px;color:#aaa;line-height:1.7;max-width:440px;margin:0 auto;">Run your first check to start discovering competitors. Each probe automatically maps who AI recommends alongside you.</div>
+    <!-- How Co-Mentions Work (always visible) -->
+    <div class="card mb-6" style="background:#0d0d0d;border-color:#1a1a1a;">
+      <div style="display:flex;align-items:flex-start;gap:0.85rem;">
+        <div style="font-size:1.15rem;line-height:1;margin-top:2px;">🔍</div>
+        <div style="flex:1;">
+          <div style="font-size:0.78rem;font-weight:700;color:#e0e0e0;margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.07em;">
+            What is a Co-Mention?
+            <span class="dim-tip" data-tip="We send live probes to AI engines (Perplexity, Gemini) and ask them about your product category. Any other product AI names in the same response = a co-mention. These are the tools fighting you for AI recommendation slots.">?</span>
+          </div>
+          <div style="font-size:0.77rem;color:#666;line-height:1.6;">
+            We ask AI: <em style="color:#888;">"What tools are similar to [your product]?"</em><br>
+            Any tool AI names alongside yours = a rival in AI's mind — competing for the same recommendation slot.
+          </div>
+        </div>
+      </div>
+      <!-- Engine coverage badges -->
+      <div id="rivals-engines-row" style="display:flex;gap:0.55rem;flex-wrap:wrap;align-items:center;margin-top:0.85rem;padding-top:0.75rem;border-top:1px solid #1a1a1a;">
+        <span style="font-size:0.68rem;color:#444;">AI engines queried
+          <span class="dim-tip" data-tip="These are the AI engines we use to run probes on your product — they are our measurement tools, NOT your competitors.">?</span>
+        </span>
+      </div>
     </div>
 
-    <!-- Section 1: AI Recommendation Flow (Sankey) -->
-    <div id="rivals-sankey-wrap" class="card mb-6" style="display:none;">
-      <div class="section-header">
-        <div class="section-title">AI Recommendation Flow</div>
-        <div class="section-sub">How AI engines route queries to your category</div>
+    <!-- Empty state -->
+    <div id="rivals-empty" style="display:none;text-align:center;padding:2.5rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;margin-bottom:1.5rem;">
+      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:10px;">✦ NO CO-MENTIONS YET</div>
+      <div style="font-size:0.84rem;color:#888;line-height:1.8;max-width:400px;margin:0 auto;">AI hasn't grouped your product with any competing tool yet.</div>
+      <div style="font-size:0.74rem;color:#555;margin-top:0.5rem;line-height:1.6;max-width:360px;margin:0.5rem auto 0;">
+        This could mean AI doesn't know your product well enough yet, or you're in an uncontested niche. Run more checks to accumulate probe data.
       </div>
-      <div id="rivals-sankey-container" style="width:100%;overflow-x:auto;padding:0.5rem 0;">
-        <canvas id="rivals-sankey" style="display:block;margin:0 auto;" width="560" height="260"></canvas>
-      </div>
-      <div id="rivals-sankey-legend" style="display:flex;gap:1.2rem;flex-wrap:wrap;padding:0.5rem 0.2rem;font-size:0.72rem;color:#888;"></div>
     </div>
 
-    <!-- Section 2: Co-Rec Peers -->
+    <!-- Section 1: Co-Mentioned Tools -->
     <div id="rivals-peers-wrap" class="card mb-6" style="display:none;">
       <div class="section-header">
-        <div class="section-title">Co-Recommended Rivals</div>
-        <div class="section-sub">Products AI mentions alongside yours — from accumulated probe logs</div>
+        <div class="section-title">
+          Co-Mentioned Tools
+          <span class="dim-tip" data-tip="These products appeared in the same AI response as yours. The higher the co-mention count, the more consistently AI groups you together — meaning you're competing for the same AI recommendation slot.">?</span>
+        </div>
+        <div class="section-sub" id="rivals-peers-sub">Products AI recommends alongside yours in the same response</div>
       </div>
       <div id="rivals-peers-table" style="margin-top:0.5rem;"></div>
     </div>
 
-    <!-- Section 3: 2D Quadrant -->
+    <!-- Section 2: AI Visibility Map -->
     <div id="rivals-quadrant-wrap" class="card mb-6" style="display:none;">
       <div class="section-header">
-        <div class="section-title">Recognition vs Category Position</div>
-        <div class="section-sub">Your position in the AI visibility space (0–35 each axis)</div>
+        <div class="section-title">
+          AI Visibility Map
+          <span class="dim-tip" data-tip="X-axis: Recognition score (0–35) — how well AI identifies your product by name when directly asked. Y-axis: Category Rank (0–35) — whether AI places you in its top picks for your category. Goal: top-right corner (Market Leader).">?</span>
+        </div>
+        <div class="section-sub">Your position vs. co-mentioned tools in AI's awareness space</div>
       </div>
       <div style="position:relative;width:100%;max-width:420px;margin:0.75rem auto 0;">
         <canvas id="rivals-quadrant" width="420" height="320" style="display:block;width:100%;"></canvas>
+      </div>
+      <div style="display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center;margin-top:0.6rem;font-size:0.7rem;color:#666;">
+        <span><span style="color:#FFD700;">●</span> You</span>
+        <span><span style="color:#555;">●</span> Co-mentioned rivals <span class="dim-tip" data-tip="Rival positions are estimated from their co-mention frequency relative to yours — not from independent scans.">?</span></span>
       </div>
     </div>
 
@@ -3084,12 +3108,11 @@ body.shell-on .shell-scrim.open { display: block; }
     rivalsCurrentProduct = product
 
     const emptyEl    = document.getElementById('rivals-empty')
-    const sankeyWrap = document.getElementById('rivals-sankey-wrap')
     const peersWrap  = document.getElementById('rivals-peers-wrap')
     const quadWrap   = document.getElementById('rivals-quadrant-wrap')
+    const enginesRow = document.getElementById('rivals-engines-row')
 
-    // hide all while loading
-    ;[emptyEl, sankeyWrap, peersWrap, quadWrap].forEach(el => { if (el) el.style.display = 'none' })
+    ;[emptyEl, peersWrap, quadWrap].forEach(el => { if (el) el.style.display = 'none' })
 
     let data
     try {
@@ -3097,38 +3120,64 @@ body.shell-on .shell-scrim.open { display: block; }
       data = r.ok ? await r.json() : { peers: [], engines: {}, category: null }
     } catch { data = { peers: [], engines: {}, category: null } }
 
-    const peers   = data.peers   || []
-    const engines = data.engines || {}
-    const hasPeers = peers.length > 0
-    const hasEngines = Object.keys(engines).length > 0
+    const peers    = data.peers   || []
+    const engines  = data.engines || {}
+    const hasPeers   = peers.length > 0
+    const hasEngines = Object.keys(engines).filter(k => engines[k].probes > 0).length > 0
+
+    // ── Engine coverage badges ─────────────────────────────────
+    if (enginesRow && hasEngines) {
+      const labels = { perplexity: 'Perplexity', gpt: 'GPT', gemini: 'Gemini' }
+      const badges = Object.entries(engines)
+        .filter(([, v]) => v.probes > 0)
+        .map(([key, val]) => {
+          const recognized = (val.recognized || 0) > 0
+          const icon  = recognized ? '✅' : '○'
+          const color = recognized ? '#5a9' : '#555'
+          const name  = labels[key] || (key.charAt(0).toUpperCase() + key.slice(1))
+          const tipText = recognized
+            ? `${name} recognized your product in ${val.recognized} of ${val.probes} probe${val.probes !== 1 ? 's' : ''}.`
+            : `${name} ran ${val.probes} probe${val.probes !== 1 ? 's' : ''} but did not recognize your product.`
+          return `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 9px;background:#111;border:1px solid #1e1e1e;border-radius:4px;font-size:0.7rem;color:${color};">
+            ${icon} ${name}
+            <span style="color:#3a3a3a;">${val.probes}×</span>
+            <span class="dim-tip" data-tip="${tipText}">?</span>
+          </span>`
+        }).join('')
+      const label = enginesRow.querySelector('span') || enginesRow
+      enginesRow.innerHTML = `<span style="font-size:0.68rem;color:#444;">AI engines queried <span class="dim-tip" data-tip="These are the AI engines we use to run probes on your product — our measurement tools, NOT your competitors.">?</span></span>${badges}`
+    }
 
     if (!hasPeers && !hasEngines) {
       if (emptyEl) emptyEl.style.display = 'block'
       return
     }
 
-    // ── Sankey ────────────────────────────────────────────────
-    if (hasEngines && (sankeyWrap)) {
-      sankeyWrap.style.display = 'block'
-      drawRivalsSankey(product, engines, peers, data.category)
-    }
+    // ── Co-Mentioned Tools ─────────────────────────────────────
+    if (!hasPeers) {
+      if (emptyEl) emptyEl.style.display = 'block'
+    } else {
+      if (peersWrap) {
+        const sub = document.getElementById('rivals-peers-sub')
+        if (sub) {
+          sub.textContent = data.category
+            ? `Tools AI recommends alongside "${product}" in the "${data.category}" category`
+            : `Tools AI recommends alongside "${product}"`
+        }
+        peersWrap.style.display = 'block'
+        renderRivalsPeers(peers, product)
+      }
 
-    // ── Peers table ───────────────────────────────────────────
-    if (hasPeers && peersWrap) {
-      peersWrap.style.display = 'block'
-      renderRivalsPeers(peers, product)
-    }
-
-    // ── 2D Quadrant ───────────────────────────────────────────
-    // Use latest score from allHistoryData
-    if (quadWrap && typeof allHistoryData !== 'undefined') {
-      const myRows = (allHistoryData || []).filter(r =>
-        (r.product_name || '').toLowerCase() === product.toLowerCase()
-      )
-      const latest = myRows.sort((a,b) => new Date(b.created_at) - new Date(a.created_at))[0]
-      if (latest) {
-        quadWrap.style.display = 'block'
-        drawRivalsQuadrant(latest, peers)
+      // ── AI Visibility Map ──────────────────────────────────
+      if (quadWrap && typeof allHistoryData !== 'undefined') {
+        const myRows = (allHistoryData || []).filter(r =>
+          (r.product_name || '').toLowerCase() === product.toLowerCase()
+        )
+        const latest = myRows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0]
+        if (latest) {
+          quadWrap.style.display = 'block'
+          drawRivalsQuadrant(latest, peers)
+        }
       }
     }
 
@@ -3280,27 +3329,40 @@ body.shell-on .shell-scrim.open { display: block; }
     const el = document.getElementById('rivals-peers-table')
     if (!el) return
     const maxCount = Math.max(...peers.map(p => p.count), 1)
+    const intensityLabel = (i) => i === 0 ? 'Top rival' : i === 1 ? 'Frequent' : 'Occasional'
+    const barColor = (i) => i === 0 ? '#FFD700' : i === 1 ? '#888' : '#444'
+    const engineLabels = { perplexity: 'Perplexity', gpt: 'GPT', gemini: 'Gemini' }
     el.innerHTML = `
-      <div style="display:grid;gap:0.45rem;">
+      <div style="display:grid;gap:0.4rem;">
         ${peers.map((p, i) => {
           const pct = Math.round((p.count / maxCount) * 100)
-          const engines = Object.entries(p.by_engine || {}).map(([k,v]) => `<span style="color:#555;font-size:0.68rem;">${k.charAt(0).toUpperCase()+k.slice(1)}×${v}</span>`).join(' ')
-          return `<div style="display:grid;grid-template-columns:1.4rem 1fr auto;align-items:center;gap:0.6rem;padding:0.55rem 0.7rem;background:#0d0d0d;border:1px solid #1e1e1e;border-radius:6px;">
-            <span style="font-family:'Press Start 2P',monospace;font-size:7px;color:#444;">#${i+1}</span>
-            <div>
-              <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.25rem;">
-                <span style="font-size:0.82rem;color:#e0e0e0;font-weight:500;">${p.name}</span>
-                ${engines}
+          const engineBadges = Object.entries(p.by_engine || {})
+            .map(([k, v]) => {
+              const name = engineLabels[k] || k.charAt(0).toUpperCase() + k.slice(1)
+              return `<span style="background:#1a1a1a;border:1px solid #2a2a2a;color:#555;font-size:0.62rem;padding:1px 5px;border-radius:3px;" title="${name} mentioned this tool ${v} time(s)">${name}</span>`
+            }).join(' ')
+          return `<div style="padding:0.65rem 0.8rem;background:#0d0d0d;border:1px solid #1e1e1e;border-radius:6px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;margin-bottom:0.4rem;">
+              <div style="display:flex;align-items:center;gap:0.55rem;min-width:0;">
+                <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:#333;flex-shrink:0;">#${i+1}</span>
+                <span style="font-size:0.84rem;color:#e0e0e0;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.name}</span>
+                <span style="font-size:0.65rem;color:#555;flex-shrink:0;">${intensityLabel(i)}</span>
               </div>
-              <div style="height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden;">
-                <div style="height:100%;width:${pct}%;background:#333;border-radius:2px;transition:width 0.4s;"></div>
+              <div style="text-align:right;flex-shrink:0;">
+                <span style="font-size:0.8rem;color:#FFD700;font-weight:700;">${p.count}×</span>
+                <span class="dim-tip" data-tip="AI mentioned '${p.name}' alongside '${myProduct}' in ${p.count} probe response${p.count !== 1 ? 's' : ''}. This means they compete for the same AI recommendation slot.">?</span>
               </div>
             </div>
-            <span style="font-size:0.72rem;color:#555;white-space:nowrap;">${p.count}×</span>
+            <div style="height:3px;background:#1a1a1a;border-radius:2px;overflow:hidden;margin-bottom:0.35rem;">
+              <div style="height:100%;width:${pct}%;background:${barColor(i)};border-radius:2px;transition:width 0.5s;"></div>
+            </div>
+            <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">${engineBadges}</div>
           </div>`
         }).join('')}
       </div>
-      <p style="font-size:0.7rem;color:#444;margin-top:0.75rem;line-height:1.5;">Co-mentions extracted from probe_logs. Higher = more frequently recommended alongside <strong style="color:#888;">${myProduct}</strong> by AI engines.</p>
+      <p style="font-size:0.69rem;color:#3a3a3a;margin-top:0.65rem;line-height:1.5;">
+        Co-mention data is extracted from live probe logs and grows with each check. More checks = more accurate picture of who AI groups with <strong style="color:#555;">${myProduct}</strong>.
+      </p>
     `
   }
 
@@ -3344,8 +3406,8 @@ body.shell-on .shell-scrim.open { display: block; }
     ctx.fillStyle = '#2a2a2a'
     ctx.font = '9px Inter, sans-serif'
     ctx.textAlign = 'center'
-    ctx.fillText('NICHE', PAD + plotW * 0.25, PAD + 14)
-    ctx.fillText('LEADER', PAD + plotW * 0.75, PAD + 14)
+    ctx.fillText('NICHE PLAYER', PAD + plotW * 0.25, PAD + 14)
+    ctx.fillText('MARKET LEADER', PAD + plotW * 0.75, PAD + 14)
     ctx.fillText('INVISIBLE', PAD + plotW * 0.25, PAD + plotH - 6)
     ctx.fillText('CHALLENGER', PAD + plotW * 0.75, PAD + plotH - 6)
 
