@@ -1686,6 +1686,75 @@ app.get('/v1/co-recs', async (c) => {
   return c.json({ co_recommendations_top: recs })
 })
 
+// ── GET /v1/rivals ─────────────────────────────────────────────
+// D8 RIVALS-01: richer co-rec + engine breakdown for Rivals tab
+// Returns peers (with per-engine counts), engine summary, and category
+app.get('/v1/rivals', async (c) => {
+  const product = c.req.query('product')?.trim()
+  if (!product || product.length > 200) return c.json({ peers: [], engines: {}, category: null })
+
+  const env = c.env
+  if (!env.SUPABASE_SERVICE_KEY) return c.json({ peers: [], engines: {}, category: null })
+
+  try {
+    const sbUrl = getSbUrl(env)
+    // Query probe_logs: ai_source, recognized, co_recommendations, last 300 rows
+    const res = await fetch(
+      `${sbUrl}/rest/v1/probe_logs?product_id=eq.${encodeURIComponent(product)}&select=ai_source,recognized,co_recommendations&order=created_at.desc&limit=300`,
+      { headers: { 'apikey': env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${env.SUPABASE_SERVICE_KEY}` } }
+    )
+    if (!res.ok) return c.json({ peers: [], engines: {}, category: null })
+
+    type LogRow = { ai_source: string | null; recognized: boolean | null; co_recommendations: string[] | null }
+    const logs: LogRow[] = await res.json()
+
+    // Engine breakdown
+    const engines: Record<string, { probes: number; recognized: number }> = {}
+    // Peer frequency by engine
+    const peerTotal: Record<string, number> = {}
+    const peerByEngine: Record<string, Record<string, number>> = {}
+
+    for (const log of logs) {
+      const src = (log.ai_source || 'unknown').toLowerCase()
+      if (!engines[src]) engines[src] = { probes: 0, recognized: 0 }
+      engines[src].probes++
+      if (log.recognized) engines[src].recognized++
+
+      for (const name of (log.co_recommendations || [])) {
+        const key = name.trim()
+        if (!key || key.toLowerCase() === product.toLowerCase()) continue
+        peerTotal[key] = (peerTotal[key] || 0) + 1
+        if (!peerByEngine[key]) peerByEngine[key] = {}
+        peerByEngine[key][src] = (peerByEngine[key][src] || 0) + 1
+      }
+    }
+
+    const peers = Object.entries(peerTotal)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([name, count]) => ({ name, count, by_engine: peerByEngine[name] || {} }))
+
+    // Category from category_cache if available
+    let category: string | null = null
+    try {
+      const nameNorm = product.toLowerCase().replace(/[^a-z0-9]/g, '-')
+      const catRes = await fetch(
+        `${sbUrl}/rest/v1/category_cache?name_normalized=eq.${encodeURIComponent(nameNorm)}&select=category&limit=1`,
+        { headers: { 'apikey': env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${env.SUPABASE_SERVICE_KEY}` } }
+      )
+      if (catRes.ok) {
+        const rows: Array<{ category: string }> = await catRes.json()
+        if (rows[0]) category = rows[0].category
+      }
+    } catch { /* no category cache */ }
+
+    return c.json({ peers, engines, category })
+  } catch (err) {
+    console.error('[RIVALS-01] error:', err)
+    return c.json({ peers: [], engines: {}, category: null })
+  }
+})
+
 // ── /v1/events ─────────────────────────────────────────────────
 // 빅파이 1.5 Phase 2 Day 1 · user_events 테이블 접근
 // POST: Journey Timeline / Milestones / Streak 이벤트 기록

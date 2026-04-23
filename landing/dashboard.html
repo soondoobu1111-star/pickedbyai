@@ -510,7 +510,7 @@ body.shell-on .shell-scrim.open { display: block; }
 </div>
 
 <!-- DASHBOARD SCREEN -->
-<div id="screen-dashboard" style="display:none;max-width:1280px;margin:0 auto;padding:2rem 3rem;">
+<main id="screen-dashboard" style="display:none;max-width:1280px;margin:0 auto;padding:2rem 3rem;">
 
   <!-- Announcements / Release Notes + Beta CTA (merged) -->
   <div id="beta-banner" style="background:#0d0d12;border:1px solid #1e1e2e;border-radius:0.75rem;padding:1.25rem 1.5rem;margin-bottom:1.5rem;">
@@ -1159,19 +1159,47 @@ body.shell-on .shell-scrim.open { display: block; }
     </div>
   </div>
 
-  <!-- Pane: Rivals (D8 · 04-25 토) -->
+  <!-- Pane: Rivals (D8 RIVALS-01 · 2026-04-25) -->
   <div id="shell-pane-rivals" class="shell-pane" style="display:none;">
-    <div class="card mb-6">
+
+    <!-- Fallback: no probe data yet -->
+    <div id="rivals-empty" style="display:none;text-align:center;padding:3rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;margin-bottom:1.5rem;">
+      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ NO RIVAL DATA YET</div>
+      <div style="font-size:14px;color:#aaa;line-height:1.7;max-width:440px;margin:0 auto;">Run your first check to start discovering competitors. Each probe automatically maps who AI recommends alongside you.</div>
+    </div>
+
+    <!-- Section 1: AI Recommendation Flow (Sankey) -->
+    <div id="rivals-sankey-wrap" class="card mb-6" style="display:none;">
       <div class="section-header">
-        <div class="section-title">Rivals — Who's taking your spot?</div>
-        <div class="section-sub">AI Competitors Top 10 · Sankey · Missing From · 2D Quadrant</div>
+        <div class="section-title">AI Recommendation Flow</div>
+        <div class="section-sub">How AI engines route queries to your category</div>
       </div>
-      <div style="text-align:center;padding:3rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ COMING D8 · 04-25 SAT</div>
-        <div style="font-size:15px;color:#f5f5f5;font-weight:500;margin-bottom:6px;">Competitor graph</div>
-        <div style="font-size:12.5px;color:#666;line-height:1.7;max-width:460px;margin:0 auto;">Auto-discovered competitors from Probe logs (Co-Rec graph source) — Sankey flow from AI platforms to category queries to your product, Missing From matrix, and new entrants feed.</div>
+      <div id="rivals-sankey-container" style="width:100%;overflow-x:auto;padding:0.5rem 0;">
+        <canvas id="rivals-sankey" style="display:block;margin:0 auto;" width="560" height="260"></canvas>
+      </div>
+      <div id="rivals-sankey-legend" style="display:flex;gap:1.2rem;flex-wrap:wrap;padding:0.5rem 0.2rem;font-size:0.72rem;color:#888;"></div>
+    </div>
+
+    <!-- Section 2: Co-Rec Peers -->
+    <div id="rivals-peers-wrap" class="card mb-6" style="display:none;">
+      <div class="section-header">
+        <div class="section-title">Co-Recommended Rivals</div>
+        <div class="section-sub">Products AI mentions alongside yours — from accumulated probe logs</div>
+      </div>
+      <div id="rivals-peers-table" style="margin-top:0.5rem;"></div>
+    </div>
+
+    <!-- Section 3: 2D Quadrant -->
+    <div id="rivals-quadrant-wrap" class="card mb-6" style="display:none;">
+      <div class="section-header">
+        <div class="section-title">Recognition vs Category Position</div>
+        <div class="section-sub">Your position in the AI visibility space (0–35 each axis)</div>
+      </div>
+      <div style="position:relative;width:100%;max-width:420px;margin:0.75rem auto 0;">
+        <canvas id="rivals-quadrant" width="420" height="320" style="display:block;width:100%;"></canvas>
       </div>
     </div>
+
   </div>
 
   <!-- Pane: Journey (D6 JOURNEY-01 · 2026-04-22 구현 · MVP scores 기반) -->
@@ -3016,6 +3044,327 @@ body.shell-on .shell-scrim.open { display: block; }
   }
 
 
+  // ── D8 RIVALS-01: Rivals pane (2026-04-25) ────────────────────
+  let rivalsLoaded = false
+  let rivalsCurrentProduct = null
+
+  async function loadRivalsPane(product) {
+    if (!product) return
+    rivalsCurrentProduct = product
+
+    const emptyEl    = document.getElementById('rivals-empty')
+    const sankeyWrap = document.getElementById('rivals-sankey-wrap')
+    const peersWrap  = document.getElementById('rivals-peers-wrap')
+    const quadWrap   = document.getElementById('rivals-quadrant-wrap')
+
+    // hide all while loading
+    ;[emptyEl, sankeyWrap, peersWrap, quadWrap].forEach(el => { if (el) el.style.display = 'none' })
+
+    let data
+    try {
+      const base = window.STAGING_MODE ? window.STAGING_API : (window.API_BASE || 'https://api.pickedby.ai')
+      const r = await fetch(`${base}/v1/rivals?product=${encodeURIComponent(product)}`)
+      data = r.ok ? await r.json() : { peers: [], engines: {}, category: null }
+    } catch { data = { peers: [], engines: {}, category: null } }
+
+    const peers   = data.peers   || []
+    const engines = data.engines || {}
+    const hasPeers = peers.length > 0
+    const hasEngines = Object.keys(engines).length > 0
+
+    if (!hasPeers && !hasEngines) {
+      if (emptyEl) emptyEl.style.display = 'block'
+      return
+    }
+
+    // ── Sankey ────────────────────────────────────────────────
+    if (hasEngines && (sankeyWrap)) {
+      sankeyWrap.style.display = 'block'
+      drawRivalsSankey(product, engines, peers, data.category)
+    }
+
+    // ── Peers table ───────────────────────────────────────────
+    if (hasPeers && peersWrap) {
+      peersWrap.style.display = 'block'
+      renderRivalsPeers(peers, product)
+    }
+
+    // ── 2D Quadrant ───────────────────────────────────────────
+    // Use latest score from allHistoryData
+    if (quadWrap && typeof allHistoryData !== 'undefined') {
+      const myRows = (allHistoryData || []).filter(r =>
+        (r.product_name || '').toLowerCase() === product.toLowerCase()
+      )
+      const latest = myRows.sort((a,b) => new Date(b.created_at) - new Date(a.created_at))[0]
+      if (latest) {
+        quadWrap.style.display = 'block'
+        drawRivalsQuadrant(latest, peers)
+      }
+    }
+
+    rivalsLoaded = true
+  }
+
+  function drawRivalsSankey(product, engines, peers, category) {
+    const canvas = document.getElementById('rivals-sankey')
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    const W = canvas.width, H = canvas.height
+    ctx.clearRect(0, 0, W, H)
+
+    const PAD = 20, NODE_W = 100, NODE_H_UNIT = 22, GAP = 6
+    const GOLD = '#FFD700', DIM = '#333', TEXT = '#ccc', BG = '#0a0a0a'
+
+    // Engine nodes (left column)
+    const engineKeys = Object.keys(engines).filter(k => engines[k].probes > 0)
+    const totalProbes = engineKeys.reduce((s, k) => s + engines[k].probes, 0) || 1
+
+    const leftNodes = engineKeys.map((key, i) => ({
+      key,
+      label: key.charAt(0).toUpperCase() + key.slice(1),
+      probes: engines[key].probes,
+      recognized: engines[key].recognized || 0,
+    }))
+
+    // Right nodes: our product first, then peers
+    const totalRight = leftNodes.reduce((s, n) => s + n.recognized, 0) || 1
+    const peerMaxCount = peers.length > 0 ? Math.max(...peers.map(p => p.count)) : 1
+    const rightNodes = [
+      { label: product, count: totalRight, isMe: true },
+      ...peers.slice(0, 5).map(p => ({ label: p.name, count: p.count, isMe: false })),
+    ]
+
+    // Layout
+    const lx = PAD + NODE_W / 2
+    const rx = W - PAD - NODE_W / 2
+    const midX = W / 2
+
+    function nodeHeight(val, total) { return Math.max(14, Math.round((val / total) * (H - PAD * 2 - GAP * (leftNodes.length - 1)))) }
+
+    // Compute left node heights + y positions
+    let ly = PAD
+    for (const n of leftNodes) {
+      n.h = nodeHeight(n.probes, totalProbes)
+      n.y = ly
+      ly += n.h + GAP
+    }
+
+    // Compute right node heights + y positions
+    const totalRightH = H - PAD * 2 - GAP * (rightNodes.length - 1)
+    const rightTotal = rightNodes.reduce((s, n) => s + n.count, 0) || 1
+    let ry = PAD
+    for (const n of rightNodes) {
+      n.h = Math.max(14, Math.round((n.count / rightTotal) * totalRightH))
+      n.y = ry
+      ry += n.h + GAP
+    }
+
+    // Draw background
+    ctx.fillStyle = BG
+    ctx.fillRect(0, 0, W, H)
+
+    // Draw bezier flows (left → right)
+    for (const ln of leftNodes) {
+      for (const rn of rightNodes) {
+        const alpha = rn.isMe ? 0.35 : 0.15
+        const color = rn.isMe ? GOLD : '#555'
+        ctx.beginPath()
+        ctx.moveTo(lx + NODE_W / 2, ln.y + ln.h / 2)
+        ctx.bezierCurveTo(
+          midX, ln.y + ln.h / 2,
+          midX, rn.y + rn.h / 2,
+          rx - NODE_W / 2, rn.y + rn.h / 2
+        )
+        ctx.strokeStyle = color
+        ctx.globalAlpha = alpha
+        ctx.lineWidth = rn.isMe ? 2 : 1
+        ctx.stroke()
+        ctx.globalAlpha = 1
+      }
+    }
+
+    // Draw left nodes (engines)
+    for (const n of leftNodes) {
+      ctx.fillStyle = '#1a1a1a'
+      ctx.strokeStyle = '#444'
+      ctx.lineWidth = 1
+      roundRect(ctx, lx - NODE_W / 2, n.y, NODE_W, n.h, 4)
+      ctx.fill(); ctx.stroke()
+      ctx.fillStyle = TEXT
+      ctx.font = '11px Inter, sans-serif'
+      ctx.textAlign = 'center'
+      ctx.fillText(n.label, lx, n.y + n.h / 2 + 4)
+      ctx.fillStyle = '#555'
+      ctx.font = '9px Inter, sans-serif'
+      ctx.fillText(`${n.probes} probes`, lx, n.y + n.h / 2 + 16)
+    }
+
+    // Draw right nodes (products)
+    for (const n of rightNodes) {
+      ctx.fillStyle = n.isMe ? '#1a1500' : '#111'
+      ctx.strokeStyle = n.isMe ? GOLD : '#333'
+      ctx.lineWidth = n.isMe ? 1.5 : 1
+      roundRect(ctx, rx - NODE_W / 2, n.y, NODE_W, n.h, 4)
+      ctx.fill(); ctx.stroke()
+      ctx.fillStyle = n.isMe ? GOLD : TEXT
+      ctx.font = n.isMe ? 'bold 11px Inter, sans-serif' : '10px Inter, sans-serif'
+      ctx.textAlign = 'center'
+      const label = n.label.length > 12 ? n.label.slice(0, 11) + '…' : n.label
+      ctx.fillText(label, rx, n.y + n.h / 2 + (n.h > 22 ? 4 : 4))
+    }
+
+    // Category label in center
+    if (category) {
+      ctx.fillStyle = '#444'
+      ctx.font = '9px Inter, sans-serif'
+      ctx.textAlign = 'center'
+      ctx.fillText(category, midX, H / 2)
+    }
+
+    // Legend
+    const legendEl = document.getElementById('rivals-sankey-legend')
+    if (legendEl) {
+      legendEl.innerHTML = `
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:12px;height:12px;background:#1a1500;border:1px solid #FFD700;border-radius:2px;display:inline-block;"></span> Your product</span>
+        <span style="display:flex;align-items:center;gap:4px;"><span style="width:12px;height:12px;background:#111;border:1px solid #333;border-radius:2px;display:inline-block;"></span> Co-recommended rivals</span>
+        ${category ? `<span style="color:#555;">Category: ${category}</span>` : ''}
+      `
+    }
+  }
+
+  function roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath()
+    ctx.moveTo(x + r, y)
+    ctx.lineTo(x + w - r, y)
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r)
+    ctx.lineTo(x + w, y + h - r)
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h)
+    ctx.lineTo(x + r, y + h)
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r)
+    ctx.lineTo(x, y + r)
+    ctx.quadraticCurveTo(x, y, x + r, y)
+    ctx.closePath()
+  }
+
+  function renderRivalsPeers(peers, myProduct) {
+    const el = document.getElementById('rivals-peers-table')
+    if (!el) return
+    const maxCount = Math.max(...peers.map(p => p.count), 1)
+    el.innerHTML = `
+      <div style="display:grid;gap:0.45rem;">
+        ${peers.map((p, i) => {
+          const pct = Math.round((p.count / maxCount) * 100)
+          const engines = Object.entries(p.by_engine || {}).map(([k,v]) => `<span style="color:#555;font-size:0.68rem;">${k.charAt(0).toUpperCase()+k.slice(1)}×${v}</span>`).join(' ')
+          return `<div style="display:grid;grid-template-columns:1.4rem 1fr auto;align-items:center;gap:0.6rem;padding:0.55rem 0.7rem;background:#0d0d0d;border:1px solid #1e1e1e;border-radius:6px;">
+            <span style="font-family:'Press Start 2P',monospace;font-size:7px;color:#444;">#${i+1}</span>
+            <div>
+              <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.25rem;">
+                <span style="font-size:0.82rem;color:#e0e0e0;font-weight:500;">${p.name}</span>
+                ${engines}
+              </div>
+              <div style="height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden;">
+                <div style="height:100%;width:${pct}%;background:#333;border-radius:2px;transition:width 0.4s;"></div>
+              </div>
+            </div>
+            <span style="font-size:0.72rem;color:#555;white-space:nowrap;">${p.count}×</span>
+          </div>`
+        }).join('')}
+      </div>
+      <p style="font-size:0.7rem;color:#444;margin-top:0.75rem;line-height:1.5;">Co-mentions extracted from probe_logs. Higher = more frequently recommended alongside <strong style="color:#888;">${myProduct}</strong> by AI engines.</p>
+    `
+  }
+
+  function drawRivalsQuadrant(latestScore, peers) {
+    const canvas = document.getElementById('rivals-quadrant')
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    const W = canvas.width, H = canvas.height
+    ctx.clearRect(0, 0, W, H)
+
+    const PAD = 40, GOLD = '#FFD700', BG = '#0a0a0a'
+    const plotW = W - PAD * 2, plotH = H - PAD * 2
+
+    const recognition = Math.min(latestScore.recognition_score ?? latestScore.recognition ?? 0, 35)
+    const category    = Math.min(latestScore.category_score ?? latestScore.category ?? 0, 35)
+
+    ctx.fillStyle = BG
+    ctx.fillRect(0, 0, W, H)
+
+    // Grid lines
+    ctx.strokeStyle = '#1a1a1a'
+    ctx.lineWidth = 1
+    for (let i = 0; i <= 4; i++) {
+      const x = PAD + (i / 4) * plotW
+      const y = PAD + (i / 4) * plotH
+      ctx.beginPath(); ctx.moveTo(x, PAD); ctx.lineTo(x, PAD + plotH); ctx.stroke()
+      ctx.beginPath(); ctx.moveTo(PAD, y); ctx.lineTo(PAD + plotW, y); ctx.stroke()
+    }
+
+    // Quadrant dividers (17.5 = midpoint of 35)
+    ctx.strokeStyle = '#2a2a2a'
+    ctx.lineWidth = 1.5
+    ctx.setLineDash([4, 4])
+    const midX = PAD + (17.5 / 35) * plotW
+    const midY = PAD + plotH - (17.5 / 35) * plotH
+    ctx.beginPath(); ctx.moveTo(midX, PAD); ctx.lineTo(midX, PAD + plotH); ctx.stroke()
+    ctx.beginPath(); ctx.moveTo(PAD, midY); ctx.lineTo(PAD + plotW, midY); ctx.stroke()
+    ctx.setLineDash([])
+
+    // Quadrant labels
+    ctx.fillStyle = '#2a2a2a'
+    ctx.font = '9px Inter, sans-serif'
+    ctx.textAlign = 'center'
+    ctx.fillText('NICHE', PAD + plotW * 0.25, PAD + 14)
+    ctx.fillText('LEADER', PAD + plotW * 0.75, PAD + 14)
+    ctx.fillText('INVISIBLE', PAD + plotW * 0.25, PAD + plotH - 6)
+    ctx.fillText('CHALLENGER', PAD + plotW * 0.75, PAD + plotH - 6)
+
+    // Axes labels
+    ctx.fillStyle = '#444'
+    ctx.font = '9px Inter, sans-serif'
+    ctx.textAlign = 'center'
+    ctx.fillText('Recognition →', PAD + plotW / 2, H - 6)
+    ctx.save()
+    ctx.translate(10, PAD + plotH / 2)
+    ctx.rotate(-Math.PI / 2)
+    ctx.fillText('Category ↑', 0, 0)
+    ctx.restore()
+
+    // Axis ticks
+    ctx.fillStyle = '#444'
+    ctx.font = '8px Inter, sans-serif'
+    ctx.textAlign = 'center'
+    ;[0, 10, 20, 35].forEach(v => {
+      const x = PAD + (v / 35) * plotW
+      ctx.fillText(v, x, PAD + plotH + 14)
+      const y = PAD + plotH - (v / 35) * plotH
+      ctx.textAlign = 'right'
+      ctx.fillText(v, PAD - 5, y + 3)
+      ctx.textAlign = 'center'
+    })
+
+    // Plot our product
+    const myX = PAD + (recognition / 35) * plotW
+    const myY = PAD + plotH - (category / 35) * plotH
+    ctx.beginPath()
+    ctx.arc(myX, myY, 8, 0, Math.PI * 2)
+    ctx.fillStyle = GOLD
+    ctx.fill()
+    ctx.strokeStyle = '#b39700'
+    ctx.lineWidth = 2
+    ctx.stroke()
+    ctx.fillStyle = '#000'
+    ctx.font = 'bold 8px Inter, sans-serif'
+    ctx.textAlign = 'center'
+    ctx.fillText('YOU', myX, myY + 3)
+
+    // Score label
+    ctx.fillStyle = GOLD
+    ctx.font = '10px Inter, sans-serif'
+    ctx.textAlign = 'left'
+    ctx.fillText(`R:${recognition} / C:${category}`, myX + 12, myY - 6)
+  }
+
   // ── localStorage Set helpers ───────────────────────────────
   function getMineSet() {
     try { return new Set(JSON.parse(localStorage.getItem('pba_mine') || '[]')) } catch { return new Set() }
@@ -4459,6 +4808,15 @@ body.shell-on .shell-scrim.open { display: block; }
       }
     }
 
+    // 6b-2. D8 Rivals pane (2026-04-25)
+    if (key === 'rivals') {
+      if (typeof loadRivalsPane === 'function' && typeof pickRepresentativeProduct === 'function') {
+        const prod = pickRepresentativeProduct()
+        const name = prod && prod.product_name ? prod.product_name : null
+        if (name) { try { loadRivalsPane(name) } catch(e) { console.error('[rivals] enter pane', e) } }
+      }
+    }
+
     // 6c. D6 Journey pane (2026-04-22)
     if (key === 'journey') {
       if (typeof renderJourneyPane === 'function' && typeof pickRepresentativeProduct === 'function') {
@@ -4660,7 +5018,7 @@ body.shell-on .shell-scrim.open { display: block; }
       <button onclick="closeVerifyPopup();switchTab('mine')" style="background:#FFD700;color:#000;border:none;padding:0.5rem 1.4rem;border-radius:7px;cursor:pointer;font-size:0.82rem;font-weight:700;font-family:inherit;">Go to My Products →</button>
     </div>
   </div>
-</div>
+</main>
 
 <!-- FOOTER -->
 <footer style="margin-top:3.5rem;text-align:center;padding:1.5rem 1rem 2rem;font-size:0.78rem;color:#333;border-top:1px solid #181818;">
