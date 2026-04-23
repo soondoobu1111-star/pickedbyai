@@ -18,12 +18,18 @@ import {
   DimensionContext,
   DimensionScore,
   UnifiedScoreResult,
+  DIMENSION_MAX,
   computeRecognition,
   computeCategoryRanking,
   computeCoRecommendation,
   computeWebAuthority,
   assembleUnifiedScore,
 } from './unifiedScore'
+import {
+  runProbeRedesign,
+  computeDimensionsFromDAsn,
+  buildSyntheticContextFromDAsn,
+} from './probeRedesign'
 
 // ===== Adapter 전용 타입 (index.ts와 느슨하게 결합) =====
 
@@ -365,6 +371,111 @@ function parseRankFromList(text: string, name: string): number | null {
 
 function escapeRegex(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+// ===== D7 PROBE-REDESIGN-01 통합 엔트리 =====
+
+/**
+ * D안 역방향 스무고개 전체 플로우 실행 → UnifiedScoreResult 반환.
+ *
+ * 1. runProbeRedesign() → DAnswerResult (Phase 1/2/3)
+ * 2. fetchProbeLogsForScoring() → 누적 co_recommendations
+ * 3. computeWebAuthority() → Tavily web 점수
+ * 4. computeDimensionsFromDAsn() → recognition/category/corec/web 점수
+ * 5. buildSyntheticContextFromDAsn() → PassIndicator / EngineGrades용 컨텍스트
+ * 6. assembleUnifiedScore() → 최종 UnifiedScoreResult
+ *
+ * sum(dimensions[].score) === final.score 수학적 보장 유지.
+ * 기존 buildDimensionContext + computeUnified를 완전 대체.
+ */
+export async function computeUnifiedD7(
+  env: AdapterEnv,
+  productName: string,
+  productUrl: string | undefined,
+  tavilySources: Array<{ url: string; tier: number; isOwn: boolean }>,
+): Promise<UnifiedScoreResult> {
+  // Phase 1/2/3 D-answer 실행
+  const dAnswer = await runProbeRedesign(env, productName)
+
+  // 누적 probe_logs 조회 (CoRec 점수 계산용)
+  const dbLogs = await fetchProbeLogsForScoring(env, productName)
+
+  // D-answer co_recommendations를 probe_logs에 즉시 합산 (DB 미반영 보완)
+  const dAnswerLog = { co_recommendations: dAnswer.coRecommendations }
+  const probeLogs = [...dbLogs, dAnswerLog]
+
+  // Tavily web 점수 — 기존 computeWebAuthority 재사용
+  const webCtx: DimensionContext = { productName, tavilySources }
+  const webDim = computeWebAuthority(webCtx)
+
+  // 4차원 점수 계산
+  const { recognition, category, corec } = computeDimensionsFromDAsn(dAnswer, webDim.score)
+
+  // DimensionScore[] 직접 조립
+  const dimensions: DimensionScore[] = [
+    {
+      id: 'recognition',
+      label: 'Direct Recognition',
+      score: Math.round(recognition * 10) / 10,
+      max: DIMENSION_MAX.recognition,
+      breakdown: {
+        tier: dAnswer.tier,
+        base: DIMENSION_MAX.recognition < recognition ? DIMENSION_MAX.recognition : recognition - (dAnswer.useCaseRecommended ? 5 : 0),
+        use_case_bonus: dAnswer.useCaseRecommended ? 5 : 0,
+        use_case_recommended: dAnswer.useCaseRecommended,
+      },
+    },
+    {
+      id: 'category',
+      label: 'Category Ranking',
+      score: Math.round(category * 10) / 10,
+      max: DIMENSION_MAX.category,
+      breakdown: {
+        tier: dAnswer.tier,
+        rank: dAnswer.rank,
+        category: dAnswer.category,
+      },
+    },
+    {
+      id: 'corec',
+      label: 'Co-Recommendation Graph',
+      score: Math.round(corec * 10) / 10,
+      max: DIMENSION_MAX.corec,
+      breakdown: {
+        unique_count: dAnswer.coRecommendations.length,
+        top_5: dAnswer.coRecommendations.slice(0, 5),
+      },
+    },
+    webDim,
+  ]
+
+  // Category 랭킹 정보 (PassIndicator용 컨텍스트에 전달)
+  const categoryRankings: Array<{ engine: string; rank: number | null; query: string }> = dAnswer.rank !== null
+    ? [
+        { engine: 'perplexity', rank: dAnswer.rank, query: `best ${dAnswer.category}` },
+        { engine: 'gemini', rank: dAnswer.rank, query: `best ${dAnswer.category}` },
+      ]
+    : []
+
+  // 합성 DimensionContext → PassIndicator / EngineGrades
+  const syntheticCtx = buildSyntheticContextFromDAsn(
+    dAnswer,
+    productName,
+    productUrl,
+    probeLogs,
+    tavilySources,
+    categoryRankings,
+  )
+
+  const result = assembleUnifiedScore(syntheticCtx, dimensions)
+
+  console.log(
+    `[PROBE_D7] UnifiedD7: score=${result.score}/100 tier=${dAnswer.tier} ` +
+    `rank=${dAnswer.rank ?? 'N/A'} pass=${result.pass_indicator} ` +
+    `dims=${dimensions.map(d => d.score).join('+')}`,
+  )
+
+  return result
 }
 
 // ===== Probe Logs 조회 (Co-Rec Graph 점수 계산용) =====

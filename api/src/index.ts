@@ -1,6 +1,6 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { buildDimensionContext, computeUnified } from './unifiedScoreAdapter'
+import { buildDimensionContext, computeUnified, computeUnifiedD7 } from './unifiedScoreAdapter'
 import type { UnifiedScoreResult } from './unifiedScore'
 import { getSbUrl, SUPABASE_URL_STAGING as SB_URL_STAGING } from './supabaseEnv'
 import {
@@ -18,8 +18,9 @@ type Bindings = {
   OPENAI_API_KEY: string
   PERPLEXITY_API_KEY: string
   SUPABASE_URL?: string
-  UNIFIED_SCORE_V15?: string  // '빅파이 1.5 Phase 1: staging만 "true"' — 플래그 분기 (B안)
-  GEMINI_RELAY_URL?: string   // staging: staging relay URL, prod: 기본값 사용
+  UNIFIED_SCORE_V15?: string    // '빅파이 1.5 Phase 1: staging만 "true"' — 플래그 분기 (B안)
+  PROBE_REDESIGN_D7?: string   // 'D7 역방향 스무고개 프로브: staging만 "true"'
+  GEMINI_RELAY_URL?: string    // staging: staging relay URL, prod: 기본값 사용
   GEMINI_API_KEY?: string     // 직접 Gemini API 호출 시 사용 (Relay 우회)
   GEMINI_RELAY?: { fetch: (req: Request) => Promise<Response> }  // Service Binding
   AI: Ai
@@ -908,7 +909,8 @@ app.post('/v1/check', async (c) => {
   await logProbes(c.env, name, engineResult.aiProbe, { productUrl: url, triggerType: 'manual', startMs })
 
   // ── UNIFIED_SCORE_V15 (빅파이 1.5 Phase 1 Step 3, B안 병존) ─
-  // 플래그 on(스테이징) → 4차원 단일 스코어 병기. 기존 응답은 유지.
+  // PROBE_REDESIGN_D7=true → D안 역방향 스무고개 사용 (D7+)
+  // UNIFIED_SCORE_V15=true → 기존 adapter 사용
   let unifiedV15: UnifiedScoreResult | null = null
   if (c.env.UNIFIED_SCORE_V15 === 'true') {
     try {
@@ -917,13 +919,17 @@ app.post('/v1/check', async (c) => {
         tier: s.tier,
         isOwn: s.isOwn,
       }))
-      const ctx = await buildDimensionContext(c.env, {
-        productName: name,
-        productUrl: url,
-        tavilySources,
-        aiProbes: engineResult.aiProbe,
-      })
-      unifiedV15 = computeUnified(ctx)
+      if (c.env.PROBE_REDESIGN_D7 === 'true') {
+        unifiedV15 = await computeUnifiedD7(c.env, name, url, tavilySources)
+      } else {
+        const ctx = await buildDimensionContext(c.env, {
+          productName: name,
+          productUrl: url,
+          tavilySources,
+          aiProbes: engineResult.aiProbe,
+        })
+        unifiedV15 = computeUnified(ctx)
+      }
       console.log(
         `[UNIFIED_V15] score=${unifiedV15.score}/100 pass=${unifiedV15.pass_indicator} quadrant=${unifiedV15.quadrant.label} dims=${unifiedV15.dimensions.map(d => d.score).join('+')}`,
       )
@@ -996,13 +1002,17 @@ async function dailyRefresh(env: Bindings) {
       if (env.UNIFIED_SCORE_V15 === 'true') {
         try {
           const tavilySources = (result.sources || []).map((s: SourceInfo) => ({ url: s.url, tier: s.tier, isOwn: s.isOwn }))
-          const ctx = await buildDimensionContext(env, {
-            productName: task.product_name,
-            productUrl: task.product_url ?? undefined,
-            tavilySources,
-            aiProbes: result.aiProbe,
-          })
-          cronUnifiedV15 = computeUnified(ctx)
+          if (env.PROBE_REDESIGN_D7 === 'true') {
+            cronUnifiedV15 = await computeUnifiedD7(env, task.product_name, task.product_url ?? undefined, tavilySources)
+          } else {
+            const ctx = await buildDimensionContext(env, {
+              productName: task.product_name,
+              productUrl: task.product_url ?? undefined,
+              tavilySources,
+              aiProbes: result.aiProbe,
+            })
+            cronUnifiedV15 = computeUnified(ctx)
+          }
           // BUG-SCORE-FIELD-LEGACY-01 fix (2026-04-22): unified 성공 시 score도 통일
           // 빅파이 1.5 §2 "단일 시스템" — scores.score = unified_v15.score
           savedScore = Math.round(cronUnifiedV15.score)
@@ -2465,10 +2475,14 @@ async function runInternalCheck(
         const tavilySources = (engineResult.sources || []).map(s => ({
           url: s.url, tier: s.tier, isOwn: s.isOwn,
         }))
-        const ctx = await buildDimensionContext(env, {
-          productName, productUrl, tavilySources, aiProbes: ai,
-        })
-        unified = computeUnified(ctx)
+        if (env.PROBE_REDESIGN_D7 === 'true') {
+          unified = await computeUnifiedD7(env, productName, productUrl, tavilySources)
+        } else {
+          const ctx = await buildDimensionContext(env, {
+            productName, productUrl, tavilySources, aiProbes: ai,
+          })
+          unified = computeUnified(ctx)
+        }
       } catch (err) {
         console.error('[runInternalCheck] unified error:', err)
       }

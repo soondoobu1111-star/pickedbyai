@@ -26,7 +26,8 @@ crons = ["1 15 * * *", "* * * * *"]
 [env.staging.vars]
 ENVIRONMENT = "staging"
 SUPABASE_URL = "https://xzecybljfipmmzzzfnit.supabase.co"
-UNIFIED_SCORE_V15 = "true"  # 빅파이 1.5 Phase 1 Step 3 — 스테이징만 병기. 프로덕션은 절대 활성화 금지(CEO 승인 필요)
+UNIFIED_SCORE_V15 = "true"    # 빅파이 1.5 Phase 1 Step 3 — 스테이징만 병기. 프로덕션은 절대 활성화 금지(CEO 승인 필요)
+PROBE_REDESIGN_D7 = "true"   # D7 역방향 스무고개 프로브 — 스테이징만 활성. UNIFIED_SCORE_V15와 함께 사용
 GEMINI_RELAY_URL = "https://pickedbyai-gemini-relay-staging.perceptdot.workers.dev/relay"  # 수정된 staging relay (gemini-2.0-flash, thinkingConfig 제거)
 
 [env.staging.placement]

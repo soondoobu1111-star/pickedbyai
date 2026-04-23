@@ -14,8 +14,8 @@
 ✅ D4 Shell 설계 + 통합 (04-18~19)
 ✅ D5 Overview 12섹션 풀셋 (04-21~22)
 ✅ D6 Trend + Journey + Volume (04-22~23)
-🔄 D7 PROBE-REDESIGN-01 (04-24) ← 지금 여기
-⬜ D8 Rivals + Sankey + GT-01 실측 (04-25)
+✅ D7 PROBE-REDESIGN-01 (04-24)
+🔄 D8 Rivals + Sankey + GT-01 실측 (04-25) ← 다음
 ⬜ D9a 랜딩 리뉴얼 1차 (04-26)
 ⬜ D9b 랜딩 리뉴얼 2차 (04-27)
 ⬜ D10 모바일 (04-28)
@@ -94,6 +94,7 @@
 | pickedbyAI/CLAUDE.md 재작성 | ✅ | 250줄+→97줄, 7단계→3단계 |
 | Pull 모델 전환 (agent-protocol.md) | ✅ | 세션 시작 비용 -58% (~38K→~16K 토큰) |
 | MEMORY.md 앵커화 (MEMORY_full.md 분리) | ✅ | 17KB→2.8KB (-83%) |
+| D7 PROBE-REDESIGN-01 (04-24) | ✅ | probeCache.ts + probeRedesign.ts 신규. tsc+14test PASS. Notion 97.5/T1, pickedby.ai 55/T2 실측 |
 
 ---
 
@@ -101,10 +102,10 @@
 
 | 환경 | API | FE |
 |------|------|----|
-| 스테이징 | `4fc2f190` | `e61011c3` |
+| 스테이징 | `a1abd4e5` (D7 PROBE-REDESIGN-01) | `e61011c3` |
 | 프로덕션 | `1e52e42b` (TAVILY-CRON-LITE-01 선반영) | 변경 없음 |
 
 ---
 
 *SPRINT.md — TIER 1 파일. 매 세션 후 POST_TASK에서 갱신. 150줄 초과 시 완료 항목 bigpie-v1.5.md §10으로 이동.*
-*[CPO] 최초 작성 2026-04-23 (데스크탑 Claude)*
+*[CPO] 최초 작성 2026-04-23 | 2026-04-24 D7 완료 업데이트 (데스크탑 Claude)*
