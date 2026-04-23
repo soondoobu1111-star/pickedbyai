@@ -1646,134 +1646,36 @@
 
     <!-- HERO -->
     <div class="hero">
-      <div class="hero-eyebrow">▶ Free AI Visibility Check</div>
-      <h1>Does AI recommend <em>your brand</em>?</h1>
-      <p class="hero-sub">Search Console, Analytics, and <span style="opacity:0.6">(soon)</span> Ads — for the AI era.<br>Start free. No signup.</p>
-      <button class="hero-cta" onclick="window.location.href='/dashboard.html'">CHECK MY SCORE FREE ▶▶</button>
-      <p class="hero-disclaimer">Starting with digital creators. Built for the entire AI economy.</p>
-    </div>
-
-    <!-- ROADMAP DIAGRAM (P0-03) -->
-    <div class="roadmap-section fade-up">
-      <h2>The Google Stack for AI Recommendations</h2>
-      <div class="roadmap-grid">
-        <div class="roadmap-card">
-          <span class="roadmap-badge available">✅ AVAILABLE</span>
-          <div class="roadmap-phase">MEASURE</div>
-          <div class="roadmap-equiv">Search Console</div>
-          <div class="roadmap-desc">Know if AI knows you. Free visibility score + AI Probe.</div>
-        </div>
-        <div class="roadmap-card">
-          <span class="roadmap-badge coming">🔜 COMING Q3</span>
-          <div class="roadmap-phase">ANALYZE</div>
-          <div class="roadmap-equiv">Analytics (GA4)</div>
-          <div class="roadmap-desc">Track your AI traffic, recommendation trends & benchmarks.</div>
-        </div>
-        <div class="roadmap-card">
-          <span class="roadmap-badge future">🔮 2027</span>
-          <div class="roadmap-phase">OPTIMIZE</div>
-          <div class="roadmap-equiv">Ads Platform</div>
-          <div class="roadmap-desc">Optimize for AI placement. The future of AI advertising.</div>
-        </div>
+      <div class="hero-eyebrow">▶ The AI Search Console</div>
+      <h1>Does AI recommend <em>your product</em>?</h1>
+      <p class="hero-sub">5대 AI(GPT · Gemini · Claude · Grok · Perplexity)가 당신의 제품을 추천하는지<br>10초 만에 확인하세요. 무료. 회원가입 불필요.</p>
+      <!-- Shift 1: Hero Live Widget -->
+      <div id="hero-widget" style="display:flex;gap:0.5rem;max-width:480px;margin:1.5rem auto 0;flex-wrap:wrap;justify-content:center;">
+        <input id="hero-product-input" type="text" placeholder="Your product name..." autocomplete="off" spellcheck="false"
+          style="flex:1;min-width:220px;height:46px;padding:0 1rem;font-size:0.9rem;background:#111;border:1.5px solid #FFD700;color:#fff;outline:none;border-radius:0;font-family:inherit;"
+          onkeydown="if(event.key==='Enter')heroCheck()" />
+        <button onclick="heroCheck()"
+          style="height:46px;padding:0 1.4rem;background:#FFD700;color:#000;font-family:'Press Start 2P',monospace;font-size:0.42rem;letter-spacing:0.15em;border:none;cursor:pointer;box-shadow:3px 3px 0 #b39700;white-space:nowrap;">
+          CHECK FREE ▶
+        </button>
+      </div>
+      <p class="hero-disclaimer" style="margin-top:0.75rem;">No signup · No credit card · Results in ~10 seconds</p>
+      <!-- Social proof inline -->
+      <div style="display:flex;gap:1.5rem;justify-content:center;margin-top:1.2rem;flex-wrap:wrap;">
+        <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:#FFD700;">100/100 <span style="color:#555;">BETA SOLD OUT</span></span>
+        <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:#444;">·</span>
+        <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:#FFD700;">Day 42 <span style="color:#555;">BUILDING IN PUBLIC</span></span>
       </div>
     </div>
+    <script>
+    function heroCheck() {
+      const v = document.getElementById('hero-product-input')?.value?.trim()
+      if (!v) return
+      window.location.href = '/dashboard.html?product=' + encodeURIComponent(v)
+    }
+    </script>
 
-    <!-- SOCIAL PROOF -->
-    <div class="social-proof fade-up">
-      <div class="sp-stat">
-        <span class="sp-num">100/100</span>
-        <span class="sp-label">Beta SOLD OUT</span>
-      </div>
-      <div class="sp-divider"></div>
-      <div class="sp-stat">
-        <span class="sp-num">13</span>
-        <span class="sp-label">Blog posts shipped</span>
-      </div>
-      <div class="sp-divider"></div>
-      <div class="sp-stat">
-        <span class="sp-num">Day 42</span>
-        <span class="sp-label">Building in public</span>
-      </div>
-    </div>
-
-    <!-- POWERED BY -->
-    <div class="powered-by fade-up">
-      <span class="powered-by-label">Powered by</span>
-      <span class="pb-item"><span class="pb-dot"></span>Google Search</span>
-      <span class="pb-item"><span class="pb-dot"></span>Perplexity AI</span>
-      <span class="pb-item"><span class="pb-dot"></span>GPT</span>
-      <span class="pb-item"><span class="pb-dot"></span>Gemini</span>
-    </div>
-
-    <!-- VS ROW -->
-    <div class="vs-row fade-up">
-      <span class="vs-item"><strong>✓</strong> Google Search</span>
-      <span class="vs-sep">·</span>
-      <span class="vs-item"><strong>✓</strong> AI Knowledge Base</span>
-      <span class="vs-sep">·</span>
-      <span class="vs-item"><strong>✓</strong> Web Reviews</span>
-      <span class="vs-break"></span>
-      <span class="vs-item"><strong>✓</strong> Rankings &amp; Mentions</span>
-      <span class="vs-sep">·</span>
-      <span class="vs-item"><strong>✓</strong> Product Hunt</span>
-      <span class="vs-break"></span>
-    </div>
-
-    <!-- SCORE SPECTRUM -->
-    <div class="spectrum-wrap fade-up">
-      <div class="spectrum-label">WHAT YOUR SCORE MEANS</div>
-      <div class="spectrum-zones">
-        <div class="sz sz-top">
-          <span class="sz-range">75 – 100</span>
-          <div class="sz-title">Picked</div>
-          <div class="sz-desc">AI consistently picks you first</div>
-        </div>
-        <div class="sz sz-hi">
-          <span class="sz-range">50 – 74</span>
-          <div class="sz-title">Visible</div>
-          <div class="sz-desc">AI recommends you sometimes</div>
-        </div>
-        <div class="sz sz-mid">
-          <span class="sz-range">25 – 49</span>
-          <div class="sz-title">Noticed</div>
-          <div class="sz-desc">AI knows you, rarely recommends</div>
-        </div>
-        <div class="sz sz-low">
-          <span class="sz-range">0 – 24</span>
-          <div class="sz-title">Invisible</div>
-          <div class="sz-desc">AI doesn't know you exist</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- AI QUERY TICKER — real examples of how people query AI -->
-    <div class="qticker-wrap fade-up">
-      <div class="qticker" id="queryTicker"></div>
-    </div>
-
-    <!-- AI VITALS -->
-    <div class="vitals fade-up">
-      <div class="vitals-head">AI doesn't browse like humans. It reads <em>signals</em>.<br>Are yours sending the right message?</div>
-      <div class="vitals-grid">
-        <div class="vital-card">
-          <span class="vital-icon">👁</span>
-          <span class="vital-name">AI PRESENCE</span>
-          <div class="vital-desc">Does AI know your product exists by name?</div>
-        </div>
-        <div class="vital-card">
-          <span class="vital-icon">🏆</span>
-          <span class="vital-name">RANK</span>
-          <div class="vital-desc">Where do you appear in AI recommendation lists?</div>
-        </div>
-        <div class="vital-card">
-          <span class="vital-icon">🔗</span>
-          <span class="vital-name">GROUNDED</span>
-          <div class="vital-desc">Is AI citing real sources when it talks about you?</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- HOW IT WORKS -->
+    <!-- HOW IT WORKS — Shift 2: 섹션 축소 (D9a LAND-SHIFT-02) -->
     <div class="how-section fade-up">
       <div class="how-head">HOW IT WORKS</div>
       <div class="how-steps">
