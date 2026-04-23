@@ -2721,15 +2721,8 @@ body.shell-on .shell-scrim.open { display: block; }
         scales: {
           x: {
             ticks: {
-              color: '#555', font: { size: 10 }, maxRotation: 0,
-              autoSkip: false,
-              callback: function(_value, index) {
-                const total = labels.length
-                if (index === total - 1) return formatChartDateTick(labels[index])
-                if (index === total - 2) return null
-                if (index === 0 || index % 2 === 0) return formatChartDateTick(labels[index])
-                return null
-              }
+              color: '#555', font: { size: 10 }, maxRotation: 0, autoSkip: true, autoSkipPadding: 14,
+              callback: function(_value, index) { return formatChartDateTick(labels[index]) }
             },
             grid: { color: '#1a1a1a' }
           },
@@ -3049,15 +3042,8 @@ body.shell-on .shell-scrim.open { display: block; }
         scales: {
           x: {
             ticks: {
-              color: '#555', font: { size: 10 }, maxRotation: 0,
-              autoSkip: false,
-              callback: function(_value, index) {
-                const total = labels.length
-                if (index === total - 1) return formatChartDateTick(labels[index])
-                if (index === total - 2) return null
-                if (index === 0 || index % 2 === 0) return formatChartDateTick(labels[index])
-                return null
-              }
+              color: '#555', font: { size: 10 }, maxRotation: 0, autoSkip: true, autoSkipPadding: 14,
+              callback: function(_value, index) { return formatChartDateTick(labels[index]) }
             },
             grid: { color: '#1a1a1a' }
           },
