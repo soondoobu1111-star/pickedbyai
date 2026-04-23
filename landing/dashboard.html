@@ -1001,17 +1001,7 @@ body.shell-on .shell-scrim.open { display: block; }
           </div>
         </div>
 
-        <!-- Coming Soon (badge panel only) -->
-        <div class="tools-card">
-          <div style="font-size:0.9rem;font-weight:700;margin-bottom:0.75rem;">Coming Soon</div>
-          <div style="display:flex;align-items:center;justify-content:space-between;">
-            <div>
-              <div style="font-size:0.85rem;font-weight:600;color:#aaa;">Weekly Report Email</div>
-              <div style="font-size:0.75rem;color:#444;margin-top:2px;">AI visibility trends delivered to your inbox</div>
-            </div>
-            <span class="coming-soon-badge">Soon</span>
-          </div>
-        </div>
+        <!-- Coming Soon 제거 (2026-04-23 CEO 지시) -->
       </div>
 
       <!-- ── Panel: llms.txt Generator ── -->
@@ -1305,20 +1295,25 @@ body.shell-on .shell-scrim.open { display: block; }
         <div style="font-size:15px;color:#f5f5f5;font-weight:500;margin-bottom:6px;">Today's playbook</div>
         <div style="font-size:12.5px;color:#666;line-height:1.7;max-width:460px;margin:0 auto;">Three rule-based Action Items from your weakest dimension, Weekly Narrative (5 templates: Big Mover / Stagnant / Regression / Breakthrough / First Week), completed action log, and a next-tier progress gauge.</div>
       </div>
-      <!-- B안 2026-04-21: Guide Email CTA 이식 (Overview에서 이동) -->
+      <!-- Improvement Guide Toggle (계정 이메일 자동 사용) -->
       <div style="padding:1rem 1.1rem;background:#0d0d0d;border:1px solid #FFD70022;border-radius:8px;">
-        <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.25rem;">🚀 Free Guide: How to Improve Your AI Visibility Score</div>
-        <div style="font-size:0.78rem;color:#888;margin-bottom:0.65rem;">Your personalized improvement plan — sent to your inbox based on your actual score.</div>
-        <label style="display:flex;align-items:flex-start;gap:0.5rem;margin-bottom:0.65rem;cursor:pointer;">
-          <input type="checkbox" id="actions-guide-consent" onchange="toggleActionsGuideBtn()" style="margin-top:2px;accent-color:#FFD700;cursor:pointer;" />
-          <span style="font-size:0.73rem;color:#888;line-height:1.5;">I agree to receive marketing emails from pickedby.ai. You can unsubscribe at any time.</span>
-        </label>
-        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;">
-          <input type="email" id="actions-guide-email" placeholder="your@email.com" style="flex:1;min-width:180px;padding:0.45rem 0.7rem;background:#1a1a1a;border:1px solid #333;color:#fff;border-radius:4px;font-size:0.82rem;" />
-          <button onclick="submitActionsGuideEmail()" id="actions-guide-btn" disabled style="background:#444;color:#888;border:none;padding:0.45rem 1rem;font-weight:700;font-size:0.75rem;cursor:not-allowed;border-radius:4px;white-space:nowrap;">GET GUIDE</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+          <div>
+            <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.25rem;">Improvement Guide</div>
+            <div style="font-size:0.73rem;color:#888;line-height:1.5;">Personalized tips sent to your account email after each check.</div>
+          </div>
+          <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;cursor:pointer;">
+            <input type="checkbox" id="actions-guide-toggle" onchange="toggleGuideSubscription(this.checked)" style="opacity:0;width:0;height:0;" />
+            <span style="position:absolute;inset:0;background:#333;border-radius:12px;transition:background 0.2s;"></span>
+            <span style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#888;border-radius:50%;transition:all 0.2s;"></span>
+          </label>
         </div>
-        <div id="actions-guide-ok" style="display:none;color:#4ade80;font-size:0.75rem;margin-top:0.4rem;">✓ Guide is on its way!</div>
+        <div id="actions-guide-ok" style="display:none;color:#4ade80;font-size:0.75rem;margin-top:0.5rem;">✓ Guide enabled — sent to your account email.</div>
       </div>
+      <style>
+        #actions-guide-toggle:checked + span { background: #FFD700 !important; }
+        #actions-guide-toggle:checked + span + span { left: 23px !important; background: #0a0a0a !important; }
+      </style>
     </div>
   </div>
 
@@ -4682,21 +4677,16 @@ body.shell-on .shell-scrim.open { display: block; }
 
   // B안 2026-04-21: Actions pane Guide CTA 전용 핸들러 (Overview에서 이식)
   function toggleActionsGuideBtn() {
-    const cb = document.getElementById('actions-guide-consent')
-    const btn = document.getElementById('actions-guide-btn')
-    if (!cb || !btn) return
-    const checked = cb.checked
-    btn.disabled = !checked
-    btn.style.background = checked ? '#FFD700' : '#444'
-    btn.style.color = checked ? '#000' : '#888'
-    btn.style.cursor = checked ? 'pointer' : 'not-allowed'
-  }
-  async function submitActionsGuideEmail() {
-    const input = document.getElementById('actions-guide-email')
-    const email = (input.value || '').trim()
+    // Guide toggle — 계정 이메일 자동 사용
+  async function toggleGuideSubscription(enabled) {
+    const ok = document.getElementById('actions-guide-ok')
+    const email = currentUser?.email
     if (!email) return
-    const btn = document.getElementById('actions-guide-btn')
-    if (btn) { btn.disabled = true; btn.textContent = '...' }
+    if (!enabled) {
+      if (ok) ok.style.display = 'none'
+      localStorage.setItem('pba_guide_enabled', '0')
+      return
+    }
     try {
       const r = await fetch(API_URL + '/v1/subscribe', {
         method: 'POST',
@@ -4710,15 +4700,10 @@ body.shell-on .shell-scrim.open { display: block; }
         }),
       })
       if (r.ok) {
-        document.getElementById('actions-guide-ok').style.display = 'block'
-        if (input) input.style.display = 'none'
-        if (btn) btn.style.display = 'none'
-      } else {
-        if (btn) { btn.disabled = false; btn.textContent = 'GET GUIDE' }
+        if (ok) ok.style.display = 'block'
+        localStorage.setItem('pba_guide_enabled', '1')
       }
-    } catch(e) {
-      if (btn) { btn.disabled = false; btn.textContent = 'GET GUIDE' }
-    }
+    } catch(e) { console.error('[guide] subscribe failed', e) }
   }
 
   // ── EMAIL-CAPTURE-01: Flow 2 — send guide ─────────────────
