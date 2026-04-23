@@ -384,10 +384,11 @@ body.shell-on .shell-scrim.open { display: block; }
       <span class="shell-sb-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><polyline points="2,12 6,8 9,10 14,3"/><polyline points="11,3 14,3 14,6"/></svg></span>
       <span>Trend</span>
     </button>
-    <button class="shell-sb-item" data-nav="rivals" aria-label="Rivals">
+    <!-- Rivals: hidden until co-mention data accumulates -->
+    <!-- <button class="shell-sb-item" data-nav="rivals" aria-label="Rivals">
       <span class="shell-sb-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="5" cy="5" r="2.5"/><circle cx="11" cy="11" r="2.5"/><path d="M7 7 L9 9"/></svg></span>
       <span>Rivals</span>
-    </button>
+    </button> -->
     <button class="shell-sb-item" data-nav="journey" aria-label="Journey">
       <span class="shell-sb-ico"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="4" cy="4" r="1.5"/><circle cx="12" cy="12" r="1.5"/><path d="M4 6 Q4 11 8 11 Q12 11 12 6" fill="none" stroke-dasharray="2 2"/></svg></span>
       <span>Journey</span>
@@ -3104,15 +3105,26 @@ body.shell-on .shell-scrim.open { display: block; }
   let rivalsCurrentProduct = null
 
   async function loadRivalsPane(product) {
-    if (!product) return
-    rivalsCurrentProduct = product
-
     const emptyEl    = document.getElementById('rivals-empty')
     const peersWrap  = document.getElementById('rivals-peers-wrap')
     const quadWrap   = document.getElementById('rivals-quadrant-wrap')
     const enginesRow = document.getElementById('rivals-engines-row')
 
     ;[emptyEl, peersWrap, quadWrap].forEach(el => { if (el) el.style.display = 'none' })
+
+    if (!product) {
+      if (emptyEl) {
+        emptyEl.innerHTML = `
+          <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:10px;">✦ NO PRODUCT SELECTED</div>
+          <div style="font-size:0.84rem;color:#888;line-height:1.8;max-width:400px;margin:0 auto;">Check a product first to see co-mention data.</div>
+          <div style="font-size:0.74rem;color:#555;margin-top:0.5rem;line-height:1.6;">Use the <strong style="color:#666;">+ Check</strong> button at the top to run your first scan.</div>
+        `
+        emptyEl.style.display = 'block'
+      }
+      return
+    }
+
+    rivalsCurrentProduct = product
 
     let data
     try {
@@ -4911,10 +4923,10 @@ body.shell-on .shell-scrim.open { display: block; }
 
     // 6b-2. D8 Rivals pane (2026-04-25)
     if (key === 'rivals') {
-      if (typeof loadRivalsPane === 'function' && typeof pickRepresentativeProduct === 'function') {
-        const prod = pickRepresentativeProduct()
+      if (typeof loadRivalsPane === 'function') {
+        const prod = typeof pickRepresentativeProduct === 'function' ? pickRepresentativeProduct() : null
         const name = prod && prod.product_name ? prod.product_name : null
-        if (name) { try { loadRivalsPane(name) } catch(e) { console.error('[rivals] enter pane', e) } }
+        try { loadRivalsPane(name) } catch(e) { console.error('[rivals] enter pane', e) }
       }
     }
 
