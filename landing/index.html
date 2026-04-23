@@ -80,7 +80,7 @@
       {
         "@type": "Question",
         "name": "Which AI systems do you check?",
-        "acceptedAnswer": { "@type": "Answer", "text": "We score across 4 dimensions: Recognition (35 pts, reverse-ladder tier detection T4→T1), Category (35 pts, rank within your category), Co-Recommendation (20 pts, how often AI mentions you alongside peers), and Web (10 pts, independent web signals). We directly query Perplexity and Gemini to check if AI actually knows and recommends your brand right now." }
+        "acceptedAnswer": { "@type": "Answer", "text": "We score across 4 dimensions: Recognition (35 pts, reverse-ladder probe T4→T1 via Perplexity and Gemini), Category Rank (35 pts, are you in AI's top-10 for your category?), Co-Recommendation (20 pts, how often AI mentions you alongside peers), and Web Signals (10 pts, live Tavily scan). Total always sums to finalScore — mathematically guaranteed." }
       },
       {
         "@type": "Question",
@@ -100,7 +100,7 @@
       {
         "@type": "Question",
         "name": "Who is pickedby.ai for?",
-        "acceptedAnswer": { "@type": "Answer", "text": "pickedby.ai is built for digital product creators: Gumroad sellers, Notion and Airtable template creators, Etsy digital download sellers, LemonSqueezy and Ko-fi creators, and independent SaaS tools and micro-apps. If you sell a digital product and want to know if AI is sending you buyers, this is for you." }
+        "acceptedAnswer": { "@type": "Answer", "text": "pickedby.ai is for any product or brand that wants to know if AI recommends them — SaaS founders, digital creators, D2C brands, agencies, and anyone launching something new. If AI is part of how your customers discover products, you need to know your score." }
       },
       {
         "@type": "Question",
@@ -1454,6 +1454,66 @@
       .demo-tabs { overflow-x: auto; }
     }
 
+    /* ── NEWSLETTER ── */
+    .newsletter-section {
+      margin-bottom: 1.25rem;
+      border: 1px solid var(--yellow);
+      background: var(--bg2);
+      padding: 2rem 1.5rem;
+      text-align: center;
+    }
+    .newsletter-head {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      color: var(--yellow);
+      letter-spacing: 0.15em;
+      margin-bottom: 0.6rem;
+    }
+    .newsletter-sub {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+    }
+    .newsletter-form {
+      display: flex;
+      gap: 0.5rem;
+      max-width: 440px;
+      margin: 0 auto 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .newsletter-form input {
+      flex: 1;
+      min-width: 200px;
+      padding: 0.6rem 0.85rem;
+      background: #111;
+      border: 1px solid #444;
+      color: #fff;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .newsletter-form input:focus { border-color: var(--yellow); }
+    .newsletter-form button {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.4rem;
+      background: var(--yellow);
+      color: #000;
+      border: none;
+      padding: 0.6rem 1rem;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    .newsletter-form button:hover { background: var(--yellow2); }
+    .newsletter-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.5rem;
+      justify-content: center;
+      color: #888;
+      font-size: 0.82rem;
+    }
+
     /* ── FAQ ── */
     .faq-section {
       margin-bottom: 1.25rem;
@@ -1690,7 +1750,7 @@
           <span class="how-icon">🤖</span>
           <span class="how-num">02</span>
           <div class="how-title">AI scans 5 ways</div>
-          <div class="how-desc">5 dimensions + direct AI probe (Perplexity &amp; GPT)</div>
+          <div class="how-desc">4 dimensions + direct AI probe (Perplexity &amp; Gemini)</div>
         </div>
         <div class="how-arrow">→</div>
         <div class="how-step">
@@ -1700,35 +1760,6 @@
           <div class="how-desc">0–100 + 3 specific fixes to climb higher</div>
         </div>
       </div>
-    </div>
-
-    <!-- UNDER THE HOOD -->
-    <div class="uth-section fade-up">
-      <div class="uth-head">UNDER THE HOOD — WHY TRUST THIS SCORE</div>
-      <div class="uth-sub">Most AI visibility tools just count web mentions. We go further.</div>
-      <div class="uth-grid">
-        <div class="uth-card">
-          <span class="uth-card-icon">🎯</span>
-          <div class="uth-card-title">We Ask AI Directly</div>
-          <div class="uth-card-desc">We literally ask <strong>ChatGPT</strong> and <strong>Perplexity</strong>: <em>"Do you know this product? Would you recommend it?"</em> — not web scraping. You see what real users see when they ask AI.</div>
-        </div>
-        <div class="uth-card">
-          <span class="uth-card-icon">⚡</span>
-          <div class="uth-card-title">Real-Time Web Data</div>
-          <div class="uth-card-desc">We scan the <strong>live web right now</strong> — not cached results from weeks ago. Your score reflects what AI knows about you <strong>today</strong>, not what it learned last month.</div>
-        </div>
-        <div class="uth-card">
-          <span class="uth-card-icon">🔍</span>
-          <div class="uth-card-title">Transparent 5-Dimension Breakdown</div>
-          <div class="uth-card-desc">No mystery numbers. See exactly <strong>where each point comes from</strong>: Web Presence, Source Authority, Recommendation Signals, Community Validation, Competitive Context.</div>
-        </div>
-        <div class="uth-card">
-          <span class="uth-card-icon">🔒</span>
-          <div class="uth-card-title">Same Input = Same Score</div>
-          <div class="uth-card-desc">Our scoring is <strong>100% deterministic</strong>. Check twice, get the same result. No randomness. No AI hallucination in the score itself.</div>
-        </div>
-      </div>
-      <a href="/methodology" class="uth-link">Read our full scoring methodology →</a>
     </div>
 
     <!-- DEMO RESULT -->
@@ -1741,56 +1772,54 @@
         <button class="demo-tab" onclick="showDemo(2)">A New Product</button>
       </div>
 
-      <!-- Panel 0: pickedby.ai -->
+      <!-- Panel 0: pickedby.ai (실측 2026-04-25: 55점) -->
       <div class="demo-panel active" id="demoPanel0">
         <div class="demo-score-row">
-          <div class="demo-score-big" style="color:var(--red);">12</div>
+          <div class="demo-score-big" style="color:var(--orange);">55</div>
           <div class="demo-score-meta">
             <div class="demo-product-name">pickedby.ai <span style="font-weight:400;color:#555;font-size:0.78rem;">— our own product</span></div>
-            <div class="demo-verdict">AI has no idea this product exists.</div>
+            <div class="demo-verdict">AI knows us — but hasn't ranked us yet. We're climbing.</div>
           </div>
         </div>
         <div class="demo-dims">
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Web Presence<span class="demo-tip" data-tip="Get mentioned on directories, blogs, and tech sites. Each independent domain strengthens your signal.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:20%;background:var(--red);"></div></div><span class="demo-dim-pts">5 / 25</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Source Authority<span class="demo-tip" data-tip="Aim for coverage on high-authority sites like Product Hunt, G2, TechCrunch, or major tech blogs.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:10%;background:var(--red);"></div></div><span class="demo-dim-pts">2 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Recommendation Signals<span class="demo-tip" data-tip="Get listed in &quot;best tools&quot; roundups and earn explicit recommendations from reviewers.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:5%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Community Validation<span class="demo-tip" data-tip="Build presence on Reddit, Product Hunt, Indie Hackers. Genuine reviews and discussions matter most.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:25%;background:var(--orange);"></div></div><span class="demo-dim-pts">5 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Competitive Context<span class="demo-tip" data-tip="Create comparison content or get listed on AlternativeTo. &quot;vs&quot; articles boost this signal.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 15</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">⚠️</span><span class="demo-dim-name">Recognition<span class="demo-tip" data-tip="Reverse-ladder probe: T4 (never heard) → T3 (emerging) → T2 (known) → T1 (top-ranked). Each tier unlocks more points.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:71%;background:var(--orange);"></div></div><span class="demo-dim-pts">25 / 35</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Category Rank<span class="demo-tip" data-tip="Are you in AI's top-10 for your category? Rank 1 = 35 pts, Rank 10 = ~15 pts, unranked = 0 pts.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 35</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Co-Recommendation<span class="demo-tip" data-tip="How often AI mentions you alongside other tools. 8+ co-recs = 20 pts max.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">20 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Web Signals<span class="demo-tip" data-tip="Independent web mentions, domain diversity, recency. Scanned live via Tavily.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">10 / 10</span></div>
         </div>
         <div class="demo-probe">
           <div class="demo-probe-label">AI PROBE — DIRECT QUERY</div>
-          <div class="demo-probe-row"><span class="demo-probe-status unknown">UNKNOWN</span><span style="color:#888;">Perplexity has never heard of pickedby.ai</span></div>
-          <div class="demo-probe-row"><span class="demo-probe-status unknown">UNKNOWN</span><span style="color:#888;">GPT does not recognize this product</span></div>
+          <div class="demo-probe-row"><span class="demo-probe-status known">KNOWN</span><span style="color:#888;">Perplexity recognizes pickedby.ai as an AI visibility tool</span></div>
+          <div class="demo-probe-row"><span class="demo-probe-status" style="background:#555;color:#fff;padding:0.15rem 0.5rem;font-size:0.65rem;font-weight:700;">T2</span><span style="color:#888;">Emerging — not yet ranked #1 in category</span></div>
         </div>
         <div class="demo-cta">
-          <div class="demo-cta-text">Yes, <em>we scored 12 on our own tool.</em> We're documenting the journey to fix it.</div>
-          <a href="/blog/we-scored-12-on-our-own-tool/" style="color:var(--yellow);font-size:0.82rem;">Read the full story →</a>
+          <div class="demo-cta-text">We started at 12. <em>Now we're at 55 — and climbing.</em> Check where your product stands.</div>
+          <a href="/blog/we-scored-12-on-our-own-tool/" style="color:var(--yellow);font-size:0.82rem;">Read the full journey →</a>
         </div>
       </div>
 
-      <!-- Panel 1: Notion (real scan data — 70/100) -->
+      <!-- Panel 1: Notion (실측 2026-04-25: 87.5점) -->
       <div class="demo-panel" id="demoPanel1">
         <div class="demo-score-row">
-          <div class="demo-score-big" style="color:var(--green);">70</div>
+          <div class="demo-score-big" style="color:var(--green);">87.5</div>
           <div class="demo-score-meta">
             <div class="demo-product-name">Notion <span style="font-weight:400;color:#555;font-size:0.78rem;">— productivity tool</span></div>
-            <div class="demo-verdict">Strong AI presence, but room to grow.</div>
+            <div class="demo-verdict">AI consistently recommends Notion. T1 — top-ranked.</div>
           </div>
         </div>
         <div class="demo-dims">
-          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Web Presence<span class="demo-tip" data-tip="Get mentioned on directories, blogs, and tech sites. Each independent domain strengthens your signal.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">25 / 25</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Source Authority<span class="demo-tip" data-tip="Aim for coverage on high-authority sites like Product Hunt, G2, TechCrunch, or major tech blogs.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">20 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">⚠️</span><span class="demo-dim-name">Recommendation Signals<span class="demo-tip" data-tip="Get listed in &quot;best tools&quot; roundups and earn explicit recommendations from reviewers.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:35%;background:var(--yellow);"></div></div><span class="demo-dim-pts">7 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">⚠️</span><span class="demo-dim-name">Community Validation<span class="demo-tip" data-tip="Build presence on Reddit, Product Hunt, Indie Hackers. Genuine reviews and discussions matter most.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:35%;background:var(--yellow);"></div></div><span class="demo-dim-pts">7 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Competitive Context<span class="demo-tip" data-tip="Create comparison content or get listed on AlternativeTo. &quot;vs&quot; articles boost this signal.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:73%;background:var(--green);"></div></div><span class="demo-dim-pts">11 / 15</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Recognition<span class="demo-tip" data-tip="T1: AI names Notion unprompted as a leading tool. Full 35 pts.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">35 / 35</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">⚠️</span><span class="demo-dim-name">Category Rank<span class="demo-tip" data-tip="Notion ranks in top-10 for productivity, but not #1 in every sub-category — hence 25/35.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:71%;background:var(--yellow);"></div></div><span class="demo-dim-pts">25 / 35</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Co-Recommendation<span class="demo-tip" data-tip="AI frequently pairs Notion with other tools. 8+ co-recs = 20 pts max.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">20 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">⚠️</span><span class="demo-dim-name">Web Signals<span class="demo-tip" data-tip="Strong web presence, but recent signal freshness slightly below max.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:75%;background:var(--yellow);"></div></div><span class="demo-dim-pts">7.5 / 10</span></div>
         </div>
         <div class="demo-probe">
           <div class="demo-probe-label">AI PROBE — DIRECT QUERY</div>
-          <div class="demo-probe-row"><span class="demo-probe-status known">KNOWN</span><span style="color:#888;">Perplexity recommends Notion as a top productivity tool</span></div>
-          <div class="demo-probe-row"><span class="demo-probe-status known">KNOWN</span><span style="color:#888;">GPT recognizes Notion but doesn't always recommend it</span></div>
+          <div class="demo-probe-row"><span class="demo-probe-status known">KNOWN</span><span style="color:#888;">Perplexity names Notion as a top productivity tool unprompted</span></div>
+          <div class="demo-probe-row"><span class="demo-probe-status known">KNOWN</span><span style="color:#888;">Gemini confirms Notion in top-5 for workspace tools</span></div>
         </div>
         <div class="demo-cta">
-          <div class="demo-cta-text">Even Notion only scores <em>70 out of 100.</em> Where does your product stand?</div>
+          <div class="demo-cta-text">Notion scores <em>87.5 — nearly perfect.</em> Where does your product stand right now?</div>
           <button class="hero-cta" onclick="window.location.href='/dashboard.html'" style="font-size:0.45rem;padding:0.55rem 1rem;">CHECK MY SCORE FREE ▶▶</button>
         </div>
       </div>
@@ -1801,25 +1830,40 @@
           <div class="demo-score-big" style="color:var(--red);">0</div>
           <div class="demo-score-meta">
             <div class="demo-product-name">MyAwesomeTemplate <span style="font-weight:400;color:#555;font-size:0.78rem;">— a brand new product</span></div>
-            <div class="demo-verdict">AI has no idea this product exists.</div>
+            <div class="demo-verdict">Invisible. AI has never heard of this product.</div>
           </div>
         </div>
         <div class="demo-dims">
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Web Presence<span class="demo-tip" data-tip="Get mentioned on directories, blogs, and tech sites. Each independent domain strengthens your signal.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 25</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Source Authority<span class="demo-tip" data-tip="Aim for coverage on high-authority sites like Product Hunt, G2, TechCrunch, or major tech blogs.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Recommendation Signals<span class="demo-tip" data-tip="Get listed in &quot;best tools&quot; roundups and earn explicit recommendations from reviewers.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Community Validation<span class="demo-tip" data-tip="Build presence on Reddit, Product Hunt, Indie Hackers. Genuine reviews and discussions matter most.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Competitive Context<span class="demo-tip" data-tip="Create comparison content or get listed on AlternativeTo. &quot;vs&quot; articles boost this signal.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 15</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Recognition<span class="demo-tip" data-tip="T4: AI returns 'never heard of it' — zero signal detected. Start with public mentions.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 35</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Category Rank<span class="demo-tip" data-tip="Not in AI's top-10 for any category. Write clear product copy stating exactly what you do.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 35</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Co-Recommendation<span class="demo-tip" data-tip="No co-recs found. Get mentioned alongside similar tools in reviews and roundups.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
+          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Web Signals<span class="demo-tip" data-tip="No independent web mentions found. Submit to directories and get on curated lists.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 10</span></div>
         </div>
         <div class="demo-probe">
           <div class="demo-probe-label">AI PROBE — DIRECT QUERY</div>
-          <div class="demo-probe-row"><span class="demo-probe-status unknown">UNKNOWN</span><span style="color:#888;">Perplexity returns no results</span></div>
-          <div class="demo-probe-row"><span class="demo-probe-status unknown">UNKNOWN</span><span style="color:#888;">GPT has no knowledge of this product</span></div>
+          <div class="demo-probe-row"><span class="demo-probe-status unknown">UNKNOWN</span><span style="color:#888;">Perplexity: "I don't have information about this product"</span></div>
+          <div class="demo-probe-row"><span class="demo-probe-status unknown">UNKNOWN</span><span style="color:#888;">Gemini: no results — product not in training data</span></div>
         </div>
         <div class="demo-cta">
           <div class="demo-cta-text">Most new products start at <em>zero.</em> The question is — what are you doing about it?</div>
           <button class="hero-cta" onclick="window.location.href='/dashboard.html'" style="font-size:0.45rem;padding:0.55rem 1rem;">CHECK MY SCORE FREE ▶▶</button>
         </div>
+      </div>
+    </div>
+
+    <!-- NEWSLETTER — Shift 6: 리텐션 (D9a LAND-SHIFT-06) -->
+    <div class="newsletter-section fade-up">
+      <div class="newsletter-head">STAY AHEAD OF AI CHANGES</div>
+      <div class="newsletter-sub">AI rankings shift weekly. Get your product's pulse — free, no spam.</div>
+      <form class="newsletter-form" onsubmit="return nlSubmit(event)">
+        <input type="email" id="nl-email" placeholder="your@email.com" required autocomplete="email" />
+        <button type="submit">GET WEEKLY UPDATE ▶</button>
+      </form>
+      <div id="nl-confirm" style="display:none;color:var(--green);font-size:0.85rem;margin-top:0.75rem;text-align:center;">✅ You're in. First update hits your inbox within 7 days.</div>
+      <div class="newsletter-list">
+        <span>📊 Score changes when AI learns about your product</span>
+        <span>🏆 Category rank shifts — who's climbing, who's falling</span>
+        <span>💡 One actionable tip per week to climb the AI chart</span>
       </div>
     </div>
 
@@ -1846,15 +1890,20 @@
           What is the AI Visibility Score? <span class="faq-icon">+</span>
         </button>
         <div class="faq-a">
-          <p>It's a number from <strong>0 to 100</strong> that tells you how well AI systems "know" your product. It's calculated across 5 dimensions — each worth a different weight.</p>
+          <p>It's a number from <strong>0 to 100</strong> that tells you how well AI systems "know" your product. It's calculated across <strong>4 dimensions</strong>:</p>
+          <ul style="margin-top:0.5rem;">
+            <li><strong>Recognition</strong> (35 pts) — What tier does AI place your product? T1 (top) → T4 (unknown)</li>
+            <li><strong>Category Rank</strong> (35 pts) — Are you in AI's top-10 for your category?</li>
+            <li><strong>Co-Recommendation</strong> (20 pts) — How often AI mentions you alongside other tools</li>
+            <li><strong>Web Signals</strong> (10 pts) — Independent web mentions scanned live</li>
+          </ul>
           <div class="faq-badge-row" style="margin-top:0.75rem;">
-            <span class="faq-badge gold">75–100 · GOLD · PICKED BY AI</span>
-            <span class="faq-badge silver">50–74 · SILVER · SEEN BY AI</span>
-            <span class="faq-badge bronze">25–49 · BRONZE · NOTICED BY AI</span>
-            <span class="faq-badge none">0–24 · NO BADGE · Invisible</span>
+            <span class="faq-badge gold">75–100 · PERFECT · PICKED BY AI</span>
+            <span class="faq-badge silver">50–74 · STRONG · SEEN BY AI</span>
+            <span class="faq-badge bronze">25–49 · EMERGING · NOTICED BY AI</span>
+            <span class="faq-badge none">0–24 · INVISIBLE · Not on AI's radar</span>
           </div>
-          <p style="margin-top:0.75rem;">A score of <strong>100</strong> is the maximum — it means AI knows your product across every dimension. A score of <strong>0</strong> means AI has basically never heard of you.</p>
-          <p style="margin-top:0.5rem;">Example: Figma scores near the max. A brand-new unknown product scores 0.</p>
+          <p style="margin-top:0.75rem;">Example: Figma scores 95. Notion scores 87.5. A brand-new product scores 0.</p>
         </div>
       </div>
 
@@ -1864,17 +1913,14 @@
           Which AI systems do you check? <span class="faq-icon">+</span>
         </button>
         <div class="faq-a">
-          <p>Two layers working together:</p>
-          <p style="margin-top:0.5rem;"><strong>Layer 1 — Real-time web scan</strong> across 5 dimensions:</p>
-          <ul>
-            <li><strong>Web Presence</strong> (25 pts) — how many third-party sites mention your product by name?</li>
-            <li><strong>Source Authority</strong> (20 pts) — are you mentioned on high-authority sites (TechCrunch, G2, etc.)?</li>
-            <li><strong>Recommendation Signals</strong> (20 pts) — are you featured in "best of" or "top picks" lists?</li>
-            <li><strong>Community Validation</strong> (20 pts) — do you have presence on Reddit, Product Hunt, Indie Hackers?</li>
-            <li><strong>Competitive Context</strong> (15 pts) — do you appear in "vs" or "alternatives to" articles?</li>
+          <p>We directly probe AI engines using a <strong>reverse-ladder pipeline</strong> (T4→T1) and run a live web scan. The score comes from 4 dimensions:</p>
+          <ul style="margin-top:0.5rem;">
+            <li><strong>Recognition</strong> (35 pts) — We ask Perplexity &amp; Gemini "Do you know this product?" and classify T4 (unknown) → T3 (emerging) → T2 (known) → T1 (top-ranked)</li>
+            <li><strong>Category Rank</strong> (35 pts) — "Top 10 tools for [category]?" — are you on the list, and where?</li>
+            <li><strong>Co-Recommendation</strong> (20 pts) — How many other tools AI mentions alongside yours</li>
+            <li><strong>Web Signals</strong> (10 pts) — Live scan of independent web mentions via Tavily</li>
           </ul>
-          <p style="margin-top:0.75rem;"><strong>Layer 2 — Direct AI Probe</strong></p>
-          <p>We query <strong>Perplexity</strong> and <strong>GPT</strong> directly to check if they actually know and recommend your product right now. This tells you what real users see when they ask AI about your category.</p>
+          <p style="margin-top:0.75rem;">Recognition + Category dominate the score (70 pts combined) because that's where AI's actual recommendation decisions happen.</p>
         </div>
       </div>
 
@@ -1896,15 +1942,14 @@
           How does the score actually get calculated? <span class="faq-icon">+</span>
         </button>
         <div class="faq-a">
-          <p>We run your product through <strong>5 dimensions</strong> that reflect how AI systems actually discover and recommend products:</p>
+          <p>We run your product through <strong>4 dimensions</strong> — each maps to how AI engines actually discover and recommend products:</p>
           <ul>
-            <li><strong>Web Presence</strong> (25 pts) — How many third-party domains mention your product by name?</li>
-            <li><strong>Source Authority</strong> (20 pts) — Are high-authority sites (TechCrunch, G2, etc.) talking about you?</li>
-            <li><strong>Recommendation Signals</strong> (20 pts) — Are you featured in "best of" or "top picks" lists?</li>
-            <li><strong>Community Validation</strong> (20 pts) — Do you have presence on Product Hunt, Reddit, G2?</li>
-            <li><strong>Competitive Context</strong> (15 pts) — Have you appeared in "vs" or "alternatives to" articles?</li>
+            <li><strong>Recognition</strong> (35 pts) — Tier detection: T4 (invisible) / T3 (emerging) / T2 (known) / T1 (top-ranked)</li>
+            <li><strong>Category Rank</strong> (35 pts) — "Best [category] tools" — are you in AI's top-10, and what rank?</li>
+            <li><strong>Co-Recommendation</strong> (20 pts) — How many tools AI mentions alongside yours (max 8+)</li>
+            <li><strong>Web Signals</strong> (10 pts) — Live Tavily scan: domain diversity, recency, mention count</li>
           </ul>
-          <p style="margin-top:0.5rem;">Total possible: <strong>100 points.</strong> On top of this, we directly query Perplexity and GPT to verify if AI actually recognizes your product. The full methodology is in our <a href="/methodology/" style="color:var(--yellow);">blog post</a>.</p>
+          <p style="margin-top:0.5rem;">Total: <strong>100 points. sum(dims) always equals finalScore</strong> — mathematically guaranteed. Full methodology: <a href="/methodology/" style="color:var(--yellow);">pickedby.ai/methodology/</a></p>
         </div>
       </div>
 
@@ -1990,16 +2035,15 @@
           Who is pickedby.ai for? <span class="faq-icon">+</span>
         </button>
         <div class="faq-a">
-          <p>We built this specifically for <strong>digital product creators</strong>:</p>
-          <ul>
-            <li>Gumroad sellers (templates, ebooks, courses, presets)</li>
-            <li>Notion / Airtable template creators</li>
-            <li>Etsy digital download sellers</li>
-            <li>LemonSqueezy / Payhip / Ko-fi creators</li>
-            <li>Independent SaaS tools and micro-apps</li>
+          <p><strong>Any product or brand that wants to know if AI recommends them.</strong></p>
+          <ul style="margin-top:0.5rem;">
+            <li>SaaS products — are you in AI's top-10 for your category?</li>
+            <li>Digital creators — do AI assistants mention your templates, courses, tools?</li>
+            <li>D2C brands — does ChatGPT recommend your product when buyers ask?</li>
+            <li>Agencies — benchmark clients vs. competitors across AI engines</li>
+            <li>Anyone launching something new — establish your AI baseline from day one</li>
           </ul>
-          <p style="margin-top:0.5rem;">If you sell a <strong>digital product</strong> and want to know if AI is sending you buyers — this is for you.</p>
-          <p style="margin-top:0.5rem;">(Starting with creators. Our roadmap extends to indie SaaS, D2C brands, and every online seller.)</p>
+          <p style="margin-top:0.5rem;">If AI is part of how your customers discover products, <strong>you need to know your score.</strong></p>
         </div>
       </div>
 
@@ -2111,6 +2155,23 @@
     let _score   = 0;
     let _product = '';
     let _results = [];
+
+    // ── Newsletter ─────────────────────────────────────────
+    function nlSubmit(e) {
+      e.preventDefault()
+      const email = document.getElementById('nl-email')?.value?.trim()
+      if (!email) return false
+      const confirm = document.getElementById('nl-confirm')
+      // fire-and-forget to /v1/subscribe (graceful fail)
+      fetch('https://api.pickedby.ai/v1/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, source: 'landing_newsletter' })
+      }).catch(() => {})
+      if (confirm) { confirm.style.display = 'block' }
+      e.target.reset()
+      return false
+    }
 
     // ── Demo tabs ─────────────────────────────────────────
     function showDemo(idx) {
