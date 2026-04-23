@@ -344,6 +344,14 @@ body.shell-on .shell-scrim.open { display: block; }
   .shell-menu-btn { display: inline-flex; }
 }
 
+/* ======= TOPBAR MOBILE (≤480px) ======= */
+@media (max-width: 480px) {
+  .shell-crumbs { display: none; }
+  #shell-domain-picker { margin-left: 0.25rem; }
+  #shell-domain-btn { max-width: 140px; }
+  #shell-domain-label { overflow: hidden; text-overflow: ellipsis; max-width: 110px; }
+}
+
 /* ========= DATA PANES (SPA 내부 라우팅) ========= */
 [data-pane] { display: none; }
 [data-pane].active { display: block; }

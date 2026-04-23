@@ -18,8 +18,8 @@
 ✅ D8 RIVALS-01 + GT-01 실측 (04-25)
 ✅ D9a 랜딩 리뉴얼 1차 (04-26)
 ✅ D9b LAND-TURNSTILE + /changelog.html (04-27)
-🔄 D10 모바일 (04-28) ← 다음
-🔴 D11 DEPLOY-GATE-01 + CEO 검증 → 프로덕션 (04-29)
+✅ D10 모바일 (04-28)
+🔴 D11 DEPLOY-GATE-01 + CEO 검증 → 프로덕션 (04-29) ← 다음
 ```
 
 ---
@@ -105,7 +105,7 @@
 
 | 환경 | API | FE |
 |------|------|----|
-| 스테이징 | `3ae2095c` (D9b Turnstile) | `51f461a3` (D9b changelog+Turnstile FE) |
+| 스테이징 | `3ae2095c` (D9b Turnstile) | `ba1654ca` (D10 모바일 반응형) |
 | 프로덕션 | `1e52e42b` (TAVILY-CRON-LITE-01 선반영) | 변경 없음 |
 
 ---

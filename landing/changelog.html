@@ -54,6 +54,12 @@
       text-decoration: none; box-shadow: 0 0 12px rgba(255,215,0,0.35);
     }
     .nav-links .btn-dash:hover { background: #ffe44d; color: #000; }
+    .nav-burger { display: none; background: none; border: none; color: var(--text); font-size: 1.4rem; cursor: pointer; padding: 0.25rem 0.5rem; line-height: 1; }
+    .nav-mobile { display: none; flex-direction: column; border-bottom: 1px solid var(--border); background: var(--bg); }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a { padding: 0.85rem 1.25rem; color: #888; text-decoration: none; font-size: 0.9rem; border-top: 1px solid var(--border); }
+    .nav-mobile a:hover { color: var(--text); background: #111; }
+    .nav-mobile a.btn-dash-m { color: var(--yellow); font-weight: 700; }
 
     /* HERO */
     .cl-hero {
@@ -107,7 +113,7 @@
     .cl-content {}
     .cl-version {
       font-family: 'Press Start 2P', monospace; font-size: 0.38rem;
-      color: #444; letter-spacing: 0.1em; margin-bottom: 0.4rem;
+      color: var(--muted); letter-spacing: 0.1em; margin-bottom: 0.4rem;
     }
     .cl-entry-title {
       font-size: 1.05rem; font-weight: 600; color: var(--text);
@@ -127,7 +133,7 @@
     }
     .cl-bullets li strong { color: var(--text); }
     .cl-note {
-      margin-top: 0.75rem; font-size: 0.78rem; color: #555;
+      margin-top: 0.75rem; font-size: 0.78rem; color: var(--muted);
       font-style: italic; line-height: 1.5;
     }
 
@@ -163,12 +169,18 @@
 
     /* MOBILE */
     @media (max-width: 580px) {
-      .nav { padding: 1rem; }
+      .nav { padding: 0.85rem 1rem; }
+      .nav-links > a, .nav-links > div { display: none !important; }
+      .nav-burger { display: block; }
       .cl-hero, .cl-feed, .cl-cta { padding-left: 1rem; padding-right: 1rem; }
+      .cl-hero { padding-top: 2rem; }
       .cl-entry { grid-template-columns: 1fr; gap: 0.5rem; }
       .cl-date-col { display: flex; align-items: center; gap: 0.75rem; }
       .cl-tag { margin-top: 0; }
       .cl-title { font-size: 0.85rem; }
+      .cl-cta-form { flex-direction: column; }
+      .cl-cta-form input { width: 100%; }
+      .cl-cta-form button { width: 100%; }
     }
   </style>
 </head>
@@ -185,8 +197,16 @@
     <a href="/methodology/">How We Score</a>
     <a href="/dashboard.html" class="btn-dash">Dashboard</a>
   </div>
+  <button class="nav-burger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">&#9776;</button>
 </nav>
+<div class="nav-mobile">
+  <a href="/blog/">Blog</a>
+  <a href="/methodology/">How We Score</a>
+  <a href="/dashboard.html" class="btn-dash-m">Dashboard →</a>
+</div>
 
+<!-- MAIN CONTENT -->
+<main>
 <!-- HERO -->
 <div class="cl-hero">
   <div class="cl-eyebrow">▶ PRODUCT UPDATES</div>
@@ -393,6 +413,7 @@
     <div id="cl-confirm">✅ You're in. First update arrives within 7 days.</div>
   </div>
 </div>
+</main>
 
 <script>
 function clSubmit(e) {
