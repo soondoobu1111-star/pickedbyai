@@ -1,5 +1,5 @@
 # pickedby.ai White Paper
-> **버전:** 1.3 | **작성일:** 2026-04-07 | **최종 갱신:** 2026-04-21 (🔴 범위 확장: 제품→제품+콘텐츠 · 🔴 5대 AI 커버 포지셔닝 확정 · 빅파이 1.5 4차원 스코어 반영)
+> **버전:** 1.4 | **작성일:** 2026-04-07 | **최종 갱신:** 2026-04-23 (빅파이 1.5.1 Volume Metrics · probe_logs Moat · DEPLOY-GATE-01 현황 · 로드맵 D7~D11 반영)
 > **갱신 주기:** 매 Phase 전환 시 + 전략적 피벗 시
 > **목적:** 사업 방향성의 단일 진실 소스. 왜 이 사업을 하는가, 어디로 가는가, 어떻게 방어하는가.
 
@@ -369,24 +369,41 @@ AI 답변은 확률적 → 절대값보다 추세(trend) 강조
 
 ## 9. 기술 방향
 
-### 현재 (Phase 1.5, ENGINE-04 가동 중)
+### 현재 (Phase 1.5, ENGINE-07 UnifiedScore 가동 중)
 ```
-Tavily 웹검색 → 패턴매칭 → 100% 결정적 점수
-월 비용: ~$0 (CF Workers 무료 티어)
+Tavily 웹검색(1~3쿼리) + Gemini Relay + Perplexity API → 4차원 단일 점수
+월 비용: ~$10 (Perplexity $10 · Tavily 기존 예산 · Gemini Relay 무료)
 ```
 
-**스코어 구조 (ENGINE-04 → ENGINE-05 전환 예정)**
+**스코어 구조 — ENGINE-07 UnifiedScore (빅파이 1.5, 2026-04-17 CEO 확정)**
 ```
-ENGINE-04 (현재):
-  direct(20) + best-of(20) + category(12) + reviews(20) + comparison(10) = max 82
-  등급: Gold ≥66 / Silver ≥50 / Bronze ≥30
+4차원 단일 체계 (수학적 일관성 보장: sum == final):
+  Direct Recognition  35점 — Gemini+Perplexity "Know & Recommend" 이분법
+  Category Ranking    35점 — "best {category}" 쿼리 Top-10 등장 + 순위
+  Co-Recommendation   20점 — probe_logs 누적 파싱 + 연결 제품 수
+  Web Authority Proxy 10점 — Tavily Tier-1/2 citation (SEO→AI 전환 지표)
+  ─────────────────────────────────────────────
+  합계                100점 (수학적 보장)
 
-ENGINE-05 (2026-04-08 설계 완료, 구현 예정):
-  Web Presence(25) + Source Authority(20) + Recommendations(20)
-  + Community(20) + Competitive Context(15) = max 100
-  등급: Gold ≥75 / Silver ≥50 / Bronze ≥25
+Pass Indicator (보조):
+  🏆 PERFECT: signal 4+ AND score ≥60
+  🟢 STRONG:  signal 2+ AND score ≥35
+  🟡 EMERGING: signal 1+ AND score ≥15
+  🔴 INVISIBLE: 나머지
 
-  핵심 변경: 다중 쿼리 3회, 소스 Tier 등급, 자기참조 차단, 그라데이션 점수
+Tavily 크레딧 관리 (TAVILY-CRON-LITE-01, 2026-04-23):
+  cron 자동 경로: 1쿼리/제품 (크레딧 보호)
+  manual /v1/check: 3쿼리/제품 (UX 우선)
+```
+
+**Volume Metrics — 빅파이 1.5.1 (2026-04-22 추가)**
+```
+probe_logs 테이블 기반 7지표 누적 (추가 비용 $0):
+  mentions · recognition_rate · category_hits · citation_count
+  source_diversity · corec_degree · total_probes
+
+→ Score(상대) + Volume(절대) 이원 진단 = GSC impression+CTR 구조
+→ Moat 핵심: probe_logs 누적 데이터는 복제 불가 자산
 ```
 
 **AI Probe — 5대 AI 전체 커버 (2026-04-21 CEO 확정 포지셔닝)**
@@ -499,15 +516,19 @@ AI Probe = ground truth 보조 (프록시가 아닌 직접 확인)
 
 | 시기 | 마일스톤 | Moat 기여 |
 |------|---------|-----------|
-| **2026-04 W2** | Product Hunt 런칭 (4/14) + ✅ llms.txt 출시 완료 (Tools 탭 인라인) | 브랜드 인지 |
-| **2026-04 W2** | ✅ BLOG-SEO Wave 1 완료 (4개 포스트, 6,400단어, 48개 키워드) | SEO 트래픽 기반 |
-| **2026-04 W3~4** | Score Tracker (주간 자동체크 + 추이 차트) + BLOG-SEO Wave 2 | Layer 1: 시계열 Lock-in |
-| **2026-05** | Creator $19 유료 플랜 공개 + Paddle 결제 | 수익 시작 |
-| **2026-06** | SDK v0.1 (dynamic badge + impression) | Layer 2: 코드 임베딩 |
+| **2026-04 W1~2** | ✅ 빅파이 1.5 ENGINE-07 + 4차원 스코어 안정화 | 측정 신뢰성 |
+| **2026-04 W2** | ✅ BLOG-SEO 블로그 18편 + IH/Reddit 런칭 | SEO 트래픽 기반 |
+| **2026-04 W2~3** | ✅ D1~D6 Trend·Journey·Volume·Overview 12FULL 구현 | Layer 1: 시계열 Lock-in |
+| **2026-04-29** | D11 DEPLOY-GATE-01 + CEO 검증 → **프로덕션 배포** 🔴 | 제품 완성도 |
+| **2026-05** | BLOG-SEO Wave 2 + Founding Creator 100 베타 오픈 | 수익 시작 |
+| **2026-05-15** | 모두의 창업 지원서 마감 | 외부 검증 |
+| **2026-05** | 빅파이 1.5.2 Sources 스프린트 (sitemap/rss/robots/llms 풀셋) | 처방 완성도 |
+| **2026-06** | Creator $19 + Paddle 결제 공개 | 수익화 정식 |
+| **2026-06~07** | SDK v0.1 (dynamic badge + impression) | Layer 2: 코드 임베딩 |
 | **2026-07** | Agency $99 화이트라벨 + 경쟁사 비교 | 시장 래더 3단계 |
 | **2026-08** | SDK v0.2 (클릭 추적 + 전환 correlation) | 데이터 Moat 시작 |
 | **2026-09** | 카테고리 벤치마크 리포트 v1 | Layer 3: Creator Graph |
-| **2026-10** | 직접 AI API 쿼리 (ChatGPT/Claude/Perplexity) | 제품 완성도 |
+| **2026-10** | 빅파이 2.0 정식 릴리스 (5대 AI 전체 가동) | 제품 완성도 |
 | **2026-12** | 시드 펀딩 준비 or 수익성 달성 | 생존 확정 |
 
 ---

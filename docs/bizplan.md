@@ -1,5 +1,5 @@
 # pickedby.ai (PBA) 사업계획서
-> 최종 업데이트: 2026-04-21 (🔴 범위 확장: 제품 → 제품+콘텐츠. CEO 최종 확정) | 기반: pickedby_ai_full_report.json + whitepaper.md + vision-brief-v2.md
+> 최종 업데이트: **2026-04-23** (빅파이 1.5.1 Volume Metrics 반영 · Founding Creator 100 베타 · DEPLOY-GATE-01 현황 · X 채널 영구 포기 반영) | 기반: pickedby_ai_full_report.json + whitepaper.md + vision-brief-v2.md
 > **전략 상위 문서**: `pickedbyAI/docs/whitepaper.md` (Moat 전략, 시장 래더, 가설 검증 포함)
 > **비전 진실 소스**: `pickedbyAI/docs/vision-brief-v2.md` (v2.0 — Google Stack 비전)
 
@@ -40,7 +40,8 @@ GPT · Gemini · Claude · Grok · Perplexity 등 주요 AI가 쇼핑·콘텐츠
 3. **배지**: Pass Indicator (🏆 PERFECT / 🟢 STRONG / 🟡 EMERGING / 🔴 INVISIBLE) + Gold/Silver/Bronze 배지 발급
 4. **일일 자동 측정**: cron KST 00:00 자동 실행 → Daily Pulse 카드 + Movement Feed
 5. **원클릭 처방**: llms.txt 자동 생성, 4개 Sources 풀셋 진단 (sitemap/rss/robots/llms — 빅파이 1.5.2)
-6. **알림**: 내 제품·콘텐츠가 AI에서 언급되면 이메일 알림 (Phase 2)
+6. **Volume Metrics (빅파이 1.5.1)**: probe_logs 기반 7지표 누적 (멘션 횟수·인식률·카테고리 등장 횟수·인용 사이트 수·소스 다양성·CoRec 연결도·총 probe 횟수) — 점수(상대)와 볼륨(절대) 이원 진단
+7. **알림**: 내 제품·콘텐츠가 AI에서 언급되면 이메일 알림 (Phase 2)
 
 ---
 
@@ -96,14 +97,17 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 
 ## 7. 수익 모델
 
-| 플랜 | 가격 | 핵심 기능 | 전환 포인트 |
-|------|------|-----------|-----------|
-| Free | $0 | 1회 체크, 배지 | 즉각 Aha moment |
-| Creator | $19/월 | 무제한 체크, 추이 차트, llms.txt, 주간 리포트 | "추이가 보고 싶다" |
-| Pro | $49/월 | 경쟁사 추적, API, 다국어 최적화 | "경쟁사보다 앞서고 싶다" |
-| Agency | $99+/월 | 화이트라벨 리포트, 10 클라이언트 관리 | "이걸 고객에게 팔고 싶다" |
+| 플랜 | 가격 | 핵심 기능 | AI 커버 | 전환 포인트 |
+|------|------|-----------|---------|-----------|
+| **Founding Creator 100** | **$9/월 (평생)** | Creator 전체 기능 | 2엔진 | 선착순 100명 베타 — 모두의 창업 "초기 유료 유저" 근거 |
+| Free | $0 | 1회 체크, 배지 | 2엔진(Gemini+Perplexity) | 즉각 Aha moment |
+| Creator | $19/월 | 무제한 체크, 추이 차트, Volume Metrics, llms.txt, 주간 리포트 | 2엔진 | "추이가 보고 싶다" |
+| Pro | $49/월 | **5대 AI 전체**, 경쟁사 추적, API, 다국어 최적화 | **5대 AI 전체** | "경쟁사보다 앞서고 싶다" |
+| Agency | $99+/월 | 화이트라벨 리포트, 10 클라이언트 관리 | **5대 AI 전체** | "이걸 고객에게 팔고 싶다" |
 
-**전략**: 지금은 돈보다 선점. 무료로 깔고, 유료는 가치 증명 후.
+> 🔴 **AI 티어 분리 원칙 (2026-04-21 확정)**: 무료·Creator = 2엔진(Gemini+Perplexity). Pro·Agency = 5대 AI 전체(+GPT·Claude·Grok). 외부 카피는 항상 "5대 AI 커버" 표기.
+
+**전략**: 지금은 돈보다 선점. 무료로 깔고, Founding Creator 100으로 결제 의향 데이터 수집.
 **유료 전환 핵심 후크**: llms.txt 자동생성 + 점수 추이 차트 + 경쟁사 비교
 **결제 인프라**: Paddle (Phase 2, PAY-PB-01 — 글로벌 크리에이터 타겟에 최적. K-사주 DodoPay UPI와 별도)
 
@@ -117,22 +121,28 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 - 무료 AI Visibility Score 배포 ✅
 - 배지 시스템 V2-C (Gold/Silver/Bronze) ✅
 - Reddit r/SideProject 런칭 → 5.3K 뷰 (2026-04-06) ✅
-- ENGINE-05 AI Probe (Perplexity+GPT+Gemini) 배포 (2026-04-10) ✅
-- MLP-Slim: 5차원 분해 UI + 모멘텀 배지 + 추이 차트 배포 (2026-04-10) ✅
-- BLOG-SEO Wave 1: 4개 포스트 배포 (2026-04-08) ✅
-- ~~@pickedbyAI Twitter/X 개설~~ → **🔴 2026-04-14 영구 정지** (포스트모텀: `docs/outputs/postmortem_20260414_x_suspension.md`)
+- ENGINE-05 AI Probe (Perplexity+Gemini) 배포 (2026-04-10) ✅
+- MLP-Slim: 4차원 분해 UI + Pass Indicator + Trend/Journey/Volume/Overview 12FULL 배포 ✅
+- BLOG-SEO Wave 1: 블로그 18편 배포 ✅
+- ~~@pickedbyAI Twitter/X~~ → **🔴 2026-04-14 영구 정지 · 2026-04-21 항소 포기 (CEO 최종 결정)**
+- ~~X 채널~~ → **🔴 영구 포기. 신규계정·우회 모두 금지**
 - **LinkedIn 채널 전환 결정** (주력 SNS를 X → LinkedIn으로 변경)
+- IH 포스팅 ✅ / Reddit r/ChatGPT ✅ / Reddit 인터셉트 댓글 진행 중
 
-### Phase 1.5 (지금): 마케팅 런칭 ← 현재 단계
-- **이메일 50개 확보** → Product Hunt 런치 트리거 (현재 0개)
-  - Product Hunt 출시: 이메일 50개 달성 후 (CPO 의견: 4월 마지막 주 앞당기기 권고)
-- Hero 카피 변경 검토: "AI Visibility Score" → "Does ChatGPT recommend your product?"
-- CEO 개인 X DM 아웃리치 30명 (Gumroad/Etsy 셀러 대상)
-- Reddit: r/Etsy, r/EtsySellers, r/gumroad (타겟 유저 직접 접근)
-- Indie Hackers 빌딩 인 퍼블릭
-- AlternativeTo 등록 (2026-04-20 이후, 계정 7일 대기)
-- GEO 디렉토리 등록: Futurepedia/TAAFT/toolify
-- 목표: 이메일 1,000개
+### Phase 1.5 (지금): 빅파이 1.5 스프린트 + 마케팅 준비 ← **현재 단계**
+
+**🔴 마케팅 재개 조건 (DEPLOY-GATE-01 통과 전까지 대기):**
+- GT-01: T1 3/3 제품 점수 80+ 실측 (04-25 예정)
+- DEPLOY-GATE-01 13개 기준 전수 통과
+- CEO 직접 3개 제품 검증
+
+**DEPLOY-GATE-01 이후 재개:**
+- **이메일 목표 1,000개** → Product Hunt 런치 게이트 (100개 달성 후)
+- LinkedIn Day 17 포스트 게시 (준비 완료, D11 후 CEO 게시)
+- Reddit 카르마 빌딩 (현재 59 → 목표 200+)
+- r/SideProject 모드 승인 대기
+- 셀럽 DM 5건 (Marc Lou, Easlo, Tony Dinh, Arvid Kahl, Pat Walls)
+- AlternativeTo 등록 / GEO 디렉토리 등록
 
 ### Phase 2 (1-3개월): 핵심 제품 확장 + Moat Layer 1
 - **MOAT-01 Score Tracker**: 주간 자동 체크 + 추이 차트 (시계열 Lock-in)
@@ -173,14 +183,21 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 |--------|------|------|
 | FE | 정적 HTML + Tailwind CDN | CF Pages 무료 |
 | BE | TypeScript + Hono + CF Workers | perceptdot 스택 재활용 |
-| DB | Supabase PostgreSQL | 이메일/스코어/히스토리 저장, 무료 티어 |
-| AI (ENGINE-04) | CF Workers AI (llama-3.2-3b) + Tavily 웹검색 | 패턴매칭, ~4초 |
-| AI Probe (ENGINE-05 → ENGINE-07 UnifiedScore) | **5대 AI(GPT·Gemini·Claude·Grok·Perplexity) 전체 커버 (베타 2엔진 Gemini+Perplexity 가동, 정식 v2.0에서 +GPT·Claude·Grok)** | 베타 2엔진 무료 운영, 정식 5대 유료 |
+| DB | Supabase PostgreSQL | `emails` + `scores` + `probe_logs` 테이블 |
+| 웹검색 | Tavily API | cron lite 1쿼리 / manual 3쿼리. Researcher Plan 1,000 크레딧/월 |
+| AI 스코어 (ENGINE-07) | CF Workers AI (llama-3.1-8b) + Tavily | 4차원 단일 체계, 결정적(temp=0) |
+| AI Probe | Gemini Relay (무료) + Perplexity API ($10/월) | 베타 2엔진. 정식 v2.0 + GPT·Claude·Grok |
+| Volume Metrics | probe_logs 집계 (추가 비용 $0) | 7지표 누적 체계 (빅파이 1.5.1) |
 | 이메일 | Brevo | 무료 300통/일 |
 | 결제 | Paddle | Phase 2 (PAY-PB-01). 글로벌 크리에이터 타겟 |
-| 배포 | CF Pages + CF Workers | pickedby.ai / api.pickedby.ai |
+| 배포 | CF Pages + CF Workers | pickedby.ai / api.pickedby.ai / Relay Worker |
 
-**월 운영비**: Phase 1 ~$0, Phase 1.5 ~$5 (Perplexity/GPT API), Phase 2 ~$55
+**DB 테이블 현황**:
+- `emails`: 이메일 수집 (Google OAuth 연동)
+- `scores`: 4차원 unified_v15 JSONB + Pass Indicator (KST 00:01 cron 자동 갱신)
+- `probe_logs`: Probe 실행 로그 (AI별 응답·인식률·코렉·소스 누적 — Volume Metrics 원천)
+
+**월 운영비**: Phase 1 ~$0, Phase 1.5 ~$10 (Perplexity $10 + Tavily 기존 예산), Phase 2 ~$55
 
 ---
 
@@ -223,23 +240,32 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 | 날짜 | 마일스톤 | 상태 |
 |------|---------|------|
 | 2026-04-05 | pickedby.ai 도메인 구매 ($160/2년, Cloudflare) | ✅ |
-| 2026-04-05 | HTTPS 라이브 + E2E 정상 (Notion Planner 10점, ChatGPT 53점) | ✅ |
-| 2026-04-05 | Supabase 이메일 수집 DB 연동 | ✅ |
-| 2026-04-06 | API 안정화 (Gemini → CF Workers AI, 4초) | ✅ |
+| 2026-04-05 | HTTPS 라이브 + E2E 정상 | ✅ |
 | 2026-04-06 | 배지 시스템 V2-C (Gold/Silver/Bronze) 구현 | ✅ |
 | 2026-04-06 | Reddit r/SideProject 런치 → 5.3K 뷰 | ✅ |
-| 2026-04-08 | BLOG-SEO Wave 1: 4개 포스트 + 사이트맵 배포 | ✅ |
-| 2026-04-10 | ENGINE-05 AI Probe (Perplexity+GPT+Gemini) 프로덕션 배포 | ✅ |
-| 2026-04-10 | MLP-Slim: 5차원 분해 UI + 모멘텀 배지 + 추이 차트 배포 | ✅ |
-| 2026-04-10 | SETTINGS-01: 설정 모달 (마케팅토글/CSV/계정탈퇴) 배포 | ✅ |
-| 2026-04-14 | @pickedbyAI X 계정 자동화 정책 위반으로 영구 정지 | 🔴 |
-| 2026-04-14 | LinkedIn SNS 채널 전환 결정 | ✅ |
-| 2026-04-17 | X 이의제기 2차 재시도 (웹 폼) | 예정 |
-| 2026-04-20+ | AlternativeTo 등록 (계정 7일 대기) | 예정 |
-| TBD | Product Hunt 출시 (이메일 50개 달성 후) | 대기 |
-| 2026-05-15 | 모두의 창업 지원서 제출 (마감) | 예정 |
-| 2026-05-31 | 이메일 1,000개 목표 | 예정 |
-| 2026-07-01 | Phase 2 유료 전환 (Paddle), MRR $1,900 목표 | 예정 |
+| 2026-04-08 | BLOG-SEO Wave 1: 4개 포스트 배포 | ✅ |
+| 2026-04-10 | ENGINE-07 UnifiedScore AI Probe (Perplexity+Gemini) 배포 | ✅ |
+| 2026-04-14 | @pickedbyAI X 계정 영구 정지 (자동화 정책 위반) | 🔴 |
+| 2026-04-14 | IH 포스팅 + Reddit r/ChatGPT 런칭 | ✅ |
+| 2026-04-17 | 빅파이 1.5 설계 (4차원 단일 체계) CEO 승인 | ✅ |
+| 2026-04-18 | D1 DB 마이그레이션 + D2 온보딩·자동체크·5회재시도 | ✅ |
+| 2026-04-21 | D3 도메인 드롭다운 + D5 Overview 12섹션 풀셋 | ✅ |
+| 2026-04-21 | CEO 범위 확장 확정 (제품→제품+콘텐츠) + 5대 AI 커버 포지셔닝 | ✅ |
+| 2026-04-21 | X 채널 영구 포기 (항소·신규계정·우회 모두 금지) | ✅ (CEO 최종) |
+| 2026-04-21 | 모두의 창업 지원서 초안 완성 | ✅ |
+| 2026-04-22 | D6 Trend+Journey+Volume 풀셋 구현 (빅파이 1.5.1) | ✅ |
+| 2026-04-23 | TAVILY-CRON-LITE-01 프로덕션 예외 선반영 (크레딧 보호) | ✅ |
+| **스테이징** | **API `4fc2f190` · FE `e61011c3`** | **현재** |
+| **프로덕션** | **API `1e52e42b` · FE 변경 없음** | **현재** |
+| 2026-04-24 | D7 PROBE-REDESIGN-01 | 예정 |
+| 2026-04-25 | D8 Rivals + GT-01 실측 | 예정 |
+| 2026-04-26~27 | D9 랜딩 리뉴얼 | 예정 |
+| 2026-04-28 | D10 모바일 | 예정 |
+| 2026-04-29 | D11 DEPLOY-GATE-01 + CEO 검증 → **프로덕션 배포 🔴** | 예정 |
+| 2026-05-15 | 모두의 창업 지원서 제출 마감 | 예정 |
+| 2026-05-31 | 이메일 1,000개 목표 / Product Hunt 런칭 (100개 달성 후) | 예정 |
+| 2026-06-01 | Founding Creator 100 베타 + Paddle 결제 오픈 | 예정 |
+| 2026-07-01 | Phase 2 유료 전환, MRR $1,900 목표 | 예정 |
 
 ---
 

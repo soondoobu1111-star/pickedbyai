@@ -1,6 +1,7 @@
 # 빅파이 1.5 — pickedby.ai 제품 전략 마스터 문서
-> 작성일: 2026-04-17 | 상태: CEO 승인 완료
+> 작성일: 2026-04-17 | **최종 업데이트: 2026-04-23 (빅파이 1.5.1 Volume Metrics 통합)** | 상태: CEO 승인 완료
 > 근거: 2026-04-17 CPO·CEO 재설계 세션 (스코어 버그 발견 → 전면 재설계)
+> **1.5.1 추가 (2026-04-22):** Volume Metrics 누적 체계 · probe_logs 7지표 · D6~D11 스프린트 완성
 > 이 문서는 빅파이 1.0을 계승·확장하며, 1.0의 미흡 실행을 빈틈없이 구체화합니다.
 
 ---
@@ -102,6 +103,43 @@ GSC/GA4가 구글 검색의 측정·분석 표준이듯, pickedby.ai는 **AI 답
 - **Pass Indicator**: 🏆 PERFECT / 🟢 STRONG / 🟡 EMERGING / 🔴 INVISIBLE
 - **2D Quadrant**: X=Recognition, Y=Category Position
 - **Engine Grades**: Gemini A, Perplexity B 개별 배지
+
+---
+
+## 4-4. Volume Metrics 누적 체계 (빅파이 1.5.1, 2026-04-22 추가)
+
+> probe_logs 기반 절대 볼륨 측정 — 점수(상대)와 볼륨(절대) 이원 시스템
+
+### 볼륨 지표 7개
+
+| 지표 | 정의 | 집계 단위 |
+|------|------|-----------|
+| `mentions` | AI 답변에서 제품 언급 횟수 | probe_logs row 수 |
+| `recognition_rate` | 전체 probe 중 인식된 비율 | % |
+| `category_hits` | 카테고리 쿼리 Top-10 등장 횟수 | 회 |
+| `citation_count` | Web Authority 인용 사이트 수 | 개 |
+| `source_diversity` | 인용 소스 다양성 | 고유 도메인 수 |
+| `corec_degree` | Co-Recommendation 연결 제품 수 | 개 |
+| `total_probes` | 총 probe 실행 횟수 | 회 |
+
+### Volume vs Score 구분
+
+```
+Score (상대): Recognition 35 + Category 35 + CoRec 20 + Web 10 = 0~100
+Volume (절대): mentions/recognition_rate/category_hits/citation_count/... 누적값
+
+"내 점수가 70이고, 지난 7일간 AI 멘션이 23회다" = 상대+절대 양면 진단
+```
+
+### Volume Trend 3탭
+
+| 탭 | 집계 | 시각화 |
+|----|------|--------|
+| Daily | 1일 bucket × 30 | Chart.js 4 layer overlay |
+| Weekly | 7일 bucket × 12 | 12주 추이 |
+| Monthly | 30일 bucket × 12 | 12개월 장기 |
+
+**설계 상세**: `docs/outputs/volume_metrics_design_20260422.md`
 
 ---
 
@@ -252,41 +290,74 @@ pickedby.ai Dashboard (v1.5)
 
 ---
 
-## 10. 실행 우선순위 (CEO 승인 완료 2026-04-17)
+## 10. 실행 우선순위 (2026-04-23 최신화)
 
-### P0 — Phase 1 (즉시, 04-19 토 완료 목표, ~20h)
-| ID | 작업 | 근거 |
+### ✅ Phase 1 완료 (D1~D6, 04-18~04-23)
+| ID | 작업 | 완료 |
 |---|---|---|
-| **SCORE-UNIFY-01** | `computeUnifiedScore()` 4차원 단일 함수 | 이원 아키텍처 해소 |
-| **SCORE-UNIFY-02** | `score_snapshots` 테이블 신설 | 일간 이력 보장 |
-| **SCORE-UNIFY-03** | FE 이원 표시 로직 제거 | 수학적 일관성 |
-| **CHART-01** | 3탭 차트 (일/주/월) | Hook 2 |
-| **PULSE-01** | Daily Pulse 카드 + 아침 이메일 | Hook 1 |
-| **GT-01** | Ground Truth 10개 수동 실측 | 가정 검증 |
-| **TEST-01** | `score.test.ts` 재발 방지 테스트 | CI 안전망 |
-| **DEPLOY-01** | 스테이징 + CEO 검증 | Phase 1 게이트 |
+| **SCORE-UNIFY-01~03** | 4차원 단일 함수 · score_snapshots · FE 이원 제거 | ✅ 04-18 |
+| **CHART-01** | 3탭 차트 (일/주/월) = D6 TREND-01로 구현 완료 | ✅ 04-22 |
+| **PULSE-01** | Daily Pulse 카드 (Overview §1) | ✅ 04-22 |
+| **TEST-01** | `score.test.ts` 14테스트 전수 PASS | ✅ 04-22 |
+| **D6 TREND-01** | `/v1/scores/trend` 3탭 + Trend Pane UI | ✅ 04-22 |
+| **D6 JOURNEY-01** | Hero's Arc 4단계 + Timeline | ✅ 04-22 |
+| **D6 VOLUME-01** | `/v1/scores/volume` 7지표 + Volume Pane | ✅ 04-22 (1.5.1) |
+| **D5 OVERVIEW 12FULL** | 12개 섹션 풀셋 | ✅ 04-21 |
+| **ONBOARD-01** | 온보딩 3스텝 + 자동체크 + 5회 재시도 | ✅ 04-18 |
+| **TAVILY-CRON-LITE-01** | cron 3→1쿼리 (크레딧 보호) | ✅ 04-23 |
 
-### P1 — Phase 2 (04-24 목, ~15h)
+**스테이징 최종 버전:** API `4fc2f190` · FE `e61011c3` (BUG-PULSE-DELTA-01 포함)
+**프로덕션 버전:** API `1e52e42b` (TAVILY-CRON-LITE-01 예외 선반영) · FE 변경 없음
+
+---
+
+### 🔄 진행 중 / 예정 스프린트 (D7~D11)
+
+| Day | ID | 작업 | 날짜 |
+|-----|---|---|---|
+| **D7** | **PROBE-REDESIGN-01** | D안 역방향 스무고개 · `probeRedesign.ts` + `probeCache.ts` | 04-24 |
+| **D8** | **RIVALS-01 + GT-01** | Rivals 탭 + Sankey 시각화 + Fallback + GT 10개 실측 | 04-25 |
+| **D9a/b** | **LAND-SHIFT-01~07** | 랜딩 리뉴얼 + Turnstile + /changelog | 04-26~27 |
+| **D10** | **MOBILE-01** | 모바일 반응형 전수 | 04-28 |
+| **D11** | **DEPLOY-GATE-01** | 13개 기준 + CEO 검증 → 프로덕션 배포 🔴 | 04-29 |
+
+**상세 스펙:** `docs/outputs/d7_probe_redesign_spec_20260422.md`
+
+---
+
+### DEPLOY-GATE-01 — 배포 전 13개 기준 (D11 게이트)
+
+> 이 기준을 모두 통과하기 전까지 프로덕션 배포 금지 (CEO 확정 2026-04-21)
+
+| # | 기준 | 확인 방법 |
+|---|------|----------|
+| 1 | sum(dimensions) === finalScore (수학 일관성) | `score.test.ts` Math 테스트 |
+| 2 | Pass Indicator B안 공식 검증 | `score.test.ts` 6 Pass 테스트 |
+| 3 | 14/14 vitest PASS | `npx vitest run` |
+| 4 | tsc 에러 0 | `npx tsc --noEmit` |
+| 5 | Trend 3탭 렌더링 정상 | Playwright DOM 확인 |
+| 6 | Journey 4단계 렌더링 정상 | Playwright DOM |
+| 7 | Volume 3탭 렌더링 정상 | Playwright DOM |
+| 8 | Overview 12섹션 렌더링 정상 | Playwright DOM |
+| 9 | GT-01: T1 3/3 제품 점수 80+ | 수동 실측 |
+| 10 | API 401 인증 가드 정상 | curl 검증 |
+| 11 | cron KST 00:01 자동 실행 증거 | Supabase scores row 확인 |
+| 12 | CEO 직접 3개 제품 검증 PASS | CEO 스크린샷 승인 |
+| 13 | Rivals 탭 기본 동작 | D8 완료 후 확인 |
+
+---
+
+### 📋 P2 (Phase 2 연결 — 빅파이 1.0 계승)
 | ID | 작업 |
 |---|---|
 | **FEED-01** | Movement Feed 타임라인 (Hook 3) |
 | **ACTION-01** | Action Items AI 생성 (Hook 4) |
 | **STREAK-01** | Streak 시스템 (Hook 5) |
 | **BADGE-01** | Milestones 배지 (Hook 6) |
-
-### P2 — Phase 3 (05-01 목, ~10h)
-| ID | 작업 |
-|---|---|
-| **COMPARE-01** | Category Comparison 익명 랭킹 |
 | **EMAIL-DIGEST-01** | Weekly Digest Email (Hook 7) |
-| **SHARE-01** | 각 카드 소셜 공유 버튼 |
-| **METHOD-01** | `/methodology` 공식 공개 페이지 |
-
-### P3 — Phase 2 연결 (빅파이 1.0에서 계승)
-| ID | 작업 |
-|---|---|
-| SDK-01 | AI 레퍼러 감지 경량 스크립트 (빅파이 1.0 P1) |
-| GA4-01 | GA4 OAuth 연동 (빅파이 1.0 P2) |
+| **METHOD-01** | `/methodology` 공개 페이지 |
+| SDK-01 | AI 레퍼러 감지 경량 스크립트 |
+| GA4-01 | GA4 OAuth 연동 |
 
 ---
 
@@ -362,16 +433,29 @@ if (Math.abs(sumOfDims - finalScore) > 0.1) {
 5. **시작점 은유가 최종 설계를 결정한다** (Search Console 은유 → Tavily 중력)
 6. **CEO 직관이 수학보다 빠른 순간이 있다** (Notion 42점 의심)
 7. **모든 전제를 뒤엎는 검증을 반복하라** (5개 극단 대안 → 1개 보조 채택)
+8. **근본 수정 기준 = "컴포넌트 존재 이유 유지"** — signal AND score 양쪽 증거 일관성 (BUG-PASS-INDICATOR-01)
+9. **테스트 인프라는 복리 자산이다** — 14 테스트가 이후 모든 수정의 안전망이 됨
+10. **probe_logs는 이미 쌓고 있었음** — 추가 API 비용 $0으로 Volume Metrics 구현. "무료 자산 먼저" #4 재확장
+11. **GSC impression+CTR 모델** — Volume(절대)과 Score(상대) 이원 시스템은 GSC의 impression/CTR과 같은 구조
+12. **0점은 "안 측정"과 다르다** — `breakdown.status` 메타를 버리지 말 것. 측정 실패는 측정 실패로 표현
+13. **무료 인프라 두 번 쓰기** — Gemini Relay를 Probe + Category Hint Rescue 양쪽 재활용, 비용 $0
+14. **외부 API 사용량 알림은 과금 전조** — PAYGO 확인 먼저. Tavily 83% 경고 → cron lite 전환으로 $0 과금 회피
+15. **Cron 표현식 간 1분 이상 오프셋 필수** — BUG-CRON-CONFLICT-01: 두 cron이 정각 동시 매칭 시 event.cron 오염. 1분 오프셋으로 회피
 
 ---
 
-## 16. 다음 체크포인트
+## 16. 다음 체크포인트 (2026-04-23 업데이트)
 
-- **04-19 (토)**: Phase 1 스테이징 배포 + CEO 검증 세션
-- **04-20 (월)**: 마케팅 재개 (재설계 스토리 활용)
-- **04-24 (목)**: Phase 2 완료 + 리텐션 훅 검증
-- **05-01 (목)**: Phase 3 완료 + 공식 공개 페이지 런치
+- ~~04-19 (토): Phase 1 스테이징 배포 + CEO 검증~~ → ✅ **D1~D6 전 완료 (04-18~04-23)**
+- **04-24 (목)**: D7 PROBE-REDESIGN-01 (역방향 스무고개 BE)
+- **04-25 (토)**: D8 Rivals + GT-01 10개 실측 (T1 3/3 80+ 기준)
+- **04-26~27 (일~월)**: D9 랜딩 리뉴얼 (LAND-SHIFT + Turnstile + /changelog)
+- **04-28 (화)**: D10 모바일 전수
+- **04-29 (수)**: D11 DEPLOY-GATE-01 13개 기준 + CEO 검증 → **프로덕션 배포 🔴**
+- **05-01~**: 빅파이 1.5.2 Sources 스프린트 (sitemap/rss/robots/llms.txt 풀셋)
 - **05-15 (목)**: 모두의 창업 2026 지원서 마감 (현재 설계가 핵심 재료)
+- **05-31**: 이메일 1,000개 목표 / Product Hunt 런칭 게이트
+- **마케팅 재개 조건**: GT T1 3/3 80+ + 수학검증 + DEPLOY-GATE-01 통과 + CEO 직접 검증
 
 ---
 
