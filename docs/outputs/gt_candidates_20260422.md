@@ -118,4 +118,48 @@
 
 ---
 
-*GT-01 Ground Truth 10개 리스트 · 2026-04-22 22:40 KST · ANCHOR-VERIFY-01 대기*
+---
+
+## 7. 실측 결과 (2026-04-25 D8 RIVALS-01 세션)
+
+> 스테이징 API `94d0536b` (D8 RIVALS-01) · PROBE_REDESIGN_D7=true · 2026-04-25 KST
+
+| # | 제품 | 예상 | **실측** | 차이 | R/C/CR/W | Pass | 판정 |
+|---|------|-----|---------|-----|---------|------|------|
+| 1 | Figma | 90-100 | **95** | +0 | 35/35/20/5 | perfect | ✅ |
+| 2 | Notion | 75-85 | **87.5** | +5 | 35/25/20/7.5 | perfect | ✅ |
+| 3 | Stripe | 80-90 | **95** | +10 | 35/35/20/5 | perfect | ✅ |
+| 4 | Linear | 60-75 | **60** | -0 | 30/0/20/10 | strong | ✅ |
+| 5 | Vercel | 65-80 | **80** | +0 | 35/15/20/10 | perfect | ✅ |
+| 6 | Supabase | 55-70 | **100** ⚠️ | +35 | 35/35/20/10 | perfect | △ CEO검토 |
+| 7 | ShipFast | 45-60 | **90** ⚠️ | +35 | 35/25/20/10 | perfect | △ CEO검토 |
+| 8 | TypingMind | 40-55 | **55** | +3 | 25/0/20/10 | strong | ✅ |
+| 9 | pickedby.ai | 28-40 | **55** | +18 | 25/0/20/10 | strong | ✅ |
+| 10 | perceptdot | 15-30 | **15** | +0 | 5/0/0/10 | invisible | ✅ |
+
+### ANCHOR-VERIFY-01 판정
+
+- **T1 3/3 80+ 게이트: ✅ PASS** — Figma 95 / Notion 87.5 / Stripe 95 (전부 80+)
+- **DEPLOY-GATE-01 기준 #11 → 충족**
+- ⚠️ **플래그: Supabase(100), ShipFast(90) — 예상 대비 +35점 초과**
+  - 원인: D7 PROBE-REDESIGN-01 Phase 2 Step 3에서 top-10에 진입, Category=35 획득
+  - CoRec=20 (staging DB에 이미 probe_logs 누적) → 높은 점수 기여
+  - CEO 검토 후 "상향 기대 조정" or "과대평가 의심 시 로직 재검토" 결정 필요
+- **Category=0 패턴**: Linear, TypingMind, pickedby.ai, perceptdot — top-10 미진입 (정상, T4~T2 범위)
+
+### sum==final 수학 검증
+
+| 제품 | R+C+CR+W | score | 일치 |
+|------|----------|-------|------|
+| Figma | 35+35+20+5 | 95 | ✅ |
+| Notion | 35+25+20+7.5 | 87.5 | ✅ |
+| Stripe | 35+35+20+5 | 95 | ✅ |
+| Linear | 30+0+20+10 | 60 | ✅ |
+| Vercel | 35+15+20+10 | 80 | ✅ |
+| Supabase | 35+35+20+10 | 100 | ✅ |
+| ShipFast | 35+25+20+10 | 90 | ✅ |
+| TypingMind | 25+0+20+10 | 55 | ✅ |
+| pickedby.ai | 25+0+20+10 | 55 | ✅ |
+| perceptdot | 5+0+0+10 | 15 | ✅ |
+
+*GT-01 Ground Truth 10개 리스트 · 2026-04-22 22:40 KST · ANCHOR-VERIFY-01 PASS 2026-04-25*

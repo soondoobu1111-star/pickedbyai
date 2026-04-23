@@ -15,8 +15,8 @@
 ✅ D5 Overview 12섹션 풀셋 (04-21~22)
 ✅ D6 Trend + Journey + Volume (04-22~23)
 ✅ D7 PROBE-REDESIGN-01 (04-24)
-🔄 D8 Rivals + Sankey + GT-01 실측 (04-25) ← 다음
-⬜ D9a 랜딩 리뉴얼 1차 (04-26)
+✅ D8 RIVALS-01 + GT-01 실측 (04-25)
+🔄 D9a 랜딩 리뉴얼 1차 (04-26) ← 다음
 ⬜ D9b 랜딩 리뉴얼 2차 (04-27)
 ⬜ D10 모바일 (04-28)
 🔴 D11 DEPLOY-GATE-01 + CEO 검증 → 프로덕션 (04-29)
@@ -95,6 +95,7 @@
 | Pull 모델 전환 (agent-protocol.md) | ✅ | 세션 시작 비용 -58% (~38K→~16K 토큰) |
 | MEMORY.md 앵커화 (MEMORY_full.md 분리) | ✅ | 17KB→2.8KB (-83%) |
 | D7 PROBE-REDESIGN-01 (04-24) | ✅ | probeCache.ts + probeRedesign.ts 신규. tsc+14test PASS. Notion 97.5/T1, pickedby.ai 55/T2 실측 |
+| D8 RIVALS-01 + GT-01 (04-25) | ✅ | /v1/rivals API + Rivals 탭(Sankey+Peers+Quadrant). GT-01 T1 3/3 80+ PASS. LH 91/89/100 |
 
 ---
 
@@ -102,10 +103,24 @@
 
 | 환경 | API | FE |
 |------|------|----|
-| 스테이징 | `a1abd4e5` (D7 PROBE-REDESIGN-01) | `e61011c3` |
+| 스테이징 | `94d0536b` (D8 RIVALS-01) | `d866650a` |
 | 프로덕션 | `1e52e42b` (TAVILY-CRON-LITE-01 선반영) | 변경 없음 |
 
 ---
 
+## 8. GT-01 실측 요약 (2026-04-25)
+
+> ANCHOR-VERIFY-01 결과 — **T1 3/3 80+ PASS** (DEPLOY-GATE-01 기준 #11 충족)
+
+| T1 제품 | 실측 | 기준 |
+|---------|------|------|
+| Figma | 95 | 80+ ✅ |
+| Notion | 87.5 | 80+ ✅ |
+| Stripe | 95 | 80+ ✅ |
+
+⚠️ CEO 검토: Supabase 100 / ShipFast 90 (예상 대비 +35점, 과대평가 여부 판단 필요)
+
+---
+
 *SPRINT.md — TIER 1 파일. 매 세션 후 POST_TASK에서 갱신. 150줄 초과 시 완료 항목 bigpie-v1.5.md §10으로 이동.*
-*[CPO] 최초 작성 2026-04-23 | 2026-04-24 D7 완료 업데이트 (데스크탑 Claude)*
+*[CPO] 최초 작성 2026-04-23 | 2026-04-25 D8 완료 업데이트 (데스크탑 Claude)*
