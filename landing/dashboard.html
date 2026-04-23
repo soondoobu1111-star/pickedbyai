@@ -2725,8 +2725,9 @@ body.shell-on .shell-scrim.open { display: block; }
               autoSkip: false,
               callback: function(_value, index) {
                 const total = labels.length
-                if (index === 0 || index === total - 1) return formatChartDateTick(labels[index])
-                if (index % 2 === 0) return formatChartDateTick(labels[index])
+                if (index === total - 1) return formatChartDateTick(labels[index])
+                if (index === total - 2) return null
+                if (index === 0 || index % 2 === 0) return formatChartDateTick(labels[index])
                 return null
               }
             },
@@ -3052,8 +3053,9 @@ body.shell-on .shell-scrim.open { display: block; }
               autoSkip: false,
               callback: function(_value, index) {
                 const total = labels.length
-                if (index === 0 || index === total - 1) return formatChartDateTick(labels[index])
-                if (index % 2 === 0) return formatChartDateTick(labels[index])
+                if (index === total - 1) return formatChartDateTick(labels[index])
+                if (index === total - 2) return null
+                if (index === 0 || index % 2 === 0) return formatChartDateTick(labels[index])
                 return null
               }
             },
