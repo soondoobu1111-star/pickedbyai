@@ -11,7 +11,10 @@ mode = "smart"
 
 [vars]
 ENVIRONMENT = "production"
+UNIFIED_SCORE_V15 = "true"      # 빅파이 1.5 Phase 1 — 4차원 스코어 활성화 (스테이징 검증 완료)
+PROBE_REDESIGN_D7 = "true"      # D7 역방향 스무고개 프로브 활성화 (스테이징 검증 완료)
 TURNSTILE_BYPASS = "0"          # D11: CEO CF Turnstile 사이트키 등록 완료 → 활성화 (이전 "1")
+TURNSTILE_SITE_KEY = "0x4AAAAAADBlxvGJj8SRz5Oo"  # 프로덕션 Turnstile 사이트키
 
 [env.staging]
 name = "pickedbyai-api-staging"
