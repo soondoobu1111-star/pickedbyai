@@ -1912,10 +1912,85 @@ function buildTrendSeries(
   rows: Array<{ created_at: string; unified_v15: any; score: number | null }>,
   tab: 'daily'|'weekly'|'monthly'
 ): TrendBucket[] {
-  const bucketSize = tab === 'daily' ? 1 : tab === 'weekly' ? 7 : 30
   const bucketCount = tab === 'daily' ? 30 : 12
   const now = Date.now()
   const series: TrendBucket[] = []
+
+  // ── daily: KST 캘린더 날짜 기준 버킷 ──────────────────────────
+  // 이전 방식(Date.now() 슬라이딩 윈도우)은 마지막 버킷 라벨이
+  // 항상 "어제"가 되어 오늘 날짜가 x축에 표시되지 않는 근본 결함.
+  // 수정: KST 00:00~23:59 기준으로 버킷을 생성 → 마지막 버킷 = 오늘 KST
+  if (tab === 'daily') {
+    const nowKST = new Date(now + 9 * 60 * 60 * 1000) // UTC → KST shift
+
+    for (let i = bucketCount - 1; i >= 0; i--) {
+      const dayKST = new Date(nowKST)
+      dayKST.setUTCDate(dayKST.getUTCDate() - i)
+      const dateStr = dayKST.toISOString().slice(0, 10) // "2026-04-23" (KST 날짜)
+
+      const bucketRows = rows.filter(r => {
+        const rowKST = new Date(new Date(r.created_at).getTime() + 9 * 60 * 60 * 1000)
+        return rowKST.toISOString().slice(0, 10) === dateStr
+      })
+
+      if (bucketRows.length === 0) {
+        series.push({
+          bucket_start: dateStr,
+          score: null,
+          dimensions: { recognition: null, category: null, corec: null, web: null },
+          pass_indicator: null,
+          engine_grades: { gemini: null, perplexity: null },
+          data_quality: 'missing',
+        })
+        continue
+      }
+
+      const scoreSum = bucketRows.reduce((s, r) => s + (Number(r.unified_v15?.score) || 0), 0)
+      const avgScore = Math.round(scoreSum / bucketRows.length)
+      const dimSum: Record<string, number> = { recognition: 0, category: 0, corec: 0, web: 0 }
+      const dimCount: Record<string, number> = { recognition: 0, category: 0, corec: 0, web: 0 }
+      for (const r of bucketRows) {
+        const dims = r.unified_v15?.dimensions
+        if (!Array.isArray(dims)) continue
+        for (const d of dims) {
+          const key = String(d?.id || '').toLowerCase()
+          const status = (d?.breakdown as any)?.status
+          if (status === 'not_measured' || status === 'insufficient_data') continue
+          if (key in dimSum && typeof d?.score === 'number') {
+            dimSum[key] += d.score
+            dimCount[key]++
+          }
+        }
+      }
+      const avgDims = {
+        recognition: dimCount.recognition > 0 ? Math.round(dimSum.recognition / dimCount.recognition * 10) / 10 : null,
+        category: dimCount.category > 0 ? Math.round(dimSum.category / dimCount.category * 10) / 10 : null,
+        corec: dimCount.corec > 0 ? Math.round(dimSum.corec / dimCount.corec * 10) / 10 : null,
+        web: dimCount.web > 0 ? Math.round(dimSum.web / dimCount.web * 10) / 10 : null,
+      }
+      const last = bucketRows[bucketRows.length - 1]
+      const eg: { gemini: string|null; perplexity: string|null } = { gemini: null, perplexity: null }
+      const egList = last.unified_v15?.engine_grades
+      if (Array.isArray(egList)) {
+        for (const e of egList) {
+          const k = String(e?.engine || '').toLowerCase()
+          if (k === 'gemini' || k === 'perplexity') eg[k as 'gemini'|'perplexity'] = e?.grade || null
+        }
+      }
+      series.push({
+        bucket_start: dateStr,
+        score: avgScore,
+        dimensions: avgDims,
+        pass_indicator: last.unified_v15?.pass_indicator || null,
+        engine_grades: eg,
+        data_quality: 'solid',
+      })
+    }
+    return series
+  }
+
+  // ── weekly / monthly: 기존 슬라이딩 윈도우 유지 ──────────────
+  const bucketSize = tab === 'weekly' ? 7 : 30
   for (let i = bucketCount - 1; i >= 0; i--) {
     const bucketEnd = now - i * bucketSize * 86400000
     const bucketStart = bucketEnd - bucketSize * 86400000
@@ -1943,7 +2018,6 @@ function buildTrendSeries(
       if (!Array.isArray(dims)) continue
       for (const d of dims) {
         const key = String(d?.id || '').toLowerCase()
-        // 2026-04-23: 'not_measured' 상태는 집계 제외 → FE에서 라인 숨김 + 안내
         const status = (d?.breakdown as any)?.status
         if (status === 'not_measured' || status === 'insufficient_data') continue
         if (key in dimSum && typeof d?.score === 'number') {
