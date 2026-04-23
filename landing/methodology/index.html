@@ -4,20 +4,19 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>How We Calculate Your AI Visibility Score — pickedby.ai</title>
-  <meta name="description" content="Full scoring methodology: 5 dimensions, AI Probe direct queries, real-time web data, and deterministic scoring. Transparent by design." />
+  <meta name="description" content="Full scoring methodology: 4 dimensions, AI Probe direct queries, real-time web data, and deterministic scoring. Transparent by design." />
   <meta name="robots" content="index, follow" />
   <link rel="canonical" href="https://pickedby.ai/methodology/" />
   <meta property="og:title" content="How We Calculate Your AI Visibility Score — pickedby.ai" />
-  <meta property="og:description" content="Full scoring methodology: 5 dimensions, AI Probe, real-time data. No black box." />
+  <meta property="og:description" content="Full scoring methodology: 4 dimensions, AI Probe, real-time data. No black box." />
   <meta property="og:url" content="https://pickedby.ai/methodology/" />
   <meta property="og:type" content="article" />
   <meta property="og:image" content="https://pickedby.ai/og-v2.png" />
   <meta property="og:image:width" content="1200" />
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:site" content="@pickedbyAI" />
   <meta name="twitter:title" content="How We Calculate Your AI Visibility Score" />
-  <meta name="twitter:description" content="5 dimensions + AI Probe. No black box. Full methodology." />
+  <meta name="twitter:description" content="4 dimensions + AI Probe. No black box. Full methodology." />
   <meta name="keywords" content="AI visibility score methodology, how AI visibility score works, GEO scoring, AI Probe, Perplexity probe, ChatGPT recommendation check" />
   <meta name="author" content="pickedby.ai" />
   <meta property="og:site_name" content="pickedby.ai" />
@@ -26,9 +25,9 @@
     "@context": "https://schema.org",
     "@type": "TechArticle",
     "headline": "How We Calculate Your AI Visibility Score",
-    "description": "Full scoring methodology: 5 dimensions, AI Probe direct queries, real-time web data, deterministic scoring.",
+    "description": "Full scoring methodology: 4 dimensions, AI Probe direct queries, real-time web data, deterministic scoring.",
     "datePublished": "2026-04-13",
-    "dateModified": "2026-04-13",
+    "dateModified": "2026-04-27",
     "author": { "@type": "Organization", "name": "pickedby.ai", "url": "https://pickedby.ai" },
     "publisher": { "@type": "Organization", "name": "pickedby.ai", "url": "https://pickedby.ai" },
     "url": "https://pickedby.ai/methodology/"
@@ -61,6 +60,8 @@
     body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; line-height: 1.7; }
     a { color: var(--yellow); text-decoration: none; }
     a:hover { text-decoration: underline; }
+    .article-body a { text-decoration: underline; }
+    .article-body a:hover { opacity: 0.85; }
     .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); max-width: 1280px; margin: 0 auto; }
     .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: var(--yellow); text-decoration: none; display: flex; align-items: center; gap: 8px; }
     .nav-logo svg { flex-shrink: 0; }
@@ -145,6 +146,7 @@
     <a href="/dashboard.html">Dashboard</a>
   </div>
 
+  <main>
   <div class="article-wrap">
     <div class="article-tag"><a href="/">Home</a> / <a href="/methodology/">Methodology</a></div>
 
@@ -165,12 +167,12 @@
         <p><strong>Layer 1 — Real-time Web Scan:</strong> We search the live web for your product and analyze what signals AI systems can find about you.</p>
       </div>
       <div class="callout green">
-        <p><strong>Layer 2 — AI Probe (Direct Query):</strong> We literally ask ChatGPT and Perplexity: <em>"Do you know [your product]? Would you recommend it?"</em> — and show you the raw response. This is what real users see.</p>
+        <p><strong>Layer 2 — AI Probe (Direct Query):</strong> We literally ask Perplexity and Gemini: <em>"Do you know [your product]? Would you recommend it?"</em> — and show you the raw response. This is what real users see.</p>
       </div>
 
-      <h2>Layer 1: The 5 Dimensions (0–100 points)</h2>
+      <h2>Layer 1: The 4 Dimensions (0–100 points)</h2>
 
-      <p>Your score comes from 5 weighted dimensions. Each measures a different signal that AI systems use when deciding what to recommend:</p>
+      <p>Your score comes from 4 weighted dimensions. Each measures a different signal that AI systems use when deciding what to recommend:</p>
 
       <table class="dim-table">
         <thead>
@@ -178,41 +180,35 @@
         </thead>
         <tbody>
           <tr>
-            <td>Web Presence</td>
-            <td>25</td>
-            <td>How many third-party sites mention your product by name? More independent domains = stronger signal.</td>
-            <td>Get listed on directories, blogs, review sites. Each new domain counts.</td>
+            <td>Recognition</td>
+            <td>35</td>
+            <td>Do AI systems know your product exists by name? This is the foundation — AI can't recommend what it doesn't recognize.</td>
+            <td>Get mentioned on directories, high-authority publications, and third-party review sites.</td>
           </tr>
           <tr>
-            <td>Source Authority</td>
+            <td>Category Ranking</td>
+            <td>35</td>
+            <td>Does your product appear in "best of" lists, roundups, or category comparisons in AI responses?</td>
+            <td>Get included in "Top 10 [category]" articles. Create comparison content. Pitch reviewers.</td>
+          </tr>
+          <tr>
+            <td>Co-Recommendation</td>
             <td>20</td>
-            <td>Are you mentioned on sites that AI trusts most? (TechCrunch, Product Hunt, G2, Forbes, etc.)</td>
-            <td>Get featured on high-authority publications. Even a single mention matters.</td>
+            <td>Do real people and trusted sources recommend your product alongside other known products? Community signals matter.</td>
+            <td>Build genuine presence on Reddit, Product Hunt, and G2. Real discussions beat manufactured mentions.</td>
           </tr>
           <tr>
-            <td>Recommendation Signals</td>
-            <td>20</td>
-            <td>Do "best of" lists, roundups, or reviews explicitly recommend you?</td>
-            <td>Get included in "Top 10 [category]" articles. Pitch bloggers and reviewers.</td>
-          </tr>
-          <tr>
-            <td>Community Validation</td>
-            <td>20</td>
-            <td>Do real people talk about you on Reddit, Product Hunt, Indie Hackers, or forums?</td>
-            <td>Build genuine community presence. Real discussions beat manufactured mentions.</td>
-          </tr>
-          <tr>
-            <td>Competitive Context</td>
-            <td>15</td>
-            <td>Do you appear in "vs" comparisons, "alternatives to" articles, or competitive lists?</td>
-            <td>Create comparison content. Get listed on AlternativeTo. Write "vs" blog posts.</td>
+            <td>Web Signals</td>
+            <td>10</td>
+            <td>Does your site have the structured signals (llms.txt, schema markup, clean metadata) that help AI systems index and understand you?</td>
+            <td>Add an llms.txt file. Add schema.org SoftwareApplication markup. Ensure your metadata is accurate.</td>
           </tr>
         </tbody>
       </table>
 
       <h3>Why these weights?</h3>
 
-      <p>Web Presence gets the most points (25) because it's the foundation — AI can't recommend what it can't find. Competitive Context gets the least (15) because it's a secondary signal; being compared to others helps, but being known at all matters more.</p>
+      <p>Recognition and Category Ranking each receive 35 points — together they determine 70% of your score — because being known and being recommended are the two core outcomes that matter. Co-Recommendation (20 pts) reflects community trust, and Web Signals (10 pts) captures the technical signals that help AI systems discover and understand you.</p>
 
       <p>These weights are based on our analysis of what correlates with actual AI recommendations across hundreds of product checks. We adjust them as we learn more.</p>
 
@@ -228,12 +224,12 @@
           <div class="probe-desc">We ask Perplexity AI: <em>"What is [your product]? Would you recommend it?"</em> Perplexity searches the web in real-time and cites sources — this shows whether AI can find and understand your product right now.</div>
         </div>
         <div class="probe-item">
-          <div class="probe-name">GPT Probe</div>
-          <div class="probe-desc">We ask ChatGPT the same question. GPT relies more on its training data — this shows whether your product has enough web presence to have been "learned" by the model.</div>
+          <div class="probe-name">Gemini Probe</div>
+          <div class="probe-desc">We ask Gemini the same question. Gemini draws from both its training data and live web grounding — this shows whether your product has the web presence to be understood and recommended by Google's AI system.</div>
         </div>
       </div>
 
-      <p>The AI Probe doesn't add to your numeric score — it gives you a separate <strong>KNOWN / UNKNOWN</strong> status for each AI system. Combined with your 5-dimension score, you get the full picture.</p>
+      <p>The AI Probe doesn't add to your numeric score — it gives you a separate <strong>KNOWN / UNKNOWN</strong> status for each AI system. Combined with your 4-dimension score, you get the full picture.</p>
 
       <h2>Data Sources</h2>
 
@@ -253,7 +249,7 @@
     ↓
 [Step 4] AI Probe — Perplexity API + OpenAI API
     ↓
-[Output] Score (0-100) + 5 dimension breakdown + AI Probe status</div>
+[Output] Score (0-100) + 4 dimension breakdown + AI Probe status</div>
 
       <p><strong>Key technical details:</strong></p>
       <ul>
@@ -301,11 +297,12 @@
 
       <h2>Questions?</h2>
 
-      <p>If you have questions about our methodology, data sources, or scoring — reach out at <a href="mailto:hello@pickedby.ai">hello@pickedby.ai</a> or <a href="https://x.com/pickedbyAI">@pickedbyAI on X</a>.</p>
+      <p>If you have questions about our methodology, data sources, or scoring — reach out at <a href="mailto:hello@pickedby.ai">hello@pickedby.ai</a>.</p>
 
       <p>We believe in transparency. If you think our scoring should work differently, we want to hear about it.</p>
 
     </div>
   </div>
+  </main>
 </body>
 </html>

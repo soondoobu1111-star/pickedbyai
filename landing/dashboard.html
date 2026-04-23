@@ -1939,7 +1939,7 @@ body.shell-on .shell-scrim.open { display: block; }
       // B안 2026-04-21: 체크 완료 훅 — Quick Check 모달 닫기 + 토스트 + Overview 점수 링 자동 갱신
       if (typeof closeQuickCheck === 'function') closeQuickCheck()
       if (typeof showToast === 'function') {
-        const badgeLabel = savedScore >= 81 ? 'Gold' : savedScore >= 61 ? 'Silver' : savedScore >= 36 ? 'Bronze' : 'No tier'
+        const badgeLabel = savedScore >= 81 ? 'PERFECT' : savedScore >= 61 ? 'STRONG' : savedScore >= 36 ? 'EMERGING' : 'INVISIBLE'
         showToast(`✓ Checked: ${product} — ${Math.round(savedScore)}/100 (${badgeLabel})`)
       }
       if (document.body.classList.contains('shell-on') && typeof shellNavigateTo === 'function') {
@@ -3544,9 +3544,9 @@ body.shell-on .shell-scrim.open { display: block; }
   function buildBadgeSnippet(tier, score, size, shape) {
     const crownPath = '<rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/>'
     const tierMap = {
-      gold:   { color: '#FFD700', bg: '#0d0a00', border: '#FFD700', label: 'PICKED BY AI ✓', tierName: 'GOLD', pulse: 'animation:pba-pulse 2.5s ease infinite;' },
-      silver: { color: '#C0C0C0', bg: '#0a0a0a', border: '#C0C0C0', label: 'SEEN BY AI',     tierName: 'SILVER', pulse: '' },
-      bronze: { color: '#CD7F32', bg: '#0d0800', border: '#CD7F32', label: 'NOTICED BY AI',  tierName: 'BRONZE', pulse: '' },
+      gold:   { color: '#FFD700', bg: '#0d0a00', border: '#FFD700', label: 'PICKED BY AI ✓', tierName: 'PERFECT', pulse: 'animation:pba-pulse 2.5s ease infinite;' },
+      silver: { color: '#C0C0C0', bg: '#0a0a0a', border: '#C0C0C0', label: 'SEEN BY AI',     tierName: 'STRONG', pulse: '' },
+      bronze: { color: '#CD7F32', bg: '#0d0800', border: '#CD7F32', label: 'NOTICED BY AI',  tierName: 'EMERGING', pulse: '' },
     }
     const sizeMap = {
       S: { pad: '8px 14px',  cw: 14, ch: 11, titlePx: 10, subPx: 7,  gap: 9  },
@@ -3574,7 +3574,7 @@ body.shell-on .shell-scrim.open { display: block; }
       if (mineProducts.length > 0) {
         const maxScore = Math.max(...mineProducts.map(p => p.score))
         score = maxScore
-        effectiveTier = maxScore >= 75 ? 'gold' : maxScore >= 50 ? 'silver' : 'bronze'
+        effectiveTier = maxScore >= 81 ? 'gold' : maxScore >= 61 ? 'silver' : 'bronze'
       } else { effectiveTier = 'gold'; score = 100 }
     }
     // Lock badge embed unless at least one My Products product is verified
@@ -3620,7 +3620,7 @@ body.shell-on .shell-scrim.open { display: block; }
 
   // badge embed in product expand panel (history rows)
   function copyBadgeHtml(btn, score) {
-    const tier = score >= 75 ? 'gold' : score >= 50 ? 'silver' : 'bronze'
+    const tier = score >= 81 ? 'gold' : score >= 61 ? 'silver' : 'bronze'
     const html = buildBadgeSnippet(tier, score, 'M', 'Rectangle')
     navigator.clipboard.writeText(html).then(() => {
       const orig = btn.textContent
@@ -3691,7 +3691,7 @@ body.shell-on .shell-scrim.open { display: block; }
 
   // ── Share: LinkedIn (product list item) ─────────────────────
   function shareLinkedInProduct(score, name) {
-    const tier = score >= 75 ? '🥇 PICKED BY AI' : score >= 50 ? '🥈 SEEN BY AI' : score >= 25 ? '🥉 NOTICED BY AI' : '❌ Not yet visible'
+    const tier = score >= 81 ? '🏆 PERFECT' : score >= 61 ? '🟢 STRONG' : score >= 36 ? '🟡 EMERGING' : '🔴 INVISIBLE'
     const url = `https://pickedby.ai?utm_source=linkedin&utm_medium=social&utm_campaign=share&utm_content=${encodeURIComponent(name)}`
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank', 'width=600,height=500')
   }
@@ -3928,19 +3928,19 @@ body.shell-on .shell-scrim.open { display: block; }
 
     const score = row.score
     let badge = ''
-    if (score >= 81) badge = '<span class="badge-gold">PICKED</span>'
-    else if (score >= 61) badge = '<span class="badge-silver">SEEN</span>'
-    else if (score >= 36) badge = '<span class="badge-bronze">NOTICED</span>'
-    else badge = '<span class="badge-none">—</span>'
+    if (score >= 81) badge = '<span class="badge-gold">PERFECT</span>'
+    else if (score >= 61) badge = '<span class="badge-silver">STRONG</span>'
+    else if (score >= 36) badge = '<span class="badge-bronze">EMERGING</span>'
+    else badge = '<span class="badge-none">INVISIBLE</span>'
 
     let badgeFull = ''
-    if (score >= 75) badgeFull = '<span class="badge-gold">PICKED BY AI</span>'
-    else if (score >= 50) badgeFull = '<span class="badge-silver">SEEN BY AI</span>'
-    else if (score >= 25) badgeFull = '<span class="badge-bronze">NOTICED BY AI</span>'
-    else badgeFull = '<span class="badge-none">NOT VISIBLE</span>'
+    if (score >= 81) badgeFull = '<span class="badge-gold">🏆 PERFECT</span>'
+    else if (score >= 61) badgeFull = '<span class="badge-silver">🟢 STRONG</span>'
+    else if (score >= 36) badgeFull = '<span class="badge-bronze">🟡 EMERGING</span>'
+    else badgeFull = '<span class="badge-none">🔴 INVISIBLE</span>'
 
     const date = formatDate(row.created_at)
-    const barColor = score >= 75 ? '#FFD700' : score >= 50 ? '#C0C0C0' : score >= 25 ? '#CD7F32' : '#444'
+    const barColor = score >= 81 ? '#FFD700' : score >= 61 ? '#C0C0C0' : score >= 36 ? '#CD7F32' : '#444'
     const isToday = isSameDay(row.created_at)
 
     const results = row.results || []
@@ -4006,11 +4006,11 @@ body.shell-on .shell-scrim.open { display: block; }
       : 'display:grid;grid-template-columns:1fr auto auto auto;gap:0.5rem;'
 
     // Expand panel detail
-    const embedSection = isMine && score >= 25 ? `
+    const embedSection = isMine && score >= 36 ? `
       <div style="margin-top:0.85rem;padding:0.6rem 0.8rem;background:#0d0d0d;border-radius:6px;border:1px solid #1e1e1e;">
         <div style="font-size:0.7rem;color:#555;margin-bottom:0.4rem;">📎 Embed this badge on your page</div>
         <div style="display:flex;align-items:center;gap:0.5rem;">
-          <code style="flex:1;font-size:0.62rem;color:#555;background:#080808;padding:0.3rem 0.5rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">&lt;a href="https://pickedby.ai?utm_source=badge&amp;utm_medium=embed&amp;utm_campaign=badge_expand"&gt;${score>=75?'PICKED BY AI ✓':score>=50?'SEEN BY AI':'NOTICED BY AI'}&lt;/a&gt;</code>
+          <code style="flex:1;font-size:0.62rem;color:#555;background:#080808;padding:0.3rem 0.5rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">&lt;a href="https://pickedby.ai?utm_source=badge&amp;utm_medium=embed&amp;utm_campaign=badge_expand"&gt;${score>=81?'PERFECT BY AI 🏆':score>=61?'STRONG 🟢':'EMERGING 🟡'}&lt;/a&gt;</code>
           <button onclick="copyBadgeHtml(this,${score});event.stopPropagation()" style="flex-shrink:0;background:none;border:1px solid #FFD700;color:#FFD700;padding:0.3rem 0.65rem;border-radius:4px;cursor:pointer;font-size:0.7rem;font-family:inherit;white-space:nowrap;">Copy HTML</button>
         </div>
       </div>` : ''
@@ -4129,8 +4129,8 @@ body.shell-on .shell-scrim.open { display: block; }
     if (!lastCheckResult) return
     const score = lastCheckResult.score
     const name = lastCheckResult.product
-    const tier = score >= 75 ? 'PICKED BY AI' : score >= 50 ? 'SEEN BY AI' : score >= 25 ? 'NOTICED BY AI' : 'NOT YET VISIBLE'
-    const tierColor = score >= 75 ? '#4ade80' : score >= 50 ? '#FFD700' : score >= 25 ? '#f97316' : '#ef4444'
+    const tier = score >= 81 ? 'PERFECT' : score >= 61 ? 'STRONG' : score >= 36 ? 'EMERGING' : 'INVISIBLE'
+    const tierColor = score >= 81 ? '#FFD700' : score >= 61 ? '#4ade80' : score >= 36 ? '#f59e0b' : '#ef4444'
     const barColor = score >= 60 ? '#4ade80' : score >= 30 ? '#FFD700' : '#ef4444'
 
     const W = 800, H = 420

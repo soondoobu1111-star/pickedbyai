@@ -2,7 +2,7 @@
 
 > The AI Visibility Platform — Search Console, Analytics, and Ads for the AI recommendation era.
 
-pickedby.ai is a free platform that measures how visible your product is to AI assistants (ChatGPT, Claude, Perplexity, Gemini). Enter your product name and get an AI Visibility Score from 0 to 100 in ~10 seconds. No sign-up required for basic checks.
+pickedby.ai is a free platform that measures how visible your product is to AI assistants (GPT, Gemini, Claude, Grok, Perplexity). Enter your product name and get an AI Visibility Score from 0 to 100 in ~10 seconds. No sign-up required for basic checks.
 
 ## What it is
 
@@ -14,35 +14,33 @@ pickedby.ai is the Google Stack for the AI recommendation era — built for any 
 
 ## Core product: AI Visibility Score (0–100)
 
-Measures five dimensions of AI discoverability:
+Measures four dimensions of AI discoverability:
 
-1. **Recognition** — Does AI know your product exists by name?
-2. **Recommendation** — Would AI recommend your product as a top solution?
-3. **Category Ranking** — Does your product appear in "best of" AI responses?
-4. **Reviews & Mentions** — Does your product have third-party mentions AI can cite?
-5. **Comparison Signals** — Does your product appear in "alternatives to" comparisons?
+1. **Recognition** (35 pts) — Does AI know your product exists by name?
+2. **Category Ranking** (35 pts) — Does your product appear in "best of" AI responses for your category?
+3. **Co-Recommendation** (20 pts) — Do trusted sources and communities recommend your product alongside other known products?
+4. **Web Signals** (10 pts) — Does your site have the structured signals (llms.txt, schema markup) that help AI systems index and understand you?
+
+Score formula: Recognition 35 + Category 35 + CoRec 20 + Web 10 = 100
 
 ## Direct AI Probe (Phase 1 flagship feature)
 
-pickedby.ai sends real queries to Perplexity, ChatGPT, and Gemini to measure whether each AI recommends your product. Results are logged as probe_logs and contribute to your Probe Score — a more accurate signal than web crawl alone.
+pickedby.ai sends real queries to Perplexity and Gemini (beta) to measure whether each AI recommends your product. Results are logged as probe_logs and contribute to your Probe Score — a more accurate signal than web crawl alone.
 
 - **✓ Recommended** — AI explicitly named your product in response
 - **◎ Known** — AI recognizes your product but did not recommend it
 - **✗ Unknown** — AI has no record of your product
 
-Probe Score replaces the raw score when 3 or more probes have been completed (probe_count ≥ 3).
+Coverage by 5 major AI systems: GPT · Gemini · Claude · Grok · Perplexity
 
-## Score tiers and badges
+## Score tiers and Pass Indicator
 
-- **0–24: Invisible** — AI has no idea your product exists
-- **25–49: Noticed** — AI is vaguely aware but rarely recommends
-- **50–74: Seen** — AI recognizes you and sometimes recommends
-- **75–100: Picked** — AI consistently recommends your product
+- **PERFECT (81–100)** 🏆 — AI consistently recommends your product
+- **STRONG (61–80)** 🟢 — AI recognizes you and often recommends you
+- **EMERGING (36–60)** 🟡 — AI is aware but rarely recommends
+- **INVISIBLE (<36)** 🔴 — AI has little to no awareness of your product
 
-Embeddable badges for verified product owners:
-- 🏆 **PICKED BY AI** (75+)
-- ✓ **SEEN BY AI** (50–74)
-- ~ **NOTICED BY AI** (25–49)
+Embeddable badges available for verified product owners.
 
 ## Beta Program (100 founding spots)
 
@@ -80,21 +78,23 @@ Published articles on AI visibility, GEO, and recommendation optimization:
 - [I Built the Wrong Product for 10 Days. Here's What I Discovered.](https://pickedby.ai/blog/we-built-wrong-product-10-days/)
 - [Day 11: Zero Marketing Budget, First Real User](https://pickedby.ai/blog/day-11-zero-marketing-first-user/)
 - [Why ChatGPT Doesn't Recommend Your Product](https://pickedby.ai/blog/why-chatgpt-doesnt-recommend-your-product/)
-- [We Scored 0 on Our Own Tool](https://pickedby.ai/blog/we-scored-0-on-our-own-tool/)
-- [We Scored 12 on Our Own Tool](https://pickedby.ai/blog/we-scored-12-on-our-own-tool/)
+- [GEO Is the New SEO](https://pickedby.ai/blog/geo-is-the-new-seo/)
+- [5 Mistakes Destroying Your AI Visibility](https://pickedby.ai/blog/5-mistakes-destroying-your-ai-visibility/)
+- [AI Converts 5x Better Than Google](https://pickedby.ai/blog/ai-converts-5x-better-than-google/)
 - [How We Calculate Your AI Visibility Score](https://pickedby.ai/blog/how-we-calculate-your-ai-visibility-score/)
-- [4 AIs Redesigned Our Product](https://pickedby.ai/blog/we-asked-4-ais-to-redesign-our-product/)
-- [Day 3: Building AI Visibility](https://pickedby.ai/blog/day-3-building-ai-visibility/)
+- [We Scored 12 on Our Own Tool](https://pickedby.ai/blog/we-scored-12-on-our-own-tool/)
 
 ## Key terms
 
-AI visibility, AI Search Console, AI Analytics, AI Ads Platform, Generative Engine Optimization (GEO), Answer Engine Optimization (AEO), AI recommendations, probe_logs, co_recommendations, ChatGPT product discovery, Perplexity product search, Gemini recommendations, Claude recommendations, AI-first search, llms.txt, AI visibility score, direct AI probe, score momentum, query coverage.
+AI visibility, AI Search Console, AI Analytics, AI Ads Platform, Generative Engine Optimization (GEO), Answer Engine Optimization (AEO), AI recommendations, probe_logs, co_recommendations, ChatGPT product discovery, Perplexity product search, Gemini recommendations, Claude recommendations, AI-first search, llms.txt, AI visibility score, direct AI probe, score momentum, query coverage, Pass Indicator, PERFECT, STRONG, EMERGING, INVISIBLE.
 
 ## Links
 
 - Website: https://pickedby.ai
 - Dashboard: https://pickedby.ai/dashboard
+- Methodology: https://pickedby.ai/methodology/
 - Blog: https://pickedby.ai/blog/
+- Changelog: https://pickedby.ai/changelog.html
 - API: https://api.pickedby.ai
 - Contact: hello@pickedby.ai
 
@@ -104,4 +104,4 @@ pickedby.ai | Republic of Korea | hello@pickedby.ai
 
 ## Last updated
 
-2026-04-16
+2026-04-27
