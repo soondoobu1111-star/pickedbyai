@@ -1616,6 +1616,12 @@ body.shell-on .shell-scrim.open { display: block; }
         return
       }
       await loadHistory()
+      // Auth-ready re-trigger: 하드 리프레시 시 auth 준비 전에 pane이 로드되는
+      // 레이스 컨디션 수정. auth 완료 후 현재 pane 재로드.
+      const curHash = (location.hash || '#overview').slice(1)
+      if (curHash && curHash !== 'overview' && typeof shellNavigateTo === 'function') {
+        try { shellNavigateTo(curHash) } catch (_) {}
+      }
       // T5 D2 RETRY-01: 온보딩에서 넘어온 첫 verified 체크 배너 표시
       const params = new URLSearchParams(location.search)
       if (params.get('auto_check') === '1' && verifiedDomains.length) {
