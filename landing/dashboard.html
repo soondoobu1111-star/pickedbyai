@@ -4807,6 +4807,13 @@ body.shell-on .shell-scrim.open { display: block; }
       }
     }
 
+    // 6b-1b. Tools pane — badge preview (누락 버그 수정 D9a)
+    if (key === 'tools') {
+      if (typeof updateBadgePreview === 'function') {
+        try { updateBadgePreview(); } catch(e) { console.error('[tools] badge preview', e); }
+      }
+    }
+
     // 6b-2. D8 Rivals pane (2026-04-25)
     if (key === 'rivals') {
       if (typeof loadRivalsPane === 'function' && typeof pickRepresentativeProduct === 'function') {
