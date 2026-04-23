@@ -953,6 +953,34 @@ app.post('/v1/check', async (c) => {
     }
   }
 
+  // ── 서버사이드 scores 저장 (FE 의존 제거) ──────────────────
+  // 인증된 사용자면 scores 테이블에 즉시 저장
+  const authHeader = c.req.header('Authorization')
+  if (authHeader?.startsWith('Bearer ')) {
+    const user = await verifyToken(authHeader.slice(7), c.env)
+    if (user) {
+      const sbUrl = getSbUrl(c.env)
+      const finalScore = unifiedV15 ? Math.round(unifiedV15.score) : (engineResult.score ?? 0)
+      try {
+        await fetch(`${sbUrl}/rest/v1/scores`, {
+          method: 'POST',
+          headers: {
+            'apikey': c.env.SUPABASE_SERVICE_KEY,
+            'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            user_id: user.id,
+            product_name: name,
+            product_url: url || null,
+            score: finalScore,
+            unified_v15: unifiedV15,
+          }),
+        })
+      } catch (e) { console.error('[CHECK] save score error:', e) }
+    }
+  }
+
   return c.json({ ...engineResult, ...probeData, co_recommendations_top: coRecs, unified_v15: unifiedV15 })
 })
 
@@ -1879,7 +1907,8 @@ app.get('/v1/scores/trend', async (c) => {
   const since = new Date(Date.now() - days * 86400000).toISOString()
   const sbUrl = user.supabaseUrl
 
-  const url = `${sbUrl}/rest/v1/scores?user_id=eq.${encodeURIComponent(user.id)}&product_name=eq.${encodeURIComponent(product)}&created_at=gte.${encodeURIComponent(since)}&unified_v15=not.is.null&select=created_at,unified_v15,score&order=created_at.asc`
+  // unified_v15 필터 제거 — legacy score fallback 지원 (프로덕션 DB 호환)
+  const url = `${sbUrl}/rest/v1/scores?user_id=eq.${encodeURIComponent(user.id)}&product_name=eq.${encodeURIComponent(product)}&created_at=gte.${encodeURIComponent(since)}&select=created_at,unified_v15,score&order=created_at.asc`
   const res = await fetch(url, { headers: { 'apikey': c.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}` } })
   if (!res.ok) {
     const errText = await res.text().catch(() => '')
