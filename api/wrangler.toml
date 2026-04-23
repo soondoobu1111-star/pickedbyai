@@ -11,7 +11,7 @@ mode = "smart"
 
 [vars]
 ENVIRONMENT = "production"
-TURNSTILE_BYPASS = "1"          # D11 전: CEO가 CF Turnstile 사이트키 등록 후 "0"으로 변경
+TURNSTILE_BYPASS = "0"          # D11: CEO CF Turnstile 사이트키 등록 완료 → 활성화 (이전 "1")
 
 [env.staging]
 name = "pickedbyai-api-staging"
