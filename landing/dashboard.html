@@ -2656,11 +2656,21 @@ body.shell-on .shell-scrim.open { display: block; }
     }
   }
 
-  // X축 라벨 축약: "2026-04-23" → "04-23" (1월 1일만 연도 표시)
-  function formatChartDateTick(label) {
+  // X축 라벨 축약 (탭별 포맷)
+  const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  function formatChartDateTick(label, tab) {
     if (typeof label !== 'string') return ''
     const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(label)
     if (!m) return label
+    const mon = parseInt(m[2], 10)
+    if (tab === 'monthly') return MONTH_NAMES[mon - 1] || m[2]
+    if (tab === 'weekly') {
+      // ISO week number 계산
+      const d = new Date(parseInt(m[1]), mon - 1, parseInt(m[3], 10))
+      const jan1 = new Date(d.getFullYear(), 0, 1)
+      const wk = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7)
+      return MONTH_NAMES[mon - 1] + ' W' + wk
+    }
     if (m[2] === '01' && m[3] === '01') return m[1]
     return `${m[2]}-${m[3]}`
   }
@@ -2737,7 +2747,7 @@ body.shell-on .shell-scrim.open { display: block; }
             },
             ticks: {
               color: '#555', font: { size: 10 }, maxRotation: 0, autoSkip: true, autoSkipPadding: 14,
-              callback: function(_value, index) { return formatChartDateTick(labels[index]) }
+              callback: function(_value, index) { return formatChartDateTick(labels[index], _tab) }
             },
             grid: { color: '#1a1a1a' }
           },
@@ -2993,11 +3003,11 @@ body.shell-on .shell-scrim.open { display: block; }
     if (chartWrap) chartWrap.style.display = 'block'
     if (statsWrap) statsWrap.style.display = 'grid'
     if (layersWrap) layersWrap.style.display = 'flex'
-    drawVolumeChart(series)
+    drawVolumeChart(series, volumeCurrentTab)
     renderVolumeStats(data.stats || {})
   }
 
-  function drawVolumeChart(series) {
+  function drawVolumeChart(series, _vtab) {
     const canvas = document.getElementById('volume-chart')
     if (!canvas || typeof Chart === 'undefined') return
     if (volumeChart) { try { volumeChart.destroy() } catch (_) {} volumeChart = null }
@@ -3067,7 +3077,7 @@ body.shell-on .shell-scrim.open { display: block; }
             },
             ticks: {
               color: '#555', font: { size: 10 }, maxRotation: 0, autoSkip: true, autoSkipPadding: 14,
-              callback: function(_value, index) { return formatChartDateTick(labels[index]) }
+              callback: function(_value, index) { return formatChartDateTick(labels[index], _vtab) }
             },
             grid: { color: '#1a1a1a' }
           },
