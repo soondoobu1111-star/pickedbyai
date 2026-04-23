@@ -2635,7 +2635,7 @@ body.shell-on .shell-scrim.open { display: block; }
       const series = Array.isArray(data?.series) ? data.series : []
       const withScore = series.filter(b => typeof b.score === 'number')
       if (withScore.length === 0) { if (empty) empty.style.display = 'block'; return }
-      if (trendCurrentTab !== 'daily' && withScore.length < 2) {
+      if (trendCurrentTab !== 'daily' && withScore.length < 1) {
         if (teaser) {
           teaser.style.display = 'block'
           if (teaserMsg) teaserMsg.textContent = trendCurrentTab === 'weekly'
