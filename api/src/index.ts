@@ -542,15 +542,27 @@ app.use('*', cors({
 app.get('/', (c) => c.json({ ok: true, service: 'pickedbyai-api' }))
 
 // ── ENGINE-05 core (shared by /v1/check and daily cron) ───────
-async function runEngine(env: Bindings, name: string, url?: string) {
+// 2026-04-23 TAVILY-CRON-LITE-01: cron 경로는 opts.tavilyLite=true로 쿼리 1개만.
+//   manual /v1/check는 기존 3쿼리 유지. 월 크레딧 소모 ~62% 감축.
+//   Researcher Plan 1,000크레딧/월 한도 보호용 (PAYGO OFF 확인됨).
+async function runEngine(
+  env: Bindings,
+  name: string,
+  url?: string,
+  opts?: { tavilyLite?: boolean },
+) {
   const relayUrl = env.GEMINI_RELAY_URL ?? DEFAULT_GEMINI_RELAY_URL
+  const tavilyLite = opts?.tavilyLite === true
 
   // Step 1: Parallel — Tavily multi-query + AI Probes
   const tavilyPromises: Promise<TavilyResult[]>[] = []
   if (env.TAVILY_API_KEY) {
+    // lite 모드: 제품명 직접 검색 1쿼리만 (Web 차원 기본 측정 유지)
     tavilyPromises.push(searchTavily(env.TAVILY_API_KEY, `"${name}"`).catch(() => []))
-    tavilyPromises.push(searchTavily(env.TAVILY_API_KEY, `${name} review recommended tool`).catch(() => []))
-    tavilyPromises.push(searchTavily(env.TAVILY_API_KEY, `${name} vs alternative comparison`).catch(() => []))
+    if (!tavilyLite) {
+      tavilyPromises.push(searchTavily(env.TAVILY_API_KEY, `${name} review recommended tool`).catch(() => []))
+      tavilyPromises.push(searchTavily(env.TAVILY_API_KEY, `${name} vs alternative comparison`).catch(() => []))
+    }
   }
 
   const probePromises: Promise<AIProbeResult>[] = []
@@ -968,7 +980,8 @@ async function dailyRefresh(env: Bindings) {
   for (const task of tasks) {
     try {
       const cronStartMs = Date.now()
-      const result = await runEngine(env, task.product_name, task.product_url ?? undefined)
+      // TAVILY-CRON-LITE-01 (2026-04-23): cron은 Tavily 1쿼리만 (크레딧 보호)
+      const result = await runEngine(env, task.product_name, task.product_url ?? undefined, { tavilyLite: true })
       // P1-03: Log probe results from cron
       await logProbes(env, task.product_name, result.aiProbe, {
         userId: task.user_id, productUrl: task.product_url ?? undefined, triggerType: 'cron', startMs: cronStartMs
@@ -2433,7 +2446,8 @@ async function runInternalCheck(
 ): Promise<SingleCheckResult> {
   try {
     const [engineResult] = await Promise.all([
-      runEngine(env, productName, productUrl),
+      // TAVILY-CRON-LITE-01 (2026-04-23): retry queue·auto-check도 lite (자동 경로 공통)
+      runEngine(env, productName, productUrl, { tavilyLite: true }),
     ])
     const ai = engineResult.aiProbe || []
     const engines_succeeded: string[] = []
