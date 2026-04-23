@@ -2251,7 +2251,21 @@ body.shell-on .shell-scrim.open { display: block; }
     const prod = pickRepresentativeProduct()
     const unified = prod && prod.unified_v15 ? prod.unified_v15 : null
 
-    if (!prod || !unified) {
+    if (!prod) {
+      if (empty) empty.style.display = 'block'
+      if (grid) grid.style.display = 'none'
+      return
+    }
+    // unified_v15 없으면 legacy score로 최소 표시
+    if (!unified && prod.score != null) {
+      if (empty) empty.style.display = 'none'
+      if (grid) grid.style.display = 'block'
+      // minimal render with legacy score
+      const scoreEl = document.getElementById('d5-score-value')
+      if (scoreEl) scoreEl.textContent = Math.round(prod.score)
+      return
+    }
+    if (!unified) {
       if (empty) empty.style.display = 'block'
       if (grid) grid.style.display = 'none'
       return
