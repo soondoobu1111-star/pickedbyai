@@ -2720,6 +2720,15 @@ body.shell-on .shell-scrim.open { display: block; }
         },
         scales: {
           x: {
+            afterBuildTicks(axis) {
+              if (!axis.ticks || axis.ticks.length < 2 || !labels.length) return;
+              var lastIdx = labels.length - 1;
+              var lastTick = axis.ticks[axis.ticks.length - 1];
+              if (lastTick.value !== lastIdx) {
+                if (lastIdx - lastTick.value <= 2) axis.ticks.pop();
+                axis.ticks.push({ value: lastIdx });
+              }
+            },
             ticks: {
               color: '#555', font: { size: 10 }, maxRotation: 0, autoSkip: true, autoSkipPadding: 14,
               callback: function(_value, index) { return formatChartDateTick(labels[index]) }
@@ -3041,6 +3050,15 @@ body.shell-on .shell-scrim.open { display: block; }
         },
         scales: {
           x: {
+            afterBuildTicks(axis) {
+              if (!axis.ticks || axis.ticks.length < 2 || !labels.length) return;
+              var lastIdx = labels.length - 1;
+              var lastTick = axis.ticks[axis.ticks.length - 1];
+              if (lastTick.value !== lastIdx) {
+                if (lastIdx - lastTick.value <= 2) axis.ticks.pop();
+                axis.ticks.push({ value: lastIdx });
+              }
+            },
             ticks: {
               color: '#555', font: { size: 10 }, maxRotation: 0, autoSkip: true, autoSkipPadding: 14,
               callback: function(_value, index) { return formatChartDateTick(labels[index]) }
