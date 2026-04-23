@@ -2212,7 +2212,20 @@ body.shell-on .shell-scrim.open { display: block; }
     const pulseEl = document.getElementById('d5-pulse-text')
     if (pulseEl) pulseEl.textContent = pulseText
     const deltaEl = document.getElementById('d5-pulse-delta')
-    if (deltaEl) deltaEl.textContent = 'Δ last 24h: — (history tracking coming D6)'
+    if (deltaEl) {
+      const _ph = (allHistoryData || [])
+        .filter(r => (r.product_name || '').toLowerCase() === (prod.product_name || '').toLowerCase())
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      if (_ph.length >= 2) {
+        const _cur  = Number(_ph[0]?.unified_v15?.score ?? _ph[0]?.score) || 0
+        const _prev = Number(_ph[1]?.unified_v15?.score ?? _ph[1]?.score) || 0
+        const _d    = Math.round((_cur - _prev) * 10) / 10
+        deltaEl.textContent = `Δ last 24h: ${_d > 0 ? '+' : ''}${_d}`
+        deltaEl.style.color = _d > 0 ? '#4ade80' : _d < 0 ? '#e05252' : '#888'
+      } else {
+        deltaEl.textContent = 'Δ last 24h: —'
+      }
+    }
 
     // Section 3 · 4-Dimension Breakdown
     const dims = unified.dimensions || []
