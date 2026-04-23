@@ -9,6 +9,7 @@ import {
   fetchDomainById,
   type SingleCheckResult,
 } from './retryAdapter'
+import { validateTurnstile } from './turnstile'
 
 type Bindings = {
   BREVO_API_KEY: string
@@ -24,6 +25,8 @@ type Bindings = {
   GEMINI_API_KEY?: string     // 직접 Gemini API 호출 시 사용 (Relay 우회)
   GEMINI_RELAY?: { fetch: (req: Request) => Promise<Response> }  // Service Binding
   AI: Ai
+  TURNSTILE_SECRET?: string    // CF Turnstile secret (wrangler secret put TURNSTILE_SECRET)
+  TURNSTILE_BYPASS?: string    // '1' = 우회 (로컬 개발 / 롤백 시)
 }
 
 const SUPABASE_URL = 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
@@ -876,12 +879,24 @@ app.post('/v1/check', async (c) => {
     return c.json({ error: 'Too many requests. Please try again later.' }, 429)
   }
 
-  let body: { product?: string; url?: string; category?: string; keywords?: string }
+  let body: { product?: string; url?: string; category?: string; keywords?: string; cf_turnstile_token?: string }
   try {
     body = await c.req.json()
   } catch {
     return c.json({ error: 'Invalid JSON' }, 400)
   }
+
+  // ── Turnstile bot protection (D9b LAND-TURNSTILE-01) ──────────
+  // TURNSTILE_BYPASS=1 이면 우회 (로컬 개발 / 롤백 시)
+  const bypass = c.env.TURNSTILE_BYPASS === '1'
+  if (!bypass) {
+    const tsResult = await validateTurnstile(body.cf_turnstile_token, c.env.TURNSTILE_SECRET, ip)
+    if (!tsResult.ok) {
+      console.warn(`[Turnstile] FAIL ip=${ip} reason=${tsResult.reason}`)
+      return c.json({ error: 'turnstile_failed', reason: tsResult.reason }, 403)
+    }
+  }
+  // ─────────────────────────────────────────────────────────────
 
   const { product } = body
   let url = body.url

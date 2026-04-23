@@ -17,8 +17,8 @@
 ✅ D7 PROBE-REDESIGN-01 (04-24)
 ✅ D8 RIVALS-01 + GT-01 실측 (04-25)
 ✅ D9a 랜딩 리뉴얼 1차 (04-26)
-🔄 D9b 랜딩 리뉴얼 2차 (04-27) ← 다음
-⬜ D10 모바일 (04-28)
+✅ D9b LAND-TURNSTILE + /changelog.html (04-27)
+🔄 D10 모바일 (04-28) ← 다음
 🔴 D11 DEPLOY-GATE-01 + CEO 검증 → 프로덕션 (04-29)
 ```
 
@@ -97,6 +97,7 @@
 | D7 PROBE-REDESIGN-01 (04-24) | ✅ | probeCache.ts + probeRedesign.ts 신규. tsc+14test PASS. Notion 97.5/T1, pickedby.ai 55/T2 실측 |
 | D8 RIVALS-01 + GT-01 (04-25) | ✅ | /v1/rivals API + Rivals 탭(Sankey+Peers+Quadrant). GT-01 T1 3/3 80+ PASS. LH 91/89/100 |
 | D9a 랜딩 리뉴얼 1차 (04-26) | ✅ | LAND-SHIFT 1/2/6/7. Under The Hood 제거. Demo 4차원(55/87.5). Newsletter 섹션. FAQ 4차원. LH 96/90/100 |
+| D9b LAND-TURNSTILE + /changelog.html (04-27) | ✅ | turnstile.ts 신규. /v1/check Turnstile 검증 삽입(BYPASS=1). dashboard.html 위젯+CSP. changelog.html LH 100/90/100 |
 
 ---
 
@@ -104,7 +105,7 @@
 
 | 환경 | API | FE |
 |------|------|----|
-| 스테이징 | `94d0536b` (D8 RIVALS-01) | `8a57f45c` (D9a 랜딩 리뉴얼) |
+| 스테이징 | `3ae2095c` (D9b Turnstile) | `51f461a3` (D9b changelog+Turnstile FE) |
 | 프로덕션 | `1e52e42b` (TAVILY-CRON-LITE-01 선반영) | 변경 없음 |
 
 ---

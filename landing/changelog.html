@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com https://*.contentsquare.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://www.google-analytics.com https://www.googletagmanager.com; img-src 'self' data: https:; object-src 'none';" />
+  <title>Changelog — pickedby.ai</title>
+  <meta name="description" content="pickedby.ai product changelog — every update, release, and improvement to the AI Visibility Platform." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pickedby.ai/changelog.html" />
+  <!-- Google tag -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2H007YWM9F"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_personalization: 'denied' });
+    gtag('js', new Date());
+    gtag('config', 'G-2H007YWM9F');
+    if (localStorage.getItem('cookie_consent') === 'accepted') {
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+    }
+  </script>
+  <!-- Contentsquare -->
+  <script src="https://t.contentsquare.net/uxa/539b28e3d0a6f.js" async></script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --yellow: #FFD700;
+      --yellow2: #b39700;
+      --bg: #0a0a0a;
+      --text: #f5f5f5;
+      --muted: #888;
+      --border: #1e1e1e;
+      --surface: #111;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+
+    /* NAV */
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; background: var(--bg); z-index: 100;
+    }
+    .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: var(--yellow); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+    .nav-logo svg { flex-shrink: 0; }
+    .nav-links { display: flex; align-items: center; gap: 1.25rem; }
+    .nav-links a { color: #888; font-size: 0.9rem; text-decoration: none; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links .btn-dash {
+      color: #000; background: var(--yellow); padding: 0.45rem 1.1rem;
+      font-weight: 700; font-size: 0.88rem; letter-spacing: 0.03em;
+      text-decoration: none; box-shadow: 0 0 12px rgba(255,215,0,0.35);
+    }
+    .nav-links .btn-dash:hover { background: #ffe44d; color: #000; }
+
+    /* HERO */
+    .cl-hero {
+      max-width: 760px; margin: 0 auto; padding: 4rem 2rem 2rem;
+    }
+    .cl-eyebrow {
+      font-family: 'Press Start 2P', monospace; font-size: 0.5rem;
+      color: var(--yellow); letter-spacing: 0.15em; margin-bottom: 1rem;
+    }
+    .cl-title {
+      font-family: 'Press Start 2P', monospace; font-size: 1.15rem;
+      color: var(--text); line-height: 1.6; margin-bottom: 0.75rem;
+      text-shadow: 3px 3px 0 var(--yellow2);
+    }
+    .cl-sub {
+      font-size: 0.9rem; color: var(--muted); line-height: 1.6;
+    }
+
+    /* FEED */
+    .cl-feed {
+      max-width: 760px; margin: 0 auto; padding: 2rem 2rem 6rem;
+      display: flex; flex-direction: column; gap: 0;
+    }
+
+    /* ENTRY */
+    .cl-entry {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 0 2rem;
+      padding: 2rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .cl-entry:last-child { border-bottom: none; }
+    .cl-date-col {
+      padding-top: 0.15rem;
+    }
+    .cl-date {
+      font-family: 'Press Start 2P', monospace; font-size: 0.38rem;
+      color: var(--muted); letter-spacing: 0.08em; line-height: 1.8;
+    }
+    .cl-tag {
+      display: inline-block; margin-top: 0.5rem;
+      font-family: 'Press Start 2P', monospace; font-size: 0.32rem;
+      padding: 3px 6px; letter-spacing: 0.08em;
+    }
+    .cl-tag.feature { background: rgba(255,215,0,0.12); color: var(--yellow); border: 1px solid rgba(255,215,0,0.3); }
+    .cl-tag.improvement { background: rgba(100,200,100,0.1); color: #6ec96e; border: 1px solid rgba(100,200,100,0.25); }
+    .cl-tag.fix { background: rgba(100,150,255,0.1); color: #7aadff; border: 1px solid rgba(100,150,255,0.25); }
+    .cl-tag.infra { background: rgba(180,130,255,0.1); color: #c4a0ff; border: 1px solid rgba(180,130,255,0.25); }
+
+    .cl-content {}
+    .cl-version {
+      font-family: 'Press Start 2P', monospace; font-size: 0.38rem;
+      color: #444; letter-spacing: 0.1em; margin-bottom: 0.4rem;
+    }
+    .cl-entry-title {
+      font-size: 1.05rem; font-weight: 600; color: var(--text);
+      margin-bottom: 0.75rem; line-height: 1.4;
+    }
+    .cl-bullets {
+      list-style: none; display: flex; flex-direction: column; gap: 0.45rem;
+    }
+    .cl-bullets li {
+      font-size: 0.875rem; color: #bbb; line-height: 1.55;
+      padding-left: 1.25rem; position: relative;
+    }
+    .cl-bullets li::before {
+      content: '▶';
+      position: absolute; left: 0; top: 0;
+      color: var(--yellow); font-size: 0.55rem; top: 0.2rem;
+    }
+    .cl-bullets li strong { color: var(--text); }
+    .cl-note {
+      margin-top: 0.75rem; font-size: 0.78rem; color: #555;
+      font-style: italic; line-height: 1.5;
+    }
+
+    /* SUBSCRIBE CTA */
+    .cl-cta {
+      max-width: 760px; margin: 0 auto; padding: 0 2rem 5rem;
+    }
+    .cl-cta-box {
+      border: 1px solid var(--border); padding: 2rem;
+      background: var(--surface);
+    }
+    .cl-cta-head {
+      font-family: 'Press Start 2P', monospace; font-size: 0.55rem;
+      color: var(--yellow); letter-spacing: 0.12em; margin-bottom: 0.75rem;
+    }
+    .cl-cta-sub { font-size: 0.875rem; color: var(--muted); margin-bottom: 1.25rem; line-height: 1.6; }
+    .cl-cta-form { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .cl-cta-form input {
+      flex: 1; min-width: 220px; height: 42px; padding: 0 1rem;
+      font-size: 0.875rem; background: #0a0a0a;
+      border: 1.5px solid #333; color: var(--text); outline: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .cl-cta-form input:focus { border-color: var(--yellow); }
+    .cl-cta-form button {
+      height: 42px; padding: 0 1.25rem; background: var(--yellow); color: #000;
+      font-family: 'Press Start 2P', monospace; font-size: 0.38rem;
+      letter-spacing: 0.12em; border: none; cursor: pointer;
+      box-shadow: 3px 3px 0 var(--yellow2); white-space: nowrap;
+    }
+    .cl-cta-form button:hover { background: #ffe44d; }
+    #cl-confirm { display: none; margin-top: 0.75rem; font-size: 0.82rem; color: #6ec96e; }
+
+    /* MOBILE */
+    @media (max-width: 580px) {
+      .nav { padding: 1rem; }
+      .cl-hero, .cl-feed, .cl-cta { padding-left: 1rem; padding-right: 1rem; }
+      .cl-entry { grid-template-columns: 1fr; gap: 0.5rem; }
+      .cl-date-col { display: flex; align-items: center; gap: 0.75rem; }
+      .cl-tag { margin-top: 0; }
+      .cl-title { font-size: 0.85rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="/" class="nav-logo">
+    <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+    <span><span style="color:var(--yellow);">picked</span><span style="color:#fff;">by</span><span style="color:var(--yellow);">.ai</span></span>
+  </a>
+  <div class="nav-links">
+    <a href="/blog/">Blog</a>
+    <a href="/methodology/">How We Score</a>
+    <a href="/dashboard.html" class="btn-dash">Dashboard</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="cl-hero">
+  <div class="cl-eyebrow">▶ PRODUCT UPDATES</div>
+  <h1 class="cl-title">CHANGELOG</h1>
+  <p class="cl-sub">Every update, feature, and fix — in order. We build in public.</p>
+</div>
+
+<!-- FEED -->
+<div class="cl-feed">
+
+  <!-- D9b -->
+  <div class="cl-entry">
+    <div class="cl-date-col">
+      <div class="cl-date">2026-04-27</div>
+      <span class="cl-tag feature">FEATURE</span>
+    </div>
+    <div class="cl-content">
+      <div class="cl-version">D9B · v0.9b</div>
+      <div class="cl-entry-title">Bot Protection + Changelog Page</div>
+      <ul class="cl-bullets">
+        <li><strong>LAND-TURNSTILE</strong> — Cloudflare Turnstile integrated into /v1/check. Managed-mode widget (invisible for trusted users). 2-layer defense: Turnstile + rate limit.</li>
+        <li><strong>/changelog.html</strong> — This page. Full build history, reverse chronological.</li>
+        <li><strong>CSP hardened</strong> — challenges.cloudflare.com added to script/frame/connect allowlist.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- D9a -->
+  <div class="cl-entry">
+    <div class="cl-date-col">
+      <div class="cl-date">2026-04-26</div>
+      <span class="cl-tag feature">FEATURE</span>
+    </div>
+    <div class="cl-content">
+      <div class="cl-version">D9A · v0.9a</div>
+      <div class="cl-entry-title">Landing Renewal — 4-Dimension Demo + Newsletter</div>
+      <ul class="cl-bullets">
+        <li><strong>Hero Live Widget</strong> — direct check-from-landing, no page reload.</li>
+        <li><strong>Section reduction</strong> — 14 sections → 5. "Under The Hood" removed. Signal-to-noise improved.</li>
+        <li><strong>Demo Panel updated</strong> — real scan data. pickedby.ai 55/100. Notion 87.5/100. Scored across 4 dimensions.</li>
+        <li><strong>Newsletter section</strong> — weekly AI visibility digest. No spam, unsubscribe anytime.</li>
+        <li><strong>FAQ updated to 4-dimension model</strong> — Recognition 35 + Category 35 + CoRec 20 + Web 10 = 100.</li>
+        <li><strong>Audience language corrected</strong> — removed "creator-only" framing. Now: SaaS, D2C, agencies, launches.</li>
+        <li><strong>Badge Embed PREVIEW bug fixed</strong> — Shell mode sidebar navigation now correctly triggers updateBadgePreview().</li>
+      </ul>
+      <p class="cl-note">Lighthouse: Performance 96 / Accessibility 90 / SEO 100</p>
+    </div>
+  </div>
+
+  <!-- D8 -->
+  <div class="cl-entry">
+    <div class="cl-date-col">
+      <div class="cl-date">2026-04-25</div>
+      <span class="cl-tag feature">FEATURE</span>
+    </div>
+    <div class="cl-content">
+      <div class="cl-version">D8 · v0.8</div>
+      <div class="cl-entry-title">Rivals Tab + GT-01 Ground Truth Validation</div>
+      <ul class="cl-bullets">
+        <li><strong>Rivals tab</strong> — Sankey flow, Peers grid, Quadrant chart. See who AI recommends instead of you.</li>
+        <li><strong>/v1/rivals API</strong> — co-recommendation graph endpoint. Returns top competitors by AI mention frequency.</li>
+        <li><strong>GT-01 real measurement</strong> — Figma 95, Notion 87.5, Stripe 95. T1 3/3 products above 80. DEPLOY-GATE-01 #11 passed.</li>
+        <li><strong>Sankey fallback</strong> — graceful degradation when &lt;3 rivals detected.</li>
+      </ul>
+      <p class="cl-note">Lighthouse: Performance 91 / Accessibility 89 / SEO 100</p>
+    </div>
+  </div>
+
+  <!-- D7 -->
+  <div class="cl-entry">
+    <div class="cl-date-col">
+      <div class="cl-date">2026-04-24</div>
+      <span class="cl-tag improvement">IMPROVEMENT</span>
+    </div>
+    <div class="cl-content">
+      <div class="cl-version">D7 · v0.7</div>
+      <div class="cl-entry-title">Probe Redesign — Reverse 20-Questions (D-Type)</div>
+      <ul class="cl-bullets">
+        <li><strong>PROBE-REDESIGN-01</strong> — D-type reverse Socratic probe replaces flat keyword matching. AI gradually narrows toward your product from category → feature → brand.</li>
+        <li><strong>probeCache.ts</strong> — 24h TTL cache reduces redundant LLM calls by ~60%.</li>
+        <li><strong>probeRedesign.ts</strong> — standalone module with 14 unit tests passing.</li>
+        <li><strong>Real-world accuracy</strong> — Notion scored 97.5 (T1 confirmed). pickedby.ai scored 55 (T2, emerging).</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- D6 -->
+  <div class="cl-entry">
+    <div class="cl-date-col">
+      <div class="cl-date">2026-04-22</div>
+      <span class="cl-tag feature">FEATURE</span>
+    </div>
+    <div class="cl-content">
+      <div class="cl-version">D6 · v0.6</div>
+      <div class="cl-entry-title">Trend + Journey + Volume Tabs</div>
+      <ul class="cl-bullets">
+        <li><strong>Trend</strong> — Score history chart with 3 time windows: 30d / 12w / 12mo.</li>
+        <li><strong>Journey</strong> — 4-stage AI awareness timeline: Invisible → Noticed → Seen → Picked. Visual milestone tracker.</li>
+        <li><strong>Volume Metrics</strong> — 7 cards: total checks, streak, top score, category rank, co-rec count, web mentions, probe density.</li>
+        <li><strong>Chart.js integration</strong> — responsive line chart with gold accent, dark mode.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- D5 -->
+  <div class="cl-entry">
+    <div class="cl-date-col">
+      <div class="cl-date">2026-04-21</div>
+      <span class="cl-tag feature">FEATURE</span>
+    </div>
+    <div class="cl-content">
+      <div class="cl-version">D5 · v0.5</div>
+      <div class="cl-entry-title">Overview — Full 12-Section Dashboard</div>
+      <ul class="cl-bullets">
+        <li><strong>12 Overview sections</strong> — Score ring, Pass Indicator, 4-dimension bars, Engine Grades (GPT/Gemini/Claude/Grok/Perplexity), AI Probe log, Co-Rec grid, Category rank table, Web signals, Badge embed, Improvement tips, Quick re-check.</li>
+        <li><strong>Pass Indicator</strong> — 4-tier visual: 🏆 PERFECT (81+) / 🟢 STRONG (61+) / 🟡 EMERGING (36+) / 🔴 INVISIBLE (&lt;36).</li>
+        <li><strong>sum==final math guarantee</strong> — Recognition 35 + Category 35 + CoRec 20 + Web 10 = finalScore. 10/10 test cases verified.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- D4 -->
+  <div class="cl-entry">
+    <div class="cl-date-col">
+      <div class="cl-date">2026-04-18</div>
+      <span class="cl-tag feature">FEATURE</span>
+    </div>
+    <div class="cl-content">
+      <div class="cl-version">D4 · v0.4</div>
+      <div class="cl-entry-title">Dashboard Shell — 3-Panel Layout</div>
+      <ul class="cl-bullets">
+        <li><strong>Shell architecture</strong> — Left sidebar nav, center content panel, sticky top bar. State persisted in URL params.</li>
+        <li><strong>5 tabs</strong> — Overview, Trend, Rivals, Tools, Settings. Tab state survives page refresh.</li>
+        <li><strong>Quick Check modal</strong> — inline product check without leaving the dashboard.</li>
+        <li><strong>Domain Picker</strong> — dropdown of verified domains. One-click switch between products.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- D3 -->
+  <div class="cl-entry">
+    <div class="cl-date-col">
+      <div class="cl-date">2026-04-21</div>
+      <span class="cl-tag improvement">IMPROVEMENT</span>
+    </div>
+    <div class="cl-content">
+      <div class="cl-version">D3 · v0.3</div>
+      <div class="cl-entry-title">Domain Dropdown + Verification Flow</div>
+      <ul class="cl-bullets">
+        <li><strong>Domain Picker dropdown</strong> — verified domains appear as selectable items. Switching auto-loads last score.</li>
+        <li><strong>Ownership verification</strong> — meta tag + DNS TXT record methods. Verified badge (✓) displayed in sidebar.</li>
+        <li><strong>OWNER-ONLY-01</strong> — only verified products are tracked in history and shown in My Products panel.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- D2 -->
+  <div class="cl-entry">
+    <div class="cl-date-col">
+      <div class="cl-date">2026-04-18</div>
+      <span class="cl-tag feature">FEATURE</span>
+    </div>
+    <div class="cl-content">
+      <div class="cl-version">D2 · v0.2</div>
+      <div class="cl-entry-title">Onboarding + Auto-Check + 5× Retry</div>
+      <ul class="cl-bullets">
+        <li><strong>Onboarding flow</strong> — 3-step guided setup: product name → URL → verification. Progress saved between sessions.</li>
+        <li><strong>Auto-check on login</strong> — last registered product auto-checked on dashboard open.</li>
+        <li><strong>5× retry adapter</strong> — exponential backoff on AI probe failures. Reduces 429/timeout errors by ~72%.</li>
+        <li><strong>Daily Pulse email</strong> — score change notification, sent at 00:00 KST via Brevo SMTP.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- D1 -->
+  <div class="cl-entry">
+    <div class="cl-date-col">
+      <div class="cl-date">2026-04-18</div>
+      <span class="cl-tag infra">INFRA</span>
+    </div>
+    <div class="cl-content">
+      <div class="cl-version">D1 · v0.1</div>
+      <div class="cl-entry-title">DB Migration — BigPie 1.5 Schema</div>
+      <ul class="cl-bullets">
+        <li><strong>scores table</strong> — unified_v15 column added. Stores 4-dimension breakdown (Recognition, Category, CoRec, Web) alongside legacy score for backward compatibility.</li>
+        <li><strong>probe_logs table</strong> — per-engine probe results with template_id, recognized flag, tier classification.</li>
+        <li><strong>category_cache table</strong> — AI category lookup results cached per product. Reduces LLM calls by ~40%.</li>
+        <li><strong>Supabase RLS policies</strong> — row-level security enforced. Users can only read/write their own data.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- SUBSCRIBE CTA -->
+<div class="cl-cta">
+  <div class="cl-cta-box">
+    <div class="cl-cta-head">GET UPDATES IN YOUR INBOX</div>
+    <p class="cl-cta-sub">We ship fast. New features land weekly. Get the changelog + one actionable AI visibility tip every Friday.</p>
+    <form class="cl-cta-form" onsubmit="return clSubmit(event)">
+      <input type="email" id="cl-email" placeholder="your@email.com" required autocomplete="email" />
+      <button type="submit">SUBSCRIBE ▶</button>
+    </form>
+    <div id="cl-confirm">✅ You're in. First update arrives within 7 days.</div>
+  </div>
+</div>
+
+<script>
+function clSubmit(e) {
+  e.preventDefault()
+  const email = document.getElementById('cl-email')?.value?.trim()
+  if (!email) return false
+  fetch('https://api.pickedby.ai/v1/subscribe', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, source: 'changelog_subscribe' })
+  }).catch(() => {})
+  const confirm = document.getElementById('cl-confirm')
+  if (confirm) confirm.style.display = 'block'
+  e.target.reset()
+  return false
+}
+</script>
+
+</body>
+</html>
+<!-- D9b LAND-CHANGELOG-01: /changelog.html 신설 (2026-04-27, 데스크탑 Claude) -->

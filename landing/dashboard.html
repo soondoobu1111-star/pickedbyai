@@ -5,7 +5,7 @@
   <meta name="pickedby-site-verification" content="ngeyntm4zgjwawnrzwri" />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://static.cloudflareinsights.com https://*.contentsquare.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://api.pickedby.ai https://*.perceptdot.workers.dev https://*.supabase.co https://www.google-analytics.com https://www.google.com https://www.googletagmanager.com https://cdn.jsdelivr.net https://*.contentsquare.net https://*.contentsquare.com; worker-src 'self' blob:; img-src 'self' data: https:; frame-src https://*.contentsquare.net; object-src 'none';" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://static.cloudflareinsights.com https://*.contentsquare.net https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://api.pickedby.ai https://*.perceptdot.workers.dev https://*.supabase.co https://www.google-analytics.com https://www.google.com https://www.googletagmanager.com https://cdn.jsdelivr.net https://*.contentsquare.net https://*.contentsquare.com https://challenges.cloudflare.com; worker-src 'self' blob:; img-src 'self' data: https:; frame-src https://*.contentsquare.net https://challenges.cloudflare.com; object-src 'none';" />
   <title>Dashboard — pickedby.ai</title>
   <meta name="robots" content="noindex, nofollow" />
   <!-- Google tag (gtag.js) — Consent Mode v2 -->
@@ -22,6 +22,8 @@
   </script>
   <!-- Contentsquare (Hotjar) -->
   <script src="https://t.contentsquare.net/uxa/539b28e3d0a6f.js" async></script>
+  <!-- Cloudflare Turnstile (D9b LAND-TURNSTILE-01) — bot protection for /v1/check -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
@@ -453,6 +455,16 @@ body.shell-on .shell-scrim.open { display: block; }
     <div style="display:flex;flex-direction:column;gap:0.6rem;">
       <input id="input-product" class="input-field" placeholder="Product name (e.g. Notion Budget Tracker)" oninput="updateCheckBtn()" style="width:100%;box-sizing:border-box;" />
       <input id="input-url" class="input-field" placeholder="URL (optional)" oninput="updateCheckBtn()" style="width:100%;box-sizing:border-box;" />
+      <!-- Turnstile managed widget (D9b) — invisible for trusted users, challenge for bots -->
+      <div class="cf-turnstile"
+           data-sitekey="1x00000000000000000000AA"
+           data-callback="onTurnstileSuccess"
+           data-error-callback="onTurnstileError"
+           data-theme="dark"
+           data-size="flexible"
+           data-retry="auto"
+           data-refresh-expired="auto"
+           style="margin-top:0.25rem;"></div>
       <button class="btn-primary" id="btn-check" onclick="runCheck()" style="width:100%;padding:0.65rem;font-weight:700;">Check</button>
     </div>
     <div style="margin-top:0.85rem;padding-top:0.85rem;border-top:1px solid #1a1a1a;text-align:center;">
@@ -1281,6 +1293,17 @@ body.shell-on .shell-scrim.open { display: block; }
 
 <script>
   // ── Config ─────────────────────────────────────────────────
+  // ── Turnstile token management (D9b LAND-TURNSTILE-01) ──────
+  let _tsToken = null
+  function onTurnstileSuccess(token) { _tsToken = token }
+  function onTurnstileError() { _tsToken = null }
+  function getTurnstileToken() { return _tsToken }
+  function resetTurnstile() {
+    _tsToken = null
+    try { if (typeof turnstile !== 'undefined') turnstile.reset() } catch(_) {}
+  }
+  // ─────────────────────────────────────────────────────────────
+
   const IS_STAGING = window.location.hostname.includes('staging') || window.location.hostname === 'localhost'
   const SUPABASE_URL = IS_STAGING
     ? 'https://xzecybljfipmmzzzfnit.supabase.co'
@@ -1874,11 +1897,13 @@ body.shell-on .shell-scrim.open { display: block; }
     lastCheckResult = null
 
     try {
+      const tsToken = getTurnstileToken()
       const res = await fetch(`${API_URL}/v1/check`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product, url: url || undefined }),
+        body: JSON.stringify({ product, url: url || undefined, cf_turnstile_token: tsToken || undefined }),
       })
+      resetTurnstile()  // 토큰 1회용 — 사용 후 즉시 리셋
       const data = await res.json()
       showResult(data)
       // 빅파이 1.5: unified_v15(4차원 단일) 우선. probe_score/score 이원 폐기.
@@ -3499,11 +3524,13 @@ body.shell-on .shell-scrim.open { display: block; }
     const btn = document.getElementById(`refresh-btn-${idx}`)
     if (btn) { btn.disabled = true; btn.textContent = 'Refreshing...' }
     try {
+      const tsToken2 = getTurnstileToken()
       const res = await fetch(`${API_URL}/v1/check`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ product: name, url: url || undefined }),
+        body: JSON.stringify({ product: name, url: url || undefined, cf_turnstile_token: tsToken2 || undefined }),
       })
+      resetTurnstile()
       const data = await res.json()
       lastCheckResult = { product: name, url: url || null, score: data.score, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null }
       await autoSave(tag)
