@@ -3062,8 +3062,7 @@ body.shell-on .shell-scrim.open { display: block; }
 
     let data
     try {
-      const base = window.STAGING_MODE ? window.STAGING_API : (window.API_BASE || 'https://api.pickedby.ai')
-      const r = await fetch(`${base}/v1/rivals?product=${encodeURIComponent(product)}`)
+      const r = await fetch(`${API_URL}/v1/rivals?product=${encodeURIComponent(product)}`)
       data = r.ok ? await r.json() : { peers: [], engines: {}, category: null }
     } catch { data = { peers: [], engines: {}, category: null } }
 
