@@ -6,7 +6,33 @@
   },
 
   "competitive_landscape": {
-    "warning": "bizplan에서 '크리에이터 타겟 GEO 도구 = 0개'라고 했지만, 무료 체커가 다수 등장. 경쟁 환경 재평가 필요.",
+    "updated": "2026-04-07 심층 재조사 완료 (6회 검색). bizplan의 '크리에이터 타겟 GEO 도구 = 0개' 판단은 맞았음. 무료 체커 다수 존재하나 전부 '브랜드/회사' 타겟. 디지털 크리에이터 전용은 pickedby.ai뿐.",
+
+    "market_segments": {
+      "segment_1_enterprise_monitoring": {
+        "description": "기업/에이전시용 AI 가시성 모니터링 SaaS. SEMrush/Ahrefs 포지션.",
+        "our_market": false,
+        "players": ["Profound ($1B)", "Otterly", "GrackerAI", "Peec", "Scrunch AI"]
+      },
+      "segment_2_url_technical_audit": {
+        "description": "URL 입력 → robots.txt/schema/구조 기술 감사. 실제 AI 쿼리 안 함.",
+        "our_market": false,
+        "overlap": "부분 (같은 키워드 경쟁)",
+        "players": ["amivisibleonai", "Foglift", "Ahrefs 무료", "Semrush 무료"]
+      },
+      "segment_3_brand_name_checker": {
+        "description": "브랜드/회사명이 AI 답변에 언급되는지 체크. 가장 가까운 경쟁군.",
+        "our_market": "부분 겹침",
+        "key_difference": "전부 '회사/브랜드' 타겟. '디지털 제품 카테고리' 개념 없음.",
+        "players": ["WebTrek", "Omnia", "SearchScore", "llmclicks", "aeoengine"]
+      },
+      "segment_4_creator_ai_search_console": {
+        "description": "디지털 크리에이터 전용 AI 서치콘솔. 제품명+카테고리 기반.",
+        "our_market": true,
+        "players": ["pickedby.ai"],
+        "competitors": 0
+      }
+    },
 
     "tier1_enterprise": [
       {
