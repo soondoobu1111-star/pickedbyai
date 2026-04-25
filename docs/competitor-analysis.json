@@ -1,0 +1,250 @@
+{
+  "meta": {
+    "task": "경쟁사 분석 + 약점 분석 + 차별점 도출",
+    "created": "2026-04-07",
+    "context": "3개 AI 분석 피드백 + 웹 리서치 기반. 경쟁 환경이 bizplan 작성 시점(4/5)보다 훨씬 치열함 확인."
+  },
+
+  "competitive_landscape": {
+    "warning": "bizplan에서 '크리에이터 타겟 GEO 도구 = 0개'라고 했지만, 무료 체커가 다수 등장. 경쟁 환경 재평가 필요.",
+
+    "tier1_enterprise": [
+      {
+        "name": "Profound",
+        "url": "tryprofound.com",
+        "funding": "$155M total, $96M Series C (2026.02), $1B valuation",
+        "customers": "700+ enterprise, Fortune 500 10% (Target, Walmart, Figma)",
+        "pricing": "$99-$499+/mo (enterprise custom)",
+        "engines": "ChatGPT, Perplexity, Google SGE 등",
+        "queries": "대규모 (수천 개)",
+        "key_features": ["SOC 2 Type II", "콘텐츠 생성 도구", "프롬프트 볼륨 데이터", "인구통계별 분석"],
+        "weakness": "가격 ($499+ 진입점), 크리에이터 무시, 설정 복잡",
+        "threat_to_us": "낮음 — 우리 시장에 안 내려올 것 (혁신자의 딜레마)"
+      },
+      {
+        "name": "Scrunch AI",
+        "url": "scrunch.ai",
+        "pricing": "~$300/mo",
+        "engines": "8개",
+        "key_features": ["GA4 연동", "오정보 감지", "SOC 2", "AI 크롤러용 콘텐츠 변환"],
+        "weakness": "비싸고 기업 전용",
+        "threat_to_us": "낮음"
+      }
+    ],
+
+    "tier2_mid_market": [
+      {
+        "name": "Otterly.ai",
+        "url": "otterly.ai",
+        "pricing": "$29 (Lite, 10 prompts) / $189 (Standard) / $989 (Pro, 1000 prompts)",
+        "engines": "6개 (ChatGPT, Perplexity, Google AIO 등)",
+        "queries": "일일 자동 실행",
+        "key_features": ["모든 플랜에 전체 기능 제공(기능 차등 없음)", "브랜드 멘션 + 소스 인용 분리 추적", "경쟁사 모니터링"],
+        "g2_rating": "5.0/5.0",
+        "weakness": "최저 $29지만 10 prompts뿐. 크리에이터에겐 비쌈. 가입 필수.",
+        "threat_to_us": "중간 — $29 Lite가 우리 무료와 비교될 수 있음"
+      },
+      {
+        "name": "GrackerAI",
+        "url": "gracker.ai",
+        "pricing": "$39-$279/mo",
+        "engines": "9개 (Pro)",
+        "key_features": ["B2B SaaS 특화", "콘텐츠 생성 내장", "핀테크/규제 산업 모델"],
+        "weakness": "B2B SaaS 전용, 크리에이터 무관",
+        "threat_to_us": "낮음"
+      },
+      {
+        "name": "Peec.ai",
+        "url": "peec.ai",
+        "pricing": "$89-$499/mo",
+        "engines": "7개 중 3개 선택",
+        "key_features": ["115+ 언어 지원 (경쟁사 중 최고)", "프롬프트 추적"],
+        "weakness": "콘텐츠 최적화 없음, 갭 분석 없음",
+        "threat_to_us": "낮음"
+      }
+    ],
+
+    "tier3_free_tools": {
+      "warning": "이게 우리의 진짜 경쟁자들. 같은 '무료' 포지션.",
+      "competitors": [
+        {
+          "name": "Semrush AI Visibility Checker",
+          "url": "semrush.com/free-tools/ai-search-visibility-checker",
+          "pricing": "무료",
+          "backed_by": "Semrush ($2B+ 기업)",
+          "threat_to_us": "높음 — 대기업의 무료 도구. 브랜드 신뢰도 압도적"
+        },
+        {
+          "name": "Neil Patel AI Brand Visibility",
+          "url": "app.neilpatel.com/en/ai-search-visibility",
+          "pricing": "무료",
+          "backed_by": "Neil Patel 개인 브랜드",
+          "threat_to_us": "높음 — SEO 인플루언서 트래픽"
+        },
+        {
+          "name": "amivisibleonai.com",
+          "url": "amivisibleonai.com",
+          "pricing": "무료",
+          "method": "robots.txt/schema/구조 체크 (실제 AI 쿼리 아닌 기술 감사)",
+          "key_features": ["블로그 콘텐츠 SEO 강력", "가이드 제공", "0-100 점수 + 벤치마크"],
+          "threat_to_us": "중간 — 방식은 다르지만 같은 키워드 경쟁"
+        },
+        {
+          "name": "amionai.com",
+          "pricing": "무료",
+          "threat_to_us": "중간"
+        },
+        {
+          "name": "llmclicks.ai",
+          "pricing": "무료",
+          "threat_to_us": "중간"
+        },
+        {
+          "name": "Adobe LLMO Chrome Extension",
+          "pricing": "무료",
+          "method": "브라우저 익스텐션으로 실시간 체크",
+          "threat_to_us": "중간 — Gemini G1(익스텐션 전략)과 겹침"
+        }
+      ]
+    }
+  },
+
+  "honest_comparison": {
+    "description": "pickedby.ai vs 경쟁사 객관적 비교",
+    "table": {
+      "headers": ["항목", "pickedby.ai", "Otterly", "Profound", "Semrush무료", "amivisibleonai"],
+      "rows": [
+        ["가격", "무료", "$29-989", "$99-499+", "무료", "무료"],
+        ["가입 필요", "X", "O", "O", "O", "X"],
+        ["AI 엔진 수", "1 (Gemini)", "6", "다수", "?", "0 (기술감사)"],
+        ["쿼리 수", "3", "10-1000", "수천", "?", "0"],
+        ["대시보드", "X", "O", "O", "X", "X"],
+        ["히스토리", "X", "O (일일)", "O", "X", "X"],
+        ["경쟁자 추적", "X", "O", "O", "X", "X"],
+        ["콘텐츠 생성", "X", "X", "O", "X", "X"],
+        ["처방/가이드", "일반론", "X", "O", "?", "O (상세)"],
+        ["타겟", "크리에이터", "마케터", "Fortune 500", "SEO 전문가", "일반"],
+        ["배지 시스템", "O (계획)", "X", "X", "X", "X"],
+        ["페르소나", "계획 중", "X", "X", "X", "X"]
+      ]
+    }
+  },
+
+  "our_weaknesses": [
+    {
+      "id": "W1",
+      "name": "점수 신뢰성 — 3쿼리 1엔진",
+      "severity": "치명적",
+      "detail": "SparkToro 연구: 같은 쿼리 10번 → 언급률 20~80% 편차. 업계 최소 50쿼리/플랫폼. 우리는 3쿼리 1엔진 = 사실상 노이즈",
+      "counter": "쿼리 10개 × 3엔진으로 확대 + 결과에 신뢰구간 명시",
+      "source": "sparktoro.com/blog/new-research-ais-are-highly-inconsistent"
+    },
+    {
+      "id": "W2",
+      "name": "진단만 있고 처방 없음",
+      "severity": "높음",
+      "detail": "IH 피드백: '점수 18 받으면 기분만 나쁘고 뭘 해야 하는지 모른다'",
+      "counter": "Fix-It Playbook + llms.txt/Schema 자동생성 (plan 트랙 E)"
+    },
+    {
+      "id": "W3",
+      "name": "ROI 증명 불가",
+      "severity": "높음",
+      "detail": "점수 올리면 매출 오르는지 증명 데이터 없음. SearchEngineLand: 'UTM 트래킹을 봐라'",
+      "counter": "Deep-link UTM 자동 발급으로 AI 유입 전환 측정 (장기)"
+    },
+    {
+      "id": "W4",
+      "name": "무료 경쟁사 다수 등장",
+      "severity": "높음",
+      "detail": "Semrush, Neil Patel, amivisibleonai 등 무료 체커 존재. '무료'만으로는 차별점 아님",
+      "counter": "크리에이터 전용 + 페르소나 + 배지 + 네트워크 = 이들이 못 하는 것"
+    },
+    {
+      "id": "W5",
+      "name": "GEO 시장 자체 불확실성",
+      "severity": "중간",
+      "detail": "2025.09 기준 16%만 AI 검색 성과 체계적 추적. 시장이 아직 '필요한가?' 단계",
+      "counter": "통제 불가. 시장과 함께 성장. 타이밍은 3개 AI 만장일치 '최고'"
+    }
+  ],
+
+  "our_real_differentiation": {
+    "note": "무료, 무가입은 이제 차별점 아님 (Semrush도 무료). 진짜 차별점만 남김.",
+
+    "confirmed_differentiators": [
+      {
+        "id": "D1",
+        "name": "디지털 크리에이터 전용",
+        "detail": "모든 경쟁사는 '브랜드/회사' 타겟. Notion 템플릿, Gumroad 제품, AI 프롬프트 크리에이터를 위한 도구는 0개",
+        "defensibility": "높음 — 경쟁사는 더 높은 마진의 기업 고객에 집중 (혁신자의 딜레마)",
+        "status": "현재 랜딩에서 충분히 전달 안 됨 (ChatGPT가 2번 B2B로 오분류)"
+      },
+      {
+        "id": "D2",
+        "name": "카테고리 기반 분석",
+        "detail": "경쟁사는 전부 '브랜드명' 기반. 우리는 '디지털 제품 카테고리' 기반 (notion template, ai prompt 등)",
+        "defensibility": "중간",
+        "status": "현재 구현됨 (카테고리 드롭다운)"
+      }
+    ],
+
+    "planned_differentiators_critical": [
+      {
+        "id": "D3",
+        "name": "페르소나 라벨 시스템",
+        "detail": "AI Ghost 👻 / AI Champion 👑 — 숫자가 아닌 정체성. 16personalities 원리.",
+        "defensibility": "중간 — 카피 가능하지만 먼저 자리잡으면 표준",
+        "status": "P0 fix_1 — 미구현",
+        "uniqueness": "경쟁사 0개가 이걸 함"
+      },
+      {
+        "id": "D4",
+        "name": "Picked by AI ✓ 배지 생태계",
+        "detail": "크리에이터 사이트에 임베드되는 배지 → 바이럴 루프. ClickFunnels 배지 = MRR $1M+",
+        "defensibility": "높음 — 배지가 외부에 퍼지면 물리적 네트워크",
+        "status": "P1-1 — 미구현",
+        "uniqueness": "GEO 도구 중 배지 시스템 가진 곳 0개"
+      },
+      {
+        "id": "D5",
+        "name": "Creator Network",
+        "detail": "Verified Owner끼리 상호 리뷰/백링크 → AI 학습 데이터 풍부화 → 해자",
+        "defensibility": "매우 높음 — 관계는 카피 불가",
+        "status": "Phase 2-3 — 설계 단계",
+        "uniqueness": "GEO 도구 중 커뮤니티/네트워크 가진 곳 0개"
+      },
+      {
+        "id": "D6",
+        "name": "공개 프로필 페이지 (Glassdoor식)",
+        "detail": "체크된 모든 제품이 공개 페이지 = SEO 자산. 소유자가 Claim하러 옴",
+        "defensibility": "높음 — 먼저 인덱싱된 페이지 = 선점",
+        "status": "P0 fix_5 — 미구현",
+        "uniqueness": "무료 도구 중 이것 하는 곳 일부 있음 (amivisibleonai 블로그)"
+      }
+    ],
+
+    "not_differentiators_anymore": [
+      "무료 — Semrush, Neil Patel도 무료",
+      "무가입 — amivisibleonai도 무가입",
+      "10초 결과 — 대부분 30초 이내"
+    ]
+  },
+
+  "strategic_conclusion": {
+    "current_position": "크리에이터 전용 무료 GEO 도구라는 포지션은 유효하지만, '무료/무가입'만으로는 부족. 페르소나+배지+네트워크가 진짜 해자.",
+    "biggest_risk": "Semrush/Neil Patel 무료 도구가 크리에이터에게도 접근 가능. '무료'는 더 이상 차별점 아님.",
+    "biggest_opportunity": "경쟁사 중 누구도 (1) 페르소나 (2) 배지 생태계 (3) Creator Network를 안 하고 있음. 이 3개가 모이면 카피 불가능한 해자.",
+    "immediate_action": "P0(양동이 구멍 막기) + 점수 신뢰성 개선(W1) + 크리에이터 포지셔닝 명확화(D1)"
+  },
+
+  "sources": [
+    "https://otterly.ai/pricing",
+    "https://www.tryprofound.com/pricing",
+    "https://fortune.com/2026/02/24/exclusive-as-ai-threatens-search-profound-raises-96-million-to-help-brands-stay-visible/",
+    "https://sparktoro.com/blog/new-research-ais-are-highly-inconsistent-when-recommending-brands-or-products-marketers-should-take-care-when-tracking-ai-visibility/",
+    "https://www.amivisibleonai.com/",
+    "https://metricusapp.com/blog/ai-visibility-tools-worth-it-2026/",
+    "https://www.semrush.com/free-tools/ai-search-visibility-checker/"
+  ]
+}
