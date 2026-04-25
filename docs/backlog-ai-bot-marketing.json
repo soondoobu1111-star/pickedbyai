@@ -1,0 +1,139 @@
+{
+  "meta": {
+    "task": "AI platform marketing bots — backlog",
+    "created": "2026-04-07",
+    "context": "GPT 커스텀 봇 안에 자사 서비스 CTA를 삽입하는 마케팅 채널. 운세 GPT에서 발견한 전략을 pickedby.ai에 적용.",
+    "strategy_name": "AI Bot Funnel Marketing"
+  },
+
+  "concept": {
+    "what": "커스텀 AI 봇을 만들어서 무료 가치 제공 → 답변 끝에 자사 서비스 CTA 삽입",
+    "why": "Reddit/IH 같은 커뮤니티는 셀프 프로모션 적대적. AI 봇은 유저가 요청한 답변 안에 CTA가 있어 거부감 낮음",
+    "cost": "$0",
+    "reference": "aifortunedoctor.com — 타로 GPT에서 자사 사주 사이트로 유도 (utm_source=chatgpt&utm_medium=taro)"
+  },
+
+  "platforms": [
+    {
+      "platform": "ChatGPT GPTs (GPT Store)",
+      "market_share": "60.4% of AI chatbot usage (2026.03)",
+      "how": "GPT Builder로 커스텀 GPT 생성 → GPT Store에 공개",
+      "distribution": "GPT Store 검색 + SNS 공유 링크",
+      "monetization": "제한적 (revenue sharing 미미), CTA로 자사 사이트 유도가 핵심",
+      "effort": "1-2시간",
+      "priority": "P0 — 가장 큰 유저 풀",
+      "note": "GPT Store에 300만+ GPT 존재. 이름/설명 SEO 중요"
+    },
+    {
+      "platform": "Poe (by Quora)",
+      "market_share": "중간",
+      "how": "Poe Creator로 봇 생성 → 프롬프트에 CTA 삽입",
+      "distribution": "poe.com/{handle} 링크 공유 + Poe 내부 추천 알고리즘",
+      "monetization": "per-message 과금 가능 (수익화도 됨)",
+      "effort": "1시간",
+      "priority": "P1 — Quora 유저 기반 + 수익화 가능",
+      "note": "외부 트래픽 유입 → Poe 내부 추천 확률 증가"
+    },
+    {
+      "platform": "Coze (by ByteDance)",
+      "market_share": "성장 중 (아시아 강세)",
+      "how": "Coze에서 봇 빌드 → Discord/Telegram/Slack에 배포",
+      "distribution": "Coze Bot Store + 메신저 앱 배포 (Discord, Telegram, Slack, Feishu)",
+      "monetization": "현재 없음",
+      "effort": "1-2시간",
+      "priority": "P1 — 멀티 플랫폼 배포 가능 (Discord/Telegram)",
+      "note": "아시아(한국/일본) 크리에이터 타겟에 유리"
+    },
+    {
+      "platform": "Claude Projects",
+      "market_share": "성장 중",
+      "how": "Claude Project에 커스텀 지식 + 프롬프트 설정",
+      "distribution": "공유 링크 (제한적, Pro 유저만)",
+      "monetization": "없음",
+      "effort": "30분",
+      "priority": "P2 — 공유 제한적이지만 Pro 유저 = 고가치 타겟",
+      "note": "Artifacts로 시각적 결과물 가능"
+    },
+    {
+      "platform": "Gemini Gems",
+      "market_share": "Google 생태계",
+      "how": "Gemini에서 커스텀 Gem 생성",
+      "distribution": "Google 생태계 내 공유",
+      "monetization": "없음",
+      "effort": "30분",
+      "priority": "P2 — Google 유저 타겟",
+      "note": "Google 검색 연동 가능성"
+    },
+    {
+      "platform": "Discord Bot (자체)",
+      "market_share": "크리에이터 커뮤니티 집중",
+      "how": "Discord 봇으로 /check-ai-score 명령어 제공",
+      "distribution": "크리에이터 Discord 서버에 봇 초대",
+      "monetization": "없음 (유입 채널)",
+      "effort": "3-4시간 (개발 필요)",
+      "priority": "P2",
+      "note": "Notion 템플릿 크리에이터 Discord 서버 다수 존재"
+    },
+    {
+      "platform": "Telegram Bot",
+      "market_share": "글로벌 메신저",
+      "how": "Telegram Bot API로 체크 봇 생성",
+      "distribution": "Telegram 그룹/채널에 봇 공유",
+      "monetization": "없음 (유입 채널)",
+      "effort": "3-4시간 (개발 필요)",
+      "priority": "P3",
+      "note": "동유럽/아시아 크리에이터 타겟"
+    }
+  ],
+
+  "pickedbyai_bot_ideas": [
+    {
+      "name": "AI Visibility Checker",
+      "platform": ["GPT Store", "Poe"],
+      "hook": "제품명 입력 → AI 추천 가능성 간단 진단",
+      "cta": "더 정확한 점수는 pickedby.ai에서 무료로 확인",
+      "effort": "1시간"
+    },
+    {
+      "name": "Is My Product AI-Ready?",
+      "platform": ["GPT Store", "Coze"],
+      "hook": "URL 입력 → Schema/llms.txt 유무 체크 + 개선 팁 3개",
+      "cta": "자동 생성은 pickedby.ai에서",
+      "effort": "1시간"
+    },
+    {
+      "name": "AI SEO Quick Audit",
+      "platform": ["GPT Store", "Poe"],
+      "hook": "제품 URL → AI 엔진별 가시성 간단 분석",
+      "cta": "풀 리포트는 pickedby.ai에서",
+      "effort": "1시간"
+    },
+    {
+      "name": "Digital Product Name Tester",
+      "platform": ["GPT Store"],
+      "hook": "제품명의 AI 검색 친화성 평가 + 대안 제안",
+      "cta": "실제 AI 추천 점수는 pickedby.ai에서",
+      "effort": "30분"
+    }
+  ],
+
+  "execution_plan": {
+    "phase1_immediate": {
+      "do": "GPT Store에 'AI Visibility Checker' 1개 먼저 출시",
+      "time": "1-2시간",
+      "expected": "GPT Store 검색 유입 → pickedby.ai 트래픽"
+    },
+    "phase2_expand": {
+      "do": "Poe + Coze에 같은 봇 배포",
+      "time": "각 1시간",
+      "expected": "멀티 플랫폼 노출"
+    },
+    "phase3_optimize": {
+      "do": "UTM 파라미터로 어느 봇에서 유입되는지 추적",
+      "time": "30분",
+      "expected": "채널별 ROI 측정 → 잘 되는 곳에 집중"
+    }
+  },
+
+  "key_insight": "Reddit/IH는 '남의 땅에서 광고하는 것'이라 적대적. AI 봇은 '내 땅(봇)에서 가치 주고 유도하는 것'이라 자연스러움. 비용 $0, 리스크 0, 카르마 깎일 일 0."
+}
