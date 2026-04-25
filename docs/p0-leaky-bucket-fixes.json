@@ -1,0 +1,137 @@
+{
+  "meta": {
+    "task": "PRIORITY-0: Fix the leaky bucket before any marketing",
+    "created": "2026-04-07",
+    "context": "5,500명이 Reddit에서 왔지만 전원 이탈. 점수만 주고 잡을 장치가 0이었음. 트래픽은 증명됨. 양동이 구멍 막기가 최우선.",
+    "lesson_learned": "마케팅이 문제가 아니었다. 유저 캡처 구조가 없었던 것이 문제."
+  },
+
+  "evidence": {
+    "reddit_traffic": "5,500 views, 다수 댓글",
+    "site_visitors": "20명 남짓 (최근)",
+    "signups": 1,
+    "conversion": "5% (20명 중 1명 — 비율은 양호)",
+    "problem_validated": true,
+    "traffic_ability_validated": true,
+    "retention_validated": false,
+    "root_cause": "점수 체크 후 이메일/가입/공유 등 캡처 장치가 전무했음"
+  },
+
+  "priority_order": {
+    "description": "모든 기존 계획(트랙 A-E, 바이럴 전략, GPT 봇 등)보다 이게 먼저",
+    "order": [
+      "P0: 양동이 구멍 막기 (이 문서)",
+      "P1: 트랙 A 랜딩 카피 (plan-sleek-inspired.json)",
+      "P2: 트랙 B 입력폼 리디자인",
+      "P3: 모바일 UI 수정 (mobile-ui-fixes.json)",
+      "P4: 트래픽 재확보 (Reddit/PH/GPT봇 등)",
+      "P5: 바이럴 구조 (배지/리더보드/비교페이지)"
+    ]
+  },
+
+  "p0_fixes": {
+    "description": "다음 트래픽 유입 전에 반드시 완료해야 할 것들",
+    "deadline": "Product Hunt 출시(4/28) 전까지 필수",
+
+    "fix_1_persona_label": {
+      "name": "점수 → 페르소나 라벨 변환",
+      "priority": "CRITICAL",
+      "effort": "2시간",
+      "principle": "16personalities 원리 — 숫자가 아니라 정체성을 줘야 공유됨",
+      "implementation": {
+        "score_ranges": [
+          {"range": "0-20", "label": "AI Ghost", "emoji": "👻", "message": "AI doesn't know you exist"},
+          {"range": "21-40", "label": "AI Wallflower", "emoji": "🌸", "message": "AI has heard of you but ignores you"},
+          {"range": "41-60", "label": "AI Familiar", "emoji": "🤝", "message": "AI mentions you sometimes"},
+          {"range": "61-80", "label": "AI Favorite", "emoji": "⭐", "message": "AI regularly recommends you"},
+          {"range": "81-100", "label": "AI Champion", "emoji": "👑", "message": "AI loves your product"}
+        ],
+        "where": "결과 화면 점수 블록 바로 아래",
+        "display": "페르소나 라벨을 점수보다 더 크고 눈에 띄게 표시"
+      }
+    },
+
+    "fix_2_copyable_format": {
+      "name": "Wordle식 복사 가능한 결과 포맷",
+      "priority": "CRITICAL",
+      "effort": "1시간",
+      "principle": "Wordle 🟩🟨⬛ 원리 — 어디든 붙여넣으면 의미가 통하는 표준 포맷",
+      "implementation": {
+        "format": "AI Visibility: Ghost 👻 (23/100)\nG:❌ C:❌ P:❌ Cl:❌ W:✅\npickedby.ai",
+        "legend": "G=Google, C=ChatGPT, P=Perplexity, Cl=Claude, W=Web Reviews",
+        "button": "'COPY RESULT' 버튼 → 클릭 시 클립보드에 복사",
+        "where": "결과 화면, X 공유 버튼 옆 or 위"
+      }
+    },
+
+    "fix_3_email_capture": {
+      "name": "결과 화면 이메일 캡처 강화",
+      "priority": "CRITICAL",
+      "effort": "1시간",
+      "principle": "점수를 본 직후가 감정적 반응 최고점 = 전환 최적 타이밍",
+      "implementation": {
+        "current": "결과 하단에 이메일 입력 있지만 약함",
+        "change": "페르소나 라벨 바로 아래로 이동 + 카피 변경",
+        "copy_by_persona": {
+          "ghost": "Your product is invisible to AI. Get weekly progress reports as you fix it →",
+          "wallflower": "AI barely knows you. Track your visibility changes weekly →",
+          "familiar": "You're getting there. Monitor your AI mentions weekly →",
+          "favorite": "Nice! Keep your edge — get weekly competitor alerts →",
+          "champion": "You're on top. Get alerts if your ranking drops →"
+        },
+        "single_field": "이메일 1개만. 가입 폼 아님. 뉴스레터 구독 느낌."
+      }
+    },
+
+    "fix_4_share_image": {
+      "name": "SNS 공유용 이미지 자동 생성",
+      "priority": "HIGH",
+      "effort": "3시간",
+      "principle": "Spotify Wrapped 원리 — 시각적 카드가 텍스트보다 10배 공유됨",
+      "implementation": {
+        "generate": "Canvas API or 서버사이드로 결과 카드 이미지 자동 생성",
+        "content": "페르소나 이모지 + 라벨 + 점수 + 엔진별 결과 + pickedby.ai",
+        "style": "기존 픽셀아트 브랜드 스타일 (검정 배경 + 노란 텍스트)",
+        "download": "'DOWNLOAD CARD' 버튼으로 저장 → 인스타/X에 올리기 쉽게"
+      }
+    },
+
+    "fix_5_public_result_page": {
+      "name": "공개 결과 페이지 (Product-Led SEO)",
+      "priority": "HIGH",
+      "effort": "4시간",
+      "principle": "Glassdoor 원리 — 체크한 모든 제품이 공개 페이지 = SEO 자산",
+      "implementation": {
+        "url_format": "pickedby.ai/score/[product-name-slug]",
+        "content": "페르소나 + 점수 + 엔진별 결과 + '이 제품의 소유자인가요? Claim →'",
+        "seo": "각 페이지가 '[product name] AI visibility' 키워드로 인덱싱",
+        "viral_mechanic": "소유자가 아닌 사람도 체크 가능 → 제품이 공개됨 → 소유자가 와서 Claim",
+        "db_required": "Supabase에 결과 저장 필요"
+      }
+    }
+  },
+
+  "expected_impact": {
+    "scenario": "다음에 5,500명이 왔을 때",
+    "without_fixes": "5,500명 전원 이탈 (이전과 동일)",
+    "with_fixes": {
+      "email_capture_5_percent": "275명 이메일 확보",
+      "sns_share_2_percent": "110개 공유 → 2차 유입",
+      "public_pages": "체크된 제품 수백 개 → Google 인덱싱 → 장기 오가닉 트래픽",
+      "persona_viral": "'나 AI Ghost래 👻' 밈화 가능성"
+    }
+  },
+
+  "desktop_prompt": "docs/p0-leaky-bucket-fixes.json을 읽어. 이게 모든 작업 중 최우선이야. plan-sleek-inspired.json의 트랙 A-E보다 이게 먼저. fix_1부터 fix_5까지 순서대로 구현해줘. Product Hunt 출시(4/28) 전까지 최소 fix_1~3은 완료해야 해. 현재 landing/index.html의 결과 화면 코드를 먼저 확인하고 판단 후 진행.",
+
+  "viral_principles_reference": {
+    "note": "아래 5가지 원리는 P0 수정 완료 후 P5 단계에서 본격 적용",
+    "principles": [
+      {"name": "정체성 라벨", "ref": "16personalities", "applied_in": "fix_1"},
+      {"name": "복사 가능한 포맷", "ref": "Wordle", "applied_in": "fix_2"},
+      {"name": "혼자 못 쓰는 구조", "ref": "Calendly", "applied_in": "fix_5 (경쟁자 비교)"},
+      {"name": "시간 이벤트", "ref": "Spotify Wrapped", "applied_in": "월간 AI Report (P5)"},
+      {"name": "비자발적 노출", "ref": "Glassdoor", "applied_in": "fix_5 (공개 프로필)"}
+    ]
+  }
+}
