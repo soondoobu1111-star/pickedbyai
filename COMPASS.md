@@ -30,7 +30,7 @@
 
 | 파일 | 내용 | 변경 조건 |
 |------|------|---------|
-| [`docs/bigpie-v1.5.md`](docs/bigpie-v1.5.md) | 제품 전략 마스터 · 스코어 설계 · MLP 훅 · DEPLOY-GATE | 주요 전략 변경 시 |
+| [`docs/bigpie-v1.6.md`](docs/bigpie-v1.6.md) | 제품 전략 마스터 · Growth Loop · 처방 엔진 · 선순환 | 주요 전략 변경 시 |
 | [`docs/whitepaper.md`](docs/whitepaper.md) | 투자자·외부용 · Moat 전략 · 시장 래더 | Phase 전환 시 |
 | [`docs/bizplan.md`](docs/bizplan.md) | 사업계획서 · 마일스톤 · 경쟁사 | 분기 1회 |
 | [`docs/vision-brief-v2.md`](docs/vision-brief-v2.md) | 비전 v2.0 · 배포 전략 · 랜딩 카피 방향 | 피벗 시만 |

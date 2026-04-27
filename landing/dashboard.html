@@ -2171,7 +2171,9 @@ body.shell-on .shell-scrim.open { display: block; }
     const passIcon  = passIcons[unified.pass_indicator]  || '🔴'
     const passLabel = passLabels[unified.pass_indicator] || 'INVISIBLE'
     const gradeColors = { A: '#4ade80', B: '#86efac', C: '#FFD700', D: '#f59e0b', F: '#555' }
-    const enginesHtml = (unified.engine_grades || []).map(eg => {
+    let __egArr = unified.engine_grades || []
+    if (!Array.isArray(__egArr)) { try { __egArr = Object.entries(__egArr).map(([k,v]) => ({ engine:k, grade:v?.recognized?'B':'F', description:v?.recognized?'Recognized':'Not recognized' })) } catch { __egArr = [] } }
+    const enginesHtml = __egArr.map(eg => {
       const color = gradeColors[eg.grade] || '#555'
       const name = (eg.engine || '').charAt(0).toUpperCase() + (eg.engine || '').slice(1)
       return `
@@ -2349,9 +2351,13 @@ body.shell-on .shell-scrim.open { display: block; }
       }).join('')
     }
 
-    // Section 4 · Engine Grades
+    // Section 4 · Engine Grades (방어: 배열이 아닌 경우 변환)
     const gradeColors = { A: '#4ade80', B: '#86efac', C: '#FFD700', D: '#f59e0b', F: '#555' }
-    const engines = unified.engine_grades || []
+    let engines = unified.engine_grades || []
+    if (!Array.isArray(engines)) {
+      // 객체 형태 {perplexity:{recognized:true},...} → 배열로 변환
+      try { engines = Object.entries(engines).map(([k,v]) => ({ engine: k, grade: v?.recognized ? 'B' : 'F', description: v?.recognized ? 'Recognized' : 'Not recognized' })) } catch { engines = [] }
+    }
     const egWrap = document.getElementById('d5-engine-grades')
     if (egWrap) {
       if (engines.length === 0) {
@@ -4805,7 +4811,11 @@ body.shell-on .shell-scrim.open { display: block; }
     if (lbl) lbl.textContent = name
     const menu = document.getElementById('shell-domain-menu')
     if (menu) menu.style.display = 'none'
+    // 모든 pane을 선택된 제품으로 갱신
     if (typeof renderD5Overview === 'function') renderD5Overview()
+    if (typeof loadTrendPane === 'function') try { loadTrendPane(name, trendCurrentTab || 'daily') } catch(e) {}
+    if (typeof loadRivalsPane === 'function') try { loadRivalsPane(name) } catch(e) {}
+    if (typeof renderJourneyPane === 'function') try { renderJourneyPane() } catch(e) {}
   }
 
   // Close domain menu on outside click

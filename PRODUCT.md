@@ -1,29 +1,31 @@
 # pickedby.ai — PRODUCT (현재 상태 단일 소스)
-> **TIER 1 파일** | 최종 갱신: 2026-04-23 | 300줄 제한
+> **TIER 1 파일** | 최종 갱신: 2026-04-29 | 300줄 제한
 > CEO가 이 파일 하나로 현재 상태 전부 파악 가능해야 한다.
-> **상세 전략**: `docs/bigpie-v1.5.md` | **투자자용**: `docs/whitepaper.md`
+> **상세 전략**: `docs/bigpie-v1.6.md` | **투자자용**: `docs/whitepaper.md`
 
 ---
 
-## 1. 한 줄 정의 (불변)
+## 1. 한 줄 정의 (v1.6 — 2026-04-29)
 
-**"AI 추천 시대의 서치콘솔 — 5대 AI(GPT·Gemini·Claude·Grok·Perplexity)가 내 제품·콘텐츠를 추천하는지 측정·분석·최적화하는 플랫폼"**
+**"AI 추천 시대의 성장 코치 — 5대 AI(GPT·Gemini·Claude·Grok·Perplexity)가 내 제품·콘텐츠를 추천하는지 측정하고, 왜 안 되는지 진단하고, 어떻게 하면 되는지 처방하는 플랫폼"**
 
-- **측정 단위**: 제품(SaaS·Gumroad·Etsy) + 콘텐츠(블로그·YouTube·뉴스레터) + 퍼스널 브랜드
-- **카테고리 야망**: AI Visibility Platform 카테고리 리더 (GSC/GA4가 구글에 그러하듯)
-- **포지셔닝**: "The Google Stack for AI Recommendations" (Search Console → Analytics → Ads)
+- **정체성**: 체중계(BMI)가 아닌 퍼스널 트레이너(성장 코치)
+- **측정 단위**: 제품 + 콘텐츠 + 퍼스널 브랜드
+- **핵심 전환**: 점수가 낮을수록 서비스 가치가 높아지는 구조 (소상공인/신생기업 최적화)
+- **비전**: "The Google Stack for AI Recommendations" + **6-Stage Growth Loop**
 
 ---
 
 ## 2. 현재 Phase
 
 ```
-✅ Phase 1 (Search Console): 완성
-   → 4차원 스코어 + Daily Pulse + Trend/Journey/Volume/Overview 12FULL
-🔄 Phase 1.5 (완성 + 마케팅): 진행 중
-   → D7~D11 스프린트 (04-24~04-29) + DEPLOY-GATE-01
-🔜 Phase 2 (Analytics): D11 이후
-🔮 Phase 3 (Ads Platform): 2027
+✅ Phase 1 (Measure): 완성 + 프로덕션 라이브 (2026-04-29)
+   → 4차원 스코어 + Daily Pulse + Trend/Journey/Volume/Overview
+✅ Phase 1.5 (DEPLOY-GATE-01 12/13 PASS): 프로덕션 배포 완료
+   → API a5364d01 / FE 08eaf258 / Gemini 8492488f
+🔄 Phase 2 (Growth Loop): 빅파이 1.6 — 진행 예정 (05-01~)
+   → 처방 엔진 + 이행 추적 + 보상 + 바이럴 (6-Stage Loop)
+🔮 Phase 3 (Optimize): 2027
 ```
 
 ---
@@ -87,12 +89,13 @@
 
 ## 7. 배포 현황
 
-| 환경 | API | FE |
-|------|------|------|
-| 스테이징 | `4fc2f190` | `e61011c3` |
-| 프로덕션 | `1e52e42b` (TAVILY-CRON-LITE-01 선반영) | 변경 없음 |
+| 환경 | API | FE | Gemini |
+|------|------|------|--------|
+| 프로덕션 | `a5364d01` | `08eaf258` | `8492488f` |
+| 스테이징 | `30f38fdf` | `c1689d12` | — |
 
-**🔴 DEPLOY-GATE-01 통과 전 프로덕션 추가 배포 금지** (CEO 확정 2026-04-21)
+**✅ DEPLOY-GATE-01 12/13 PASS (2026-04-29)** — #4 이메일 보류 → Phase 2
+**🔖 복구포인트**: `stable-20260429-pre-prod-deploy` (`d1ca6e7`)
 
 ---
 
@@ -128,16 +131,18 @@
 
 ---
 
-## 10. Moat 전략 요약
+## 10. Moat 전략 요약 (v1.6)
 
 ```
-Layer 1: Score Tracker — 추이 데이터 쌓으면 경쟁사로 못 감
+Layer 0: Prescription Effectiveness Data — 처방 효과 데이터 (복제 불가)
+Layer 1: Score Tracker — 추이 데이터 쌓으면 떠날 수 없다
 Layer 2: SDK — 코드 심으면 제거가 두렵다
-Layer 3: Creator Graph — 카테고리 벤치마크 데이터는 돈으로 못 삼
+Layer 3: Creator Graph — 카테고리 벤치마크 = 돈으로 못 삼
 
-Flywheel: 배지 embed → AI 크롤링 → pickedby.ai = 신뢰 소스 → 더 많은 배지
+Growth Flywheel: 측정 → 처방 → 실행 → 점수상승 → 공유 → 친구가입 → ...
++ 처방 효과 데이터 축적 → 더 정확한 처방 → 선순환
 
-🔴 진짜 Moat = probe_logs 누적 데이터 (매일 쌓이는 복제 불가 자산)
+🔴 진짜 Moat = probe_logs + prescription_effectiveness (유저가 많을수록 강해짐)
 ```
 
 ---
@@ -155,6 +160,8 @@ Flywheel: 배지 embed → AI 크롤링 → pickedby.ai = 신뢰 소스 → 더 
 | 2026-04-21 | DEPLOY-GATE-01 (프로덕션 배포 게이트) | ✅ |
 | 2026-04-22 | probe_logs + Volume Metrics (빅파이 1.5.1) | ✅ |
 | 2026-04-23 | 모두의 창업 2026 지원 완료 | ✅ |
+| 2026-04-29 | D11 DEPLOY-GATE-01 12/13 PASS + 프로덕션 배포 | ✅ |
+| 2026-04-29 | **빅파이 1.6 Growth Loop** (측정→처방→선순환) | ✅ |
 
 ---
 

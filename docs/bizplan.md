@@ -1,13 +1,14 @@
 # pickedby.ai (PBA) 사업계획서
-> 최종 업데이트: **2026-04-23** (빅파이 1.5.1 Volume Metrics 반영 · Founding Creator 100 베타 · DEPLOY-GATE-01 현황 · X 채널 영구 포기 반영) | 기반: pickedby_ai_full_report.json + whitepaper.md + vision-brief-v2.md
+> 최종 업데이트: **2026-04-29** (빅파이 1.6 Growth Loop · 처방 엔진 · Phase 2 재정의 · 프로덕션 배포 완료)
+> **전략 마스터 문서**: `pickedbyAI/docs/bigpie-v1.6.md` (Growth Loop + 처방 엔진)
 > **전략 상위 문서**: `pickedbyAI/docs/whitepaper.md` (Moat 전략, 시장 래더, 가설 검증 포함)
 > **비전 진실 소스**: `pickedbyAI/docs/vision-brief-v2.md` (v2.0 — Google Stack 비전)
 
 ---
 
-## 1. 한 줄 정의 (2026-04-21 최종)
+## 1. 한 줄 정의 (2026-04-29 v1.6 최종)
 
-**"AI 추천 시대의 서치콘솔 — 5대 AI(GPT·Gemini·Claude·Grok·Perplexity)가 내 제품·콘텐츠를 추천하는지 측정·분석·최적화하는 플랫폼"**
+**"AI 추천 시대의 성장 코치 — 5대 AI(GPT·Gemini·Claude·Grok·Perplexity)가 내 제품·콘텐츠를 추천하는지 측정하고, 왜 안 되는지 진단하고, 어떻게 하면 되는지 처방하는 플랫폼"**
 
 > 🔴 **5대 AI 커버 원칙 (2026-04-21 CEO 확정)**: 외부 카피는 항상 5대 AI 전체를 표기합니다. 특정 1~2개 엔진만 언급해 "한정 도구"로 오독되는 것을 막기 위함입니다.
 
@@ -35,13 +36,14 @@ GPT · Gemini · Claude · Grok · Perplexity 등 주요 AI가 쇼핑·콘텐츠
 
 **pickedby.ai** = 누구나 URL/제품명/콘텐츠 주소를 입력하면:
 
-1. **10초 무료**: AI 추천 여부 + AI Visibility Score (0-100, 4차원 단일 체계)
-2. **즉시 진단**: 4개 차원 — Recognition 35 + Category 35 + Co-Recommendation 20 + Web Authority 10 = 100점 (빅파이 1.5 확정)
-3. **배지**: Pass Indicator (🏆 PERFECT / 🟢 STRONG / 🟡 EMERGING / 🔴 INVISIBLE) + Gold/Silver/Bronze 배지 발급
-4. **일일 자동 측정**: cron KST 00:00 자동 실행 → Daily Pulse 카드 + Movement Feed
-5. **원클릭 처방**: llms.txt 자동 생성, 4개 Sources 풀셋 진단 (sitemap/rss/robots/llms — 빅파이 1.5.2)
-6. **Volume Metrics (빅파이 1.5.1)**: probe_logs 기반 7지표 누적 (멘션 횟수·인식률·카테고리 등장 횟수·인용 사이트 수·소스 다양성·CoRec 연결도·총 probe 횟수) — 점수(상대)와 볼륨(절대) 이원 진단
-7. **알림**: 내 제품·콘텐츠가 AI에서 언급되면 이메일 알림 (Phase 2)
+1. **10초 무료 측정**: AI Visibility Score (0-100, 4차원 단일 체계) — 즉각 결과
+2. **진단 리포트 (v1.6)**: "Gemini가 당신을 모릅니다. 경쟁사 Semrush가 대신 추천됩니다." — **왜** 이 점수인지 설명
+3. **처방 3가지 (v1.6)**: "PH에 런치하세요 (+15점 예상)" / "Reddit r/SaaS 댓글 5개 (+8점)" / "llms.txt 추가 (+5점)" — **뭘 해야 하는지** 구체적 행동 가이드
+4. **이행 추적 (v1.6)**: "PH 런치했습니다 ✓" → 다음 체크 시 "+12점! 처방 효과 확인" — 결과 증명
+5. **성장 리포트 + 바이럴 (v1.6)**: "3주만에 27→68!" 1-click 공유 → LinkedIn/Reddit → 친구 가입 → Growth Loop
+6. **배지**: Pass Indicator + Gold/Silver/Bronze 배지 발급
+7. **일일 자동 측정**: cron KST 00:00 → Daily Pulse + 처방 Top 1 이메일
+8. **Volume Metrics**: probe_logs 기반 7지표 누적 — 점수(상대) + 볼륨(절대) 이원 진단
 
 ---
 
@@ -144,16 +146,26 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 - 셀럽 DM 5건 (Marc Lou, Easlo, Tony Dinh, Arvid Kahl, Pat Walls)
 - AlternativeTo 등록 / GEO 디렉토리 등록
 
-### Phase 2 (1-3개월): 핵심 제품 확장 + Moat Layer 1
-- **MOAT-01 Score Tracker**: 주간 자동 체크 + 추이 차트 (시계열 Lock-in)
-- **MOAT-02 SDK v0.1**: dynamic badge + impression 카운트 (코드 임베딩 전환비용)
-- LLM-01~04 인사이트 (점수 해석, 경쟁사 비교, llms.txt 생성, 개선 조언)
-- DEEP-01 딥링크 생성/추적 (bit.ly 패턴 — 데이터 해자)
-- NOTIF-01 AI 추천 알림 (Linktree 패턴 — 불가능했던 가치)
-- GA4-01/02 Google OAuth2 + GA4 AI 채널 트래픽 연동
-- FEAT-01/02 llms.txt/Schema.org 자동 생성 (무료)
-- FEAT-03 주간 리포트 이메일 (GA4 데이터 포함)
-- PAY-01 DodoPay 결제 연동 + Creator $19 플랜 공개
+### Phase 2 (1개월, 빅파이 1.6): Growth Loop 구축 — 처방 + 선순환
+
+**Phase 2a (Week 1)**: 처방 엔진 + Actions Pane UI
+- **PRESCRIPTION-01~03**: prescriptionEngine.ts (20규칙 세트) + /v1/check 확장 + Actions Pane 재설계
+- **GAP-01**: 다음 티어까지 Gap 시각화 + 경쟁사 벤치마크
+
+**Phase 2b (Week 2)**: 이행 추적 + 이메일
+- **TRACKING-01**: /v1/events 활성화 + 처방 이행 체크리스트
+- **PULSE-EMAIL-01**: Daily Pulse + 처방 Top 1 이메일 (Brevo)
+
+**Phase 2c (Week 3)**: 보상 + 바이럴
+- **REWARD-01**: Milestones 배지 10종 + Streak 시스템
+- **GROWTH-REPORT-01**: 성장 리포트 + 1-click 공유 카드
+- **VIRAL-01**: LinkedIn/Reddit 공유 템플릿
+
+**Phase 2d (Week 4)**: 처방 정확도 + 배포
+- **EFFECT-01**: 처방 효과 데이터 분석
+- **DEPLOY-GATE-02**: CEO 검증 + 프로덕션 배포
+
+- PAY-PB-01: Paddle 결제 연동 + Creator $19 플랜 공개
 - 목표: MRR $1,900
 
 ### Phase 3 (3-12개월): 플랫폼화 + Moat Layer 2~3
@@ -255,15 +267,17 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 | 2026-04-21 | 모두의 창업 지원서 초안 완성 | ✅ |
 | 2026-04-22 | D6 Trend+Journey+Volume 풀셋 구현 (빅파이 1.5.1) | ✅ |
 | 2026-04-23 | TAVILY-CRON-LITE-01 프로덕션 예외 선반영 (크레딧 보호) | ✅ |
-| **스테이징** | **API `4fc2f190` · FE `e61011c3`** | **현재** |
-| **프로덕션** | **API `1e52e42b` · FE 변경 없음** | **현재** |
-| 2026-04-24 | D7 PROBE-REDESIGN-01 | 예정 |
-| 2026-04-25 | D8 Rivals + GT-01 실측 | 예정 |
-| 2026-04-26~27 | D9 랜딩 리뉴얼 | 예정 |
-| 2026-04-28 | D10 모바일 | 예정 |
-| 2026-04-29 | D11 DEPLOY-GATE-01 + CEO 검증 → **프로덕션 배포 🔴** | 예정 |
-| 2026-05-15 | 모두의 창업 지원서 제출 마감 | 예정 |
-| 2026-05-31 | 이메일 1,000개 목표 / Product Hunt 런칭 (100개 달성 후) | 예정 |
+| 2026-04-24 | D7 PROBE-REDESIGN-01 | ✅ |
+| 2026-04-25 | D8 Rivals + GT-01 실측 (T1 3/3 80+ PASS) | ✅ |
+| 2026-04-26~27 | D9 랜딩 리뉴얼 + Turnstile + /changelog | ✅ |
+| 2026-04-28 | D10 모바일 반응형 | ✅ |
+| 2026-04-29 | D11 DEPLOY-GATE-01 12/13 PASS → **프로덕션 배포 완료** | ✅ |
+| **프로덕션** | **API `a5364d01` · FE `08eaf258` · Gemini `8492488f`** | **✅ LIVE** |
+| 2026-04-29 | **빅파이 1.6 Growth Loop 전략 확정** (CEO 승인) | ✅ |
+| 2026-05 W1~2 | **Phase 2a/b: 처방 엔진 + 이행 추적 + 이메일** | 예정 |
+| 2026-05 W3 | **Phase 2c: 배지 + 성장 리포트 + 바이럴** | 예정 |
+| 2026-05-15 | 모두의 창업 결과 통보 | 예정 |
+| 2026-05-31 | 이메일 1,000개 목표 / Product Hunt 런칭 | 예정 |
 | 2026-06-01 | Founding Creator 100 베타 + Paddle 결제 오픈 | 예정 |
 | 2026-07-01 | Phase 2 유료 전환, MRR $1,900 목표 | 예정 |
 
@@ -292,16 +306,19 @@ SEO가 "1위 보장 못 하는데" $1,070억 시장인 것과 동일 구조.
 
 ---
 
-## 14. Moat 전략 요약
+## 14. Moat 전략 요약 (v1.6 업데이트)
 
-> 상세: `whitepaper.md` 3장 참조
+> 상세: `whitepaper.md` 3장 + `bigpie-v1.6.md` §5 참조
 
 ```
+Layer 0: Prescription Effectiveness Data — 처방 효과 데이터 = 복제 불가 자산 (v1.6 신규)
 Layer 1: Score Tracker (시계열 Lock-in) — 추이 데이터를 쌓으면 떠날 수 없다
 Layer 2: SDK (코드 임베딩 전환비용) — 코드를 심으면 제거가 두렵다
 Layer 3: Creator Graph (네트워크 벤치마크) — 이 데이터는 돈으로 살 수 없다
 
-Flywheel: 배지 embed → AI 크롤링 → 학습 데이터 → pickedby.ai = 신뢰 소스 → 더 많은 배지
+Growth Flywheel (v1.6):
+유저 측정 → 처방 실행 → 점수 상승 → 성장 리포트 → 공유 → 친구 가입 → ...
++ 처방 효과 데이터 축적 → 더 정확한 처방 → 더 높은 성공률 → 더 강한 입소문
 ```
 
 ---

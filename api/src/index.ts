@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { buildDimensionContext, computeUnified, computeUnifiedD7 } from './unifiedScoreAdapter'
 import type { UnifiedScoreResult } from './unifiedScore'
-import { getSbUrl, SUPABASE_URL_STAGING as SB_URL_STAGING } from './supabaseEnv'
+import { getSbUrl, SUPABASE_URL_PROD, SUPABASE_URL_STAGING as SB_URL_STAGING } from './supabaseEnv'
 import {
   recordCheckResult,
   fetchDueRetries,
@@ -10,6 +10,8 @@ import {
   type SingleCheckResult,
 } from './retryAdapter'
 import { validateTurnstile } from './turnstile'
+import { generatePrescription } from './prescriptionEngine'
+import type { PrescriptionResult } from './prescriptionEngine'
 
 type Bindings = {
   BREVO_API_KEY: string
@@ -29,7 +31,7 @@ type Bindings = {
   TURNSTILE_BYPASS?: string    // '1' = 우회 (로컬 개발 / 롤백 시)
 }
 
-const SUPABASE_URL = 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
+// DEPRECATED: 하드코딩 제거 완료. getSbUrl(env) + SUPABASE_URL_PROD(supabaseEnv.ts) 사용.
 
 type CheckResult = {
   label: string
@@ -768,7 +770,7 @@ async function getCoRecommendations(env: Bindings, productName: string): Promise
   if (!env.SUPABASE_SERVICE_KEY) return []
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/probe_logs?product_id=eq.${encodeURIComponent(productName)}&select=co_recommendations&order=created_at.desc&limit=200`,
+      `${getSbUrl(env)}/rest/v1/probe_logs?product_id=eq.${encodeURIComponent(productName)}&select=co_recommendations&order=created_at.desc&limit=200`,
       { headers: { 'apikey': env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${env.SUPABASE_SERVICE_KEY}` } }
     )
     if (!res.ok) return []
@@ -800,7 +802,7 @@ async function getProbeScore(env: Bindings, productName: string): Promise<{
   if (!env.SUPABASE_SERVICE_KEY) return empty
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/probe_logs?product_id=eq.${encodeURIComponent(productName)}&select=ai_source,recognized&order=created_at.desc&limit=100`,
+      `${getSbUrl(env)}/rest/v1/probe_logs?product_id=eq.${encodeURIComponent(productName)}&select=ai_source,recognized&order=created_at.desc&limit=100`,
       { headers: { 'apikey': env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${env.SUPABASE_SERVICE_KEY}` } }
     )
     if (!res.ok) return empty
@@ -981,7 +983,16 @@ app.post('/v1/check', async (c) => {
     }
   }
 
-  return c.json({ ...engineResult, ...probeData, co_recommendations_top: coRecs, unified_v15: unifiedV15 })
+  let prescription: PrescriptionResult | null = null
+  if (unifiedV15) {
+    try {
+      prescription = generatePrescription(unifiedV15)
+    } catch (err) {
+      console.error('[PRESCRIPTION] generate error:', err)
+    }
+  }
+
+  return c.json({ ...engineResult, ...probeData, co_recommendations_top: coRecs, unified_v15: unifiedV15, prescription })
 })
 
 // ── Daily cron: auto-refresh all tracked products ─────────────
@@ -1525,7 +1536,7 @@ app.post('/v1/subscribe', async (c) => {
   }
 
   // Save to Supabase (upsert — no duplicate emails, service key bypasses RLS)
-  await fetch(`${SUPABASE_URL}/rest/v1/emails`, {
+  await fetch(`${getSbUrl(c.env)}/rest/v1/emails`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -1552,7 +1563,7 @@ const SUPABASE_ANON_KEY_STAGING = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3Mi
 
 async function verifyToken(token: string, env: Bindings): Promise<{ id: string; email: string; supabaseUrl: string; anonKey: string } | null> {
   const candidates = [
-    { url: SUPABASE_URL, apikey: env.SUPABASE_ANON_KEY },
+    { url: SUPABASE_URL_PROD, apikey: env.SUPABASE_ANON_KEY },
     { url: SB_URL_STAGING, apikey: SUPABASE_ANON_KEY_STAGING },
   ]
   for (const { url, apikey } of candidates) {
@@ -1581,7 +1592,7 @@ app.get('/v1/beta/status', async (c) => {
 
   try {
     const countRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/beta_signups?joined_at=not.is.null&opted_out_at=is.null&select=id`,
+      `${getSbUrl(c.env)}/rest/v1/beta_signups?joined_at=not.is.null&opted_out_at=is.null&select=id`,
       {
         headers: {
           'apikey': c.env.SUPABASE_SERVICE_KEY,
@@ -1595,7 +1606,7 @@ app.get('/v1/beta/status', async (c) => {
     const count = range ? parseInt(range.split('/')[1]) || 0 : 0
 
     const userRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/beta_signups?user_id=eq.${user.id}&select=joined_at,opted_out_at`,
+      `${getSbUrl(c.env)}/rest/v1/beta_signups?user_id=eq.${user.id}&select=joined_at,opted_out_at`,
       {
         headers: {
           'apikey': c.env.SUPABASE_SERVICE_KEY,
@@ -1632,7 +1643,7 @@ app.post('/v1/beta/join', async (c) => {
   // Check if user previously declined (permanent ban from rejoining)
   try {
     const prevRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/beta_signups?user_id=eq.${user.id}&select=opted_out_at`,
+      `${getSbUrl(c.env)}/rest/v1/beta_signups?user_id=eq.${user.id}&select=opted_out_at`,
       { headers: { 'apikey': c.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}` } }
     )
     const prevRows = await prevRes.json() as Array<{ opted_out_at: string | null }>
@@ -1644,7 +1655,7 @@ app.post('/v1/beta/join', async (c) => {
   // Check beta capacity before joining
   try {
     const countRes = await fetch(
-      `${SUPABASE_URL}/rest/v1/beta_signups?joined_at=not.is.null&opted_out_at=is.null&select=id`,
+      `${getSbUrl(c.env)}/rest/v1/beta_signups?joined_at=not.is.null&opted_out_at=is.null&select=id`,
       { headers: { 'apikey': c.env.SUPABASE_SERVICE_KEY, 'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`, 'Prefer': 'count=exact' } }
     )
     const countHeader = countRes.headers.get('content-range')
@@ -1656,7 +1667,7 @@ app.post('/v1/beta/join', async (c) => {
 
   const now = new Date().toISOString()
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/beta_signups`, {
+    const res = await fetch(`${getSbUrl(c.env)}/rest/v1/beta_signups`, {
       method: 'POST',
       headers: {
         'apikey': c.env.SUPABASE_SERVICE_KEY,
@@ -1693,7 +1704,7 @@ app.post('/v1/beta/decline', async (c) => {
 
   const now = new Date().toISOString()
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/beta_signups`, {
+    const res = await fetch(`${getSbUrl(c.env)}/rest/v1/beta_signups`, {
       method: 'POST',
       headers: {
         'apikey': c.env.SUPABASE_SERVICE_KEY,
@@ -2216,7 +2227,7 @@ function computeVolumeStats(series: VolumeBucket[]) {
 app.get('/v1/beta-count', async (c) => {
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/emails?source=eq.beta-100&select=email`,
+      `${getSbUrl(c.env)}/rest/v1/emails?source=eq.beta-100&select=email`,
       {
         headers: {
           'apikey': c.env.SUPABASE_SERVICE_KEY,
@@ -2353,7 +2364,7 @@ app.post('/v1/domains/register', async (c) => {
 
   const user = await verifyToken(token, c.env)
   if (!user) return c.json({ error: 'unauthorized' }, 401)
-  const { id: userId, supabaseUrl, anonKey } = user
+  const { id: userId, supabaseUrl } = user
 
   const body = await c.req.json<{ product_name?: string; domain_url?: string }>()
   if (!body.product_name?.trim() || !body.domain_url?.trim()) {
@@ -2363,17 +2374,17 @@ app.post('/v1/domains/register', async (c) => {
   const domainUrl = normalizeDomainUrl(body.domain_url)
   if (isBlockedUrl(domainUrl)) return c.json({ error: 'Invalid URL' }, 400)
 
-  // Use user JWT + anon key (RLS: authenticated users can CRUD their own domains)
+  // Service key + user_id 필터 (RLS 바이패스 — JWT auth.uid() 매칭 이슈 회피)
   const headers = {
-    'apikey': anonKey,
-    'Authorization': `Bearer ${token}`,
+    'apikey': c.env.SUPABASE_ANON_KEY,
+    'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
     'Content-Type': 'application/json',
   }
 
-  // 무료: 유저당 도메인 제한 (staging=3, prod=1)
-  const domainLimit = ((c.env as any).ENVIRONMENT === 'staging') ? 3 : 1
+  // 무료: 유저당 도메인 제한 (스테이징/프로덕션 동일)
+  const domainLimit = 3
   const existingRes = await fetch(
-    `${supabaseUrl}/rest/v1/domains?status=neq.failed&select=id`,
+    `${supabaseUrl}/rest/v1/domains?user_id=eq.${encodeURIComponent(userId)}&status=neq.failed&select=id`,
     { headers }
   )
   const existing: Array<{ id: string }> = existingRes.ok ? await existingRes.json() : []
@@ -2383,7 +2394,7 @@ app.post('/v1/domains/register', async (c) => {
 
   // 이미 등록된 도메인 체크
   const dupRes = await fetch(
-    `${supabaseUrl}/rest/v1/domains?domain_url=eq.${encodeURIComponent(domainUrl)}&select=id,status,verification_token`,
+    `${supabaseUrl}/rest/v1/domains?user_id=eq.${encodeURIComponent(userId)}&domain_url=eq.${encodeURIComponent(domainUrl)}&select=id,status,verification_token`,
     { headers }
   )
   const dups: Array<{ id: string; status: string; verification_token: string }> = dupRes.ok ? await dupRes.json() : []
@@ -2419,19 +2430,20 @@ app.post('/v1/domains/verify', async (c) => {
 
   const user = await verifyToken(token, c.env)
   if (!user) return c.json({ error: 'unauthorized' }, 401)
-  const { supabaseUrl, anonKey } = user
+  const { supabaseUrl } = user
 
   const body = await c.req.json<{ domain_id?: string }>()
   if (!body.domain_id) return c.json({ error: 'domain_id required' }, 400)
 
+  // Service key + user_id 필터 (RLS 바이패스)
   const headers = {
-    'apikey': anonKey,
-    'Authorization': `Bearer ${token}`,
+    'apikey': c.env.SUPABASE_ANON_KEY,
+    'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
     'Content-Type': 'application/json',
   }
 
   const domainRes = await fetch(
-    `${supabaseUrl}/rest/v1/domains?id=eq.${body.domain_id}&select=*`,
+    `${supabaseUrl}/rest/v1/domains?id=eq.${body.domain_id}&user_id=eq.${encodeURIComponent(user.id)}&select=*`,
     { headers }
   )
   const domains: Array<{ id: string; domain_url: string; verification_token: string; status: string }> = domainRes.ok ? await domainRes.json() : []
