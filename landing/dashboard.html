@@ -889,80 +889,90 @@ button:focus-visible, a:focus-visible {
     <!-- D5 Main Grid (visible only when data exists) -->
     <div id="d5-main-grid" style="display:none;">
 
-      <!-- Row 1: Score Ring + Pass Indicator + Daily Pulse -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1rem;">
-
-        <!-- Section 1 · Big Score Ring + Pass Indicator -->
-        <div class="ov-card" style="padding:1.5rem;text-align:center;">
-          <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.75rem;">AI VISIBILITY SCORE</div>
-          <div style="position:relative;width:180px;height:180px;margin:0 auto 0.75rem;">
-            <svg width="180" height="180" viewBox="0 0 180 180">
-              <circle cx="90" cy="90" r="78" fill="none" stroke="#1a1a1a" stroke-width="10"/>
-              <circle id="d5-score-ring" cx="90" cy="90" r="78" fill="none" stroke="#FFD700" stroke-width="10"
-                      stroke-dasharray="0 490" stroke-linecap="square" transform="rotate(-90 90 90)"
-                      style="transition:stroke-dasharray 0.8s ease-out;"/>
+      <!-- ROW 1: Score Ring + Daily Pulse -->
+      <div class="ov-grid ov-row-2">
+        <section class="ov-card ov-score-card" aria-label="AI Visibility Score">
+          <div class="ov-eyebrow">AI VISIBILITY SCORE</div>
+          <div class="ov-ring-wrap" aria-hidden="true">
+            <svg viewBox="0 0 120 120">
+              <circle class="ov-ring-track" cx="60" cy="60" r="50"/>
+              <circle id="d5-score-ring" class="ov-ring-fill" cx="60" cy="60" r="50" stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
             </svg>
-            <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-              <div id="d5-score-big" style="font-family:'JetBrains Mono',monospace;font-size:2.6rem;font-weight:800;color:#FFD700;line-height:1;">—</div>
-              <div style="font-size:0.68rem;color:#555;margin-top:0.2rem;">/100</div>
+            <div class="ov-ring-inner">
+              <div id="d5-score-big" class="ov-ring-val">—</div>
+              <div class="ov-ring-denom">/ 100</div>
             </div>
           </div>
-          <div id="d5-pass-indicator" style="font-family:'Press Start 2P',monospace;font-size:8px;letter-spacing:0.2em;padding:6px 10px;border-radius:4px;display:inline-block;">—</div>
-        </div>
+          <div id="d5-pass-indicator" class="ov-tier">—</div>
+        </section>
 
-        <!-- Section 2 · Daily Pulse -->
-        <div class="ov-card" style="padding:1.3rem 1.4rem;display:flex;flex-direction:column;">
-          <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:0.75rem;">✦ DAILY PULSE</div>
-          <div id="d5-pulse-text" style="font-size:0.9rem;color:#e5e5e5;line-height:1.7;flex:1;">Checking your AI visibility today…</div>
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem;padding-top:0.75rem;border-top:1px solid #1a1a1a;">
-            <span id="d5-pulse-delta" style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#888;">Δ last 24h: —</span>
-            <span style="font-size:0.68rem;color:#444;">auto-generated</span>
+        <section class="ov-card" aria-label="Daily Pulse">
+          <div class="ov-card-head">
+            <div>
+              <div class="ov-eyebrow gold">✦ DAILY PULSE</div>
+            </div>
           </div>
-        </div>
-
+          <p id="d5-pulse-text" class="ov-pulse-body">Checking your AI visibility today…</p>
+          <div class="ov-pulse-foot">
+            <span class="lbl">Δ LAST 24H</span>
+            <span id="d5-pulse-delta" class="delta">—</span>
+          </div>
+        </section>
       </div>
 
-      <!-- Row 2: 4 Dimensions -->
-      <div class="ov-card" style="padding:1.3rem 1.4rem;margin-bottom:1rem;">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
-          <div>
-            <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.3rem;">4-DIMENSION BREAKDOWN</div>
-            <div style="font-size:0.8rem;color:#888;">Recognition · Category · Co-Rec · Web Authority</div>
+      <!-- ROW 2: 4-Dimension Breakdown -->
+      <div style="margin-top:16px;">
+        <section class="ov-card" aria-label="4-Dimension Breakdown">
+          <div class="ov-card-head">
+            <div>
+              <div class="ov-eyebrow">4-DIMENSION BREAKDOWN</div>
+              <div class="ov-card-sub">Recognition · Category · Co-Rec · Web Authority</div>
+            </div>
           </div>
-          <span id="d5-dim-sum" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:#555;">sum = — / 100</span>
-        </div>
-        <div id="d5-dimensions" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0.75rem;"></div>
+          <div id="d5-dimensions" class="ov-dims"></div>
+          <div class="ov-dims-foot">
+            <span class="hint">SUM OF DIMENSIONS</span>
+            <span class="sum">sum = <b id="d5-dim-sum">—</b> / 100</span>
+          </div>
+        </section>
       </div>
 
-      <!-- Row 3: Engine Grades + 2D Quadrant -->
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1rem;">
-
-        <!-- Section 4 · Engine Grades -->
-        <div class="ov-card" style="padding:1.3rem 1.4rem;">
-          <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.9rem;">ENGINE GRADES</div>
-          <div id="d5-engine-grades" style="display:flex;flex-direction:column;gap:0.6rem;">
-            <div style="color:#555;font-size:0.8rem;">Loading engine tiers…</div>
+      <!-- ROW 3: Engine Grades + Recognition × Category -->
+      <div class="ov-grid ov-row-3" style="margin-top:16px;">
+        <section class="ov-card" aria-label="Engine Grades">
+          <div class="ov-card-head">
+            <div>
+              <div class="ov-eyebrow">ENGINE GRADES</div>
+              <div class="ov-card-sub">Per-engine recognition tier</div>
+            </div>
           </div>
-          <div style="font-size:0.68rem;color:#444;margin-top:0.85rem;padding-top:0.6rem;border-top:1px solid #1a1a1a;">Beta engines: 2. Full release adds ChatGPT · Claude · Grok.</div>
-        </div>
+          <div id="d5-engine-grades"></div>
+          <div class="ov-engines-foot">BETA · 2 ENGINES · FULL ADDS CHATGPT · CLAUDE · GROK</div>
+        </section>
 
-        <!-- Section 5 · 2D Quadrant -->
-        <div class="ov-card" style="padding:1.3rem 1.4rem;">
-          <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.9rem;">2D POSITION</div>
-          <div style="position:relative;width:100%;max-width:240px;aspect-ratio:1/1;margin:0 auto;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;">
-            <!-- axes -->
-            <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:#1a1a1a;"></div>
-            <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:#1a1a1a;"></div>
-            <!-- labels -->
-            <div style="position:absolute;top:4px;right:6px;font-size:0.58rem;color:#444;font-family:'Press Start 2P',monospace;letter-spacing:0.1em;">CAT ↑</div>
-            <div style="position:absolute;bottom:4px;right:6px;font-size:0.58rem;color:#444;font-family:'Press Start 2P',monospace;letter-spacing:0.1em;">REC →</div>
-            <!-- dot -->
-            <div id="d5-quad-dot" style="position:absolute;width:12px;height:12px;background:#FFD700;border:2px solid #0a0a0a;border-radius:50%;transform:translate(-50%,-50%);left:50%;top:50%;box-shadow:0 0 0 2px #FFD700;display:none;"></div>
+        <section class="ov-card" aria-label="Recognition × Category">
+          <div class="ov-card-head">
+            <div>
+              <div class="ov-eyebrow">RECOGNITION × CATEGORY</div>
+              <div class="ov-card-sub">Where you sit on the visibility map</div>
+            </div>
           </div>
-          <div style="font-size:0.72rem;color:#666;margin-top:0.75rem;text-align:center;">X = Recognition · Y = Category</div>
-        </div>
-
+          <div class="ov-quad">
+            <span class="ov-quad-label tl">CHALLENGER</span>
+            <span class="ov-quad-label tr">LEADER</span>
+            <span class="ov-quad-label bl">UNKNOWN</span>
+            <span class="ov-quad-label br">NICHE</span>
+            <span id="d5-quad-dot" class="ov-quad-dot" style="display:none;left:50%;bottom:50%;"></span>
+          </div>
+        </section>
       </div>
+
+      <!-- FOUNDING ANNOUNCEMENT -->
+      <aside class="ov-announce" id="d5-founding-announce" role="status">
+        <span class="tag">FOUNDING</span>
+        <span>You're in the <b>Founding 100</b> · lifetime free access · ChatGPT &amp; Claude unlock at full release.</span>
+        <button class="x" aria-label="Dismiss" onclick="document.getElementById('d5-founding-announce').remove()">✕</button>
+      </aside>
 
       <!-- Row 4: Section 6 · Category Benchmark -->
       <div class="ov-card" style="padding:1.3rem 1.4rem;margin-bottom:1rem;">
@@ -2573,19 +2583,21 @@ button:focus-visible, a:focus-visible {
     const score = Number(unified.score) || 0
     const sBig = document.getElementById('d5-score-big')
     if (sBig) sBig.textContent = score
-    const CIRC = 2 * Math.PI * 78 // ≈ 490.09
+    const CIRC = 314.16 // 2 * π * 50
     const ring = document.getElementById('d5-score-ring')
-    if (ring) ring.setAttribute('stroke-dasharray', `${(score / 100) * CIRC} ${CIRC}`)
-    const passIcons  = { perfect: '🏆', strong: '🟢', emerging: '🟡', invisible: '🔴' }
+    if (ring) {
+      ring.setAttribute('stroke-dasharray', CIRC)
+      ring.setAttribute('stroke-dashoffset', CIRC * (1 - score / 100))
+    }
     const passLabels = { perfect: 'PERFECT', strong: 'STRONG', emerging: 'EMERGING', invisible: 'INVISIBLE' }
     const passColors = { perfect: '#FFD700', strong: '#4ade80', emerging: '#f59e0b', invisible: '#e05252' }
     const pi = unified.pass_indicator || 'invisible'
     const piEl = document.getElementById('d5-pass-indicator')
     if (piEl) {
-      piEl.innerHTML = `${passIcons[pi] || '🔴'} ${passLabels[pi] || 'INVISIBLE'}`
+      piEl.textContent = `◆ ${passLabels[pi] || 'INVISIBLE'}`
       piEl.style.color = passColors[pi] || '#e05252'
-      piEl.style.border = `1px solid ${passColors[pi] || '#e05252'}`
-      piEl.style.background = '#0d0d0d'
+      piEl.style.borderColor = passColors[pi] || '#e05252'
+      piEl.style.background = (pi === 'perfect' || pi === 'strong') ? 'var(--pba-gold-bg)' : '#0d0d0d'
     }
 
     // Section 2 · Daily Pulse
@@ -2613,52 +2625,60 @@ button:focus-visible, a:focus-visible {
     const dims = unified.dimensions || []
     const sum = dims.reduce((a,d) => a + (Number(d.score) || 0), 0)
     const sumEl = document.getElementById('d5-dim-sum')
-    if (sumEl) sumEl.textContent = `sum = ${sum} / 100`
+    if (sumEl) sumEl.textContent = sum
+    const dimNameMap = {
+      recognition: 'RECOGNITION', category: 'CATEGORY RANK',
+      co_rec: 'CO-RECOMMENDATION', web_authority: 'WEB SIGNALS'
+    }
     const dimWrap = document.getElementById('d5-dimensions')
     if (dimWrap) {
       dimWrap.innerHTML = dims.map(d => {
         const max = Number(d.max) || 0
-        const pct = max > 0 ? Math.round((Number(d.score) || 0) / max * 100) : 0
-        const color = pct >= 50 ? '#4ade80' : (Number(d.score) || 0) > 0 ? '#FFD700' : '#e05252'
+        const sc = Number(d.score) || 0
+        const pct = max > 0 ? Math.round(sc / max * 100) : 0
+        const isFull = pct >= 100
+        const label = dimNameMap[d.id] || (d.label || d.id || '—').toUpperCase()
         return `
-          <div style="padding:0.85rem 0.9rem;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;">
-            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.35rem;">
-              <span style="font-size:0.75rem;color:#aaa;font-weight:500;">${escHtml(d.label || d.id || '—')}</span>
-              <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:${color};font-weight:700;">${d.score}/${d.max}</span>
+          <div class="ov-dim">
+            <div class="ov-dim-head">
+              <span class="ov-dim-name">${escHtml(label)}</span>
+              <span class="ov-dim-val">${sc}<i> / ${max}</i></span>
             </div>
-            <div style="height:4px;background:#1a1a1a;border-radius:2px;overflow:hidden;">
-              <div style="height:100%;width:${pct}%;background:${color};transition:width 0.8s;"></div>
+            <div class="ov-dim-track">
+              <div class="ov-dim-fill${isFull ? ' full' : ''}" style="width:${pct}%"></div>
             </div>
           </div>`
       }).join('')
     }
 
     // Section 4 · Engine Grades (방어: 배열이 아닌 경우 변환)
-    const gradeColors = { A: '#4ade80', B: '#86efac', C: '#FFD700', D: '#f59e0b', F: '#555' }
+    const tierMap = { A: 't1', B: 't1', C: 't2', D: 't3', F: 't4' }
+    const tierLabelMap = { t1: 'T1', t2: 'T2', t3: 'T3', t4: 'T4' }
+    const tierDescMap = { t1: 'Recognizes and recommends', t2: "Recognizes, doesn't recommend", t3: 'Aware, rarely surfaces', t4: 'Not tracking yet' }
     let engines = unified.engine_grades || []
     if (!Array.isArray(engines)) {
-      // 객체 형태 {perplexity:{recognized:true},...} → 배열로 변환
       try { engines = Object.entries(engines).map(([k,v]) => ({ engine: k, grade: v?.recognized ? 'B' : 'F', description: v?.recognized ? 'Recognized' : 'Not recognized' })) } catch { engines = [] }
     }
     const egWrap = document.getElementById('d5-engine-grades')
     if (egWrap) {
       if (engines.length === 0) {
-        egWrap.innerHTML = '<div style="color:#555;font-size:0.8rem;">No engine data yet.</div>'
+        egWrap.innerHTML = '<div style="color:#555;font-size:0.8rem;padding:14px 0;">No engine data yet.</div>'
       } else {
         egWrap.innerHTML = engines.map(eg => {
-          const c = gradeColors[eg.grade] || '#555'
           const name = (eg.engine || '').charAt(0).toUpperCase() + (eg.engine || '').slice(1)
+          const tier = tierMap[eg.grade] || 't4'
+          const desc = eg.description || tierDescMap[tier] || '—'
           return `
-            <div style="display:flex;align-items:center;gap:0.6rem;padding:0.4rem 0;border-bottom:1px solid #141414;">
-              <span style="font-size:0.78rem;color:#ccc;min-width:80px;font-weight:500;">${escHtml(name)}</span>
-              <span style="display:inline-block;min-width:26px;text-align:center;font-size:0.78rem;font-weight:800;color:${c};background:#0d0d0d;border:1px solid ${c};border-radius:4px;padding:2px 8px;font-family:'JetBrains Mono',monospace;">${escHtml(eg.grade || 'F')}</span>
-              <span style="font-size:0.72rem;color:#666;flex:1;">${escHtml(eg.description || '')}</span>
+            <div class="ov-engine-row">
+              <div class="ov-engine-name">${escHtml(name)}</div>
+              <div class="ov-tier-badge ${tier}">${tierLabelMap[tier]}</div>
+              <div class="ov-engine-desc">${escHtml(desc)}</div>
             </div>`
         }).join('')
       }
     }
 
-    // Section 5 · 2D Quadrant
+    // Section 5 · Recognition × Category quadrant
     const rec = dims.find(d => d.id === 'recognition')
     const cat = dims.find(d => d.id === 'category')
     const dot = document.getElementById('d5-quad-dot')
@@ -2667,10 +2687,11 @@ button:focus-visible, a:focus-visible {
       const catScore = cat ? (Number(cat.score) || 0) : 0
       const recMax = rec ? (Number(rec.max) || 35) : 35
       const catMax = cat ? (Number(cat.max) || 35) : 35
-      const xPct = 5 + (recScore / recMax) * 90
-      const yPct = 100 - (5 + (catScore / catMax) * 90)
-      dot.style.left = xPct + '%'
-      dot.style.top = yPct + '%'
+      const leftPct = 5 + (recScore / recMax) * 90
+      const botPct = 5 + (catScore / catMax) * 90
+      dot.style.left = leftPct + '%'
+      dot.style.bottom = botPct + '%'
+      dot.style.top = 'auto'
       dot.style.display = 'block'
     }
 
