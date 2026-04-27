@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>pickedby.ai — Overview</title>
+<template id="__bundler_thumbnail" data-bg-color="#0a0a0a">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <!-- gold pixel corner -->
+    <rect x="180" y="180" width="80" height="80" fill="#FFD700"/>
+    <!-- score ring -->
+    <circle cx="600" cy="400" r="160" fill="none" stroke="#1a1a1a" stroke-width="44"/>
+    <circle cx="600" cy="400" r="160" fill="none" stroke="#FFD700" stroke-width="44"
+            stroke-dasharray="1005" stroke-dashoffset="452" transform="rotate(-90 600 400)"/>
+    <text x="600" y="420" text-anchor="middle" font-family="monospace" font-size="120" font-weight="700" fill="#ffffff">55</text>
+    <!-- crown glyph -->
+    <g fill="#FFD700">
+      <rect x="560" y="560" width="80" height="14"/>
+      <rect x="560" y="540" width="14" height="20"/>
+      <rect x="593" y="540" width="14" height="20"/>
+      <rect x="626" y="540" width="14" height="20"/>
+    </g>
+  </svg>
+</template>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pba-bg:        #0a0a0a;
+    --pba-bg-1:      #0d0d0d;
+    --pba-bg-2:      #141414;
+    --pba-bg-3:      #161616;
+    --pba-bg-4:      #1a1a1a;
+    --pba-border:        #2a2a2a;
+    --pba-border-soft:   #222222;
+    --pba-border-faint:  #1f1f1f;
+    --pba-border-dim:    #181818;
+    --pba-fg:       #f5f5f5;
+    --pba-fg-bold:  #ffffff;
+    --pba-fg-1:     #cccccc;
+    --pba-fg-2:     #aaaaaa;
+    --pba-fg-3:     #888888;
+    --pba-fg-4:     #666666;
+    --pba-fg-5:     #555555;
+    --pba-fg-6:     #444444;
+    --pba-gold:        #FFD700;
+    --pba-gold-dim:    #b39700;
+    --pba-gold-soft:   #FFE55C;
+    --pba-gold-bg:     #0a0800;
+    --pba-gold-border: #3a2800;
+    --pba-green:  #00E676;
+    --pba-font-body:  'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --pba-font-pixel: 'Press Start 2P', monospace;
+    --pba-font-mono:  'JetBrains Mono', 'Courier New', monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--pba-bg); color: var(--pba-fg); font-family: var(--pba-font-body); -webkit-font-smoothing: antialiased; }
+
+  .pba-pixel { font-family: var(--pba-font-pixel); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* ============ LAYOUT ============ */
+  .app {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: 100vh;
+  }
+
+  /* ============ SIDEBAR ============ */
+  .sidebar {
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    width: 240px;
+    background: #0a0a0a;
+    border-right: 1px solid var(--pba-border);
+    display: flex;
+    flex-direction: column;
+    z-index: 40;
+  }
+  .sb-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 56px;
+    padding: 0 18px;
+    border-bottom: 1px solid var(--pba-border);
+    text-decoration: none;
+    flex: none;
+  }
+  .sb-brand svg { width: 22px; height: 22px; display: block; flex: none; }
+  .sb-brand-word {
+    font-family: var(--pba-font-pixel);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    color: var(--pba-gold);
+    white-space: nowrap;
+  }
+  .sb-brand-word i { color: #fff; font-style: normal; }
+
+  .sb-menu {
+    flex: 1;
+    padding: 24px 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow-y: auto;
+  }
+  .sb-section-label {
+    font-family: var(--pba-font-pixel);
+    font-size: 6.5px;
+    color: var(--pba-fg-6);
+    letter-spacing: 0.2em;
+    padding: 0 10px 8px;
+  }
+  .sb-item {
+    position: relative;
+    background: transparent;
+    border: none;
+    color: var(--pba-fg-3);
+    text-align: left;
+    padding: 10px 12px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--pba-font-body);
+    font-size: 13.5px;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+    width: 100%;
+  }
+  .sb-item:hover { background: #141414; color: #fff; }
+  .sb-item.on {
+    background: #0a0800;
+    color: var(--pba-gold);
+  }
+  .sb-item.on::before {
+    content: '';
+    position: absolute;
+    left: -10px;
+    top: 6px;
+    bottom: 6px;
+    width: 3px;
+    background: var(--pba-gold);
+    border-radius: 0 2px 2px 0;
+  }
+  .sb-item .ico {
+    width: 18px; height: 18px;
+    display: grid; place-items: center;
+    color: var(--pba-fg-4);
+    flex: none;
+  }
+  .sb-item:hover .ico { color: var(--pba-fg-1); }
+  .sb-item.on .ico { color: var(--pba-gold); }
+
+  .sb-divider {
+    margin: 8px 10px 2px;
+    border-top: 1px solid var(--pba-border-faint);
+  }
+
+  /* Sidebar footer — hidden on desktop, used only for mobile drawer */
+  .sb-foot { display: none; }
+
+  /* ============ TOP BAR ============ */
+  .topbar {
+    position: fixed;
+    top: 0;
+    left: 240px;
+    right: 0;
+    height: 56px;
+    background: rgba(10, 10, 10, 0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--pba-border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 24px;
+    z-index: 30;
+  }
+
+  .mobile-menu-btn {
+    display: none;
+    background: transparent;
+    border: none;
+    color: var(--pba-fg-1);
+    width: 36px; height: 36px;
+    border-radius: 6px;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    margin-right: 4px;
+  }
+  .mobile-menu-btn:hover { background: #141414; }
+
+  .domain-picker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #0d0d0d;
+    border: 1px solid var(--pba-border);
+    border-radius: 6px;
+    padding: 6px 10px 6px 10px;
+    color: #fff;
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .domain-picker:hover { border-color: var(--pba-gold-border); background: #0f0e08; }
+  .domain-picker .dot {
+    width: 8px; height: 8px; border-radius: 999px; background: var(--pba-green);
+    box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.5);
+    animation: live 1.8s infinite;
+  }
+  @keyframes live {
+    0%,100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.5); }
+    50%     { box-shadow: 0 0 0 5px rgba(0, 230, 118, 0); }
+  }
+  .domain-picker .verified {
+    color: var(--pba-green);
+    font-size: 11px;
+    margin-left: -2px;
+  }
+  .domain-picker .caret {
+    color: var(--pba-fg-4);
+    font-size: 10px;
+    margin-left: 4px;
+  }
+  .domain-picker .name {
+    font-family: var(--pba-font-body);
+    font-weight: 500;
+  }
+
+  .top-actions {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .top-icon-btn {
+    width: 36px; height: 36px;
+    display: grid; place-items: center;
+    border-radius: 6px;
+    background: transparent;
+    border: none;
+    color: var(--pba-fg-3);
+    cursor: pointer;
+    position: relative;
+    transition: background .15s, color .15s;
+  }
+  .top-icon-btn:hover { background: #141414; color: #fff; }
+  .top-icon-btn .badge {
+    position: absolute;
+    top: 6px; right: 7px;
+    width: 7px; height: 7px;
+    background: var(--pba-gold);
+    border-radius: 999px;
+    border: 2px solid var(--pba-bg);
+  }
+
+  .top-avatar {
+    width: 28px; height: 28px;
+    border-radius: 999px;
+    background: var(--pba-gold);
+    color: #000;
+    font-weight: 800;
+    display: grid; place-items: center;
+    font-size: 11px;
+    margin-left: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: border-color .15s;
+    font-family: var(--pba-font-body);
+  }
+  .top-avatar:hover { border-color: var(--pba-gold-soft); }
+  .top-avatar.open { border-color: var(--pba-gold); }
+
+  /* Avatar dropdown */
+  .avatar-wrap { position: relative; }
+  .avatar-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 220px;
+    background: #0d0d0d;
+    border: 1px solid var(--pba-border);
+    border-radius: 8px;
+    padding: 6px;
+    display: none;
+    flex-direction: column;
+    gap: 1px;
+    z-index: 60;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.55);
+  }
+  .avatar-menu.open { display: flex; }
+  .avatar-menu-head {
+    padding: 10px 10px 12px;
+    border-bottom: 1px solid var(--pba-border-faint);
+    margin-bottom: 4px;
+  }
+  .avatar-menu-email { font-size: 12.5px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .avatar-menu-plan {
+    font-family: var(--pba-font-pixel);
+    font-size: 6.5px;
+    color: var(--pba-gold);
+    letter-spacing: 0.18em;
+    margin-top: 5px;
+  }
+  .avatar-item {
+    background: transparent;
+    border: none;
+    color: var(--pba-fg-1);
+    font-family: var(--pba-font-body);
+    font-size: 13px;
+    text-align: left;
+    padding: 9px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+    transition: background .12s, color .12s;
+  }
+  .avatar-item:hover { background: #141414; color: #fff; }
+  .avatar-item .ai-ico { width: 16px; height: 16px; display: grid; place-items: center; color: var(--pba-fg-4); flex: none; }
+  .avatar-item:hover .ai-ico { color: var(--pba-gold); }
+  .avatar-item .ai-dot {
+    width: 7px; height: 7px; border-radius: 999px;
+    background: var(--pba-gold);
+    margin-left: auto;
+    flex: none;
+  }
+  /* mobile-only items hidden on desktop */
+  .mobile-only-item { display: none; }
+  .avatar-item.danger { color: #FF8080; }
+  .avatar-item.danger:hover { background: #1a0505; color: #fff; }
+  .avatar-sep {
+    height: 1px; background: var(--pba-border-faint);
+    margin: 4px 2px;
+  }
+
+  /* ============ MAIN CONTENT ============ */
+  .main {
+    margin-left: 240px;
+    padding-top: 56px;
+    min-height: 100vh;
+  }
+  .main-inner {
+    max-width: 1280px;
+    padding: 34px 32px 80px;
+  }
+  .crumbs {
+    font-size: 12.5px;
+    color: var(--pba-fg-4);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .crumbs a { color: var(--pba-fg-3); text-decoration: none; }
+  .crumbs a:hover { color: #fff; }
+  .crumbs .sep { color: var(--pba-fg-6); }
+  .crumbs .cur { color: #fff; font-weight: 500; }
+
+  h1.page-h1 {
+    font-family: var(--pba-font-body);
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: var(--pba-fg-bold);
+    margin: 0 0 22px;
+    line-height: 1.15;
+  }
+
+  /* ============ OVERVIEW CARDS ============ */
+  .ov-card {
+    position: relative;
+    background: var(--pba-bg-2);
+    border: 1px solid var(--pba-border);
+    border-radius: 6px;
+    padding: 22px 22px 20px;
+  }
+  .ov-card::before {
+    content: ''; position: absolute;
+    top: -1px; left: -1px;
+    width: 10px; height: 10px;
+    background: var(--pba-gold);
+  }
+  .ov-card::after {
+    content: ''; position: absolute;
+    bottom: -1px; right: -1px;
+    width: 6px; height: 6px;
+    background: var(--pba-border);
+  }
+  .ov-eyebrow {
+    font-family: var(--pba-font-pixel);
+    font-size: 7px;
+    letter-spacing: 0.2em;
+    color: var(--pba-fg-4);
+    text-transform: uppercase;
+  }
+  .ov-eyebrow.gold { color: var(--pba-gold); }
+  .ov-card-sub { font-size: 12.5px; color: var(--pba-fg-4); margin-top: 6px; line-height: 1.55; }
+  .ov-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+
+  .ov-grid { display: grid; gap: 16px; }
+  .ov-row-2 { grid-template-columns: 360px 1fr; }
+  .ov-row-3 { grid-template-columns: 1fr 1fr; }
+
+  /* SCORE RING CARD */
+  .ov-score-card { display: flex; flex-direction: column; align-items: center; padding: 22px 22px 26px; }
+  .ov-score-card .ov-eyebrow { align-self: flex-start; }
+  .ov-ring-wrap { width: 180px; height: 180px; margin: 18px 0 10px; position: relative; }
+  .ov-ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ov-ring-track { fill: none; stroke: #1a1a1a; stroke-width: 14; }
+  .ov-ring-fill  { fill: none; stroke: var(--pba-gold); stroke-width: 14; transition: stroke-dashoffset 1s ease; }
+  .ov-ring-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+  .ov-ring-val { font-family: var(--pba-font-mono); font-size: 2.6rem; font-weight: 700; color: #fff; line-height: 1; letter-spacing: -1px; }
+  .ov-ring-denom { font-family: var(--pba-font-pixel); font-size: 7px; color: var(--pba-fg-5); letter-spacing: 0.18em; margin-top: 4px; }
+  .ov-tier {
+    font-family: var(--pba-font-pixel);
+    font-size: 8px; letter-spacing: 0.22em;
+    color: var(--pba-gold);
+    padding: 7px 12px;
+    background: var(--pba-gold-bg);
+    border: 1px solid var(--pba-gold-border);
+    border-radius: 4px;
+    margin-top: 6px;
+  }
+
+  /* DAILY PULSE */
+  .ov-pulse-body { color: #e5e5e5; font-size: 0.9rem; line-height: 1.65; margin: 0; }
+  .ov-pulse-body em { color: var(--pba-gold); font-style: normal; font-weight: 500; }
+  .ov-pulse-foot { display: flex; align-items: center; gap: 10px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--pba-border-faint); }
+  .ov-pulse-foot .lbl { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-5); }
+  .ov-pulse-foot .delta { font-family: var(--pba-font-mono); font-size: 14px; color: var(--pba-green); font-weight: 600; margin-left: auto; }
+  .ov-pulse-foot .spark { display: inline-flex; gap: 3px; align-items: flex-end; height: 18px; margin-left: 4px; }
+  .ov-pulse-foot .spark i { width: 3px; background: var(--pba-fg-7); display: block; }
+  .ov-pulse-foot .spark i.on { background: var(--pba-gold); }
+
+  /* DIM BARS */
+  .ov-dims { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 28px; }
+  .ov-dim { display: flex; flex-direction: column; gap: 7px; }
+  .ov-dim-head { display: flex; justify-content: space-between; align-items: baseline; }
+  .ov-dim-name { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.16em; color: var(--pba-fg-2); }
+  .ov-dim-val { font-family: var(--pba-font-mono); font-size: 13px; color: #fff; font-weight: 500; }
+  .ov-dim-val i { font-style: normal; color: var(--pba-fg-5); font-size: 11px; }
+  .ov-dim-track { height: 8px; background: #0a0a0a; border: 1px solid var(--pba-border-faint); border-radius: 999px; overflow: hidden; }
+  .ov-dim-fill { height: 100%; background: var(--pba-gold); border-radius: 999px; transition: width .8s ease; }
+  .ov-dim-fill.full { background: var(--pba-green); }
+  .ov-dims-foot { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--pba-border-faint); display: flex; justify-content: space-between; align-items: center; }
+  .ov-dims-foot .hint { font-family: var(--pba-font-pixel); font-size: 7px; color: var(--pba-fg-5); letter-spacing: 0.18em; }
+  .ov-dims-foot .sum { font-family: var(--pba-font-mono); font-size: 13px; color: var(--pba-fg-3); }
+  .ov-dims-foot .sum b { color: #fff; font-weight: 600; }
+
+  /* ENGINE GRADES */
+  .ov-engine-row { display: grid; grid-template-columns: 110px 56px 1fr; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--pba-border-faint); }
+  .ov-engine-row:last-of-type { border-bottom: none; }
+  .ov-engine-name { font-size: 14px; color: #fff; font-weight: 500; }
+  .ov-tier-badge { font-family: var(--pba-font-pixel); font-size: 9px; letter-spacing: 0.15em; text-align: center; padding: 6px 0; border-radius: 4px; border: 1px solid; }
+  .ov-tier-badge.t1 { color: #FFD700; background: var(--pba-gold-bg); border-color: var(--pba-gold-border); }
+  .ov-tier-badge.t2 { color: #C0C0C0; background: #0d0d0d; border-color: #2a2a2a; }
+  .ov-engine-desc { font-size: 12.5px; color: var(--pba-fg-3); }
+  .ov-engines-foot { margin-top: 12px; padding-top: 14px; border-top: 1px solid var(--pba-border-faint); font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.16em; color: var(--pba-fg-5); }
+
+  /* QUADRANT */
+  .ov-quad {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    width: 100%;
+    max-width: 320px;
+    margin: 8px auto 18px;
+    background:
+      linear-gradient(to right, transparent calc(50% - 0.5px), #2a2a2a calc(50% - 0.5px), #2a2a2a calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+      linear-gradient(to bottom, transparent calc(50% - 0.5px), #2a2a2a calc(50% - 0.5px), #2a2a2a calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+      #0a0a0a;
+    border: 1px solid var(--pba-border);
+    border-radius: 6px;
+  }
+  .ov-quad-label { position: absolute; font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.16em; color: var(--pba-fg-5); }
+  .ov-quad-label.tl { top: 8px; left: 8px; }
+  .ov-quad-label.tr { top: 8px; right: 8px; color: var(--pba-gold); }
+  .ov-quad-label.bl { bottom: 8px; left: 8px; color: #FF8080; }
+  .ov-quad-label.br { bottom: 8px; right: 8px; }
+  .ov-quad-dot { position: absolute; width: 14px; height: 14px; background: var(--pba-gold); border: 2px solid #000; border-radius: 999px; transform: translate(-50%, 50%); box-shadow: 0 0 0 0 #FFD70066; animation: dotpulse 2s ease-out infinite; }
+  @keyframes dotpulse { 0% { box-shadow: 0 0 0 0 #FFD70066; } 70% { box-shadow: 0 0 0 14px #FFD70000; } 100% { box-shadow: 0 0 0 0 #FFD70000; } }
+
+  /* ANNOUNCEMENT */
+  .ov-announce { margin-top: 32px; padding: 12px 14px; background: var(--pba-bg-1); border: 1px solid var(--pba-border-faint); border-radius: 6px; display: flex; align-items: center; gap: 12px; font-size: 12.5px; color: var(--pba-fg-3); }
+  .ov-announce .tag { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-gold); background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); padding: 5px 8px; border-radius: 3px; flex: none; }
+  .ov-announce b { color: #fff; font-weight: 500; }
+  .ov-announce .x { margin-left: auto; background: transparent; border: none; color: var(--pba-fg-5); cursor: pointer; padding: 4px 6px; font-family: var(--pba-font-pixel); font-size: 9px; }
+  .ov-announce .x:hover { color: #fff; }
+
+  @media (max-width: 880px) {
+    .ov-row-2, .ov-row-3 { grid-template-columns: 1fr; }
+    .ov-dims { grid-template-columns: 1fr; gap: 14px; }
+    .ov-engine-row { grid-template-columns: 100px 50px 1fr; gap: 10px; }
+  }
+
+
+  /* ============ MOBILE RESPONSIVE ============ */
+  .scrim {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 35;
+  }
+  .scrim.open { display: block; }
+
+  @media (max-width: 820px) {
+    .sidebar {
+      transform: translateX(-100%);
+      transition: transform .25s ease;
+    }
+    .sidebar.open { transform: translateX(0); box-shadow: 0 0 40px rgba(0,0,0,0.5); }
+    .topbar { left: 0; padding: 0 14px; }
+    .main { margin-left: 0; padding-bottom: 40px; }
+    .main-inner { padding: 26px 18px 40px; }
+    .mobile-menu-btn { display: inline-flex; }
+    /* hide desktop-only bell & help icons on mobile — live in avatar menu */
+    .top-bell, .top-help { display: none; }
+    .mobile-only-item { display: flex; }
+    div.mobile-only-item { display: block; }
+    h1.page-h1 { font-size: 24px; }
+    .avatar-menu { min-width: 240px; }
+  }
+
+  /* scrollbar */
+  .sb-menu::-webkit-scrollbar { width: 6px; }
+  .sb-menu::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
+
+  /* focus */
+  button:focus-visible, a:focus-visible {
+    outline: 1px solid var(--pba-gold);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body data-screen-label="Dashboard — Overview">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar" aria-label="Primary navigation">
+  <a href="#" class="sb-brand" aria-label="pickedby.ai home">
+    <svg viewBox="0 0 20 20" shape-rendering="crispEdges" aria-hidden="true">
+      <g fill="#FFD700" transform="translate(0,2)">
+        <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
+        <rect x="0" y="4" width="20" height="2"/>
+        <rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
+        <rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
+        <rect x="0" y="12" width="20" height="2"/>
+        <rect x="2" y="14" width="16" height="2"/>
+      </g>
+    </svg>
+    <span class="sb-brand-word">picked<i>by</i>.ai</span>
+  </a>
+
+  <nav class="sb-menu" aria-label="Dashboard sections">
+    <div class="sb-section-label">WORKSPACE</div>
+
+    <button class="sb-item on" data-nav="overview">
+      <span class="ico" aria-hidden="true">
+        <!-- overview: grid -->
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="2" y="2" width="5" height="5"/>
+          <rect x="9" y="2" width="5" height="5"/>
+          <rect x="2" y="9" width="5" height="5"/>
+          <rect x="9" y="9" width="5" height="5"/>
+        </svg>
+      </span>
+      <span>Overview</span>
+    </button>
+
+    <button class="sb-item" data-nav="trend">
+      <span class="ico" aria-hidden="true">
+        <!-- trend: chart line -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square" stroke-linejoin="miter">
+          <polyline points="2,12 6,8 9,10 14,3"/>
+          <polyline points="11,3 14,3 14,6"/>
+        </svg>
+      </span>
+      <span>Trend</span>
+    </button>
+
+    <button class="sb-item" data-nav="rivals">
+      <span class="ico" aria-hidden="true">
+        <!-- rivals: vs / swords -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="5" cy="5" r="2.5"/>
+          <circle cx="11" cy="11" r="2.5"/>
+          <path d="M7 7 L9 9"/>
+        </svg>
+      </span>
+      <span>Rivals</span>
+    </button>
+
+    <button class="sb-item" data-nav="journey">
+      <span class="ico" aria-hidden="true">
+        <!-- journey: path/route -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="4" cy="4" r="1.5"/>
+          <circle cx="12" cy="12" r="1.5"/>
+          <path d="M4 6 Q4 11 8 11 Q12 11 12 6" fill="none" stroke-dasharray="2 2"/>
+        </svg>
+      </span>
+      <span>Journey</span>
+    </button>
+
+    <button class="sb-item" data-nav="actions">
+      <span class="ico" aria-hidden="true">
+        <!-- actions: bolt -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="miter">
+          <polygon points="9,2 3,9 7,9 6,14 13,7 9,7"/>
+        </svg>
+      </span>
+      <span>Actions</span>
+    </button>
+
+    <div class="sb-divider"></div>
+
+    <button class="sb-item" data-nav="tools">
+      <span class="ico" aria-hidden="true">
+        <!-- tools: hamburger/stack -->
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square">
+          <line x1="2" y1="4" x2="14" y2="4"/>
+          <line x1="2" y1="8" x2="14" y2="8"/>
+          <line x1="2" y1="12" x2="14" y2="12"/>
+        </svg>
+      </span>
+      <span>Tools</span>
+    </button>
+  </nav>
+
+  <!-- sidebar footer removed — account settings lives in top-right avatar menu -->
+</aside>
+
+<div class="scrim" id="scrim" aria-hidden="true"></div>
+
+<!-- TOP BAR -->
+<header class="topbar">
+  <div style="display:flex; align-items:center; gap:10px;">
+    <button class="mobile-menu-btn" id="menuBtn" aria-label="Open navigation">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="square">
+        <line x1="3" y1="5" x2="17" y2="5"/>
+        <line x1="3" y1="10" x2="17" y2="10"/>
+        <line x1="3" y1="15" x2="17" y2="15"/>
+      </svg>
+    </button>
+
+    <button class="domain-picker" id="domainPicker" aria-haspopup="listbox">
+      <span class="dot" aria-hidden="true"></span>
+      <span class="name">pickedby.ai</span>
+      <span class="verified" title="Ownership verified" aria-label="verified">
+        <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+          <path d="M8 1.5 L3 4v4c0 3 2.2 5.5 5 6.5 2.8-1 5-3.5 5-6.5V4L8 1.5z M6 7.5 L7.3 9 10 6" stroke="#0a0a0a" stroke-width="0.8" stroke-linejoin="miter" stroke-linecap="square"/>
+        </svg>
+      </span>
+      <span class="caret" aria-hidden="true">▼</span>
+    </button>
+  </div>
+
+  <div class="top-actions">
+    <button class="top-icon-btn top-bell" aria-label="Notifications" title="Notifications">
+      <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square">
+        <path d="M3.5 11.5h9M5 11.5V7.5a3 3 0 0 1 6 0v4M7 13.5a1 1 0 0 0 2 0"/>
+      </svg>
+      <span class="badge" aria-hidden="true"></span>
+    </button>
+    <button class="top-icon-btn top-help" aria-label="Help" title="Help">
+      <svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
+        <circle cx="8" cy="8" r="6"/>
+        <path d="M6.2 6.2a1.8 1.8 0 0 1 3.6 0c0 1.2-1.8 1.5-1.8 2.6" stroke-linecap="square"/>
+        <circle cx="8" cy="11.5" r="0.6" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
+    <div class="avatar-wrap" id="avatarWrap">
+      <button class="top-avatar" id="avatarBtn" title="sohee@thunova.kr" aria-label="Account menu" aria-haspopup="menu" aria-expanded="false">S</button>
+      <div class="avatar-menu" id="avatarMenu" role="menu">
+        <div class="avatar-menu-head">
+          <div class="avatar-menu-email">sohee@thunova.kr</div>
+          <div class="avatar-menu-plan">FOUNDING · DAY 42</div>
+        </div>
+        <button class="avatar-item mobile-only-item" role="menuitem">
+          <span class="ai-ico">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square">
+              <path d="M3.5 11.5h9M5 11.5V7.5a3 3 0 0 1 6 0v4M7 13.5a1 1 0 0 0 2 0"/>
+            </svg>
+          </span>
+          <span>Notifications</span>
+          <span class="ai-dot" aria-hidden="true"></span>
+        </button>
+        <button class="avatar-item mobile-only-item" role="menuitem">
+          <span class="ai-ico">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
+              <circle cx="8" cy="8" r="6"/>
+              <path d="M6.2 6.2a1.8 1.8 0 0 1 3.6 0c0 1.2-1.8 1.5-1.8 2.6" stroke-linecap="square"/>
+              <circle cx="8" cy="11.5" r="0.6" fill="currentColor" stroke="none"/>
+            </svg>
+          </span>
+          <span>Help &amp; docs</span>
+        </button>
+        <div class="avatar-sep mobile-only-item"></div>
+        <button class="avatar-item" role="menuitem">
+          <span class="ai-ico">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
+              <circle cx="8" cy="8" r="2"/>
+              <path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"/>
+            </svg>
+          </span>
+          <span>Account settings</span>
+        </button>
+        <div class="avatar-sep"></div>
+        <button class="avatar-item danger" role="menuitem">
+          <span class="ai-ico">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square">
+              <path d="M9 3H4v10h5"/>
+              <path d="M8 8h6M11.5 5.5 14 8l-2.5 2.5"/>
+            </svg>
+          </span>
+          <span>Sign out</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="main-inner">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="#">Dashboard</a>
+      <span class="sep">/</span>
+      <span class="cur">Overview</span>
+    </nav>
+
+    <h1 class="page-h1">Overview</h1>
+
+    <!-- ROW 1: Score Ring + Daily Pulse -->
+    <div class="ov-grid ov-row-2">
+      <section class="ov-card ov-score-card" aria-label="AI Visibility Score">
+        <div class="ov-eyebrow">AI VISIBILITY SCORE</div>
+        <div class="ov-ring-wrap" aria-hidden="true">
+          <svg viewBox="0 0 120 120">
+            <circle class="ov-ring-track" cx="60" cy="60" r="50"/>
+            <circle class="ov-ring-fill" cx="60" cy="60" r="50" stroke-dasharray="314.16" stroke-dashoffset="141.37"/>
+          </svg>
+          <div class="ov-ring-inner">
+            <div class="ov-ring-val">55</div>
+            <div class="ov-ring-denom">/ 100</div>
+          </div>
+        </div>
+        <div class="ov-tier">◆ STRONG</div>
+      </section>
+
+      <section class="ov-card" aria-label="Daily Pulse">
+        <div class="ov-card-head">
+          <div>
+            <div class="ov-eyebrow gold">✦ DAILY PULSE</div>
+            <div class="ov-card-sub">Generated 14 min ago · next refresh in 4h 12m</div>
+          </div>
+        </div>
+        <p class="ov-pulse-body">
+          Your AI visibility is improving. <em>Perplexity</em> now recognizes you as an AI visibility tool, and your category rank is rising. Two new co-recommendations were detected in the last 24 hours.
+        </p>
+        <div class="ov-pulse-foot">
+          <span class="lbl">Δ LAST 24H</span>
+          <span class="spark" aria-hidden="true">
+            <i style="height: 30%"></i><i style="height: 45%"></i><i style="height: 35%"></i>
+            <i style="height: 60%"></i><i style="height: 50%"></i><i style="height: 70%"></i>
+            <i class="on" style="height: 85%"></i><i class="on" style="height: 95%"></i>
+          </span>
+          <span class="delta">+3</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ROW 2: Dimensions -->
+    <div style="margin-top: 16px;">
+      <section class="ov-card" aria-label="4-Dimension Breakdown">
+        <div class="ov-card-head">
+          <div>
+            <div class="ov-eyebrow">4-DIMENSION BREAKDOWN</div>
+            <div class="ov-card-sub">Recognition · Category · Co-Rec · Web Authority</div>
+          </div>
+        </div>
+        <div class="ov-dims">
+          <div class="ov-dim">
+            <div class="ov-dim-head"><span class="ov-dim-name">RECOGNITION</span><span class="ov-dim-val">25<i> / 35</i></span></div>
+            <div class="ov-dim-track"><div class="ov-dim-fill" style="width: 71.4%"></div></div>
+          </div>
+          <div class="ov-dim">
+            <div class="ov-dim-head"><span class="ov-dim-name">CATEGORY RANK</span><span class="ov-dim-val">4<i> / 35</i></span></div>
+            <div class="ov-dim-track"><div class="ov-dim-fill" style="width: 11.4%"></div></div>
+          </div>
+          <div class="ov-dim">
+            <div class="ov-dim-head"><span class="ov-dim-name">CO-RECOMMENDATION</span><span class="ov-dim-val">20<i> / 20</i></span></div>
+            <div class="ov-dim-track"><div class="ov-dim-fill full" style="width: 100%"></div></div>
+          </div>
+          <div class="ov-dim">
+            <div class="ov-dim-head"><span class="ov-dim-name">WEB SIGNALS</span><span class="ov-dim-val">6<i> / 10</i></span></div>
+            <div class="ov-dim-track"><div class="ov-dim-fill" style="width: 60%"></div></div>
+          </div>
+        </div>
+        <div class="ov-dims-foot">
+          <span class="hint">SUM OF DIMENSIONS</span>
+          <span class="sum">sum = <b>55</b> / 100</span>
+        </div>
+      </section>
+    </div>
+
+    <!-- ROW 3: Engines + Quadrant -->
+    <div class="ov-grid ov-row-3" style="margin-top: 16px;">
+      <section class="ov-card" aria-label="Engine Grades">
+        <div class="ov-card-head">
+          <div>
+            <div class="ov-eyebrow">ENGINE GRADES</div>
+            <div class="ov-card-sub">Per-engine recognition tier</div>
+          </div>
+        </div>
+        <div class="ov-engine-row">
+          <div class="ov-engine-name">Perplexity</div>
+          <div class="ov-tier-badge t1">T1</div>
+          <div class="ov-engine-desc">Recognizes and recommends</div>
+        </div>
+        <div class="ov-engine-row">
+          <div class="ov-engine-name">Gemini</div>
+          <div class="ov-tier-badge t2">T2</div>
+          <div class="ov-engine-desc">Recognizes, doesn't recommend</div>
+        </div>
+        <div class="ov-engines-foot">BETA · 2 ENGINES · FULL ADDS CHATGPT · CLAUDE · GROK</div>
+      </section>
+
+      <section class="ov-card" aria-label="Recognition × Category quadrant">
+        <div class="ov-card-head">
+          <div>
+            <div class="ov-eyebrow">RECOGNITION × CATEGORY</div>
+            <div class="ov-card-sub">Where you sit on the visibility map</div>
+          </div>
+        </div>
+        <div class="ov-quad" role="img" aria-label="High recognition, low category rank">
+          <span class="ov-quad-label tl">CHALLENGER</span>
+          <span class="ov-quad-label tr">LEADER</span>
+          <span class="ov-quad-label bl">UNKNOWN</span>
+          <span class="ov-quad-label br">NICHE</span>
+          <span class="ov-quad-dot" style="left: 71%; bottom: 11%;" aria-hidden="true"></span>
+        </div>
+      </section>
+    </div>
+
+    <aside class="ov-announce" id="announce" role="status">
+      <span class="tag">FOUNDING</span>
+      <span>You are <b>user #042</b> on the Founding 100 · lifetime free · ChatGPT &amp; Claude unlock at full release.</span>
+      <button class="x" aria-label="Dismiss" onclick="document.getElementById('announce').remove()">✕</button>
+    </aside>
+  </div>
+</main>
+
+<!-- MOBILE BOTTOM TABS removed — hamburger drawer is primary nav on mobile -->
+
+<script>
+  // Sidebar nav active state
+  const sbItems = document.querySelectorAll('.sb-item');
+  sbItems.forEach(btn => {
+    btn.addEventListener('click', () => {
+      sbItems.forEach(b => b.classList.remove('on'));
+      btn.classList.add('on');
+      // close mobile drawer after picking
+      document.getElementById('sidebar').classList.remove('open');
+      document.getElementById('scrim').classList.remove('open');
+    });
+  });
+
+  // Mobile menu toggle
+  const menuBtn = document.getElementById('menuBtn');
+  const sidebar = document.getElementById('sidebar');
+  const scrim = document.getElementById('scrim');
+  menuBtn?.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    scrim.classList.toggle('open');
+  });
+  scrim?.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    scrim.classList.remove('open');
+  });
+
+  // Avatar dropdown
+  const avatarBtn = document.getElementById('avatarBtn');
+  const avatarMenu = document.getElementById('avatarMenu');
+  const avatarWrap = document.getElementById('avatarWrap');
+  function closeAvatar() {
+    avatarMenu.classList.remove('open');
+    avatarBtn.classList.remove('open');
+    avatarBtn.setAttribute('aria-expanded', 'false');
+  }
+  avatarBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const open = avatarMenu.classList.toggle('open');
+    avatarBtn.classList.toggle('open', open);
+    avatarBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  document.addEventListener('click', (e) => {
+    if (!avatarWrap.contains(e.target)) closeAvatar();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAvatar();
+  });
+  avatarMenu?.querySelectorAll('.avatar-item').forEach(it => {
+    it.addEventListener('click', closeAvatar);
+  });
+</script>
+</body>
+</html>
