@@ -2605,11 +2605,6 @@ app.get('/v1/domains/list', async (c) => {
     `${supabaseUrl}/rest/v1/domains?user_id=eq.${encodeURIComponent(user.id)}&select=id,product_name,domain_url,status,sdk_installed,llms_installed,verified_at,created_at&order=created_at.desc`,
     { headers }
   )
-  // DEBUG-DOMAINS-01: 임시 디버그 (확인 후 제거)
-  if (!res.ok) {
-    const errBody = await res.text().catch(() => '')
-    console.error(`[domains/list] supabase error status=${res.status} url=${supabaseUrl} userId=${user.id} body=${errBody.slice(0, 200)}`)
-  }
   const domains = res.ok ? await res.json() : []
   return c.json({ domains })
 })
