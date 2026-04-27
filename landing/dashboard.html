@@ -864,7 +864,7 @@ button:focus-visible, a:focus-visible {
   <div id="shell-d5-overview" style="display:none;">
 
     <!-- D5 Header: representative domain + last check timestamp -->
-    <div class="card mb-4" style="padding:0.9rem 1.1rem;">
+    <div class="ov-card" style="padding:0.9rem 1.1rem;margin-bottom:1rem;">
       <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
         <div style="display:flex;align-items:center;gap:0.65rem;">
           <span style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;">REPRESENTATIVE DOMAIN</span>
@@ -879,7 +879,7 @@ button:focus-visible, a:focus-visible {
     </div>
 
     <!-- D5 Empty State (no verified domain) -->
-    <div id="d5-empty" class="card mb-6" style="display:none;padding:2.5rem 1.5rem;text-align:center;">
+    <div id="d5-empty" class="ov-card" style="display:none;padding:2.5rem 1.5rem;text-align:center;margin-bottom:1.5rem;">
       <div style="font-size:2.2rem;margin-bottom:0.5rem;">📡</div>
       <div style="font-size:1rem;font-weight:700;color:#f5f5f5;margin-bottom:0.4rem;">Register your first domain to see Overview</div>
       <div style="font-size:0.82rem;color:#666;margin-bottom:1.25rem;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.6;">Overview is the "Today" view of your AI visibility. Add a domain below and we'll start tracking your 4-dimension score automatically.</div>
@@ -893,7 +893,7 @@ button:focus-visible, a:focus-visible {
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1rem;">
 
         <!-- Section 1 · Big Score Ring + Pass Indicator -->
-        <div class="card" style="padding:1.5rem;text-align:center;">
+        <div class="ov-card" style="padding:1.5rem;text-align:center;">
           <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.75rem;">AI VISIBILITY SCORE</div>
           <div style="position:relative;width:180px;height:180px;margin:0 auto 0.75rem;">
             <svg width="180" height="180" viewBox="0 0 180 180">
@@ -911,7 +911,7 @@ button:focus-visible, a:focus-visible {
         </div>
 
         <!-- Section 2 · Daily Pulse -->
-        <div class="card" style="padding:1.3rem 1.4rem;display:flex;flex-direction:column;">
+        <div class="ov-card" style="padding:1.3rem 1.4rem;display:flex;flex-direction:column;">
           <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:0.75rem;">✦ DAILY PULSE</div>
           <div id="d5-pulse-text" style="font-size:0.9rem;color:#e5e5e5;line-height:1.7;flex:1;">Checking your AI visibility today…</div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1rem;padding-top:0.75rem;border-top:1px solid #1a1a1a;">
@@ -923,7 +923,7 @@ button:focus-visible, a:focus-visible {
       </div>
 
       <!-- Row 2: 4 Dimensions -->
-      <div class="card mb-4" style="padding:1.3rem 1.4rem;">
+      <div class="ov-card" style="padding:1.3rem 1.4rem;margin-bottom:1rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
           <div>
             <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.3rem;">4-DIMENSION BREAKDOWN</div>
@@ -938,7 +938,7 @@ button:focus-visible, a:focus-visible {
       <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem;margin-bottom:1rem;">
 
         <!-- Section 4 · Engine Grades -->
-        <div class="card" style="padding:1.3rem 1.4rem;">
+        <div class="ov-card" style="padding:1.3rem 1.4rem;">
           <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.9rem;">ENGINE GRADES</div>
           <div id="d5-engine-grades" style="display:flex;flex-direction:column;gap:0.6rem;">
             <div style="color:#555;font-size:0.8rem;">Loading engine tiers…</div>
@@ -947,7 +947,7 @@ button:focus-visible, a:focus-visible {
         </div>
 
         <!-- Section 5 · 2D Quadrant -->
-        <div class="card" style="padding:1.3rem 1.4rem;">
+        <div class="ov-card" style="padding:1.3rem 1.4rem;">
           <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.9rem;">2D POSITION</div>
           <div style="position:relative;width:100%;max-width:240px;aspect-ratio:1/1;margin:0 auto;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;">
             <!-- axes -->
@@ -965,7 +965,7 @@ button:focus-visible, a:focus-visible {
       </div>
 
       <!-- Row 4: Section 6 · Category Benchmark -->
-      <div class="card mb-4" style="padding:1.3rem 1.4rem;">
+      <div class="ov-card" style="padding:1.3rem 1.4rem;margin-bottom:1rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
           <div>
             <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.3rem;">CATEGORY BENCHMARK</div>
@@ -985,7 +985,7 @@ button:focus-visible, a:focus-visible {
       </div>
 
       <!-- Row 1.5: Volume card (빅파이 1.5.1 · 2026-04-22 CEO 승인 · 누적체계) -->
-      <div class="card mb-4" id="d5-volume-card" style="padding:1.3rem 1.4rem;display:none;cursor:pointer;" onclick="if(typeof shellNavigateTo==='function')shellNavigateTo('trend')">
+      <div class="ov-card" id="d5-volume-card" style="padding:1.3rem 1.4rem;display:none;cursor:pointer;margin-bottom:1rem;" onclick="if(typeof shellNavigateTo==='function')shellNavigateTo('trend')">
         <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.7rem;flex-wrap:wrap;gap:0.5rem;">
           <div>
             <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:0.3rem;">AI MENTIONS · 7D</div>
@@ -1008,7 +1008,7 @@ button:focus-visible, a:focus-visible {
       </div>
 
       <!-- Row 4.1: Section 7 · 7-day Mini Trend (UI-OVERVIEW-12FULL 2026-04-22) -->
-      <div class="card mb-4" id="d5-mini-trend-card" style="padding:1.3rem 1.4rem;display:none;cursor:pointer;" onclick="if(typeof shellNavigateTo==='function')shellNavigateTo('trend')">
+      <div class="ov-card" id="d5-mini-trend-card" style="padding:1.3rem 1.4rem;display:none;cursor:pointer;margin-bottom:1rem;" onclick="if(typeof shellNavigateTo==='function')shellNavigateTo('trend')">
         <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.7rem;">
           <div>
             <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.3rem;">7-DAY MOMENTUM</div>
@@ -1022,7 +1022,7 @@ button:focus-visible, a:focus-visible {
       </div>
 
       <!-- Row 4.2: Section 8 · Next Milestone + Section 9 · Last 24h (UI-OVERVIEW-12FULL 2026-04-22) -->
-      <div class="card mb-4" style="padding:1.3rem 1.4rem;">
+      <div class="ov-card" style="padding:1.3rem 1.4rem;margin-bottom:1rem;">
         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1.1rem;">
           <div>
             <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.5rem;">NEXT MILESTONE</div>
@@ -1042,14 +1042,14 @@ button:focus-visible, a:focus-visible {
       </div>
 
       <!-- Row 4.3: Section 10 · Actions Top 1 (UI-OVERVIEW-12FULL 2026-04-22) -->
-      <div class="card mb-4" id="d5-action-top" style="padding:1.1rem 1.3rem;border:1px solid #FFD70022;display:none;">
+      <div class="ov-card" id="d5-action-top" style="padding:1.1rem 1.3rem;border:1px solid #FFD70022;display:none;margin-bottom:1rem;">
         <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:0.4rem;">DO THIS TODAY</div>
         <div id="d5-action-text" style="font-size:0.88rem;color:#f5f5f5;line-height:1.55;margin-bottom:0.7rem;">—</div>
         <button onclick="if(typeof shellNavigateTo==='function')shellNavigateTo('actions')" style="background:#0d0d0d;color:#FFD700;border:1px solid #FFD700;padding:0.4rem 0.9rem;font-weight:700;font-size:0.74rem;cursor:pointer;border-radius:6px;font-family:inherit;">See full playbook →</button>
       </div>
 
       <!-- Row 5: Section 12 · Recently Added (B안 Rev 2026-04-21 — "+ Check" 버튼 이동) -->
-      <div class="card mb-4" style="padding:1.3rem 1.4rem;">
+      <div class="ov-card" style="padding:1.3rem 1.4rem;margin-bottom:1rem;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
           <div>
             <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.3rem;">RECENTLY ADDED</div>
