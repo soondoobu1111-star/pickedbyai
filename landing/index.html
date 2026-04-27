@@ -5,7 +5,7 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://unpkg.com https://cdn.jsdelivr.net https://www.googletagmanager.com https://static.cloudflareinsights.com https://*.contentsquare.net https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self' https://api.pickedby.ai https://*.perceptdot.workers.dev https://*.supabase.co https://www.google-analytics.com https://www.google.com https://www.googletagmanager.com https://cdn.jsdelivr.net https://*.contentsquare.net https://*.contentsquare.com https://challenges.cloudflare.com; worker-src 'self' blob:; img-src 'self' data: https:; frame-src https://*.contentsquare.net https://challenges.cloudflare.com; object-src 'none';" />
-  <title>pickedby.ai — The AI Visibility Platform</title>
+  <title>pickedby.ai — Does AI recommend your product?</title>
   <meta name="description" content="Does AI recommend your brand? Free AI Visibility Score in 10 seconds. See if ChatGPT, Perplexity, and Gemini recommend your product." />
   <meta name="pickedby-site-verification" content="ngeyntm4zgjwawnrzwri" />
   <meta name="pickedby-site-verification" content="otk5nwqwmdrwawnrzwri" />
@@ -34,7 +34,7 @@
   <!-- Contentsquare (Hotjar) -->
   <script src="https://t.contentsquare.net/uxa/539b28e3d0a6f.js" async></script>
   <meta property="og:title" content="pickedby.ai — Does AI Recommend Your Product?" />
-  <meta property="og:description" content="Free AI Visibility Score for any product or brand. See if ChatGPT, Perplexity & Gemini recommend you. Results in 10 seconds." />
+  <meta property="og:description" content="Free AI Visibility Score for any product or brand. See if ChatGPT, Perplexity &amp; Gemini recommend you. Results in 10 seconds." />
   <meta property="og:url" content="https://pickedby.ai/" />
   <meta property="og:type" content="website" />
   <meta property="og:image" content="https://pickedby.ai/og-v2.png" />
@@ -109,1537 +109,756 @@
   }
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg:      #000000;
-      --bg2:     #0d0d0d;
-      --bg3:     #161616;
-      --yellow:  #FFD700;
-      --yellow2: #b39700;
-      --text:    #ffffff;
-      --muted:   #666666;
-      --border:  #222222;
-      --green:   #00E676;
-      --red:     #FF3D3D;
-      --orange:  #FF9100;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { overflow-x: hidden; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      padding: 0 1rem 5rem;
-      overflow-x: hidden;
-      width: 100%;
-    }
-
-    /* ── INTERACTIVE BG CANVAS ── */
-    #bg-canvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .container { max-width: 1080px; margin: 0 auto; padding-top: 2.5rem; position: relative; z-index: 1; }
-    .founding-bar { position: relative; z-index: 1; }
-
-    /* ── NAV (unified with blog) ── */
-    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); max-width: 1280px; margin: 0 auto; }
-    .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: var(--yellow); text-decoration: none; }
-    .nav-links { display: flex; align-items: center; gap: 1.5rem; font-size: 0.95rem; color: #888; }
-    .nav-links a { text-decoration: none; color: #888; }
-    .nav-links a:hover { color: #fff; }
-
-    /* ── HAMBURGER ── */
-    .nav-burger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; color: var(--yellow); font-size: 1.4rem; line-height: 1; }
-    .nav-mobile { display: none; flex-direction: column; gap: 0; border-bottom: 1px solid var(--border); background: var(--bg2); max-width: 1280px; margin: 0 auto; }
-    .nav-mobile.open { display: flex; }
-    .nav-mobile a { padding: 0.85rem 2rem; color: #888; text-decoration: none; font-size: 0.9rem; border-top: 1px solid var(--border); }
-    .nav-mobile a:hover { color: #fff; background: var(--bg3); }
-
-    .badge-chip {
-      font-size: 0.65rem;
-      color: var(--yellow);
-      border: 1px solid var(--yellow);
-      padding: 0.25rem 0.6rem;
-      letter-spacing: 0.06em;
-      opacity: 0.6;
-    }
-
-    /* ── NAV DROPDOWN ── */
-    .nav-dropdown { position: relative; }
-    .nav-dropdown-btn { background: none; border: none; cursor: pointer; font-family: inherit; }
-    .nav-dropdown-menu {
-      display: none;
-      position: absolute;
-      top: 100%;
-      left: 0;
-      background: #1a1a1a;
-      border: 1px solid #333;
-      border-radius: 8px;
-      min-width: 200px;
-      padding: 0.5rem 0;
-      z-index: 100;
-      margin-top: 0.5rem;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-    }
-    .nav-dropdown.open .nav-dropdown-menu { display: block; }
-    .nav-dropdown-menu a {
-      display: block;
-      padding: 0.6rem 1rem;
-      color: #ccc;
-      text-decoration: none;
-      font-size: 0.85rem;
-    }
-    .nav-dropdown-menu a:hover { background: #222; color: #fff; }
-
-    .nav-blog-link {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.45rem;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-      text-decoration: none;
-      transition: color 0.15s;
-    }
-    .nav-blog-link:hover { color: var(--yellow); }
-
-    /* ── HERO ── */
-    .hero {
-      margin-bottom: 2.75rem;
-    }
-
-    .hero-eyebrow {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.45rem;
-      color: var(--yellow);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-
-    .hero h1 {
-      font-size: 2.25rem;
-      font-weight: 800;
-      line-height: 1.15;
-      margin-bottom: 1rem;
-      letter-spacing: -0.5px;
-    }
-
-    .hero h1 em {
-      color: var(--yellow);
-      font-style: normal;
-      position: relative;
-    }
-
-    .hero p {
-      color: var(--muted);
-      font-size: 1rem;
-      line-height: 1.7;
-    }
-
-    /* ── CARD ── */
-    .card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      padding: 1.75rem;
-      margin-bottom: 0.75rem;
-      position: relative;
-    }
-
-    /* pixel corner accent */
-    .card::before {
-      content: '';
-      position: absolute;
-      top: -1px; left: -1px;
-      width: 10px; height: 10px;
-      background: var(--yellow);
-    }
-    .card::after {
-      content: '';
-      position: absolute;
-      bottom: -1px; right: -1px;
-      width: 6px; height: 6px;
-      background: var(--border);
-    }
-
-    /* ── FIELDS ── */
-    .field { margin-bottom: 1.25rem; }
-
-    label {
-      display: block;
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      margin-bottom: 0.5rem;
-    }
-
-    input[type=text], input[type=email], select {
-      width: 100%;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 0;
-      padding: 0.8rem 0.95rem;
-      color: var(--text);
-      font-size: 1rem;
-      outline: none;
-      -webkit-appearance: none;
-      appearance: none;
-      transition: border-color 0.15s, box-shadow 0.15s;
-    }
-
-    input[type=text]:focus, input[type=email]:focus, select:focus {
-      border-color: var(--yellow);
-      box-shadow: 0 0 0 1px var(--yellow);
-    }
-
-    input::placeholder { color: #555; }
-    select option { background: #161616; }
-
-    .select-wrap { position: relative; }
-    .select-wrap::after {
-      content: '▼';
-      position: absolute;
-      right: 0.85rem;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--yellow);
-      font-size: 0.55rem;
-      pointer-events: none;
-    }
-    .select-wrap select { padding-right: 2rem; cursor: pointer; }
-
-    /* ── BUTTON PRIMARY ── */
-    .btn-primary {
-      width: 100%;
-      padding: 0.9rem 1rem;
-      background: var(--yellow);
-      color: #000;
-      border: none;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.65rem;
-      cursor: pointer;
-      letter-spacing: 0.06em;
-      box-shadow: 4px 4px 0 var(--yellow2);
-      transition: transform 0.08s, box-shadow 0.08s;
-      margin-top: 0.25rem;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      transform: translate(2px, 2px);
-      box-shadow: 2px 2px 0 var(--yellow2);
-    }
-
-    .btn-primary:active:not(:disabled) {
-      transform: translate(4px, 4px);
-      box-shadow: none;
-    }
-
-    .btn-primary:disabled {
-      background: #1e1e1e;
-      color: #333;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    .error-msg {
-      color: var(--red);
-      font-size: 0.78rem;
-      margin-top: 0.6rem;
-      display: none;
-    }
-
-    /* ── LOADING ── */
-    .loading {
-      display: none;
-      padding: 2.5rem 0;
-      text-align: center;
-    }
-
-    .pixel-dots {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      margin-bottom: 1.25rem;
-    }
-
-    .pixel-dots span {
-      display: block;
-      width: 8px; height: 8px;
-      background: var(--yellow);
-      animation: pixelblink 1.2s infinite;
-    }
-    .pixel-dots span:nth-child(2) { animation-delay: 0.2s; }
-    .pixel-dots span:nth-child(3) { animation-delay: 0.4s; }
-    .pixel-dots span:nth-child(4) { animation-delay: 0.6s; }
-    .pixel-dots span:nth-child(5) { animation-delay: 0.8s; }
-
-    @keyframes pixelblink {
-      0%, 100% { opacity: 1; transform: scaleY(1); }
-      50% { opacity: 0.15; transform: scaleY(0.4); }
-    }
-
-    .loading-label {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.48rem;
-      color: var(--muted);
-      letter-spacing: 0.15em;
-    }
-
-    .loading-step {
-      font-size: 0.78rem;
-      color: #666;
-      margin-top: 0.5rem;
-    }
-
-    /* ── RESULT ── */
-    .result {
-      display: none;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-      scroll-margin-top: 3.5rem;
-    }
-
-    .result::before {
-      content: '';
-      position: absolute;
-      top: -1px; left: -1px;
-      width: 10px; height: 10px;
-      background: var(--yellow);
-    }
-
-    .result.show { display: block; }
-
-    .result-inner { padding: 1.75rem; }
-
-    /* Score block */
-    .score-block {
-      text-align: center;
-      padding-bottom: 1.75rem;
-      margin-bottom: 1.75rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .score-label {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.45rem;
-      color: var(--muted);
-      letter-spacing: 0.18em;
-      margin-bottom: 1rem;
-    }
-
-    .score-display {
-      display: flex;
-      align-items: baseline;
-      justify-content: center;
-      gap: 0.25rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .score-num {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 4rem;
-      line-height: 1;
-    }
-    .score-num.s-low    { color: var(--red); }
-    .score-num.s-mid    { color: var(--orange); }
-    .score-num.s-hi     { color: #FFEB3B; }
-    .score-num.s-top    { color: var(--green); }
-
-    .score-denom {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.7rem;
-      color: var(--muted);
-    }
-
-    /* pixel progress bar */
-    .pbar {
-      display: flex;
-      justify-content: center;
-      gap: 4px;
-      margin: 1rem 0 0.85rem;
-    }
-
-    .pbar-block {
-      width: 16px; height: 12px;
-      background: #1a1a1a;
-    }
-
-    .pbar-block.on          { background: #FFEB3B; }
-    .pbar-block.on.s-low    { background: var(--red); }
-    .pbar-block.on.s-mid    { background: var(--orange); }
-    .pbar-block.on.s-hi     { background: #FFEB3B; }
-    .pbar-block.on.s-top    { background: var(--green); }
-
-    .score-verdict {
-      font-size: 0.95rem;
-      color: var(--muted);
-      line-height: 1.55;
-    }
-
-    /* Grounding notice toast */
-    .grounding-toast {
-      position: fixed;
-      bottom: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%) translateY(6rem);
-      background: rgba(30, 30, 40, 0.96);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 0.75rem;
-      padding: 0.7rem 1.1rem;
-      font-size: 0.78rem;
-      color: #aaa;
-      text-align: center;
-      max-width: 340px;
-      width: calc(100% - 2rem);
-      z-index: 9999;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 4px 24px rgba(0,0,0,0.4);
-      transition: transform 0.35s ease, opacity 0.35s ease;
-      opacity: 0;
-      pointer-events: none;
-    }
-    .grounding-toast.show {
-      transform: translateX(-50%) translateY(0);
-      opacity: 1;
-      pointer-events: auto;
-    }
-    .grounding-toast strong { color: #ccc; }
-
-    /* Section header */
-    .sec-head {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.45rem;
-      color: var(--muted);
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      margin-bottom: 1rem;
-    }
-
-    /* Query list */
-    .query-block {
-      margin-bottom: 1.75rem;
-      padding-bottom: 1.75rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .qitem {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.65rem 0;
-      border-top: 1px solid #181818;
-      font-size: 0.92rem;
-    }
-
-    .qitem:first-of-type { border-top: none; }
-
-    .qitem-icon { flex-shrink: 0; }
-    .qitem-text { flex: 1; color: var(--muted); }
-    .qitem-rank {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.42rem;
-      color: var(--yellow);
-      white-space: nowrap;
-    }
-
-    /* Suggestions */
-    .suggest-block {
-      margin-bottom: 1.75rem;
-      padding-bottom: 1.75rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .sitem {
-      display: flex;
-      gap: 0.85rem;
-      padding: 0.75rem 0;
-      font-size: 0.92rem;
-      line-height: 1.6;
-      border-top: 1px solid #181818;
-    }
-
-    .sitem:first-of-type { border-top: none; }
-
-    .sitem-n {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.42rem;
-      color: var(--yellow);
-      flex-shrink: 0;
-      padding-top: 0.3rem;
-    }
-
-    /* Actions */
-    .action-block { margin-bottom: 1.75rem; }
-
-    .btn-share {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.6rem;
-      width: 100%;
-      padding: 0.78rem 1rem;
-      background: transparent;
-      border: 1px solid var(--yellow);
-      color: var(--yellow);
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.5rem;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      transition: background 0.15s, color 0.15s;
-      margin-bottom: 0.75rem;
-    }
-
-    .btn-share:hover { background: var(--yellow); color: #000; }
-
-    /* ── AI BADGE SYSTEM ── */
-    .ai-badge {
-      display: none;
-      padding: 1.5rem 1.25rem;
-      text-align: center;
-      margin-bottom: 0.75rem;
-      position: relative;
-    }
-    .ai-badge.show { display: block; }
-
-    /* Gold — glowing pulse */
-    .ai-badge.gold {
-      background: #0a0800;
-      border: 2px solid #FFD700;
-      animation: goldPulse 2.5s ease infinite;
-    }
-    @keyframes goldPulse {
-      0%, 100% { box-shadow: 0 0 0 0 rgba(255,215,0,0); border-color: #FFD700; }
-      50%       { box-shadow: 0 0 22px 6px rgba(255,215,0,0.35), 0 0 50px 10px rgba(255,215,0,0.1); border-color: #FFE55C; }
-    }
-    /* Silver */
-    .ai-badge.silver {
-      background: #08090a;
-      border: 2px solid #C0C0C0;
-    }
-    /* Bronze */
-    .ai-badge.bronze {
-      background: #090809;
-      border: 2px solid #CD7F32;
-    }
-
-    .badge-crown { display: flex; justify-content: center; margin-bottom: 0.65rem; }
-
-    .badge-tier-label {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.42rem;
-      letter-spacing: 0.15em;
-      margin-bottom: 0.45rem;
-      opacity: 0.75;
-    }
-    .ai-badge.gold   .badge-tier-label { color: #FFD700; }
-    .ai-badge.silver .badge-tier-label { color: #C0C0C0; }
-    .ai-badge.bronze .badge-tier-label { color: #CD7F32; }
-
-    .badge-title {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.62rem;
-      letter-spacing: 0.06em;
-      margin-bottom: 0.65rem;
-    }
-    .ai-badge.gold   .badge-title { color: #FFD700; }
-    .ai-badge.silver .badge-title { color: #C0C0C0; }
-    .ai-badge.bronze .badge-title { color: #CD7F32; }
-
-    .badge-desc {
-      font-size: 0.8rem;
-      color: var(--muted);
-      line-height: 1.55;
-      margin-bottom: 1rem;
-    }
-
-    .btn-badge {
-      width: 100%;
-      padding: 0.75rem;
-      border: none;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.5rem;
-      cursor: pointer;
-      transition: transform 0.08s, box-shadow 0.08s;
-    }
-    .ai-badge.gold   .btn-badge { background: #FFD700; color: #000; box-shadow: 3px 3px 0 #b39700; }
-    .ai-badge.silver .btn-badge { background: #C0C0C0; color: #000; box-shadow: 3px 3px 0 #808080; }
-    .ai-badge.bronze .btn-badge { background: #CD7F32; color: #000; box-shadow: 3px 3px 0 #7d4a14; }
-    .btn-badge:hover { transform: translate(1px,1px); }
-
-    /* Email */
-    .email-block {
-      border-top: 1px solid var(--border);
-      padding-top: 1.5rem;
-    }
-
-    .email-block p {
-      font-size: 0.9rem;
-      color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: 1rem;
-    }
-
-    .email-row { display: flex; gap: 0.5rem; }
-    .email-row input { flex: 1; }
-
-    .btn-email {
-      padding: 0 1rem;
-      min-height: 44px;
-      background: var(--yellow);
-      color: #000;
-      border: none;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.45rem;
-      white-space: nowrap;
-      cursor: pointer;
-      box-shadow: 3px 3px 0 var(--yellow2);
-      transition: transform 0.08s, box-shadow 0.08s;
-    }
-
-    .btn-email:hover {
-      transform: translate(1px, 1px);
-      box-shadow: 2px 2px 0 var(--yellow2);
-    }
-
-    .email-ok {
-      color: var(--green);
-      font-size: 0.78rem;
-      margin-top: 0.6rem;
-      display: none;
-    }
-
-    /* ── FOOTER ── */
-    .footer {
-      margin-top: 3.5rem;
-      text-align: center;
-      font-size: 0.72rem;
-      color: #2a2a2a;
-    }
-
-    .footer a { color: #333; text-decoration: none; }
-    .footer a:hover { color: var(--muted); }
-
-    /* ── FOUNDING BAR ── */
-    .founding-bar {
-      background: #0a0800;
-      border-bottom: 1px solid var(--yellow);
-      color: var(--yellow);
-      font-size: 0.8rem;
-      text-align: center;
-      padding: 0.85rem 1rem;
-      letter-spacing: 0.04em;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    /* ── HERO TAGLINE ── */
-    .hero-tagline {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.45rem;
-      color: #555;
-      letter-spacing: 0.14em;
-      margin-top: 1.25rem;
-    }
-    /* COPY-02: 타겟 페르소나 */
-    .hero-for {
-      font-size: 0.75rem !important;
-      color: #888 !important;
-      margin-top: -0.25rem !important;
-      margin-bottom: 1rem !important;
-      line-height: 1.5 !important;
-    }
-    .hero-for span { color: var(--yellow); }
-    /* COPY-01: 안티-에이전시 */
-    .hero-disclaimer {
-      font-size: 0.65rem !important;
-      color: #555 !important;
-      margin-top: 0.5rem !important;
-      line-height: 1.4 !important;
-    }
-
-    .hero-sub {
-      font-size: 1rem;
-      color: #aaa;
-      line-height: 1.6;
-      margin-bottom: 1.25rem;
-    }
-
-    /* ── ROADMAP DIAGRAM ── */
-    .roadmap-section {
-      max-width: 720px;
-      margin: 2.5rem auto 2rem;
-      text-align: center;
-    }
-    .roadmap-section h2 {
-      font-size: 0.7rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: #666;
-      margin-bottom: 1.25rem;
-    }
-    .roadmap-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 1px;
-      background: #333;
-      border: 1px solid #333;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .roadmap-card {
-      background: #1a1a1a;
-      padding: 1.25rem 1rem;
-    }
-    .roadmap-badge {
-      display: inline-block;
-      font-size: 0.6rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      padding: 3px 8px;
-      border-radius: 4px;
-      margin-bottom: 0.75rem;
-    }
-    .roadmap-badge.available { background: #22c55e22; color: #22c55e; }
-    .roadmap-badge.coming { background: #f59e0b22; color: #f59e0b; }
-    .roadmap-badge.future { background: #8b5cf622; color: #8b5cf6; }
-    .roadmap-phase {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 0.25rem;
-    }
-    .roadmap-equiv {
-      font-size: 0.7rem;
-      color: #666;
-      margin-bottom: 0.5rem;
-    }
-    .roadmap-desc {
-      font-size: 0.75rem;
-      color: #999;
-      line-height: 1.4;
-    }
-    @media (max-width: 600px) {
-      .roadmap-grid { grid-template-columns: 1fr; }
-    }
-
-    /* ── VS ROW ── */
-    .vs-row {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      margin-bottom: 1.75rem;
-      font-size: 0.85rem;
-      color: var(--muted);
-    }
-    .vs-item strong { color: var(--green); }
-    .vs-sep { color: #2a2a2a; }
-    .vs-break { display: none; }
-
-    /* ── AI VITALS ── */
-    .vitals { margin-bottom: 1.75rem; }
-    .vitals-head {
-      font-size: 0.9rem;
-      color: var(--muted);
-      text-align: center;
-      margin-bottom: 1.25rem;
-      line-height: 1.65;
-    }
-    .vitals-head em { color: var(--yellow); font-style: normal; }
-    .vitals-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
-    }
-    .vital-card {
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      padding: 1rem 0.6rem;
-      text-align: center;
-      position: relative;
-    }
-    .vital-card::before {
-      content: '';
-      position: absolute;
-      top: -1px; left: -1px;
-      width: 5px; height: 5px;
-      background: var(--yellow);
-      opacity: .5;
-    }
-    .vital-name {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.35rem;
-      color: var(--yellow);
-      letter-spacing: 0.1em;
-      display: block;
-      margin-bottom: 0.5rem;
-      opacity: .7;
-    }
-    .vital-desc { font-size: 0.78rem; color: #666; line-height: 1.45; }
-
-    /* ── ENTRANCE ANIMATION ── */
-    .fade-up {
-      opacity: 0;
-      transform: translateY(18px);
-      transition: opacity 0.55s ease, transform 0.55s ease;
-    }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
-
-    /* ── HERO GLOW ── */
-    .hero h1 em {
-      text-shadow: 0 0 20px rgba(255,215,0,0.25);
-      animation: emglow 3.5s ease infinite;
-    }
-    @keyframes emglow {
-      0%, 100% { text-shadow: 0 0 15px rgba(255,215,0,0.2); }
-      50% { text-shadow: 0 0 50px rgba(255,215,0,0.5), 0 0 100px rgba(255,215,0,0.1); }
-    }
-
-    /* ── LIVE DOT ── */
-    .live-dot {
-      display: inline-block;
-      width: 6px; height: 6px;
-      background: var(--green);
-      border-radius: 50%;
-      margin-right: 0.45rem;
-      animation: liveblink 1.5s ease infinite;
-      vertical-align: middle;
-      flex-shrink: 0;
-    }
-    @keyframes liveblink {
-      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(0,230,118,0.6); }
-      50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(0,230,118,0); }
-    }
-    .founding-bar-inner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.2rem;
-    }
-
-    /* ── HERO CTA BUTTON ── */
-    .hero-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      margin-top: 1.5rem;
-      padding: 0.7rem 1.25rem;
-      background: var(--yellow);
-      color: #000;
-      border: none;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.55rem;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      box-shadow: 3px 3px 0 var(--yellow2);
-      transition: transform 0.08s, box-shadow 0.08s;
-    }
-    .hero-cta:hover { transform: translate(1px,1px); box-shadow: 2px 2px 0 var(--yellow2); }
-    .hero-cta:active { transform: translate(3px,3px); box-shadow: none; }
-
-    /* ── SOCIAL PROOF STRIP ── */
-    .social-proof {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 2rem;
-      flex-wrap: wrap;
-      margin: 2rem 0 0.5rem;
-      padding: 1.25rem 0;
-      border-top: 1px solid #181818;
-      border-bottom: 1px solid #181818;
-    }
-    .sp-stat {
-      text-align: center;
-    }
-    .sp-num {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 1.1rem;
-      color: var(--yellow);
-      display: block;
-      margin-bottom: 0.3rem;
-    }
-    .sp-label {
-      font-size: 0.7rem;
-      color: #555;
-      letter-spacing: 0.04em;
-    }
-    .sp-divider {
-      width: 1px;
-      height: 2.5rem;
-      background: #222;
-    }
-
-    /* ── POWERED BY ── */
-    .powered-by {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
-      margin: 1.25rem 0 1.75rem;
-      font-size: 0.72rem;
-      color: #444;
-    }
-    .powered-by-label {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.32rem;
-      color: #333;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-    }
-    .pb-item {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      color: #555;
-      font-size: 0.78rem;
-    }
-    .pb-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--yellow);
-      opacity: 0.4;
-    }
-
-    /* ── SCORE SPECTRUM ── */
-    .spectrum-wrap {
-      margin-top: 2rem;
-      margin-bottom: 2rem;
-    }
-    .spectrum-label {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.38rem;
-      color: var(--muted);
-      letter-spacing: 0.15em;
-      margin-bottom: 0.75rem;
-      opacity: 0.5;
-    }
-    .spectrum-zones {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2px;
-    }
-    .sz {
-      padding: 0.85rem 0.5rem;
-      text-align: center;
-      border: 1px solid;
-      position: relative;
-      overflow: hidden;
-      transition: transform 0.15s;
-    }
-    .sz:hover { transform: translateY(-2px); }
-    .sz-low  { background: #130404; border-color: #3a1010; }
-    .sz-mid  { background: #130a02; border-color: #3a2008; }
-    .sz-hi   { background: #131100; border-color: #3a3208; }
-    .sz-top  { background: #02130a; border-color: #0d3a1a; }
-    .sz-range {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.38rem;
-      display: block;
-      margin-bottom: 0.4rem;
-    }
-    .sz-low  .sz-range { color: var(--red); }
-    .sz-mid  .sz-range { color: var(--orange); }
-    .sz-hi   .sz-range { color: #FFEB3B; }
-    .sz-top  .sz-range { color: var(--green); }
-    .sz-title { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.3rem; }
-    .sz-low  .sz-title { color: #ff6b6b; }
-    .sz-mid  .sz-title { color: #ffa94d; }
-    .sz-hi   .sz-title { color: #ffe066; }
-    .sz-top  .sz-title { color: #69db7c; }
-    .sz-desc { font-size: 0.72rem; color: #555; line-height: 1.45; }
-
-    /* ── QUERY TICKER ── */
-    .qticker-wrap {
-      overflow: hidden;
-      margin-bottom: 2rem;
-      padding: 0.8rem 0;
-      border-top: 1px solid #181818;
-      border-bottom: 1px solid #181818;
-      position: relative;
-    }
-    .qticker-wrap::before, .qticker-wrap::after {
-      content: '';
-      position: absolute;
-      top: 0; bottom: 0; width: 3rem; z-index: 2;
-      pointer-events: none;
-    }
-    .qticker-wrap::before { left: 0; background: linear-gradient(to right, var(--bg), transparent); }
-    .qticker-wrap::after  { right: 0; background: linear-gradient(to left,  var(--bg), transparent); }
-    .qticker {
-      display: flex;
-      width: max-content;
-      animation: ticker-scroll 40s linear infinite;
-    }
-    .qticker:hover { animation-play-state: paused; }
-    @keyframes ticker-scroll {
-      0%   { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-    .qticker-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0 1.75rem;
-      font-size: 0.82rem;
-      white-space: nowrap;
-      color: #444;
-    }
-    .qticker-q { color: #555; font-style: italic; }
-    .qticker-sep { color: #1e1e1e; font-size: 1rem; }
-
-    /* ── VITAL CARD HOVER ── */
-    .vital-card { cursor: default; transition: border-color 0.2s, background 0.2s; }
-    .vital-card:hover {
-      border-color: rgba(255,215,0,0.35);
-      background: #0e0c00;
-    }
-    .vital-icon { font-size: 1.25rem; margin-bottom: 0.5rem; display: block; }
-
-    /* ── HOW IT WORKS ── */
-    .how-section {
-      margin-bottom: 2rem;
-      border: 1px solid var(--border);
-      padding: 1.5rem 1.25rem 1.25rem;
-      background: var(--bg2);
-    }
-    .how-head {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.4rem;
-      color: var(--yellow);
-      letter-spacing: 0.12em;
-      margin-bottom: 1.5rem;
-      opacity: .6;
-    }
-    .how-steps {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr auto 1fr;
-      align-items: start;
-      gap: 0;
-    }
-    .how-step { text-align: center; padding: 0 0.25rem; }
-    .how-arrow {
-      color: var(--yellow);
-      opacity: 0.25;
-      font-size: 0.8rem;
-      padding-top: 1.1rem;
-      text-align: center;
-    }
-    .how-icon { font-size: 1.4rem; margin-bottom: 0.5rem; display: block; }
-    .how-num {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.38rem;
-      color: var(--yellow);
-      display: block;
-      margin-bottom: 0.4rem;
-      opacity: 0.5;
-    }
-    .how-title { font-size: 0.88rem; font-weight: 600; margin-bottom: 0.35rem; }
-    .how-desc { font-size: 0.76rem; color: #666; line-height: 1.55; }
-
-    /* ── UNDER THE HOOD ── */
-    .uth-section {
-      margin-bottom: 2rem;
-      border: 1px solid var(--border);
-      padding: 1.5rem 1.25rem 1.25rem;
-      background: var(--bg2);
-    }
-    .uth-head {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.4rem;
-      color: var(--yellow);
-      letter-spacing: 0.12em;
-      margin-bottom: 0.5rem;
-      opacity: .6;
-    }
-    .uth-sub {
-      font-size: 0.88rem;
-      color: #888;
-      margin-bottom: 1.5rem;
-      line-height: 1.5;
-    }
-    .uth-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-    }
-    .uth-card {
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      padding: 1.1rem 1rem;
-      position: relative;
-    }
-    .uth-card::before {
-      content: '';
-      position: absolute;
-      top: -1px; left: -1px;
-      width: 5px; height: 5px;
-      background: var(--yellow);
-      opacity: .5;
-    }
-    .uth-card-icon { font-size: 1.2rem; margin-bottom: 0.5rem; display: block; }
-    .uth-card-title {
-      font-size: 0.82rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-      color: #fff;
-    }
-    .uth-card-desc {
-      font-size: 0.76rem;
-      color: #888;
-      line-height: 1.55;
-    }
-    .uth-card-desc strong { color: #ccc; }
-    .uth-link {
-      display: block;
-      text-align: center;
-      margin-top: 1.25rem;
-      color: var(--yellow);
-      font-size: 0.78rem;
-      text-decoration: none;
-      opacity: 0.7;
-      transition: opacity 0.15s;
-    }
-    .uth-link:hover { opacity: 1; }
-
-    /* ── CONSENT ── */
-    .consent-note { font-size: 0.68rem; color: #444; margin-top: 0.5rem; line-height: 1.4; }
-    .consent-note a { color: #555; text-decoration: underline; }
-
-    /* ── MOBILE ── */
-    @media (max-width: 767px) {
-      body { padding: 0 0.75rem 5rem; }
-      .container { padding-top: 1.5rem; }
-      .nav { padding: 1rem 1rem; }
-      .nav-logo { font-size: 0.7rem; }
-      .nav { padding: 0.85rem 1rem; max-width: 100%; }
-      .nav-logo { font-size: 0.7rem; min-width: 0; }
-      .nav-logo span { white-space: nowrap; }
-      .nav-links > a, .nav-links > div { display: none !important; }
-      .nav-burger { display: block; }
-      .founding-bar { max-width: 100vw; }
-      .nav-mobile { max-width: 100vw; }
-      .how-steps { grid-template-columns: 1fr; gap: 1rem; }
-      .how-arrow { display: none; }
-      .uth-grid { grid-template-columns: 1fr; }
-      .hero h1 { font-size: 2rem; }
-      .hero p { font-size: 0.95rem; }
-      .score-num { font-size: 3rem; }
-      .email-row { flex-direction: column; }
-      .btn-email { min-height: 44px; padding: 0.75rem; }
-      .vitals-grid { grid-template-columns: 1fr; gap: 0.5rem; }
-      .vs-row { flex-wrap: wrap; gap: 0.3rem 0.6rem; justify-content: center; }
-      .vs-sep { display: none; }
-      .vs-break { display: block; width: 100%; }
-      .hero-cta { display: flex; width: 100%; justify-content: center; }
-      .spectrum-zones { grid-template-columns: repeat(2, 1fr); }
-      .how-section { padding: 1.25rem 1rem; }
-      .card { padding: 1.25rem; }
-      .sz { padding: 0.75rem 0.4rem; }
-      .vital-card { padding: 1rem 0.75rem; }
-      .qitem-text { word-break: break-word; }
-      .sitem { flex-wrap: nowrap; }
-    }
-
-    @media (max-width: 420px) {
-      .hero h1 { font-size: 1.65rem; }
-      .spectrum-zones { grid-template-columns: repeat(2, 1fr); }
-      .vitals-grid { grid-template-columns: 1fr; }
-      .card { padding: 1rem; }
-      .btn-primary { font-size: 0.55rem; }
-    }
-
-    /* ── DEMO RESULT ── */
-    .demo-section {
-      margin-bottom: 2rem;
-      border: 1px solid var(--border);
-      background: var(--bg2);
-      padding: 1.5rem 1.25rem 1.25rem;
-      position: relative;
-    }
-    .demo-section::before {
-      content: '';
-      position: absolute;
-      top: -1px; left: -1px;
-      width: 10px; height: 10px;
-      background: var(--yellow);
-    }
-    .demo-head {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.4rem;
-      color: var(--yellow);
-      letter-spacing: 0.12em;
-      margin-bottom: 1.25rem;
-      opacity: .6;
-    }
-    .demo-tabs {
-      display: flex;
-      gap: 0;
-      margin-bottom: 1.25rem;
-      border-bottom: 1px solid var(--border);
-    }
-    .demo-tab {
-      background: none;
-      border: none;
-      color: #555;
-      font-size: 0.82rem;
-      padding: 0.65rem 1rem;
-      cursor: pointer;
-      border-bottom: 2px solid transparent;
-      transition: color 0.15s, border-color 0.15s;
-      font-weight: 600;
-    }
-    .demo-tab.active {
-      color: var(--yellow);
-      border-bottom-color: var(--yellow);
-    }
-    .demo-tab:hover:not(.active) { color: #888; }
-    .demo-panel { display: none; }
-    .demo-panel.active { display: block; }
-
-    .demo-score-row {
-      display: flex;
-      align-items: center;
-      gap: 1.25rem;
-      margin-bottom: 1.25rem;
-    }
-    .demo-score-big {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 2.5rem;
-      line-height: 1;
-    }
-    .demo-score-meta {
-      flex: 1;
-    }
-    .demo-product-name {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-    }
-    .demo-verdict {
-      font-size: 0.82rem;
-      color: #666;
-    }
-
-    .demo-dims {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 0.5rem;
-      margin-bottom: 1.25rem;
-    }
-    .demo-dim {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid #181818;
-    }
-    .demo-dim:last-child { border-bottom: none; }
-    .demo-dim-icon { flex-shrink: 0; font-size: 0.85rem; }
-    .demo-dim-name {
-      flex: 1;
-      font-size: 0.82rem;
-      color: #888;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .demo-tip {
-      display:inline-flex;align-items:center;justify-content:center;
-      width:13px;height:13px;border-radius:50%;
-      background:#1e1e1e;border:1px solid #333;
-      color:#444;font-size:8px;font-weight:700;line-height:1;
-      cursor:help;flex-shrink:0;position:relative;
-    }
-    .demo-tip::after {
-      content:attr(data-tip);
-      position:absolute;left:18px;top:50%;transform:translateY(-50%);
-      background:#141414;border:1px solid #2a2a2a;color:#bbb;
-      padding:8px 11px;border-radius:7px;font-size:11px;font-weight:400;
-      width:210px;white-space:normal;line-height:1.5;
-      opacity:0;pointer-events:none;z-index:200;
-      transition:opacity 0.15s;
-    }
-    .demo-tip:hover::after { opacity:1; }
-    .demo-dim-bar {
-      width: 100px;
-      height: 6px;
-      background: #1a1a1a;
-      border-radius: 0;
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-    .demo-dim-fill {
-      height: 100%;
-      transition: width 1.2s ease;
-    }
-    .demo-dim-pts {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.35rem;
-      color: #555;
-      width: 3.5rem;
-      text-align: right;
-      flex-shrink: 0;
-    }
-
-    .demo-probe {
-      background: #080808;
-      border: 1px solid #1a1a1a;
-      padding: 0.85rem 1rem;
-      margin-bottom: 0.5rem;
-    }
-    .demo-probe-label {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.32rem;
-      color: #555;
-      letter-spacing: 0.1em;
-      margin-bottom: 0.5rem;
-    }
-    .demo-probe-row {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-size: 0.82rem;
-      padding: 0.35rem 0;
-    }
-    .demo-probe-status {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.35rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 0;
-    }
-    .demo-probe-status.unknown {
-      background: #1a0808;
-      color: var(--red);
-      border: 1px solid #3a1010;
-    }
-    .demo-probe-status.known {
-      background: #081a08;
-      color: var(--green);
-      border: 1px solid #103a10;
-    }
-
-    .demo-cta {
-      text-align: center;
-      margin-top: 1.25rem;
-      padding-top: 1.25rem;
-      border-top: 1px solid var(--border);
-    }
-    .demo-cta-text {
-      font-size: 0.85rem;
-      color: #666;
-      margin-bottom: 0.75rem;
-    }
-    .demo-cta-text em { color: var(--yellow); font-style: normal; }
-
-    @media (max-width: 767px) {
-      .demo-score-big { font-size: 2rem; }
-      .demo-dim-bar { width: 60px; }
-      .demo-tabs { overflow-x: auto; }
-    }
-
-    /* ── NEWSLETTER ── */
-    .newsletter-section {
-      margin-bottom: 1.25rem;
-      border: 1px solid var(--yellow);
-      background: var(--bg2);
-      padding: 2rem 1.5rem;
-      text-align: center;
-    }
-    .newsletter-head {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.55rem;
-      color: var(--yellow);
-      letter-spacing: 0.15em;
-      margin-bottom: 0.6rem;
-    }
-    .newsletter-sub {
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-bottom: 1.25rem;
-    }
-    .newsletter-form {
-      display: flex;
-      gap: 0.5rem;
-      max-width: 440px;
-      margin: 0 auto 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .newsletter-form input {
-      flex: 1;
-      min-width: 200px;
-      padding: 0.6rem 0.85rem;
-      background: #111;
-      border: 1px solid #444;
-      color: #fff;
-      font-size: 0.9rem;
-      outline: none;
-    }
-    .newsletter-form input:focus { border-color: var(--yellow); }
-    .newsletter-form button {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.4rem;
-      background: var(--yellow);
-      color: #000;
-      border: none;
-      padding: 0.6rem 1rem;
-      cursor: pointer;
-      letter-spacing: 0.05em;
-      white-space: nowrap;
-    }
-    .newsletter-form button:hover { background: var(--yellow2); }
-    .newsletter-list {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem 1.5rem;
-      justify-content: center;
-      color: #888;
-      font-size: 0.82rem;
-    }
-
-    /* ── FAQ ── */
-    .faq-section {
-      margin-bottom: 1.25rem;
-      border: 1px solid var(--border);
-      background: var(--bg2);
-      padding: 1.5rem 1.25rem 1.25rem;
-    }
-    .faq-head {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.4rem;
-      color: var(--yellow);
-      letter-spacing: 0.12em;
-      margin-bottom: 1.5rem;
-      opacity: 0.6;
-    }
-    .faq-item {
-      border-bottom: 1px solid var(--border);
-    }
-    .faq-item:last-child { border-bottom: none; }
-    .faq-q {
-      width: 100%;
-      background: none;
-      border: none;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 0.92rem;
-      font-weight: 600;
-      text-align: left;
-      padding: 1rem 0;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1rem;
-      line-height: 1.45;
-    }
-    .faq-q:hover { color: var(--yellow); }
-    .faq-icon {
-      font-size: 1.1rem;
-      color: var(--yellow);
-      flex-shrink: 0;
-      transition: transform 0.25s;
-    }
-    .faq-item.open .faq-icon { transform: rotate(45deg); }
-    .faq-a {
-      display: none;
-      font-size: 0.84rem;
-      color: #aaa;
-      line-height: 1.7;
-      padding-bottom: 1rem;
-    }
-    .faq-item.open .faq-a { display: block; }
-    .faq-a strong { color: var(--text); }
-    .faq-a ul { margin: 0.5rem 0 0.5rem 1.1rem; }
-    .faq-a ul li { margin-bottom: 0.35rem; }
-    .faq-badge-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
-    .faq-badge {
-      padding: 0.2rem 0.6rem;
-      font-size: 0.75rem;
-      font-weight: 700;
-      border-radius: 2px;
-    }
-    .faq-badge.gold   { background: rgba(255,215,0,0.12); color: #FFD700; border: 1px solid rgba(255,215,0,0.3); }
-    .faq-badge.silver { background: rgba(192,192,192,0.1); color: #C0C0C0; border: 1px solid rgba(192,192,192,0.25); }
-    .faq-badge.bronze { background: rgba(205,127,50,0.1); color: #CD7F32; border: 1px solid rgba(205,127,50,0.25); }
-    .faq-badge.none   { background: rgba(102,102,102,0.1); color: #666; border: 1px solid rgba(102,102,102,0.2); }
-    @media (max-width: 767px) {
-      .faq-section { padding: 1.25rem 1rem; }
-      .faq-q { font-size: 0.86rem; }
-    }
-    /* ── Cookie Consent Banner ── */
-    #cookieBanner {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: #111; border-top: 1px solid #2a2a2a;
-      padding: 0.9rem 1.5rem;
-      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
-      z-index: 10000; font-size: 0.75rem; color: #888;
-    }
-    #cookieBanner p { flex: 1; min-width: 200px; margin: 0; line-height: 1.5; }
-    #cookieBanner a { color: #666; text-decoration: underline; }
-    .cookie-btns { display: flex; gap: 0.5rem; flex-shrink: 0; }
-    .btn-cookie-accept {
-      background: var(--yellow); color: #000; border: none;
-      font-family: 'Press Start 2P', monospace; font-size: 0.4rem;
-      padding: 0.5rem 0.9rem; cursor: pointer;
-    }
-    .btn-cookie-decline {
-      background: transparent; color: #555; border: 1px solid #333;
-      font-family: 'Press Start 2P', monospace; font-size: 0.4rem;
-      padding: 0.5rem 0.9rem; cursor: pointer;
-    }
-    /* ── Floating Waitlist Bar ── */
-    #floatBar {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: #0d0d0d; border-top: 1px solid #2a2a2a;
-      padding: 0.85rem 1.5rem;
-      display: flex; align-items: center; gap: 0.75rem; flex-wrap: nowrap;
-      z-index: 9999;
-      transform: translateY(100%);
-      transition: transform 0.4s ease;
-    }
-    #floatBar.show { transform: translateY(0); }
-    #floatBar .float-text { flex: 1; min-width: 0; }
-    #floatBar .float-text strong { color: var(--yellow); font-family: 'Press Start 2P', monospace; font-size: 0.42rem; display: block; margin-bottom: 0.25rem; }
-    #floatBar .float-text span { font-size: 0.72rem; color: #777; }
-    #floatBar .float-inputs { display: flex; gap: 0.5rem; flex-shrink: 0; align-items: center; }
-    #floatBar input[type="email"] { height: 38px; padding: 0 0.75rem; font-size: 0.78rem; background: #1a1a1a; border: 1px solid #333; color: var(--text); outline: none; width: 220px; }
-    #floatBar input[type="email"]:focus { border-color: var(--yellow); }
-    .btn-float-join {
-      height: 38px; padding: 0 1rem;
-      background: var(--yellow); color: #000; border: none;
-      font-family: 'Press Start 2P', monospace; font-size: 0.4rem;
-      cursor: pointer; white-space: nowrap;
-    }
-    #floatClose {
-      background: none; border: none; color: #444; font-size: 1rem;
-      cursor: pointer; padding: 0.25rem; flex-shrink: 0; line-height: 1;
-    }
-    #floatClose:hover { color: #888; }
-    #floatOk { font-size: 0.75rem; color: var(--green); display: none; }
-    @media (max-width: 600px) {
-      #floatBar { padding: 0.75rem 1rem; gap: 0.5rem; }
-      #floatBar .float-text span { font-size: 0.65rem; }
-      #floatBar input[type="email"] { width: 100%; }
-      #floatBar .float-inputs { flex-shrink: 0; }
-      .btn-float-join { padding: 0 0.6rem; font-size: 0.35rem; }
-      #cookieBanner { padding: 0.75rem 1rem; }
-    }
+/* ── DESIGN SYSTEM (landing-v2 variables) ── */
+:root {
+  --bg:          #000000;
+  --bg2:         #0d0d0d;
+  --bg3:         #161616;
+  --yellow:      #FFD700;
+  --yellow2:     #b39700;
+  --yellow-soft: #FFE55C;
+  --text:        #ffffff;
+  --muted:       #666666;
+  --muted-2:     #888888;
+  --muted-3:     #aaaaaa;
+  --border:      #222222;
+  --border-soft: #181818;
+  --border-faint:#1f1f1f;
+  --green:       #00E676;
+  --red:         #FF3D3D;
+  --orange:      #FF9100;
+  --yellow-mid:  #FFEB3B;
+  --pixel:       'Press Start 2P', monospace;
+  --body:        'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --mono:        'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { overflow-x: hidden; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; padding: 0; }
+::selection { background: var(--yellow); color: #000; }
+
+/* ── CANVAS BG ── */
+#bg-canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* all page content above canvas */
+.page-wrap { position: relative; z-index: 1; }
+
+/* ── COOKIE CONSENT ── */
+#cookieBanner {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #111; border-top: 1px solid #2a2a2a;
+  padding: 0.9rem 1.5rem;
+  display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+  z-index: 10000; font-size: 0.75rem; color: #888;
+}
+#cookieBanner p { flex: 1; min-width: 200px; margin: 0; line-height: 1.5; }
+#cookieBanner a { color: #666; text-decoration: underline; }
+.cookie-btns { display: flex; gap: 0.5rem; flex-shrink: 0; }
+.btn-cookie-accept {
+  background: var(--yellow); color: #000; border: none;
+  font-family: var(--pixel); font-size: 0.4rem;
+  padding: 0.5rem 0.9rem; cursor: pointer;
+}
+.btn-cookie-decline {
+  background: transparent; color: #555; border: 1px solid #333;
+  font-family: var(--pixel); font-size: 0.4rem;
+  padding: 0.5rem 0.9rem; cursor: pointer;
+}
+
+/* ── FLOATING CTA BAR ── */
+#floatBar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #0d0d0d; border-top: 1px solid #2a2a2a;
+  padding: 0.85rem 1.5rem;
+  display: flex; align-items: center; gap: 0.75rem; flex-wrap: nowrap;
+  z-index: 9999;
+  transform: translateY(100%);
+  transition: transform 0.4s ease;
+}
+#floatBar.show { transform: translateY(0); }
+#floatBar .float-text { flex: 1; min-width: 0; }
+#floatBar .float-text strong { color: var(--yellow); font-family: var(--pixel); font-size: 0.42rem; display: block; margin-bottom: 0.25rem; }
+#floatBar .float-text span { font-size: 0.72rem; color: #777; }
+#floatBar .float-inputs { display: flex; gap: 0.5rem; flex-shrink: 0; align-items: center; }
+.btn-float-join {
+  height: 38px; padding: 0 1rem;
+  background: var(--yellow); color: #000; border: none;
+  font-family: var(--pixel); font-size: 0.4rem;
+  cursor: pointer; white-space: nowrap;
+}
+#floatClose {
+  background: none; border: none; color: #444; font-size: 1rem;
+  cursor: pointer; padding: 0.25rem; flex-shrink: 0; line-height: 1;
+}
+#floatClose:hover { color: #888; }
+@media (max-width: 600px) {
+  #floatBar { padding: 0.75rem 1rem; gap: 0.5rem; }
+  #floatBar .float-text span { font-size: 0.65rem; }
+  .btn-float-join { padding: 0 0.6rem; font-size: 0.35rem; }
+  #cookieBanner { padding: 0.75rem 1rem; }
+}
+
+/* ── TOP STRIP ── */
+.top-strip {
+  background: #0a0800;
+  border-bottom: 1px solid #FFD70033;
+  padding: 9px 20px;
+  font-family: var(--pixel);
+  font-size: 8px;
+  letter-spacing: 0.18em;
+  color: var(--yellow);
+  text-align: center;
+  position: relative;
+  z-index: 5;
+}
+.top-strip .live-dot {
+  display: inline-block; width: 6px; height: 6px; background: var(--green);
+  margin-right: 8px; vertical-align: 1px;
+  animation: liveblink 1.5s infinite;
+  border-radius: 50%;
+}
+.top-strip b { color: #fff; font-weight: normal; }
+.top-strip .sep { color: var(--muted); margin: 0 10px; }
+@keyframes liveblink { 0%,100% { box-shadow:0 0 0 0 #00E67666 } 50% { box-shadow:0 0 0 5px #00E67600 } }
+@keyframes emglow { 0%,100% { text-shadow:0 0 0 var(--yellow) } 50% { text-shadow:0 0 28px #FFD70080 } }
+
+/* ── NAV ── */
+.nav {
+  max-width: 1080px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+.nav-logo svg { width: 22px; height: 18px; image-rendering: pixelated; }
+.nav-logo .word { font-family: var(--pixel); font-size: 13px; color: var(--yellow); letter-spacing: 0.04em; }
+.nav-logo .word i { color: #fff; font-style: normal; }
+.nav-logo .beta-chip {
+  font-size: 0.5rem; font-family: var(--pixel); color: #0a0a0a;
+  background: var(--yellow); padding: 2px 5px; letter-spacing: 0.05em;
+  line-height: 1; align-self: center;
+}
+.nav-links { display: flex; align-items: center; gap: 22px; }
+.nav-links a { font-family: var(--pixel); font-size: 8px; letter-spacing: 0.18em; color: var(--muted); transition: color .15s; }
+.nav-links a:hover { color: #fff; }
+.nav-cta {
+  font-family: var(--pixel); font-size: 8.5px; letter-spacing: 0.15em;
+  background: var(--yellow); color: #000; padding: 9px 14px;
+  box-shadow: 3px 3px 0 var(--yellow2);
+  transition: transform .12s, box-shadow .12s;
+}
+.nav-cta:hover { transform: translate(1px,1px); box-shadow: 2px 2px 0 var(--yellow2); }
+.nav-dashboard {
+  background: var(--yellow); color: #000;
+  padding: 9px 14px; font-family: var(--pixel); font-size: 8.5px;
+  letter-spacing: 0.15em; box-shadow: 3px 3px 0 var(--yellow2);
+  transition: transform .12s, box-shadow .12s;
+  text-decoration: none; display: inline-block;
+}
+.nav-dashboard:hover { transform: translate(1px,1px); box-shadow: 2px 2px 0 var(--yellow2); }
+
+/* hamburger */
+.nav-burger { display: none; background: none; border: none; cursor: pointer; padding: 0.5rem; color: var(--yellow); font-size: 1.4rem; line-height: 1; }
+.nav-mobile { display: none; flex-direction: column; gap: 0; border-bottom: 1px solid var(--border); background: var(--bg2); max-width: 1080px; margin: 0 auto; }
+.nav-mobile.open { display: flex; }
+.nav-mobile a { padding: 0.85rem 1.25rem; color: #888; text-decoration: none; font-size: 0.9rem; border-top: 1px solid var(--border); font-family: var(--pixel); font-size: 8px; letter-spacing: 0.15em; }
+.nav-mobile a:hover { color: #fff; background: var(--bg3); }
+
+@media (max-width: 768px) {
+  .nav-links > a, .nav-links > div { display: none !important; }
+  .nav-burger { display: block; }
+  .nav-cta { display: none; }
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  max-width: 1080px; margin: 0 auto;
+  padding: 80px 20px 64px;
+  text-align: center;
+}
+.hero-bg {
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(rgba(255,215,0,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,215,0,0.045) 1px, transparent 1px);
+  background-size: 60px 60px;
+  background-position: center;
+  mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+  -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%);
+}
+.hero > * { position: relative; z-index: 1; }
+
+.hero-eyebrow {
+  font-family: var(--pixel);
+  font-size: 0.45rem;
+  color: var(--yellow);
+  letter-spacing: 0.28em;
+  margin-bottom: 28px;
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 8px 14px;
+  border: 1px solid #FFD70033;
+  background: #0a0800;
+}
+.hero-eyebrow .arrow { color: var(--yellow); font-family: var(--pixel); }
+
+.hero h1 {
+  font-family: var(--body);
+  font-weight: 800;
+  font-size: clamp(30px, 4.4vw, 50px);
+  line-height: 1.08;
+  letter-spacing: -1px;
+  margin: 0 auto;
+  max-width: 840px;
+  color: #fff;
+}
+.hero h1 .gold {
+  color: var(--yellow);
+  display: block;
+  margin-top: 8px;
+  animation: emglow 3.5s ease-in-out infinite;
+}
+
+.hero-sub {
+  max-width: 720px;
+  margin: 28px auto 0;
+  color: var(--muted-3);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.hero-sub .models {
+  display: inline-flex; flex-wrap: wrap; justify-content: center;
+  gap: 6px 14px; align-items: baseline;
+  margin-top: 6px;
+}
+.hero-sub .pipe { color: var(--muted); }
+.hero-sub .terms {
+  display: block; margin-top: 10px;
+  font-family: var(--pixel); font-size: 0.45rem;
+  color: var(--muted); letter-spacing: 0.22em;
+}
+.hero-sub .terms .dot { color: var(--muted); margin: 0 8px; }
+
+/* ── HERO FORM ── */
+.check-form {
+  max-width: 560px;
+  margin: 36px auto 0;
+  display: flex;
+  gap: 10px;
+  align-items: stretch;
+  flex-wrap: wrap;
+}
+.check-input {
+  flex: 1 1 280px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  color: #fff;
+  font-family: var(--body);
+  font-size: 15px;
+  padding: 0 18px;
+  outline: none;
+  height: 60px;
+  border-radius: 0;
+  transition: border-color .15s;
+}
+.check-input:focus { border-color: var(--yellow); }
+.check-input::placeholder { color: var(--muted); }
+.check-form .btn-submit { height: 60px; flex: 0 0 auto; }
+.check-meta {
+  width: 100%;
+  text-align: center;
+  font-family: var(--pixel);
+  font-size: 7px;
+  color: var(--muted);
+  letter-spacing: 0.22em;
+  margin-top: 18px;
+}
+.check-meta .dot { color: var(--muted); margin: 0 8px; }
+
+/* ── BUTTONS ── */
+.btn {
+  font-family: var(--pixel);
+  letter-spacing: 0.12em;
+  font-size: 10px;
+  padding: 13px 20px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  transition: transform .12s, box-shadow .12s, background .15s, color .15s;
+  border-radius: 0;
+}
+.btn-lg { font-size: 11px; padding: 18px 26px; }
+.btn-primary { background: var(--yellow); color: #000; box-shadow: 4px 4px 0 var(--yellow2); }
+.btn-primary:hover:not(:disabled) { box-shadow: 2px 2px 0 var(--yellow2); transform: translate(2px,2px); }
+.btn-primary:active:not(:disabled) { box-shadow: 0 0 0 var(--yellow2); transform: translate(4px,4px); }
+.btn-primary:disabled { opacity: .6; cursor: wait; }
+
+/* ── TENSION BAR ── */
+.tension {
+  background: var(--bg2);
+  border-top: 1px solid #FFD70033;
+  border-bottom: 1px solid #FFD70033;
+  padding: 18px 20px;
+  margin-top: 24px;
+}
+.tension-inner {
+  max-width: 1080px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: center;
+  gap: 24px; flex-wrap: wrap;
+}
+.ticker-pills {
+  display: flex; align-items: center; justify-content: center; gap: 18px; flex-wrap: wrap;
+}
+.tpill {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--pixel);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: #fff;
+  padding: 8px 12px;
+  background: #000;
+  border: 1px solid var(--border);
+}
+.tpill .dot {
+  width: 7px; height: 7px; border-radius: 999px; flex: none;
+  animation: pulsedot 1.6s ease-in-out infinite;
+}
+.tpill .dot.green { background: var(--green); box-shadow: 0 0 8px #00E67666; }
+.tpill .dot.red   { background: var(--red);   box-shadow: 0 0 8px #FF3D3D66; }
+.tpill .num { color: var(--yellow); font-size: 11px; }
+.tpill.bad .num { color: var(--red); }
+.tpill.bad { border-color: #FF3D3D33; }
+@keyframes pulsedot { 0%,100% { opacity: 1 } 50% { opacity: .4 } }
+
+/* ── STAT SECTION ── */
+.stat-section {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 64px 20px 56px;
+  text-align: center;
+}
+.stat-eyebrow {
+  font-family: var(--pixel);
+  font-size: 0.45rem;
+  color: var(--muted);
+  letter-spacing: 0.25em;
+  margin-bottom: 22px;
+}
+.stat-table {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: stretch;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  position: relative;
+  max-width: 680px;
+  margin: 0 auto;
+}
+.stat-table::before { content: ''; position: absolute; top: -1px; left: -1px; width: 10px; height: 10px; background: var(--yellow); z-index: 2; }
+.stat-table::after  { content: ''; position: absolute; bottom: -1px; right: -1px; width: 6px; height: 6px; background: #2a2a2a; }
+.stat-cell {
+  padding: 24px 24px 22px;
+  display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+  text-align: left;
+}
+.stat-cell .lbl { font-family: var(--pixel); font-size: 0.42rem; letter-spacing: 0.2em; }
+.stat-cell .num { font-family: var(--pixel); line-height: 1; letter-spacing: 0.01em; }
+.stat-cell .delta { font-family: var(--pixel); font-size: 0.4rem; letter-spacing: 0.18em; }
+.stat-cell.win .lbl   { color: var(--yellow); }
+.stat-cell.win .num   { font-size: clamp(38px, 6vw, 56px); color: var(--yellow); text-shadow: 0 0 32px #FFD70033; }
+.stat-cell.win .delta { color: #fff; }
+.stat-cell.lose { align-items: flex-end; text-align: right; }
+.stat-cell.lose .lbl   { color: var(--muted); }
+.stat-cell.lose .num   { font-size: clamp(22px, 3.4vw, 32px); color: #555; }
+.stat-cell.lose .delta { color: var(--muted); }
+.stat-vs {
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 6px;
+  border-left: 1px solid var(--border-faint);
+  border-right: 1px solid var(--border-faint);
+  font-family: var(--pixel);
+  font-size: 0.5rem;
+  color: var(--muted);
+  letter-spacing: 0.3em;
+  background: #000;
+  min-width: 48px;
+}
+.stat-copy {
+  margin: 28px auto 0;
+  max-width: 520px;
+  color: var(--muted-3);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+.stat-copy strong { color: #fff; font-weight: 600; }
+.stat-link {
+  display: inline-block; margin-top: 18px;
+  font-family: var(--pixel); font-size: 8px; letter-spacing: 0.2em;
+  color: var(--yellow); padding-bottom: 3px;
+  border-bottom: 1px solid #FFD70044;
+  transition: border-color .15s;
+}
+.stat-link:hover { border-color: var(--yellow); }
+@media (max-width: 640px) {
+  .stat-table { grid-template-columns: 1fr; }
+  .stat-cell.lose { align-items: flex-start; text-align: left; }
+  .stat-vs { border-left: none; border-right: none; border-top: 1px solid var(--border-faint); border-bottom: 1px solid var(--border-faint); padding: 8px 0; }
+}
+
+/* ── DEMO SECTION ── */
+.demo {
+  max-width: 1080px; margin: 0 auto;
+  padding: 24px 20px 80px;
+}
+.demo-eyebrow {
+  font-family: var(--pixel);
+  font-size: 0.45rem;
+  color: var(--muted-2);
+  letter-spacing: 0.25em;
+  margin-bottom: 14px;
+  display: flex; align-items: center; gap: 14px;
+}
+.demo-eyebrow .live-dot { display: inline-block; width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: liveblink 1.5s infinite; }
+.demo-eyebrow .line { flex: 1; height: 1px; background: var(--border-faint); }
+
+.tabs {
+  display: flex; gap: 0; border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+.tab {
+  font-family: var(--pixel);
+  font-size: 9px;
+  letter-spacing: 0.16em;
+  color: var(--muted-2);
+  padding: 14px 20px;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  margin-right: -1px;
+  background: #000;
+  transition: color .12s, background .12s;
+  display: inline-flex; align-items: center; gap: 10px;
+  cursor: pointer;
+}
+.tab:hover { color: #fff; }
+.tab.on { color: #fff; background: var(--bg2); border-color: var(--border); }
+.tab .score {
+  font-family: var(--pixel); font-size: 9px;
+  padding: 2px 6px;
+  background: #000; border: 1px solid var(--border);
+}
+.tab.on .score { border-color: var(--yellow); }
+.tab .score.green { color: var(--green); border-color: #00E67644; }
+.tab .score.gold  { color: var(--yellow); border-color: #FFD70066; }
+.tab .score.q     { color: var(--yellow); animation: scoreq 1.4s ease-in-out infinite; }
+@keyframes scoreq { 0%,100% { opacity: 1 } 50% { opacity: .4 } }
+
+.card {
+  position: relative;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 32px;
+  border-radius: 0;
+}
+.card::before { content: ''; position: absolute; top: -1px; left: -1px; width: 10px; height: 10px; background: var(--yellow); z-index: 2; }
+.card::after  { content: ''; position: absolute; bottom: -1px; right: -1px; width: 6px; height: 6px; background: #2a2a2a; }
+
+.card-head {
+  display: flex; justify-content: space-between; align-items: baseline;
+  border-bottom: 1px solid var(--border-faint);
+  padding-bottom: 16px; margin-bottom: 24px;
+  flex-wrap: wrap; gap: 8px;
+}
+.card-head .eyebrow { font-family: var(--pixel); font-size: 8px; color: var(--yellow); letter-spacing: 0.2em; }
+.card-head .meta    { font-family: var(--pixel); font-size: 7px; color: var(--muted); letter-spacing: 0.18em; }
+
+.card-body {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 48px;
+  align-items: center;
+}
+@media (max-width: 768px) {
+  .card-body { grid-template-columns: 1fr; gap: 28px; justify-items: center; }
+  .card { padding: 24px; }
+}
+
+.ring {
+  width: 200px; height: 200px; border-radius: 50%;
+  display: grid; place-items: center; position: relative;
+  flex: none;
+}
+.ring::after { content: ''; position: absolute; inset: 12px; border-radius: 50%; background: var(--bg2); }
+.ring-inner { position: relative; z-index: 1; text-align: center; }
+.ring .v { font-family: var(--body); font-weight: 800; font-size: 64px; color: #fff; line-height: 1; letter-spacing: -2px; }
+.ring .d { font-family: var(--pixel); font-size: 8px; color: var(--muted); letter-spacing: 0.18em; margin-top: 4px; }
+.ring .t { font-family: var(--pixel); font-size: 9px; letter-spacing: 0.18em; margin-top: 10px; }
+
+.dims { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.dim  { display: grid; grid-template-columns: 170px 1fr 60px; align-items: center; gap: 14px; }
+.dim-name  { font-family: var(--pixel); font-size: 7px; letter-spacing: 0.14em; }
+.dim-track { height: 10px; background: #0a0a0a; border: 1px solid #1f1f1f; border-radius: 0; overflow: hidden; }
+.dim-fill  { height: 100%; border-radius: 0; transition: width .8s ease; }
+.dim-val   { font-family: var(--mono); font-size: 13px; color: #fff; text-align: right; }
+.dim-val i { font-style: normal; color: var(--muted); }
+@media (max-width: 768px) {
+  .dim { grid-template-columns: 120px 1fr 50px; gap: 10px; }
+  .dim-name { font-size: 6px; }
+}
+
+.probes { margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--border-faint); }
+.probes-head { font-family: var(--pixel); font-size: 7px; color: var(--muted-2); letter-spacing: 0.2em; margin-bottom: 14px; }
+.probe {
+  display: grid;
+  grid-template-columns: 90px 1fr 90px;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border-faint);
+  align-items: start;
+}
+.probe:last-child { border-bottom: none; }
+.probe .who     { font-family: var(--pixel); font-size: 7.5px; color: var(--muted-3); letter-spacing: 0.14em; }
+.probe .quote   { font-family: var(--mono); font-size: 12.5px; color: #ccc; line-height: 1.55; }
+.probe .quote .hi { color: var(--yellow); background: #FFD70014; padding: 0 4px; }
+.probe .verdict { font-family: var(--pixel); font-size: 8px; letter-spacing: 0.14em; text-align: right; white-space: nowrap; }
+.probe .verdict.found   { color: var(--green); }
+.probe .verdict.partial { color: var(--orange); }
+.probe .verdict.missed  { color: var(--red); }
+@media (max-width: 768px) {
+  .probe { grid-template-columns: 1fr; gap: 6px; }
+  .probe .verdict { text-align: left; }
+}
+
+/* ── NEWSLETTER SECTION ── */
+.nl-section {
+  max-width: 1080px; margin: 0 auto;
+  padding: 0 20px 64px;
+}
+.nl-card {
+  position: relative;
+  background: var(--bg2);
+  border: 1px solid var(--yellow);
+  padding: 48px 32px;
+  text-align: center;
+}
+.nl-card::before { content: ''; position: absolute; top: -1px; left: -1px; width: 10px; height: 10px; background: var(--yellow); z-index: 2; }
+.nl-card::after  { content: ''; position: absolute; bottom: -1px; right: -1px; width: 6px; height: 6px; background: #2a2a2a; }
+.nl-eyebrow {
+  font-family: var(--pixel); font-size: 0.55rem;
+  color: var(--yellow); letter-spacing: 0.15em; margin-bottom: 10px;
+}
+.nl-sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 24px; }
+.nl-form {
+  display: flex; gap: 8px; max-width: 440px;
+  margin: 0 auto 16px; flex-wrap: wrap; justify-content: center;
+}
+.nl-form input {
+  flex: 1; min-width: 200px;
+  background: var(--bg3); border: 1px solid #444;
+  color: #fff; font-family: var(--body); font-size: 14px;
+  padding: 0 14px; height: 44px; outline: none;
+}
+.nl-form input:focus { border-color: var(--yellow); }
+.nl-form button {
+  font-family: var(--pixel); font-size: 0.4rem; letter-spacing: 0.05em;
+  background: var(--yellow); color: #000; border: none;
+  padding: 0 14px; height: 44px; cursor: pointer; white-space: nowrap;
+  box-shadow: 3px 3px 0 var(--yellow2);
+  transition: transform .12s, box-shadow .12s;
+}
+.nl-form button:hover { box-shadow: 1px 1px 0 var(--yellow2); transform: translate(2px,2px); }
+.nl-bullets {
+  display: flex; flex-wrap: wrap; gap: 0.5rem 1.5rem;
+  justify-content: center; color: #888; font-size: 0.82rem;
+  margin-top: 12px;
+}
+
+/* ── SECOND CTA ── */
+.cta-section {
+  max-width: 1080px; margin: 0 auto;
+  padding: 0 20px 80px;
+}
+.cta-card {
+  position: relative;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 64px 32px;
+  text-align: center;
+}
+.cta-card::before { content: ''; position: absolute; top: -1px; left: -1px; width: 10px; height: 10px; background: var(--yellow); z-index: 2; }
+.cta-card::after  { content: ''; position: absolute; bottom: -1px; right: -1px; width: 6px; height: 6px; background: #2a2a2a; }
+.cta-card .eyebrow { font-family: var(--pixel); font-size: 0.45rem; color: var(--muted); letter-spacing: 0.25em; margin-bottom: 24px; }
+.cta-card h2 {
+  font-family: var(--body); font-weight: 800;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.15; letter-spacing: -0.8px;
+  color: #fff;
+  max-width: 680px; margin: 0 auto 14px;
+}
+.cta-card .sub {
+  color: var(--muted-3); font-size: 1rem; max-width: 520px;
+  margin: 0 auto 32px; line-height: 1.6;
+}
+.cta-card .sub b { color: var(--yellow); font-weight: 500; }
+
+/* ── FAQ ── */
+.faq {
+  max-width: 760px; margin: 0 auto;
+  padding: 40px 20px 80px;
+}
+.faq-eyebrow { font-family: var(--pixel); font-size: 0.45rem; color: var(--yellow); letter-spacing: 0.25em; margin-bottom: 14px; }
+.faq h2 {
+  font-family: var(--body); font-weight: 800;
+  font-size: clamp(28px, 4vw, 38px);
+  letter-spacing: -0.6px; color: #fff;
+  margin: 0 0 28px;
+}
+.faq-list { border-top: 1px solid var(--border-faint); }
+.faq-item { border-bottom: 1px solid var(--border-faint); }
+.faq-q {
+  width: 100%; padding: 22px 0;
+  display: flex; justify-content: space-between; align-items: center; gap: 20px;
+  text-align: left;
+  font-family: var(--body); font-weight: 600; font-size: 16px;
+  color: #fff; cursor: pointer;
+}
+.faq-q:hover { color: var(--yellow); }
+.faq-chev {
+  font-family: var(--pixel); font-size: 14px; color: var(--yellow);
+  flex: none; transition: transform .2s;
+}
+.faq-item.open .faq-chev { transform: rotate(45deg); }
+.faq-a {
+  max-height: 0; overflow: hidden;
+  transition: max-height .3s ease, padding .3s ease;
+  color: var(--muted-3); font-size: 14.5px; line-height: 1.7;
+}
+.faq-item.open .faq-a { max-height: 400px; padding: 0 0 22px; }
+.faq-more {
+  display: inline-block; margin-top: 24px;
+  font-family: var(--pixel); font-size: 8px;
+  color: var(--yellow); letter-spacing: 0.2em;
+  border-bottom: 1px solid #FFD70044;
+  padding-bottom: 3px;
+}
+.faq-more:hover { border-color: var(--yellow); }
+
+/* ── FOOTER ── */
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 48px 20px 32px;
+}
+.footer-inner {
+  max-width: 1080px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 32px;
+}
+.footer-row {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 24px; flex-wrap: wrap;
+}
+.footer-badges { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.fbadge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--pixel); font-size: 8px; letter-spacing: 0.18em;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  color: var(--muted-3);
+}
+.fbadge .star { color: var(--yellow); }
+.fbadge.gold { border-color: #FFD70044; color: var(--yellow); background: #0a0800; animation: goldpulse 2.5s ease-in-out infinite; }
+@keyframes goldpulse { 0%,100% { box-shadow: 0 0 0 #FFD70000 } 50% { box-shadow: 0 0 18px #FFD70022 } }
+
+.footer-nl { display: flex; gap: 8px; align-items: stretch; }
+.footer-nl input {
+  background: var(--bg3); border: 1px solid var(--border);
+  color: #fff; font-family: var(--body); font-size: 13px;
+  padding: 0 14px; height: 40px; outline: none;
+  width: 220px;
+}
+.footer-nl input:focus { border-color: var(--yellow); }
+.footer-nl button {
+  font-family: var(--pixel); font-size: 8px; letter-spacing: 0.16em;
+  background: var(--yellow); color: #000;
+  padding: 0 14px; height: 40px;
+  box-shadow: 3px 3px 0 var(--yellow2);
+  transition: transform .12s, box-shadow .12s;
+  cursor: pointer;
+}
+.footer-nl button:hover { box-shadow: 1px 1px 0 var(--yellow2); transform: translate(2px,2px); }
+
+.footer-links {
+  display: flex; gap: 22px; flex-wrap: wrap;
+  font-family: var(--pixel); font-size: 8px; letter-spacing: 0.18em;
+}
+.footer-links a { color: var(--muted-2); }
+.footer-links a:hover { color: #fff; }
+.footer-base {
+  border-top: 1px solid var(--border-faint);
+  padding-top: 20px;
+  display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  font-family: var(--pixel); font-size: 7px; letter-spacing: 0.2em;
+  color: #444;
+}
+.footer-base .crown { color: var(--yellow); }
+
+/* ── FADE UP ── */
+.fade { opacity: 0; transform: translateY(18px); transition: opacity .55s ease, transform .55s ease; }
+.fade.in { opacity: 1; transform: none; }
+
+/* ── GROUNDING TOAST ── */
+.grounding-toast {
+  position: fixed;
+  bottom: 1.5rem; left: 50%;
+  transform: translateX(-50%) translateY(6rem);
+  background: rgba(30,30,40,0.96);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 0.75rem;
+  padding: 0.7rem 1.1rem;
+  font-size: 0.78rem;
+  color: #aaa;
+  text-align: center;
+  max-width: 340px;
+  width: calc(100% - 2rem);
+  z-index: 9999;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+.grounding-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.grounding-toast strong { color: #ccc; }
+
+/* ── MOBILE ── */
+@media (max-width: 600px) {
+  .hero { padding: 48px 16px 40px; }
+  .check-form { flex-direction: column; }
+  .check-input { height: 52px; }
+  .check-form .btn-submit { height: 52px; width: 100%; }
+  .tabs { flex-wrap: nowrap; overflow-x: auto; }
+  .tab { white-space: nowrap; }
+}
   </style>
 </head>
 <body>
@@ -1656,490 +875,262 @@
   <!-- Floating CTA Bar -->
   <div id="floatBar">
     <div class="float-text">
-      <strong>🚀 AI VISIBILITY PLATFORM</strong>
-      <span>Join the early access — 100 spots. Free forever for founding members.</span>
+      <strong>AI VISIBILITY PLATFORM</strong>
+      <span>Join early access — 100 spots. Free forever for founding members.</span>
     </div>
     <div class="float-inputs">
       <button class="btn-float-join" onclick="window.location.href='/dashboard.html'">CHECK FREE ▶</button>
     </div>
     <button id="floatClose" onclick="dismissFloat()" title="Close">✕</button>
   </div>
+
+  <!-- Interactive BG Canvas -->
   <canvas id="bg-canvas"></canvas>
 
-  <!-- FOUNDING BAR -->
-  <div class="founding-bar">
-    <div class="founding-bar-inner">
+  <!-- PAGE WRAP (above canvas) -->
+  <div class="page-wrap">
+
+    <!-- TOP STRIP -->
+    <div class="top-strip">
       <span class="live-dot"></span>
-      🚀 Join the AI Visibility Platform early access — 100 founding spots remaining.
+      <b>BETA · 100 FOUNDING SPOTS</b>
+      <span class="sep">·</span>
+      73 LEFT
+      <span class="sep">·</span>
+      LIFETIME FREE
     </div>
-  </div>
 
-  <nav class="nav">
-    <a href="/" class="nav-logo" style="display:flex;align-items:center;gap:8px;text-decoration:none;">
-      <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
-      <span><span style="color:var(--yellow);">picked</span><span style="color:#fff;">by</span><span style="color:var(--yellow);">.ai</span></span>
-      <span style="font-size:0.5rem;font-family:'Press Start 2P',monospace;color:#0a0a0a;background:#FFD700;padding:2px 5px;border-radius:3px;letter-spacing:0.05em;line-height:1;align-self:center;">BETA</span>
-    </a>
-    <div class="nav-links">
-      <div style="position:relative;">
-        <button onclick="var m=this.nextElementSibling;m.style.display=m.style.display==='block'?'none':'block';" style="background:none;border:none;cursor:pointer;color:#888;font-size:0.9rem;padding:0;font-family:inherit;letter-spacing:0.02em;">ABOUT &#9660;</button>
-        <div style="display:none;position:absolute;right:0;top:calc(100% + 8px);background:#0d0d0d;border:1px solid #2a2a2a;min-width:160px;z-index:100;">
-          <a href="/manifesto/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;border-bottom:1px solid #1f1f1f;">Manifesto</a>
-          <a href="/methodology/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;border-bottom:1px solid #1f1f1f;">How We Score</a>
-          <a href="/blog/" style="display:block;padding:0.65rem 1.1rem;color:#ccc;font-size:0.85rem;text-decoration:none;">Blog</a>
-        </div>
+    <!-- NAV -->
+    <nav class="nav">
+      <a class="nav-logo" href="/">
+        <svg viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/>
+          <rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/>
+          <rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/>
+          <rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/>
+        </svg>
+        <span class="word">PICKEDBY<i>.AI</i></span>
+        <span class="beta-chip">BETA</span>
+      </a>
+      <div class="nav-links">
+        <a href="/methodology/">METHODOLOGY</a>
+        <a href="/manifesto/">MANIFESTO</a>
+        <a href="/blog/">BLOG</a>
+        <a href="/faq/">FAQ</a>
+        <a class="nav-dashboard" href="/dashboard.html">DASHBOARD</a>
       </div>
-      <a href="/dashboard.html" style="color:#000;background:#FFD700;border:none;padding:0.45rem 1.1rem;border-radius:6px;font-weight:700;font-size:0.88rem;letter-spacing:0.03em;text-decoration:none;box-shadow:0 0 12px rgba(255,215,0,0.35);">Dashboard</a>
       <button class="nav-burger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">&#9776;</button>
+    </nav>
+    <div class="nav-mobile">
+      <a href="/methodology/">METHODOLOGY</a>
+      <a href="/manifesto/">MANIFESTO</a>
+      <a href="/blog/">BLOG</a>
+      <a href="/faq/">FAQ</a>
+      <a href="/dashboard.html">DASHBOARD</a>
     </div>
-  </nav>
-  <div class="nav-mobile">
-    <a href="/manifesto/">Manifesto</a>
-    <a href="/methodology/">How We Score</a>
-    <a href="/blog/">Blog</a>
-    <a href="/dashboard.html">Dashboard</a>
-  </div>
-
-  <div class="container">
 
     <!-- HERO -->
-    <div class="hero">
-      <div class="hero-eyebrow">▶ The AI Search Console</div>
-      <h1>Does AI recommend <em>your product</em>?</h1>
-      <p class="hero-sub">See if GPT · Gemini · Claude · Grok · Perplexity recommend your product.<br>Free. No signup. Results in ~10 seconds.</p>
-      <!-- Shift 1: Hero Live Widget -->
-      <div id="hero-widget" style="display:flex;gap:0.5rem;max-width:480px;margin:1.5rem auto 0;flex-wrap:wrap;justify-content:center;">
-        <input id="hero-product-input" type="text" placeholder="Your product name..." autocomplete="off" spellcheck="false"
-          style="flex:1;min-width:220px;height:46px;padding:0 1rem;font-size:0.9rem;background:#111;border:1.5px solid #FFD700;color:#fff;outline:none;border-radius:0;font-family:inherit;"
-          onkeydown="if(event.key==='Enter')heroCheck()" />
-        <button onclick="heroCheck()"
-          style="height:46px;padding:0 1.4rem;background:#FFD700;color:#000;font-family:'Press Start 2P',monospace;font-size:0.42rem;letter-spacing:0.15em;border:none;cursor:pointer;box-shadow:3px 3px 0 #b39700;white-space:nowrap;">
+    <section class="hero">
+      <div class="hero-bg" aria-hidden="true"></div>
+      <div class="hero-eyebrow">
+        <span class="arrow">▶</span> THE AI SEARCH CONSOLE
+      </div>
+      <h1>
+        Right now, someone is asking ChatGPT about your category.
+        <span class="gold">You're not in the answer.</span>
+      </h1>
+      <p class="hero-sub">
+        See if these recommend your product:
+        <span class="models">
+          <span>GPT</span><span class="pipe">·</span>
+          <span>Gemini</span><span class="pipe">·</span>
+          <span>Claude</span><span class="pipe">·</span>
+          <span>Grok</span><span class="pipe">·</span>
+          <span>Perplexity</span>
+        </span>
+        <span class="terms">FREE <span class="dot">·</span> 10 SECONDS <span class="dot">·</span> NO SIGNUP</span>
+      </p>
+
+      <form class="check-form" id="checkForm" autocomplete="off">
+        <input
+          type="text"
+          class="check-input"
+          id="checkInput"
+          placeholder="Your product name..."
+          aria-label="Product name"
+        />
+        <button type="submit" class="btn btn-lg btn-primary btn-submit" id="checkBtn">
           CHECK FREE ▶
         </button>
-      </div>
-      <p class="hero-disclaimer" style="margin-top:0.75rem;">No signup · No credit card · Results in ~10 seconds</p>
-    </div>
-    <script>
-    function heroCheck() {
-      const v = document.getElementById('hero-product-input')?.value?.trim()
-      if (!v) return
-      window.location.href = '/dashboard.html?product=' + encodeURIComponent(v)
-    }
-    </script>
-
-    <!-- HOW IT WORKS — Shift 2: 섹션 축소 (D9a LAND-SHIFT-02) -->
-    <div class="how-section fade-up">
-      <div class="how-head">HOW IT WORKS</div>
-      <div class="how-steps">
-        <div class="how-step">
-          <span class="how-icon">📦</span>
-          <span class="how-num">01</span>
-          <div class="how-title">Enter your product</div>
-          <div class="how-desc">Name + URL. Takes 10 seconds.</div>
+        <div class="check-meta">
+          NO SIGNUP <span class="dot">·</span> NO CREDIT CARD <span class="dot">·</span> RESULTS IN ~10 SECONDS
         </div>
-        <div class="how-arrow">→</div>
-        <div class="how-step">
-          <span class="how-icon">🤖</span>
-          <span class="how-num">02</span>
-          <div class="how-title">Scores 4 dimensions</div>
-          <div class="how-desc">Recognition · Category · Co-Rec · Web Signals — via live AI probe</div>
-        </div>
-        <div class="how-arrow">→</div>
-        <div class="how-step">
-          <span class="how-icon">📊</span>
-          <span class="how-num">03</span>
-          <div class="how-title">See your score</div>
-          <div class="how-desc">0–100 + 3 specific fixes to climb higher</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- DEMO RESULT -->
-    <div class="demo-section fade-up">
-      <div class="demo-head">EXAMPLE RESULTS — REAL SCANS <span style="font-size:0.6rem;color:#555;font-family:inherit;font-weight:400;">(Apr 25, 2026)</span></div>
-
-      <div class="demo-tabs">
-        <button class="demo-tab active" onclick="showDemo(0)">pickedby.ai</button>
-        <button class="demo-tab" onclick="showDemo(1)">Notion</button>
-        <button class="demo-tab" onclick="showDemo(2)">A New Product</button>
-      </div>
-
-      <!-- Panel 0: pickedby.ai (실측 2026-04-25: 55점) -->
-      <div class="demo-panel active" id="demoPanel0">
-        <div class="demo-score-row">
-          <div class="demo-score-big" style="color:var(--orange);">55</div>
-          <div class="demo-score-meta">
-            <div class="demo-product-name">pickedby.ai <span style="font-weight:400;color:#555;font-size:0.78rem;">— our own product</span></div>
-            <div class="demo-verdict">AI knows us — but hasn't ranked us yet. We're climbing.</div>
-          </div>
-        </div>
-        <div class="demo-dims">
-          <div class="demo-dim"><span class="demo-dim-icon">⚠️</span><span class="demo-dim-name">Recognition<span class="demo-tip" data-tip="Reverse-ladder probe: T4 (never heard) → T3 (emerging) → T2 (known) → T1 (top-ranked). Each tier unlocks more points.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:71%;background:var(--orange);"></div></div><span class="demo-dim-pts">25 / 35</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Category Rank<span class="demo-tip" data-tip="Are you in AI's top-10 for your category? Rank 1 = 35 pts, Rank 10 = ~15 pts, unranked = 0 pts.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 35</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Co-Recommendation<span class="demo-tip" data-tip="How often AI mentions you alongside other tools. 8+ co-recs = 20 pts max.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">20 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Web Signals<span class="demo-tip" data-tip="Independent web mentions, domain diversity, recency. Scanned live via Tavily.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">10 / 10</span></div>
-        </div>
-        <div class="demo-probe">
-          <div class="demo-probe-label">AI PROBE — DIRECT QUERY</div>
-          <div class="demo-probe-row"><span class="demo-probe-status known">KNOWN</span><span style="color:#888;">Perplexity recognizes pickedby.ai as an AI visibility tool</span></div>
-          <div class="demo-probe-row"><span class="demo-probe-status" style="background:#555;color:#fff;padding:0.15rem 0.5rem;font-size:0.65rem;font-weight:700;">T2</span><span style="color:#888;">Emerging — not yet ranked #1 in category</span></div>
-        </div>
-        <div class="demo-cta">
-          <div class="demo-cta-text">We started at 12. <em>Now we're at 55 — and climbing.</em> Check where your product stands.</div>
-          <a href="/blog/we-scored-12-on-our-own-tool/" style="color:var(--yellow);font-size:0.82rem;">Read the full journey →</a>
-        </div>
-      </div>
-
-      <!-- Panel 1: Notion (실측 2026-04-25: 87.5점) -->
-      <div class="demo-panel" id="demoPanel1">
-        <div class="demo-score-row">
-          <div class="demo-score-big" style="color:var(--green);">87.5</div>
-          <div class="demo-score-meta">
-            <div class="demo-product-name">Notion <span style="font-weight:400;color:#555;font-size:0.78rem;">— productivity tool</span></div>
-            <div class="demo-verdict">AI consistently recommends Notion. T1 — top-ranked.</div>
-          </div>
-        </div>
-        <div class="demo-dims">
-          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Recognition<span class="demo-tip" data-tip="T1: AI names Notion unprompted as a leading tool. Full 35 pts.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">35 / 35</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">⚠️</span><span class="demo-dim-name">Category Rank<span class="demo-tip" data-tip="Notion ranks in top-10 for productivity, but not #1 in every sub-category — hence 25/35.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:71%;background:var(--yellow);"></div></div><span class="demo-dim-pts">25 / 35</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">✅</span><span class="demo-dim-name">Co-Recommendation<span class="demo-tip" data-tip="AI frequently pairs Notion with other tools. 8+ co-recs = 20 pts max.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:100%;background:var(--green);"></div></div><span class="demo-dim-pts">20 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">⚠️</span><span class="demo-dim-name">Web Signals<span class="demo-tip" data-tip="Strong web presence, but recent signal freshness slightly below max.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:75%;background:var(--yellow);"></div></div><span class="demo-dim-pts">7.5 / 10</span></div>
-        </div>
-        <div class="demo-probe">
-          <div class="demo-probe-label">AI PROBE — DIRECT QUERY</div>
-          <div class="demo-probe-row"><span class="demo-probe-status known">KNOWN</span><span style="color:#888;">Perplexity names Notion as a top productivity tool unprompted</span></div>
-          <div class="demo-probe-row"><span class="demo-probe-status known">KNOWN</span><span style="color:#888;">Gemini confirms Notion in top-5 for workspace tools</span></div>
-        </div>
-        <div class="demo-cta">
-          <div class="demo-cta-text">Notion scores <em>87.5 — nearly perfect.</em> Where does your product stand right now?</div>
-          <button class="hero-cta" onclick="window.location.href='/dashboard.html'" style="font-size:0.45rem;padding:0.55rem 1rem;">CHECK MY SCORE FREE ▶▶</button>
-        </div>
-      </div>
-
-      <!-- Panel 2: Unknown product -->
-      <div class="demo-panel" id="demoPanel2">
-        <div class="demo-score-row">
-          <div class="demo-score-big" style="color:var(--red);">0</div>
-          <div class="demo-score-meta">
-            <div class="demo-product-name">MyAwesomeTemplate <span style="font-weight:400;color:#555;font-size:0.78rem;">— a brand new product</span></div>
-            <div class="demo-verdict">Invisible. AI has never heard of this product.</div>
-          </div>
-        </div>
-        <div class="demo-dims">
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Recognition<span class="demo-tip" data-tip="T4: AI returns 'never heard of it' — zero signal detected. Start with public mentions.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 35</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Category Rank<span class="demo-tip" data-tip="Not in AI's top-10 for any category. Write clear product copy stating exactly what you do.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 35</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Co-Recommendation<span class="demo-tip" data-tip="No co-recs found. Get mentioned alongside similar tools in reviews and roundups.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 20</span></div>
-          <div class="demo-dim"><span class="demo-dim-icon">❌</span><span class="demo-dim-name">Web Signals<span class="demo-tip" data-tip="No independent web mentions found. Submit to directories and get on curated lists.">?</span></span><div class="demo-dim-bar"><div class="demo-dim-fill" style="width:0%;background:var(--red);"></div></div><span class="demo-dim-pts">0 / 10</span></div>
-        </div>
-        <div class="demo-probe">
-          <div class="demo-probe-label">AI PROBE — DIRECT QUERY</div>
-          <div class="demo-probe-row"><span class="demo-probe-status unknown">UNKNOWN</span><span style="color:#888;">Perplexity: "I don't have information about this product"</span></div>
-          <div class="demo-probe-row"><span class="demo-probe-status unknown">UNKNOWN</span><span style="color:#888;">Gemini: no results — product not in training data</span></div>
-        </div>
-        <div class="demo-cta">
-          <div class="demo-cta-text">Most new products start at <em>zero.</em> The question is — what are you doing about it?</div>
-          <button class="hero-cta" onclick="window.location.href='/dashboard.html'" style="font-size:0.45rem;padding:0.55rem 1rem;">CHECK MY SCORE FREE ▶▶</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- NEWSLETTER — Shift 6: 리텐션 (D9a LAND-SHIFT-06) -->
-    <div class="newsletter-section fade-up">
-      <div class="newsletter-head">STAY AHEAD OF AI CHANGES</div>
-      <div class="newsletter-sub">AI rankings shift weekly. Get your product's pulse — free, no spam.</div>
-      <form class="newsletter-form" onsubmit="return nlSubmit(event)">
-        <input type="email" id="nl-email" placeholder="your@email.com" required autocomplete="email" />
-        <button type="submit">GET WEEKLY UPDATE ▶</button>
       </form>
-      <div id="nl-confirm" style="display:none;color:var(--green);font-size:0.85rem;margin-top:0.75rem;text-align:center;">✅ You're in. First update hits your inbox within 7 days.</div>
-      <div class="newsletter-list">
-        <span>📊 Score changes when AI learns about your product</span>
-        <span>🏆 Category rank shifts — who's climbing, who's falling</span>
-        <span>💡 One actionable tip per week to climb the AI chart</span>
+    </section>
+
+    <!-- TENSION BAR -->
+    <section class="tension">
+      <div class="tension-inner">
+        <div class="ticker-pills">
+          <span class="tpill"><span class="dot green"></span>NOTION <span class="num">87</span></span>
+          <span class="tpill"><span class="dot green"></span>FIGMA <span class="num">95</span></span>
+          <span class="tpill bad"><span class="dot red"></span>AVG INDIE PRODUCT <span class="num">4</span></span>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <!-- ONE STAT -->
+    <section class="stat-section fade">
+      <div class="stat-eyebrow">▶ THE NUMBER THAT CHANGED EVERYTHING</div>
+      <div class="stat-table">
+        <div class="stat-cell win">
+          <div class="lbl">AI REFERRAL</div>
+          <div class="num">16.8%</div>
+          <div class="delta">CONVERSION</div>
+        </div>
+        <div class="stat-vs">VS</div>
+        <div class="stat-cell lose">
+          <div class="lbl">GOOGLE ORGANIC</div>
+          <div class="num">1.7%</div>
+          <div class="delta">CONVERSION</div>
+        </div>
+      </div>
+      <p class="stat-copy">
+        When AI recommends a product, the buyer is <strong>already sold</strong>.
+        No comparison shopping. No 14 open tabs. <strong>The recommendation IS the decision.</strong>
+      </p>
+      <a href="/methodology/" class="stat-link">READ THE DATA →</a>
+    </section>
+
+    <!-- DEMO RESULTS -->
+    <section class="demo fade">
+      <div class="demo-eyebrow">
+        <span class="live-dot"></span>
+        REAL SCANS — APR 2026
+        <span class="line"></span>
+      </div>
+      <div class="tabs" role="tablist">
+        <button class="tab on" data-tab="0">PICKEDBY.AI <span class="score gold">55</span></button>
+        <button class="tab" data-tab="1">NOTION <span class="score green">87</span></button>
+        <button class="tab" data-tab="2">YOUR PRODUCT <span class="score q">?</span></button>
+      </div>
+
+      <div class="card" id="demoCard" style="border-top:none">
+        <div class="card-head">
+          <div class="eyebrow" id="demoTitle">✦ SCAN RESULTS · PICKEDBY.AI</div>
+          <div class="meta">PROBED 50 QUERIES · 5 AI MODELS</div>
+        </div>
+        <div class="card-body">
+          <div class="ring" id="demoRing">
+            <div class="ring-inner">
+              <div class="v" id="demoVal">55</div>
+              <div class="d">/ 100</div>
+              <div class="t" id="demoTier">✦ SEEN</div>
+            </div>
+          </div>
+          <div class="dims" id="demoDims"></div>
+        </div>
+        <div class="probes">
+          <div class="probes-head" id="probesHead">▶ PROBE QUOTES · AI DIRECT QUERY</div>
+          <div id="probeList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- NEWSLETTER -->
+    <section class="nl-section fade">
+      <div class="nl-card">
+        <div class="nl-eyebrow">STAY AHEAD OF AI CHANGES</div>
+        <div class="nl-sub">AI rankings shift weekly. Get your product's pulse — free, no spam.</div>
+        <form class="nl-form" id="nlForm" onsubmit="return nlSubmit(event)">
+          <input type="email" id="nl-email" placeholder="your@email.com" required autocomplete="email" />
+          <button type="submit">GET WEEKLY UPDATE ▶</button>
+        </form>
+        <div id="nl-confirm" style="display:none;color:var(--green);font-size:0.85rem;margin-top:12px;">✅ You're in. First update hits your inbox within 7 days.</div>
+        <div class="nl-bullets">
+          <span>📊 Score changes when AI learns about your product</span>
+          <span>🏆 Category rank shifts — who's climbing, who's falling</span>
+          <span>💡 One actionable tip per week to climb the AI chart</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECOND CTA -->
+    <section class="cta-section fade">
+      <div class="cta-card">
+        <div class="eyebrow">▶ DON'T LEAVE THIS QUESTION OPEN</div>
+        <h2>Most creators score under 20.<br>The ones who check today are already ahead of them.</h2>
+        <p class="sub">10 seconds. <b>No signup.</b> Just type your product name.</p>
+        <button class="btn btn-lg btn-primary" id="cta2">CHECK YOUR SCORE — FREE ▶▶</button>
+      </div>
+    </section>
 
     <!-- FAQ -->
-    <div class="faq-section fade-up">
-      <div class="faq-head">FAQ — FREQUENTLY ASKED QUESTIONS</div>
-
-      <!-- Q1 -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          What is pickedby.ai? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Think of it like a <strong>Google Search Console — but for AI.</strong></p>
-          <p style="margin-top:0.5rem;">When someone asks ChatGPT, Claude, or Perplexity <em>"what's a good Notion template for budgeting?"</em> — does your product show up?</p>
-          <p style="margin-top:0.5rem;">Most creators have no idea. pickedby.ai checks for you in <strong>10 seconds</strong> and gives you a score from 0 to 100 — your <strong>AI Visibility Score.</strong></p>
-          <p style="margin-top:0.5rem;">No signup. No credit card. Completely free.</p>
-        </div>
-      </div>
-
-      <!-- Q2 -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          What is the AI Visibility Score? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>It's a number from <strong>0 to 100</strong> that tells you how well AI systems "know" your product. It's calculated across <strong>4 dimensions</strong>:</p>
-          <ul style="margin-top:0.5rem;">
-            <li><strong>Recognition</strong> (35 pts) — What tier does AI place your product? T1 (top) → T4 (unknown)</li>
-            <li><strong>Category Rank</strong> (35 pts) — Are you in AI's top-10 for your category?</li>
-            <li><strong>Co-Recommendation</strong> (20 pts) — How often AI mentions you alongside other tools</li>
-            <li><strong>Web Signals</strong> (10 pts) — Independent web mentions scanned live</li>
-          </ul>
-          <div class="faq-badge-row" style="margin-top:0.75rem;">
-            <span class="faq-badge gold">75–100 · PERFECT · PICKED BY AI</span>
-            <span class="faq-badge silver">50–74 · STRONG · SEEN BY AI</span>
-            <span class="faq-badge bronze">25–49 · EMERGING · NOTICED BY AI</span>
-            <span class="faq-badge none">0–24 · INVISIBLE · Not on AI's radar</span>
+    <section class="faq fade">
+      <div class="faq-eyebrow">▶ FAQ · 3 OF 17</div>
+      <h2>Quick answers.</h2>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q">Is it really free?<span class="faq-chev">+</span></button>
+          <div class="faq-a">
+            Yes — and no credit card. Anyone can run a scan. Founding members (the first 100) get lifetime free access to everything we ship after beta, including dimension drilldowns, change tracking, and the badge embed.
           </div>
-          <p style="margin-top:0.75rem;">Example: Figma scores 95. Notion scores 87.5. A brand-new product scores 0.</p>
         </div>
-      </div>
-
-      <!-- Q3 -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          Which AI systems do you check? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>We directly probe AI engines using a <strong>reverse-ladder pipeline</strong> (T4→T1) and run a live web scan. The score comes from 4 dimensions:</p>
-          <ul style="margin-top:0.5rem;">
-            <li><strong>Recognition</strong> (35 pts) — We ask Perplexity &amp; Gemini "Do you know this product?" and classify T4 (unknown) → T3 (emerging) → T2 (known) → T1 (top-ranked)</li>
-            <li><strong>Category Rank</strong> (35 pts) — "Top 10 tools for [category]?" — are you on the list, and where?</li>
-            <li><strong>Co-Recommendation</strong> (20 pts) — How many other tools AI mentions alongside yours</li>
-            <li><strong>Web Signals</strong> (10 pts) — Live scan of independent web mentions via Tavily</li>
-          </ul>
-          <p style="margin-top:0.75rem;">Recognition + Category dominate the score (70 pts combined) because that's where AI's actual recommendation decisions happen.</p>
-        </div>
-      </div>
-
-      <!-- Q4 -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          Is it really free? Do I need to create an account? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p><strong>Yes, 100% free. No account needed.</strong></p>
-          <p style="margin-top:0.5rem;">Just type your product name → hit Check → get your score in ~10 seconds. That's it.</p>
-          <p style="margin-top:0.5rem;">We'll ask for your email at the end if you want to <strong>join the AI Visibility Platform early access</strong> — founding members get every future feature free first.</p>
-        </div>
-      </div>
-
-      <!-- Q5 -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          How does the score actually get calculated? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>We run your product through <strong>4 dimensions</strong> — each maps to how AI engines actually discover and recommend products:</p>
-          <ul>
-            <li><strong>Recognition</strong> (35 pts) — Tier detection: T4 (invisible) / T3 (emerging) / T2 (known) / T1 (top-ranked)</li>
-            <li><strong>Category Rank</strong> (35 pts) — "Best [category] tools" — are you in AI's top-10, and what rank?</li>
-            <li><strong>Co-Recommendation</strong> (20 pts) — How many tools AI mentions alongside yours (max 8+)</li>
-            <li><strong>Web Signals</strong> (10 pts) — Live Tavily scan: domain diversity, recency, mention count</li>
-          </ul>
-          <p style="margin-top:0.5rem;">Total: <strong>100 points. sum(dims) always equals finalScore</strong> — mathematically guaranteed. Full methodology: <a href="/methodology/" style="color:var(--yellow);">pickedby.ai/methodology/</a></p>
-        </div>
-      </div>
-
-      <!-- Q6 -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          What are the Gold / Silver / Bronze badges? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Badges are <strong>earned proof</strong> that AI systems recognize your product. Think of them like quality marks you can display on your store.</p>
-          <div class="faq-badge-row" style="margin-top:0.6rem;">
-            <span class="faq-badge gold">GOLD — Score 75+</span>
-            <span class="faq-badge silver">SILVER — Score 50–74</span>
-            <span class="faq-badge bronze">BRONZE — Score 25–49</span>
+        <div class="faq-item">
+          <button class="faq-q">How is this different from Google SEO?<span class="faq-chev">+</span></button>
+          <div class="faq-a">
+            Google SEO optimizes for blue links. AI assistants don't return blue links — they return one recommendation. We probe how often each model names your product when asked about your category, then break the score down by what's actually moving it: Recognition, Category Rank, Co-Recommendation signals, and Web Authority.
           </div>
-          <p style="margin-top:0.75rem;">Once you earn a badge, you'll get an <strong>embeddable HTML snippet</strong> to add to your Gumroad page, Etsy store, or website. It tells buyers: <em>"This product is recognized by AI."</em></p>
-          <p style="margin-top:0.5rem;">Scores below 30 don't earn a badge yet — that's where our improvement tips are most useful.</p>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">How do I improve my score?<span class="faq-chev">+</span></button>
+          <div class="faq-a">
+            Every scan ships with a prioritized list of fixes — the specific posts, listings, and citation patterns that move your score the most. We won't promise placement (no tool can — AI recommendations are dynamic). We will tell you, concretely, what's missing.
+          </div>
         </div>
       </div>
-
-      <!-- Q7 -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          Does a high score guarantee AI will recommend my product? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p><strong>No — and we'll never claim that.</strong> AI recommendations are dynamic. No tool can guarantee placement.</p>
-          <p style="margin-top:0.5rem;">What your score <em>does</em> tell you is <strong>how visible your product is to AI right now</strong> — and whether you have a realistic chance of showing up when customers ask AI for recommendations.</p>
-          <p style="margin-top:0.5rem;">Think of it like SEO: good optimization improves your chances, but doesn't guarantee page 1. Same idea here.</p>
-        </div>
-      </div>
-
-      <!-- Q8 -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          My score is low. Why isn't AI recommending my product? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>AI learns from what's publicly available on the internet. If your product has a low score, it usually means one of these:</p>
-          <ul>
-            <li><strong>Not enough public content</strong> — reviews, blog posts, forum mentions about your product are sparse</li>
-            <li><strong>Vague product description</strong> — AI doesn't have a clear category or use-case to attach to your product</li>
-            <li><strong>New product</strong> — AI training data hasn't caught up yet</li>
-            <li><strong>No llms.txt or schema markup</strong> — AI crawlers can't easily parse what your product does</li>
-          </ul>
-          <p style="margin-top:0.5rem;">After your scan, we show you <strong>specific suggestions</strong> tailored to your score. These are your starting points.</p>
-        </div>
-      </div>
-
-      <!-- Q9 -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          How do I improve my score? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>After your scan you'll see personalized tips. Generally the most effective moves are:</p>
-          <ul>
-            <li><strong>Write clear product copy</strong> — state exactly what your product does, who it's for, and when to use it</li>
-            <li><strong>Get mentioned in context</strong> — Reddit threads, YouTube reviews, blog posts, comparison articles all feed AI training data</li>
-            <li><strong>Add an <code>llms.txt</code> file</strong> to your site — a simple text file that AI crawlers can read directly (auto-generation coming soon in the Dashboard)</li>
-            <li><strong>Get on curated lists</strong> — "Best Notion templates for X" type roundups are gold for AI visibility</li>
-            <li><strong>Consistent naming</strong> — use the same product name everywhere, so AI can connect the dots</li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- Q10 -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          How is this different from Google SEO? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>SEO = getting ranked in Google search results (blue links).<br>
-          AI Visibility = getting <strong>mentioned in AI chat answers.</strong></p>
-          <p style="margin-top:0.5rem;">More and more people skip Google entirely and just ask ChatGPT: <em>"What's the best budget spreadsheet template?"</em> — they get one answer, not ten links. <strong>If you're not in that answer, you don't exist for that buyer.</strong></p>
-          <p style="margin-top:0.5rem;">SEO and AI Visibility overlap but are <strong>different games with different rules.</strong> You can rank #1 on Google and still be invisible to AI — and vice versa.</p>
-        </div>
-      </div>
-
-      <!-- Q11 -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          Who is pickedby.ai for? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p><strong>Any product or brand that wants to know if AI recommends them.</strong></p>
-          <ul style="margin-top:0.5rem;">
-            <li>SaaS products — are you in AI's top-10 for your category?</li>
-            <li>Digital creators — do AI assistants mention your templates, courses, tools?</li>
-            <li>D2C brands — does ChatGPT recommend your product when buyers ask?</li>
-            <li>Agencies — benchmark clients vs. competitors across AI engines</li>
-            <li>Anyone launching something new — establish your AI baseline from day one</li>
-          </ul>
-          <p style="margin-top:0.5rem;">If AI is part of how your customers discover products, <strong>you need to know your score.</strong></p>
-        </div>
-      </div>
-
-      <!-- Q12 -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          How often should I check my score? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>AI training data gets refreshed periodically — so your score can change over time.</p>
-          <p style="margin-top:0.5rem;">We recommend:</p>
-          <ul>
-            <li><strong>After any major update</strong> to your product or landing page</li>
-            <li><strong>After a launch</strong> or press mention</li>
-            <li><strong>Monthly</strong> as a routine check-in</li>
-          </ul>
-          <p style="margin-top:0.5rem;">Enter your email after the scan to <strong>join the AI Visibility Platform early access (100 founding spots)</strong> — get Analytics and Ads features first when they ship.</p>
-        </div>
-      </div>
-
-      <!-- Q13 -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          Is my product data safe? What do you store? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>We store <strong>only the product name you enter and the score result</strong> — nothing else.</p>
-          <p style="margin-top:0.5rem;">If you give us your email, we store that to send you reports. We don't sell data, share it with third parties, or use it for advertising. Full details in our <a href="/privacy" style="color:var(--yellow);">Privacy Policy</a>.</p>
-        </div>
-      </div>
-
-      <!-- Q14 — NEW: Scope -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          Is this just for creators? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>We're <strong>starting with digital creators</strong> — Gumroad sellers, Notion template makers, Etsy shops — because they need it most and have zero existing tools.</p>
-          <p style="margin-top:0.5rem;">Our roadmap extends to <strong>indie SaaS, D2C brands, agencies, and every business that sells online.</strong> Think of it like early Google Analytics — it started with bloggers, then became universal.</p>
-        </div>
-      </div>
-
-      <!-- Q15 — NEW: Roadmap -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          What's coming next? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>We're building the <strong>Google Stack for AI recommendations</strong> in three layers:</p>
-          <ul>
-            <li><strong>✅ Search Console (now):</strong> Check if AI knows your product</li>
-            <li><strong>🔜 Analytics (Q3 2026):</strong> Track recommendation frequency, rank trends, category benchmarks</li>
-            <li><strong>🔮 Ads (2027):</strong> Optimize and eventually buy AI placements</li>
-          </ul>
-          <p style="margin-top:0.5rem;">Early users get first access to every new layer as it ships.</p>
-        </div>
-      </div>
-
-      <!-- Q16 — NEW: Trust -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          Why should I trust this will grow? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>The market is real: <strong>AI referral traffic grew 527% YoY</strong>, ChatGPT handles ~50M shopping queries per day, and AI-driven conversion is <strong>16.8%</strong> vs Google's ~2%.</p>
-          <p style="margin-top:0.5rem;">The GEO (Generative Engine Optimization) market is projected at <strong>$17B by 2034</strong> — yet there are zero tools built for creators. We shipped our MVP in 10 days and we're not slowing down. Read our <a href="/manifesto/" style="color:var(--yellow);">manifesto</a> for the full vision.</p>
-        </div>
-      </div>
-
-      <!-- Q17 -->
-      <div class="faq-item">
-        <button class="faq-q" onclick="toggleFaq(this)">
-          I still have a question — how do I reach you? <span class="faq-icon">+</span>
-        </button>
-        <div class="faq-a">
-          <p>Email us any time: <a href="mailto:hello@pickedby.ai" style="color:var(--yellow);">hello@pickedby.ai</a></p>
-          <p style="margin-top:0.5rem;">We're a small team and we actually read every message. Feedback, feature requests, weird bugs — all welcome.</p>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- BADGE SECTION — 2 가로 정렬 -->
-    <div style="text-align:center;padding:1.5rem 0;display:flex;flex-wrap:wrap;justify-content:center;gap:1.5rem;align-items:center;">
-      <style>@keyframes pba-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0)}50%{box-shadow:0 0 14px 4px rgba(255,215,0,0.25)}}</style>
-      <!-- pickedby.ai BADGE (소형) -->
-      <a href="https://pickedby.ai" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;text-decoration:none;background:#0d0800;border:2px solid #CD7F32;border-radius:7px;padding:0 14px;height:44px;font-family:monospace;box-sizing:border-box;"><svg width="16" height="13" viewBox="0 0 20 16" fill="#CD7F32" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg><div style="display:flex;flex-direction:column;gap:1px;"><span style="color:#CD7F32;font-size:11px;font-weight:800;letter-spacing:0.08em;white-space:nowrap;">NOTICED BY AI</span><span style="color:#CD7F32;opacity:0.55;font-size:7px;font-weight:600;letter-spacing:0.1em;white-space:nowrap;">40 · BRONZE</span></div></a>
-
-      <!-- FoundrList BADGE -->
-      <a href="https://www.foundrlist.com/product/pickedbyai" target="_blank" rel="nofollow noopener noreferrer">
-        <img src="https://www.foundrlist.com/api/badge/pickedbyai" alt="Live on FoundrList" height="44" style="display:block;width:auto;" />
-      </a>
-
-      <!-- Dang.ai BADGE -->
-      <a href="https://dang.ai/tool/ai-visibility-score-tool-for-digital-creators-pickedby-ai" target="_blank" rel="nofollow noopener noreferrer">
-        <img src="https://global-uploads.webflow.com/63d8afd87da01fb58ea3fbcb/6487e2868c6c8f93b4828827_dang-badge.png" alt="PickedByAI | dang.ai" height="44" style="display:block;width:auto;" />
-      </a>
-    </div>
+      <a href="/faq/" class="faq-more">SEE ALL 17 QUESTIONS →</a>
+    </section>
 
     <!-- FOOTER -->
     <footer class="footer">
-      <p><a href="/" style="display:inline-flex;align-items:center;gap:5px;text-decoration:none;vertical-align:middle;"><svg width="14" height="11" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg><span style="font-family:'Press Start 2P',monospace;font-size:0.45rem;"><span style="color:#FFD700;">picked</span><span style="color:#888;">by</span><span style="color:#FFD700;">.ai</span></span></a> &nbsp;·&nbsp; The AI Visibility Platform &nbsp;·&nbsp; <a href="/blog/">Blog</a> &nbsp;·&nbsp; <a href="/methodology/">How We Score</a> &nbsp;·&nbsp; <a href="https://www.linkedin.com/in/pickedbyai/" target="_blank" rel="noopener">LinkedIn</a> &nbsp;·&nbsp; <a href="/privacy">Privacy</a> &nbsp;·&nbsp; <a href="/terms">Terms</a> &nbsp;·&nbsp; <a href="https://dang.ai" target="_blank" rel="noopener">Featured on Dang</a></p>
+      <div class="footer-inner">
+        <div class="footer-row">
+          <div class="footer-badges">
+            <span class="fbadge gold"><span class="star">✦</span> NOTICED BY AI</span>
+            <span class="fbadge">FOUNDRLIST</span>
+            <span class="fbadge">DANG.AI</span>
+          </div>
+          <form class="footer-nl" onsubmit="return nlSubmit(event)">
+            <input type="email" id="footer-nl-email" placeholder="your@email.com" aria-label="Email" />
+            <button type="submit">GET UPDATES ▶</button>
+          </form>
+        </div>
+        <div class="footer-links">
+          <a href="/blog/">BLOG</a>
+          <a href="/methodology/">METHODOLOGY</a>
+          <a href="/manifesto/">MANIFESTO</a>
+          <a href="https://www.linkedin.com/in/pickedbyai/" target="_blank" rel="noopener">LINKEDIN</a>
+          <a href="/privacy.html">PRIVACY</a>
+          <a href="/terms.html">TERMS</a>
+          <a href="https://dang.ai" target="_blank" rel="noopener">DANG.AI</a>
+        </div>
+        <div class="footer-base">
+          <span><span class="crown">✦</span> PICKEDBY.AI · THE AI VISIBILITY PLATFORM · MADE BY THUNOVA · SEOUL</span>
+          <span>v2.0 · APR 2026</span>
+        </div>
+      </div>
     </footer>
 
+  </div><!-- /page-wrap -->
+
+  <!-- Grounding notice toast -->
+  <div class="grounding-toast" id="groundingToast">
+    ⚠️ <strong>Training data only</strong> — real-time web search unavailable in your region.
+    Results may be inaccurate for new or obscure products.
+    <span style="display:block;margin-top:0.3rem;font-size:0.72rem;color:#888;">
+      Score based on AI's existing knowledge, not live search.
+    </span>
   </div>
 
   <script>
@@ -2148,29 +1139,48 @@
     let _product = '';
     let _results = [];
 
+    // ── Hero form → redirect to dashboard ────────────────────
+    const formEl  = document.getElementById('checkForm');
+    const inputEl = document.getElementById('checkInput');
+    const navCta  = document.getElementById('navCta');
+    const cta2    = document.getElementById('cta2');
+
+    formEl.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const raw = (inputEl.value || '').trim();
+      if (!raw) { inputEl.focus(); return; }
+      if (typeof gtag === 'function') {
+        gtag('event', 'hero_check_click', { product_name: raw });
+      }
+      window.location.href = '/dashboard.html?product=' + encodeURIComponent(raw);
+    });
+
+    if (cta2) {
+      cta2.addEventListener('click', () => {
+        window.location.href = '/dashboard.html';
+      });
+    }
+
     // ── Newsletter ─────────────────────────────────────────
     function nlSubmit(e) {
-      e.preventDefault()
-      const email = document.getElementById('nl-email')?.value?.trim()
-      if (!email) return false
-      const confirm = document.getElementById('nl-confirm')
-      // fire-and-forget to /v1/subscribe (graceful fail)
+      e.preventDefault();
+      const form  = e.target;
+      const input = form.querySelector('input[type="email"]');
+      const email = input ? input.value.trim() : '';
+      if (!email) return false;
+      // show confirm if this is the main nl form
+      const confirm = document.getElementById('nl-confirm');
       fetch('https://api.pickedby.ai/v1/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, source: 'landing_newsletter' })
-      }).catch(() => {})
-      if (confirm) { confirm.style.display = 'block' }
-      e.target.reset()
-      return false
+      }).catch(() => {});
+      if (confirm && form.id === 'nlForm') { confirm.style.display = 'block'; }
+      form.reset();
+      return false;
     }
 
-    // ── Demo tabs ─────────────────────────────────────────
-    function showDemo(idx) {
-      document.querySelectorAll('.demo-tab').forEach((t, i) => t.classList.toggle('active', i === idx));
-      document.querySelectorAll('.demo-panel').forEach((p, i) => p.classList.toggle('active', i === idx));
-    }
-
+    // ── toggleFaq (kept for compatibility, using new faq accordion below) ──
     function toggleFaq(btn) {
       const item = btn.closest('.faq-item');
       const isOpen = item.classList.contains('open');
@@ -2178,241 +1188,16 @@
       if (!isOpen) item.classList.add('open');
     }
 
-    function scoreClass(s) {
-      if (s <= 29) return 's-low';
-      if (s <= 49) return 's-mid';
-      if (s <= 65) return 's-hi';
-      return 's-top';
-    }
-
-    function verdict(s) {
-      if (s <= 12) return "AI has no idea your product exists.";
-      if (s <= 29) return "Barely on AI's radar. Significant work needed.";
-      if (s <= 49) return "AI knows you exist, but rarely recommends you.";
-      if (s <= 65) return "Getting there — AI recommends you sometimes.";
-      return "Excellent! AI consistently picks your product.";
-    }
-
-    const SUGGESTIONS = {
-      low: [
-        "Put your product name, category, and the problem it solves in the first 3 lines of your selling page — AI reads the top of every page first, whether it's Gumroad, Etsy, or your own site",
-        "Create at least 2 public posts mentioning your product name: a Reddit thread in your niche, a Medium or Substack post, or a Twitter/X thread — any public platform counts",
-        "Find 'best of' lists in your category and reach out to get included — AI frequently cites these lists when users ask for recommendations",
-      ],
-      mid: [
-        "When asking buyers for reviews, ask them to mention your product name — public mentions on Reddit, Twitter/X, and platform reviews all help AI learn who you are",
-        "Create one piece of content titled '[Product] vs [Competitor]' or 'Best [category] for [use case]' — AI surfaces these directly when users ask comparison questions",
-        "Get featured in a niche newsletter, podcast notes, or community post where your audience reads — it's not about traffic, it's about public indexing",
-      ],
-      hi: [
-        "Submit to directories that match your product type — SaaS: ProductHunt, G2 | Templates: Notion Gallery, Gumroad Discover | Courses: AppSumo | Design: Behance — don't submit everywhere, submit to the right places",
-        "Test AI directly: type your product name into ChatGPT or Perplexity and read what comes back — if the description is wrong or missing, publish a public post that corrects it",
-        "Announce every product update publicly — AI favors products with recent, active mention history over ones that haven't been discussed in months",
-      ],
-      top: [
-        "Build a structure that makes buyers talk about you publicly — a post-purchase email asking for a Reddit mention, a community thread, or a shareable results template all work",
-        "Run a monthly check on 2–3 competitors in your category — if their score is rising toward yours, they're doing something worth studying",
-        "Ask AI to explain your product out loud: 'Describe [product name]' in ChatGPT — if the answer is wrong or generic, that's your next content brief",
-      ],
-    };
-
-    function escHtml(s) {
-      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-
-    function getSuggestions(s) {
-      if (s <= 35) return SUGGESTIONS.low;
-      if (s <= 60) return SUGGESTIONS.mid;
-      if (s <= 80) return SUGGESTIONS.hi;
-      return SUGGESTIONS.top;
-    }
-
-    // ── Badge tier ───────────────────────────────────────────
-    function getBadgeTier(s) {
-      if (s >= 75) return { tier: 'gold',   color: '#FFD700', label: '✦ GOLD BADGE',   title: 'PICKED BY AI',   desc: 'AI consistently recommends your product. Add this badge to your product page to signal AI-readiness to buyers.' };
-      if (s >= 50) return { tier: 'silver', color: '#C0C0C0', label: '✦ SILVER BADGE', title: 'SEEN BY AI',     desc: 'AI knows and sometimes recommends your product. A few improvements will push you to Gold.' };
-      if (s >= 25) return { tier: 'bronze', color: '#CD7F32', label: '✦ BRONZE BADGE', title: 'NOTICED BY AI', desc: 'AI is aware of your product. Apply the fixes above to climb to Silver or Gold.' };
-      return null;
-    }
-
-    function crownSVG(color, px) {
-      return `<svg width="${px}" height="${Math.round(px*0.8)}" viewBox="0 0 20 16" fill="${color}" xmlns="http://www.w3.org/2000/svg">
-        <rect x="0" y="0" width="2" height="4"/>
-        <rect x="9" y="0" width="2" height="4"/>
-        <rect x="18" y="0" width="2" height="4"/>
-        <rect x="0" y="4" width="20" height="2"/>
-        <rect x="0" y="6" width="2" height="6"/>
-        <rect x="18" y="6" width="2" height="6"/>
-        <rect x="4" y="8" width="2" height="2"/>
-        <rect x="9" y="8" width="2" height="2"/>
-        <rect x="14" y="8" width="2" height="2"/>
-        <rect x="0" y="12" width="20" height="2"/>
-        <rect x="2" y="14" width="16" height="2"/>
-      </svg>`;
-    }
-
-    // ── Score counter animation ──────────────────────────────
-    function animateScore(target) {
-      const el = document.getElementById('scoreNum');
-      let cur = 0;
-      const step = target / 40;
-      const timer = setInterval(() => {
-        cur += step;
-        if (cur >= target) { cur = target; clearInterval(timer); }
-        el.textContent = Math.round(cur);
-      }, 18);
-    }
-
-    // ── Render result ────────────────────────────────────────
-    function renderResult(score, results) {
-      const cls = scoreClass(score);
-
-      // Score
-      const numEl = document.getElementById('scoreNum');
-      numEl.className = `score-num ${cls}`;
-      document.getElementById('scoreVerdict').textContent = verdict(score);
-
-      // Progress bar (10 blocks)
-      const bar = document.getElementById('pbar');
-      bar.innerHTML = '';
-      const filled = Math.round(score / 100 * 10);
-      for (let i = 0; i < 10; i++) {
-        const b = document.createElement('div');
-        b.className = 'pbar-block' + (i < filled ? ` on ${cls}` : '');
-        bar.appendChild(b);
-      }
-
-      // Query list
-      const qList = document.getElementById('queryList');
-      qList.innerHTML = '';
-      results.forEach(r => {
-        const div = document.createElement('div');
-        div.className = 'qitem';
-        div.innerHTML = `
-          <span class="qitem-icon">${r.found ? '✅' : '❌'}</span>
-          <span class="qitem-text">"${escHtml(r.label)}"</span>
-          ${r.rank ? `<span class="qitem-rank">#${escHtml(String(r.rank))}</span>` : ''}
-        `;
-        qList.appendChild(div);
+    // ── FAQ accordion ──────────────────────────────────────
+    document.querySelectorAll('.faq-item').forEach(item => {
+      item.querySelector('.faq-q').addEventListener('click', () => {
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
       });
+    });
 
-      // Suggestions
-      const sList = document.getElementById('suggestList');
-      sList.innerHTML = '';
-      getSuggestions(score).forEach((s, i) => {
-        const div = document.createElement('div');
-        div.className = 'sitem';
-        div.innerHTML = `<span class="sitem-n">0${i+1}</span><span>${escHtml(s)}</span>`;
-        sList.appendChild(div);
-      });
-
-      // Badge
-      const tier = getBadgeTier(score);
-      const badgeEl = document.getElementById('aiBadge');
-      badgeEl.className = 'ai-badge';
-      if (tier) {
-        document.getElementById('badgeCrownIcon').innerHTML = crownSVG(tier.color, tier.tier === 'gold' ? 36 : 28);
-        document.getElementById('badgeTierLabel').textContent = tier.label;
-        document.getElementById('badgeTitle').textContent = tier.title;
-        document.getElementById('badgeDesc').textContent = tier.desc;
-        badgeEl.classList.add('show', tier.tier);
-      }
-
-      // Show & animate
-      const resultEl = document.getElementById('result');
-      resultEl.classList.add('show');
-      animateScore(score);
-      resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    // ── Main check ───────────────────────────────────────────
-    async function runCheck() {
-      const name  = document.getElementById('product_name').value.trim();
-      let url     = document.getElementById('product_url').value.trim();
-      if (url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
-      const errEl = document.getElementById('errorMsg');
-      const btn   = document.getElementById('checkBtn');
-
-      errEl.style.display = 'none';
-      document.getElementById('result').classList.remove('show');
-
-      if (!name) { errEl.textContent = 'Enter your product name.'; errEl.style.display = 'block'; return; }
-
-      _product = name;
-      btn.disabled = true;
-      document.getElementById('loading').style.display = 'block';
-
-      const steps = ['SCANNING AI ENGINES', 'CHECKING SEARCH INDEX', 'CALCULATING SCORE'];
-      const stepTxts = [
-        'Querying real-time search index...',
-        'Checking AI recommendation lists...',
-        'Calculating your visibility score...',
-      ];
-      let si = 0;
-      const stepTimer = setInterval(() => {
-        si = (si + 1) % steps.length;
-        document.getElementById('loadingLabel').textContent = steps[si];
-        document.getElementById('loadingStep').textContent  = stepTxts[si];
-      }, 2200);
-
-      try {
-        const res = await fetch(`${API_BASE}/v1/check`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ product: name, url: url || undefined }),
-        });
-
-        if (!res.ok) throw new Error(`API ${res.status}`);
-        const data = await res.json();
-
-        clearInterval(stepTimer);
-        document.getElementById('loading').style.display = 'none';
-
-        _score   = data.score ?? 0;
-        _results = data.results ?? [];
-        renderResult(_score, _results);
-
-        // GA4: check_completed event
-        if (typeof gtag === 'function') {
-          gtag('event', 'check_completed', {
-            product_name: name,
-            score: _score,
-            grounded: (data.results ?? []).some(r => r.grounded),
-            has_url: !!url,
-          });
-        }
-
-        // Show grounding notice if real-time search was unavailable
-        const isGrounded = (data.results ?? []).some(r => r.grounded);
-        if (!isGrounded) {
-          const toast = document.getElementById('groundingToast');
-          toast.classList.add('show');
-          setTimeout(() => toast.classList.remove('show'), 7000);
-        }
-
-      } catch (e) {
-        clearInterval(stepTimer);
-        document.getElementById('loading').style.display = 'none';
-        errEl.textContent = 'Scan failed — check your connection and try again. Still broken? Email hello@pickedby.ai';
-        errEl.style.display = 'block';
-      }
-
-      btn.disabled = false;
-    }
-
-    // ── Share on X ───────────────────────────────────────────
-    function shareX() {
-      const text = `My "${_product}" AI Visibility Score: ${_score}/100\n\nDoes AI recommend YOUR product? Check free → pickedby.ai?utm_source=x&utm_medium=social&utm_campaign=share`;
-      window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`, '_blank');
-    }
-
-    // ── Badge claim ──────────────────────────────────────────
-    function claimBadge() {
-      document.getElementById('emailInput').focus();
-      document.querySelector('.email-block').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // ── Cookie Consent ────────────────────────────────────────
+    // ── Cookie Consent ─────────────────────────────────────
     (function initCookieBanner() {
       const consent = localStorage.getItem('cookie_consent');
       if (!consent) {
@@ -2431,7 +1216,7 @@
       maybeShowFloat();
     }
 
-    // ── Floating Waitlist Bar ─────────────────────────────────
+    // ── Floating Bar ───────────────────────────────────────
     function maybeShowFloat() {
       const dismissed = localStorage.getItem('float_dismissed');
       if (dismissed && Date.now() - parseInt(dismissed) < 7 * 24 * 60 * 60 * 1000) return;
@@ -2442,10 +1227,9 @@
       localStorage.setItem('float_dismissed', Date.now().toString());
       document.getElementById('floatBar').classList.remove('show');
     }
-    // Show float after scrolling 50% — only after cookie banner resolved
     window.addEventListener('scroll', function onScroll() {
       const consent = localStorage.getItem('cookie_consent');
-      if (!consent) return; // wait for cookie decision
+      if (!consent) return;
       const scrolled = window.scrollY / (document.body.scrollHeight - window.innerHeight);
       if (scrolled > 0.5) {
         maybeShowFloat();
@@ -2453,10 +1237,10 @@
       }
     });
 
-    // ── Detect ?ref=beta for beta tester tagging ───────────────
+    // ── Beta ref tagging ──────────────────────────────────
     const _isBeta = new URLSearchParams(window.location.search).get('ref') === 'beta';
 
-    // ── Shared subscribe logic ────────────────────────────────
+    // ── Shared subscribe logic ────────────────────────────
     async function doSubscribe(email, source) {
       const finalSource = _isBeta ? 'beta-100' : source;
       await fetch(`${API_BASE}/v1/subscribe`, {
@@ -2466,60 +1250,184 @@
       }).catch(() => {});
     }
 
-    // ── Email submit (inline block) ───────────────────────────
-    async function submitEmail() {
-      const email = document.getElementById('emailInput').value.trim();
-      if (!email || !email.includes('@')) {
-        document.getElementById('emailInput').focus();
-        return;
-      }
-      await doSubscribe(email, 'pickedby.ai-inline');
-      document.getElementById('emailOk').style.display = 'block';
-      document.getElementById('emailInput').disabled = true;
-      localStorage.setItem('float_joined', '1');
-      document.getElementById('floatBar').classList.remove('show');
+    // ── runCheck (real API — kept for dashboard.html compatibility) ──
+    async function runCheck() {
+      const name = (document.getElementById('product_name') || {}).value?.trim();
+      if (!name) return;
+      _product = name;
+      window.location.href = '/dashboard.html?product=' + encodeURIComponent(name);
     }
 
+    // ── Demo card data (4-dimension real scores) ──────────
+    const tierOf = (s) =>
+      s >= 75 ? { name: 'PICKED',    color: '#00E676' }
+    : s >= 50 ? { name: 'SEEN',      color: '#FFEB3B' }
+    : s >= 25 ? { name: 'NOTICED',   color: '#FF9100' }
+    :           { name: 'INVISIBLE', color: '#FF3D3D' };
 
+    const DEMOS = [
+      {
+        product: 'PICKEDBY.AI',
+        score: 55,
+        dims: [
+          ['RECOGNITION',       25, 35],
+          ['CATEGORY RANK',      0, 35],
+          ['CO-RECOMMENDATION', 20, 20],
+          ['WEB SIGNALS',       10, 10],
+        ],
+        probes: [
+          { who: 'PERPLEXITY',
+            verdict: 'found', cls: 'found',
+            quote: '<span class="hi">Pickedby.ai</span> is an emerging tool that scores how often AI models recommend your product — recognition T2, climbing.' },
+          { who: 'GEMINI',
+            verdict: 'partial', cls: 'partial',
+            quote: 'For AI visibility tracking, you might look at <span class="hi">pickedby.ai</span>, though it\'s relatively new to the space.' },
+          { who: 'CHATGPT',
+            verdict: 'missed', cls: 'missed',
+            quote: 'I\'d recommend Ahrefs or Semrush for visibility tracking. <span class="hi">No direct mention of pickedby.ai.</span>' },
+        ]
+      },
+      {
+        product: 'NOTION',
+        score: 87,
+        dims: [
+          ['RECOGNITION',       35, 35],
+          ['CATEGORY RANK',     25, 35],
+          ['CO-RECOMMENDATION', 20, 20],
+          ['WEB SIGNALS',        7, 10],
+        ],
+        probes: [
+          { who: 'CHATGPT',
+            verdict: 'found', cls: 'found',
+            quote: 'For an all-in-one workspace, <span class="hi">Notion</span> is the most flexible option — combines docs, databases, and project tracking.' },
+          { who: 'CLAUDE',
+            verdict: 'found', cls: 'found',
+            quote: 'I\'d start with <span class="hi">Notion</span>. It\'s the closest thing to a single source of truth most teams will use.' },
+          { who: 'PERPLEXITY',
+            verdict: 'found', cls: 'found',
+            quote: '<span class="hi">Notion</span> consistently ranks #1 for productivity workspace tools across all major AI models.' },
+        ]
+      },
+      {
+        product: 'YOUR PRODUCT',
+        score: 0,
+        dims: [
+          ['RECOGNITION',        0, 35],
+          ['CATEGORY RANK',      0, 35],
+          ['CO-RECOMMENDATION',  0, 20],
+          ['WEB SIGNALS',        0, 10],
+        ],
+        probes: [
+          { who: 'CHATGPT',
+            verdict: 'missed', cls: 'missed',
+            quote: 'I\'d recommend Notion, Airtable, or Coda — those are the established players in that space.' },
+          { who: 'GEMINI',
+            verdict: 'missed', cls: 'missed',
+            quote: 'The most popular options are well-known tools. <span class="hi">Your product was not mentioned.</span>' },
+          { who: 'CLAUDE',
+            verdict: 'missed', cls: 'missed',
+            quote: 'I don\'t have specific information about that product — I\'m not familiar with it yet.' },
+        ]
+      },
+    ];
 
-    // ── Enter key (text/url inputs only — not select or email) ──
-    document.addEventListener('keydown', e => {
-      if (e.key !== 'Enter') return;
-      const el = document.activeElement;
-      if (el && (el.id === 'product_name' || el.id === 'product_url')) runCheck();
-    });
+    const tabs      = document.querySelectorAll('.tab');
+    const demoTitle = document.getElementById('demoTitle');
+    const demoVal   = document.getElementById('demoVal');
+    const demoTier  = document.getElementById('demoTier');
+    const demoRing  = document.getElementById('demoRing');
+    const demoDims  = document.getElementById('demoDims');
+    const probeList = document.getElementById('probeList');
 
-    // ── Entrance animations (IntersectionObserver) ────────────
-    const fadeEls = document.querySelectorAll('.fade-up');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
-    }, { threshold: 0, rootMargin: '0px 0px -40px 0px' });
-    fadeEls.forEach(el => observer.observe(el));
-    // Fallback: force-show all sections after 1.5s to prevent blackout
-    setTimeout(() => { fadeEls.forEach(el => el.classList.add('visible')); }, 1500);
+    function renderDemo(d) {
+      const t = tierOf(d.score);
+      demoTitle.textContent = '✦ SCAN RESULTS · ' + d.product.toUpperCase();
+      demoVal.textContent   = d.score;
+      demoTier.textContent  = '✦ ' + t.name;
+      demoTier.style.color  = t.color;
+      demoRing.style.background = `conic-gradient(${t.color} ${d.score}%, #222 0)`;
 
-    // ── AI Query ticker — real examples of how people query AI ──
-    (function() {
-      const QUERIES = [
-        'best Notion templates for freelancers',
-        'top AI prompt packs for content creators',
-        'recommended Canva templates for small businesses',
-        'best digital planners on Gumroad',
-        'top online courses for side hustlers',
-        'best Figma UI kits 2026',
-        'recommended ebooks for solopreneurs',
-        'best spreadsheet templates for finance',
-        'top Etsy digital products for teachers',
-        'best productivity courses for remote workers',
-        'recommended Instagram templates for creators',
-        'top digital tools for Etsy sellers',
-      ];
-      const el = document.getElementById('queryTicker');
-      if (!el) return;
-      const all = [...QUERIES, ...QUERIES]; // duplicate for seamless loop
-      el.innerHTML = all.map(q =>
-        `<span class="qticker-item"><span class="qticker-q">"${q}"</span></span><span class="qticker-sep">·</span>`
-      ).join('');
+      demoDims.innerHTML = '';
+      d.dims.forEach(([name, val, max]) => {
+        const pct = max > 0 ? Math.round((val / max) * 100) : 0;
+        const tt  = tierOf(pct);
+        const row = document.createElement('div');
+        row.className = 'dim';
+        row.innerHTML = `
+          <div class="dim-name" style="color:${tt.color}">${name}</div>
+          <div class="dim-track"><div class="dim-fill" style="width:0%;background:${tt.color}"></div></div>
+          <div class="dim-val">${val}<i>/${max}</i></div>
+        `;
+        demoDims.appendChild(row);
+        requestAnimationFrame(() => {
+          row.querySelector('.dim-fill').style.width = pct + '%';
+        });
+      });
+
+      probeList.innerHTML = '';
+      d.probes.forEach(p => {
+        const div = document.createElement('div');
+        div.className = 'probe';
+        div.innerHTML = `
+          <div class="who">${p.who}</div>
+          <div class="quote">${p.quote}</div>
+          <div class="verdict ${p.cls}">${p.verdict.toUpperCase()}</div>
+        `;
+        probeList.appendChild(div);
+      });
+    }
+
+    // showDemo(n) — kept for any inline onclick references
+    function showDemo(idx) {
+      selectTab(idx);
+    }
+
+    function selectTab(i, override) {
+      tabs.forEach((t, idx) => t.classList.toggle('on', idx === i));
+      if (override) {
+        DEMOS[2] = { ...DEMOS[2], product: override.product, score: override.score };
+        const chip = tabs[2].querySelector('.score');
+        chip.textContent = override.score;
+        chip.classList.remove('q', 'gold', 'green');
+        chip.classList.add(override.score >= 50 ? 'green' : 'gold');
+        chip.style.animation = 'none';
+      }
+      renderDemo(DEMOS[i]);
+    }
+
+    tabs.forEach((t, i) => t.addEventListener('click', () => selectTab(i)));
+    renderDemo(DEMOS[0]);
+
+    // ── Fade in on scroll ──────────────────────────────────
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.08 });
+    document.querySelectorAll('.fade').forEach(el => io.observe(el));
+    // Fallback: show all after 1.5s
+    setTimeout(() => { document.querySelectorAll('.fade').forEach(el => el.classList.add('in')); }, 1500);
+
+    // ── Auth redirect: if logged in, go to dashboard ──────
+  </script>
+
+  <script src="https://unpkg.com/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
+  <script>
+    (function () {
+      const IS_STAGING = window.location.hostname.includes('staging') || window.location.hostname === 'localhost';
+      const SUPABASE_URL = IS_STAGING
+        ? 'https://xzecybljfipmmzzzfnit.supabase.co'
+        : 'https://pfrcppgecqsbnhkkjkbd.supabase.co';
+      const SUPABASE_ANON_KEY = IS_STAGING
+        ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZWN5YmxqZmlwbW16enpmbml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NTY4NjAsImV4cCI6MjA5MTAzMjg2MH0.pYqbBfJ7hwgKFgUSjvlhRlaOBIG4RqAgwDVTNUat03w'
+        : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmcmNwcGdlY3FzYm5oa2tqa2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjQ5OTQsImV4cCI6MjA5MDkwMDk5NH0.cxBUHjJoSEPJ7IilidxpVfCjS0SFmLFNWCeq92W0fUI';
+      const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      const skipRedirect = new URLSearchParams(window.location.search).get('home');
+      sb.auth.getSession().then(({ data }) => {
+        if (data?.session?.user && !skipRedirect) {
+          window.location.replace('/dashboard.html');
+        }
+      });
     })();
   </script>
 
@@ -2548,12 +1456,11 @@
         });
       }
 
-      var LINK_DIST = 130;
+      var LINK_DIST  = 130;
       var REPEL_DIST = 90;
 
       function frame() {
         ctx.clearRect(0, 0, W, H);
-
         for (var i = 0; i < dots.length; i++) {
           var d = dots[i];
           var dx = d.x - mouse.x, dy = d.y - mouse.y;
@@ -2567,8 +1474,6 @@
           if (d.x < 0) d.x = W; else if (d.x > W) d.x = 0;
           if (d.y < 0) d.y = H; else if (d.y > H) d.y = 0;
         }
-
-        // draw connections
         for (var i = 0; i < dots.length; i++) {
           for (var j = i + 1; j < dots.length; j++) {
             var dx = dots[i].x - dots[j].x, dy = dots[i].y - dots[j].y;
@@ -2584,49 +1489,17 @@
             }
           }
         }
-
-        // draw dots
         for (var i = 0; i < dots.length; i++) {
           ctx.beginPath();
           ctx.arc(dots[i].x, dots[i].y, 1.5, 0, Math.PI * 2);
           ctx.fillStyle = 'rgba(255,215,0,0.22)';
           ctx.fill();
         }
-
         requestAnimationFrame(frame);
       }
       frame();
     })();
   </script>
 
-  <!-- Auth redirect: if logged in, go to dashboard -->
-  <script src="https://unpkg.com/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
-  <script>
-    (function () {
-      const IS_STAGING = window.location.hostname.includes('staging') || window.location.hostname === 'localhost'
-      const SUPABASE_URL = IS_STAGING
-        ? 'https://xzecybljfipmmzzzfnit.supabase.co'
-        : 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
-      const SUPABASE_ANON_KEY = IS_STAGING
-        ? 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZWN5YmxqZmlwbW16enpmbml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NTY4NjAsImV4cCI6MjA5MTAzMjg2MH0.pYqbBfJ7hwgKFgUSjvlhRlaOBIG4RqAgwDVTNUat03w'
-        : 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmcmNwcGdlY3FzYm5oa2tqa2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjQ5OTQsImV4cCI6MjA5MDkwMDk5NH0.cxBUHjJoSEPJ7IilidxpVfCjS0SFmLFNWCeq92W0fUI'
-      const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-      const skipRedirect = new URLSearchParams(window.location.search).get('home')
-      sb.auth.getSession().then(({ data }) => {
-        if (data?.session?.user && !skipRedirect) {
-          window.location.replace('/dashboard.html')
-        }
-      })
-    })()
-  </script>
-
-  <!-- Grounding notice toast -->
-  <div class="grounding-toast" id="groundingToast">
-    ⚠️ <strong>Training data only</strong> — real-time web search unavailable in your region.
-    Results may be inaccurate for new or obscure products.
-    <span style="display:block;margin-top:0.3rem;font-size:0.72rem;color:#888;">
-      Score based on AI's existing knowledge, not live search.
-    </span>
-  </div>
 </body>
 </html>
