@@ -27,7 +27,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@supabase/supabase-js@2.39.3/dist/umd/supabase.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Press+Start+2P&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     body { background: #0a0a0a; color: #f5f5f5; font-family: 'Inter', sans-serif; }
     .logo-font { font-family: 'Press Start 2P', monospace; }
@@ -219,6 +219,7 @@
   --pba-green:       #00E676;
   --pba-font-body:   'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --pba-font-pixel:  'Press Start 2P', monospace;
+  --pba-font-mono:   'JetBrains Mono', 'Courier New', monospace;
 }
 
 /* Shell visibility — only shown when logged in (see showDashboard/showLogin) */
@@ -355,6 +356,267 @@ body.shell-on .shell-scrim.open { display: block; }
 /* ========= DATA PANES (SPA 내부 라우팅) ========= */
 [data-pane] { display: none; }
 [data-pane].active { display: block; }
+
+/* =========================================================
+ * A안 비주얼 교체 — dashboard-overview.html 디자인 시스템 통합
+ * 2026-04-29 CEO 승인
+ * ========================================================= */
+
+/* ── OVERVIEW CARDS (ov-card) ── */
+.ov-card {
+  position: relative;
+  background: var(--pba-bg-2);
+  border: 1px solid var(--pba-border);
+  border-radius: 6px;
+  padding: 22px 22px 20px;
+}
+.ov-card::before {
+  content: ''; position: absolute;
+  top: -1px; left: -1px;
+  width: 10px; height: 10px;
+  background: var(--pba-gold);
+}
+.ov-card::after {
+  content: ''; position: absolute;
+  bottom: -1px; right: -1px;
+  width: 6px; height: 6px;
+  background: var(--pba-border);
+}
+.ov-eyebrow {
+  font-family: var(--pba-font-pixel);
+  font-size: 7px;
+  letter-spacing: 0.2em;
+  color: var(--pba-fg-4);
+  text-transform: uppercase;
+}
+.ov-eyebrow.gold { color: var(--pba-gold); }
+.ov-card-sub { font-size: 12.5px; color: var(--pba-fg-4); margin-top: 6px; line-height: 1.55; }
+.ov-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+
+.ov-grid { display: grid; gap: 16px; }
+.ov-row-2 { grid-template-columns: 360px 1fr; }
+.ov-row-3 { grid-template-columns: 1fr 1fr; }
+
+/* SCORE RING */
+.ov-score-card { display: flex; flex-direction: column; align-items: center; padding: 22px 22px 26px; }
+.ov-score-card .ov-eyebrow { align-self: flex-start; }
+.ov-ring-wrap { width: 180px; height: 180px; margin: 18px 0 10px; position: relative; }
+.ov-ring-wrap svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.ov-ring-track { fill: none; stroke: #1a1a1a; stroke-width: 14; }
+.ov-ring-fill  { fill: none; stroke: var(--pba-gold); stroke-width: 14; transition: stroke-dashoffset 1s ease; }
+.ov-ring-inner { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+.ov-ring-val { font-family: var(--pba-font-mono); font-size: 2.6rem; font-weight: 700; color: #fff; line-height: 1; letter-spacing: -1px; }
+.ov-ring-denom { font-family: var(--pba-font-pixel); font-size: 7px; color: var(--pba-fg-5); letter-spacing: 0.18em; margin-top: 4px; }
+.ov-tier {
+  font-family: var(--pba-font-pixel);
+  font-size: 8px; letter-spacing: 0.22em;
+  color: var(--pba-gold);
+  padding: 7px 12px;
+  background: var(--pba-gold-bg);
+  border: 1px solid var(--pba-gold-border);
+  border-radius: 4px;
+  margin-top: 6px;
+}
+
+/* DAILY PULSE */
+.ov-pulse-body { color: #e5e5e5; font-size: 0.9rem; line-height: 1.65; margin: 0; }
+.ov-pulse-body em { color: var(--pba-gold); font-style: normal; font-weight: 500; }
+.ov-pulse-foot { display: flex; align-items: center; gap: 10px; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--pba-border-faint); }
+.ov-pulse-foot .lbl { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-5); }
+.ov-pulse-foot .delta { font-family: var(--pba-font-mono); font-size: 14px; color: var(--pba-green); font-weight: 600; margin-left: auto; }
+.ov-pulse-foot .spark { display: inline-flex; gap: 3px; align-items: flex-end; height: 18px; margin-left: 4px; }
+.ov-pulse-foot .spark i { width: 3px; background: var(--pba-fg-6); display: block; }
+.ov-pulse-foot .spark i.on { background: var(--pba-gold); }
+
+/* DIMENSION BARS */
+.ov-dims { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 28px; }
+.ov-dim { display: flex; flex-direction: column; gap: 7px; }
+.ov-dim-head { display: flex; justify-content: space-between; align-items: baseline; }
+.ov-dim-name { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.16em; color: var(--pba-fg-2); }
+.ov-dim-val { font-family: var(--pba-font-mono); font-size: 13px; color: #fff; font-weight: 500; }
+.ov-dim-val i { font-style: normal; color: var(--pba-fg-5); font-size: 11px; }
+.ov-dim-track { height: 8px; background: #0a0a0a; border: 1px solid var(--pba-border-faint); border-radius: 999px; overflow: hidden; }
+.ov-dim-fill { height: 100%; background: var(--pba-gold); border-radius: 999px; transition: width .8s ease; }
+.ov-dim-fill.full { background: var(--pba-green); }
+.ov-dims-foot { margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--pba-border-faint); display: flex; justify-content: space-between; align-items: center; }
+.ov-dims-foot .hint { font-family: var(--pba-font-pixel); font-size: 7px; color: var(--pba-fg-5); letter-spacing: 0.18em; }
+.ov-dims-foot .sum { font-family: var(--pba-font-mono); font-size: 13px; color: var(--pba-fg-3); }
+.ov-dims-foot .sum b { color: #fff; font-weight: 600; }
+
+/* ENGINE GRADES */
+.ov-engine-row { display: grid; grid-template-columns: 110px 56px 1fr; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--pba-border-faint); }
+.ov-engine-row:last-of-type { border-bottom: none; }
+.ov-engine-name { font-size: 14px; color: #fff; font-weight: 500; }
+.ov-tier-badge { font-family: var(--pba-font-pixel); font-size: 9px; letter-spacing: 0.15em; text-align: center; padding: 6px 0; border-radius: 4px; border: 1px solid; }
+.ov-tier-badge.t1 { color: #FFD700; background: var(--pba-gold-bg); border-color: var(--pba-gold-border); }
+.ov-tier-badge.t2 { color: #C0C0C0; background: #0d0d0d; border-color: #2a2a2a; }
+.ov-engine-desc { font-size: 12.5px; color: var(--pba-fg-3); }
+.ov-engines-foot { margin-top: 12px; padding-top: 14px; border-top: 1px solid var(--pba-border-faint); font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.16em; color: var(--pba-fg-5); }
+
+/* QUADRANT */
+.ov-quad {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  width: 100%;
+  max-width: 320px;
+  margin: 8px auto 18px;
+  background:
+    linear-gradient(to right, transparent calc(50% - 0.5px), #2a2a2a calc(50% - 0.5px), #2a2a2a calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(50% - 0.5px), #2a2a2a calc(50% - 0.5px), #2a2a2a calc(50% + 0.5px), transparent calc(50% + 0.5px)),
+    #0a0a0a;
+  border: 1px solid var(--pba-border);
+  border-radius: 6px;
+}
+.ov-quad-label { position: absolute; font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.16em; color: var(--pba-fg-5); }
+.ov-quad-label.tl { top: 8px; left: 8px; }
+.ov-quad-label.tr { top: 8px; right: 8px; color: var(--pba-gold); }
+.ov-quad-label.bl { bottom: 8px; left: 8px; color: #FF8080; }
+.ov-quad-label.br { bottom: 8px; right: 8px; }
+.ov-quad-dot { position: absolute; width: 14px; height: 14px; background: var(--pba-gold); border: 2px solid #000; border-radius: 999px; transform: translate(-50%, 50%); box-shadow: 0 0 0 0 #FFD70066; animation: dotpulse 2s ease-out infinite; }
+
+/* ANNOUNCEMENT */
+.ov-announce { margin-top: 32px; padding: 12px 14px; background: var(--pba-bg-1); border: 1px solid var(--pba-border-faint); border-radius: 6px; display: flex; align-items: center; gap: 12px; font-size: 12.5px; color: var(--pba-fg-3); }
+.ov-announce .tag { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-gold); background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); padding: 5px 8px; border-radius: 3px; flex: none; }
+.ov-announce b { color: #fff; font-weight: 500; }
+.ov-announce .x { margin-left: auto; background: transparent; border: none; color: var(--pba-fg-5); cursor: pointer; padding: 4px 6px; font-family: var(--pba-font-pixel); font-size: 9px; }
+.ov-announce .x:hover { color: #fff; }
+
+/* BREADCRUMBS */
+.crumbs { font-size: 12.5px; color: var(--pba-fg-4); display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+.crumbs a { color: var(--pba-fg-3); text-decoration: none; }
+.crumbs a:hover { color: #fff; }
+.crumbs .sep { color: var(--pba-fg-6); }
+.crumbs .cur { color: #fff; font-weight: 500; }
+
+/* PAGE H1 */
+h1.page-h1 { font-family: var(--pba-font-body); font-size: 28px; font-weight: 800; letter-spacing: -0.5px; color: var(--pba-fg-bold); margin: 0 0 22px; line-height: 1.15; }
+
+/* LIVE DOT ANIMATION */
+@keyframes live {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.5); }
+  50%      { box-shadow: 0 0 0 5px rgba(0, 230, 118, 0); }
+}
+@keyframes dotpulse {
+  0%   { box-shadow: 0 0 0 0 #FFD70066; }
+  70%  { box-shadow: 0 0 0 14px #FFD70000; }
+  100% { box-shadow: 0 0 0 0 #FFD70000; }
+}
+
+/* DOMAIN PICKER — new visual */
+#shell-domain-btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 8px;
+  background: #0d0d0d !important;
+  border: 1px solid var(--pba-border) !important;
+  border-radius: 6px !important;
+  padding: 6px 10px !important;
+  color: #fff !important;
+  font-size: 13px !important;
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+#shell-domain-btn:hover { border-color: var(--pba-gold-border) !important; background: #0f0e08 !important; }
+#shell-domain-btn .domain-live-dot {
+  width: 8px; height: 8px; border-radius: 999px; background: var(--pba-green);
+  box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.5);
+  animation: live 1.8s infinite;
+  flex: none;
+}
+#shell-domain-btn .domain-verified-icon {
+  color: var(--pba-green);
+  font-size: 11px;
+}
+
+/* NEW TOPBAR ACTION BUTTONS */
+.top-icon-btn {
+  width: 36px; height: 36px;
+  display: grid; place-items: center;
+  border-radius: 6px;
+  background: transparent;
+  border: none;
+  color: var(--pba-fg-3);
+  cursor: pointer;
+  position: relative;
+  transition: background .15s, color .15s;
+}
+.top-icon-btn:hover { background: var(--pba-bg-2); color: #fff; }
+
+/* AVATAR WRAP (new design for shell) */
+.shell-avatar-wrap { position: relative; }
+.shell-top-avatar {
+  width: 28px; height: 28px;
+  border-radius: 999px;
+  display: grid; place-items: center;
+  overflow: hidden;
+  margin-left: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: border-color .15s;
+}
+.shell-top-avatar:hover { border-color: var(--pba-gold-soft); }
+.shell-top-avatar.open { border-color: var(--pba-gold); }
+.shell-top-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* NEW AVATAR DROPDOWN */
+.shell-avatar-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 220px;
+  background: #0d0d0d;
+  border: 1px solid var(--pba-border);
+  border-radius: 8px;
+  padding: 6px;
+  display: none;
+  flex-direction: column;
+  gap: 1px;
+  z-index: 60;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.55);
+}
+.shell-avatar-menu.open { display: flex; }
+.shell-avatar-menu-head {
+  padding: 10px 10px 12px;
+  border-bottom: 1px solid var(--pba-border-faint);
+  margin-bottom: 4px;
+}
+.shell-avatar-menu-email { font-size: 12.5px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.shell-avatar-menu-plan { font-family: var(--pba-font-pixel); font-size: 6.5px; color: var(--pba-gold); letter-spacing: 0.18em; margin-top: 5px; }
+.shell-avatar-item {
+  background: transparent;
+  border: none;
+  color: var(--pba-fg-1);
+  font-family: var(--pba-font-body);
+  font-size: 13px;
+  text-align: left;
+  padding: 9px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: background .12s, color .12s;
+  width: 100%;
+}
+.shell-avatar-item:hover { background: var(--pba-bg-2); color: #fff; }
+.shell-avatar-item .ai-ico { width: 16px; height: 16px; display: grid; place-items: center; color: var(--pba-fg-4); flex: none; }
+.shell-avatar-item:hover .ai-ico { color: var(--pba-gold); }
+.shell-avatar-item.danger { color: #FF8080; }
+.shell-avatar-item.danger:hover { background: #1a0505; color: #fff; }
+.shell-avatar-sep { height: 1px; background: var(--pba-border-faint); margin: 4px 2px; }
+
+/* ov-card mobile */
+@media (max-width: 880px) {
+  .ov-row-2, .ov-row-3 { grid-template-columns: 1fr; }
+  .ov-dims { grid-template-columns: 1fr; gap: 14px; }
+  .ov-engine-row { grid-template-columns: 100px 50px 1fr; gap: 10px; }
+}
+
+/* focus-visible gold ring */
+button:focus-visible, a:focus-visible {
+  outline: 1px solid var(--pba-gold);
+  outline-offset: 2px;
+}
   </style>
 </head>
 <body>
@@ -416,9 +678,13 @@ body.shell-on .shell-scrim.open { display: block; }
     </div>
     <!-- D3 DOMAIN-SEL-01 (CEO 2026-04-21 B2): 도메인 드롭다운 (현재 제품명 + 목록 + Register 통합) -->
     <div id="shell-domain-picker" style="position:relative;margin-left:0.85rem;">
-      <button id="shell-domain-btn" onclick="toggleDomainPicker()" style="background:#0d0d0d;color:#f5f5f5;border:1px solid #2a2a2a;padding:0.38rem 0.7rem 0.38rem 0.8rem;font-size:0.78rem;cursor:pointer;border-radius:6px;font-family:inherit;display:flex;align-items:center;gap:0.5rem;white-space:nowrap;">
-        <span id="shell-domain-label" style="font-weight:600;">Select a product</span>
-        <span style="color:#666;font-size:0.65rem;">▼</span>
+      <button id="shell-domain-btn" onclick="toggleDomainPicker()" aria-haspopup="listbox">
+        <span class="domain-live-dot" aria-hidden="true"></span>
+        <span id="shell-domain-label" style="font-weight:500;">Select a product</span>
+        <span class="domain-verified-icon" id="shell-domain-verified" title="Ownership verified" aria-label="verified" style="display:none;">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 1.5 L3 4v4c0 3 2.2 5.5 5 6.5 2.8-1 5-3.5 5-6.5V4L8 1.5z M6 7.5 L7.3 9 10 6" stroke="#0a0a0a" stroke-width="0.8" stroke-linejoin="miter" stroke-linecap="square"/></svg>
+        </span>
+        <span style="color:var(--pba-fg-4);font-size:10px;margin-left:2px;" aria-hidden="true">▼</span>
       </button>
       <div id="shell-domain-menu" style="display:none;position:absolute;top:calc(100% + 6px);left:0;min-width:240px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:8px;padding:0.4rem;box-shadow:0 8px 24px rgba(0,0,0,0.6);z-index:500;">
         <div id="shell-domain-list" style="display:flex;flex-direction:column;gap:2px;"></div>
@@ -427,18 +693,34 @@ body.shell-on .shell-scrim.open { display: block; }
       </div>
     </div>
   </div>
-  <div style="display:flex;align-items:center;gap:10px;font-size:12px;color:var(--pba-fg-4);">
-    <!-- B안 Rev 2026-04-21: + Check 버튼은 Recently Added 섹션으로 이동. 헤더 우측은 계정 드롭다운만. -->
-    <!-- shell-topbar-email 제거 2026-04-21: 드롭다운 내부 shell-nav-dropdown-email 과 중복 -->
-    <!-- BUG-UI-SHELL-ACCOUNT-01 복구: Shell topbar 에 계정 드롭다운 (Settings/Sign Out) -->
-    <div class="nav-profile" style="position:relative;">
-      <button class="nav-avatar-btn" id="shell-avatar-btn" onclick="toggleDropdown()" aria-label="Account menu" style="background:none;border:none;padding:0;cursor:pointer;">
-        <img id="shell-avatar" src="" alt="" style="width:28px;height:28px;border-radius:50%;border:1px solid #333;display:block;">
+  <div style="display:flex;align-items:center;gap:4px;">
+    <!-- B안 Rev 2026-04-21: 헤더 우측은 계정 드롭다운만 -->
+    <div class="shell-avatar-wrap" id="shell-avatar-wrap">
+      <button class="shell-top-avatar" id="shell-avatar-btn" onclick="toggleDropdown()" aria-label="Account menu" aria-haspopup="menu" aria-expanded="false">
+        <img id="shell-avatar" src="" alt="" style="width:28px;height:28px;border-radius:50%;display:block;">
       </button>
-      <div class="nav-dropdown" id="shell-nav-dropdown">
-        <div class="nav-dropdown-email" id="shell-nav-dropdown-email"></div>
-        <button onclick="openSettings()">Settings</button>
-        <button onclick="signOut()" style="color:#ef4444;">Sign Out</button>
+      <div class="shell-avatar-menu" id="shell-nav-dropdown" role="menu">
+        <div class="shell-avatar-menu-head">
+          <div class="shell-avatar-menu-email" id="shell-nav-dropdown-email"></div>
+          <div class="shell-avatar-menu-plan">FOUNDING · MEMBER</div>
+        </div>
+        <button class="shell-avatar-item" role="menuitem" onclick="openSettings(); toggleDropdown();">
+          <span class="ai-ico">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
+              <circle cx="8" cy="8" r="2"/><path d="M8 1.5v2M8 12.5v2M1.5 8h2M12.5 8h2M3.4 3.4l1.4 1.4M11.2 11.2l1.4 1.4M3.4 12.6l1.4-1.4M11.2 4.8l1.4-1.4"/>
+            </svg>
+          </span>
+          <span>Account settings</span>
+        </button>
+        <div class="shell-avatar-sep"></div>
+        <button class="shell-avatar-item danger" role="menuitem" onclick="signOut()">
+          <span class="ai-ico">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="square">
+              <path d="M9 3H4v10h5"/><path d="M8 8h6M11.5 5.5 14 8l-2.5 2.5"/>
+            </svg>
+          </span>
+          <span>Sign out</span>
+        </button>
       </div>
     </div>
   </div>
@@ -4534,7 +4816,15 @@ body.shell-on .shell-scrim.open { display: block; }
     const shellOn = document.body.classList.contains('shell-on')
     const targetId = shellOn ? 'shell-nav-dropdown' : 'nav-dropdown'
     const el = document.getElementById(targetId)
-    if (el) el.classList.toggle('open')
+    if (el) {
+      const isOpen = el.classList.toggle('open')
+      // shell avatar button open state (aria + CSS class)
+      const shellBtn = document.getElementById('shell-avatar-btn')
+      if (shellBtn && shellOn) {
+        shellBtn.classList.toggle('open', isOpen)
+        shellBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false')
+      }
+    }
   }
   document.addEventListener('click', (e) => {
     // 두 드롭다운 모두 체크 (외부 클릭 시 닫기)
@@ -4545,6 +4835,10 @@ body.shell-on .shell-scrim.open { display: block; }
     for (const { btn, dd } of entries) {
       if (dd && btn && !btn.contains(e.target) && !dd.contains(e.target)) {
         dd.classList.remove('open')
+        if (btn === document.getElementById('shell-avatar-btn')) {
+          btn.classList.remove('open')
+          btn.setAttribute('aria-expanded', 'false')
+        }
       }
     }
   })
@@ -4805,10 +5099,19 @@ body.shell-on .shell-scrim.open { display: block; }
     }).join('')
   }
 
+  function _updateDomainBadge(name) {
+    const badge = document.getElementById('shell-domain-verified')
+    if (!badge) return
+    const isVerified = name && (verifiedDomains || []).some(d =>
+      (d.product_name || '').toLowerCase() === name.toLowerCase())
+    badge.style.display = isVerified ? 'inline-flex' : 'none'
+  }
+
   function selectDomain(name) {
     _selectedDomainName = name
     const lbl = document.getElementById('shell-domain-label')
     if (lbl) lbl.textContent = name
+    _updateDomainBadge(name)
     const menu = document.getElementById('shell-domain-menu')
     if (menu) menu.style.display = 'none'
     // 모든 pane을 선택된 제품으로 갱신
@@ -4830,7 +5133,9 @@ body.shell-on .shell-scrim.open { display: block; }
     const lbl = document.getElementById('shell-domain-label')
     if (!lbl) return
     const prod = pickRepresentativeProduct()
-    lbl.textContent = _selectedDomainName || prod?.product_name || 'Select a product'
+    const name = _selectedDomainName || prod?.product_name || ''
+    lbl.textContent = name || 'Select a product'
+    _updateDomainBadge(name)
   }
 
   // ═══════════════════════════════════════════════════════════
