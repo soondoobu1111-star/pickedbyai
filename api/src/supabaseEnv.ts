@@ -26,6 +26,13 @@ export const SUPABASE_URL_PROD = 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
 export const SUPABASE_URL_STAGING = 'https://xzecybljfipmmzzzfnit.supabase.co'
 
 /**
+ * Supabase 공개 Anon Key (비밀 아님 — FE 코드에 노출된 공개 JWT).
+ * secret으로 관리 시 잘못 설정될 위험 → 코드에 하드코딩해 오염 불가능하게 함.
+ */
+export const SUPABASE_ANON_KEY_PROD = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmcmNwcGdlY3FzYm5oa2tqa2JkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjQ5OTQsImV4cCI6MjA5MDkwMDk5NH0.cxBUHjJoSEPJ7IilidxpVfCjS0SFmLFNWCeq92W0fUI'
+export const SUPABASE_ANON_KEY_STAGING = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZWN5YmxqZmlwbW16enpmbml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NTY4NjAsImV4cCI6MjA5MTAzMjg2MH0.pYqbBfJ7hwgKFgUSjvlhRlaOBIG4RqAgwDVTNUat03w'
+
+/**
  * env.ENVIRONMENT 기반 Supabase URL 결정.
  * 우선순위:
  *   1. ENVIRONMENT === 'staging' → SUPABASE_URL_STAGING
@@ -35,4 +42,11 @@ export const SUPABASE_URL_STAGING = 'https://xzecybljfipmmzzzfnit.supabase.co'
 export function getSbUrl(env: { ENVIRONMENT?: string; SUPABASE_URL?: string }): string {
   if (env.ENVIRONMENT === 'staging') return SUPABASE_URL_STAGING
   return env.SUPABASE_URL || SUPABASE_URL_PROD
+}
+
+/**
+ * 환경별 Anon Key 반환 (하드코딩 — secret 오염 불가).
+ */
+export function getAnonKey(env: { ENVIRONMENT?: string }): string {
+  return env.ENVIRONMENT === 'staging' ? SUPABASE_ANON_KEY_STAGING : SUPABASE_ANON_KEY_PROD
 }

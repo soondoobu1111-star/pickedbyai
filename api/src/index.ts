@@ -2,7 +2,7 @@ import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { buildDimensionContext, computeUnified, computeUnifiedD7 } from './unifiedScoreAdapter'
 import type { UnifiedScoreResult } from './unifiedScore'
-import { getSbUrl, SUPABASE_URL_PROD, SUPABASE_URL_STAGING as SB_URL_STAGING } from './supabaseEnv'
+import { getSbUrl, getAnonKey } from './supabaseEnv'
 import {
   recordCheckResult,
   fetchDueRetries,
@@ -15,7 +15,7 @@ import type { PrescriptionResult } from './prescriptionEngine'
 
 type Bindings = {
   BREVO_API_KEY: string
-  SUPABASE_ANON_KEY: string
+  SUPABASE_ANON_KEY?: string  // deprecated: 하드코딩으로 대체 (getAnonKey 사용)
   SUPABASE_SERVICE_KEY: string
   TAVILY_API_KEY: string
   OPENAI_API_KEY: string
@@ -27,6 +27,7 @@ type Bindings = {
   GEMINI_API_KEY?: string     // 직접 Gemini API 호출 시 사용 (Relay 우회)
   GEMINI_RELAY?: { fetch: (req: Request) => Promise<Response> }  // Service Binding
   AI: Ai
+  ENVIRONMENT?: string         // 'staging' or undefined(prod) — wrangler.toml vars
   TURNSTILE_SECRET?: string    // CF Turnstile secret (wrangler secret put TURNSTILE_SECRET)
   TURNSTILE_BYPASS?: string    // '1' = 우회 (로컬 개발 / 롤백 시)
 }
@@ -1559,26 +1560,20 @@ app.post('/v1/subscribe', async (c) => {
 // Tries both prod and staging Supabase URLs to support both environments
 // 2026-04-22 refactor: SUPABASE_URL_STAGING은 공통 ./supabaseEnv 모듈에서 SB_URL_STAGING 로 import.
 // Staging anon key is public (embedded in FE HTML) — safe to hardcode here
-const SUPABASE_ANON_KEY_STAGING = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh6ZWN5YmxqZmlwbW16enpmbml0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU0NTY4NjAsImV4cCI6MjA5MTAzMjg2MH0.pYqbBfJ7hwgKFgUSjvlhRlaOBIG4RqAgwDVTNUat03w'
+// SUPABASE_ANON_KEY_STAGING 제거됨 — supabaseEnv.ts의 getAnonKey()로 통합
 
 async function verifyToken(token: string, env: Bindings): Promise<{ id: string; email: string; supabaseUrl: string; anonKey: string } | null> {
-  const candidates = [
-    { url: SUPABASE_URL_PROD, apikey: env.SUPABASE_ANON_KEY },
-    { url: SB_URL_STAGING, apikey: SUPABASE_ANON_KEY_STAGING },
-  ]
-  for (const { url, apikey } of candidates) {
-    try {
-      const res = await fetch(`${url}/auth/v1/user`, {
-        headers: {
-          'apikey': apikey,
-          'Authorization': `Bearer ${token}`,
-        },
-      })
-      if (!res.ok) continue
-      const data = await res.json() as { id: string; email: string }
-      if (data?.id) return { id: data.id, email: data.email, supabaseUrl: url, anonKey: apikey }
-    } catch { /* try next */ }
-  }
+  // 환경별 단일 Supabase만 시도 — "양쪽 시도" 제거로 secrets 오염 즉각 감지
+  const url = getSbUrl(env)
+  const apikey = getAnonKey(env)
+  try {
+    const res = await fetch(`${url}/auth/v1/user`, {
+      headers: { 'apikey': apikey, 'Authorization': `Bearer ${token}` },
+    })
+    if (!res.ok) return null
+    const data = await res.json() as { id: string; email: string }
+    if (data?.id) return { id: data.id, email: data.email, supabaseUrl: url, anonKey: apikey }
+  } catch { /* network error */ }
   return null
 }
 
@@ -2376,7 +2371,7 @@ app.post('/v1/domains/register', async (c) => {
 
   // Service key + user_id 필터 (RLS 바이패스 — JWT auth.uid() 매칭 이슈 회피)
   const headers = {
-    'apikey': c.env.SUPABASE_ANON_KEY,
+    'apikey': getAnonKey(c.env),
     'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
     'Content-Type': 'application/json',
   }
@@ -2437,7 +2432,7 @@ app.post('/v1/domains/verify', async (c) => {
 
   // Service key + user_id 필터 (RLS 바이패스)
   const headers = {
-    'apikey': c.env.SUPABASE_ANON_KEY,
+    'apikey': getAnonKey(c.env),
     'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
     'Content-Type': 'application/json',
   }
@@ -2598,7 +2593,7 @@ app.get('/v1/domains/list', async (c) => {
 
   // Service key로 조회 + user_id 필터 (RLS 바이패스 — JWT auth.uid() 매칭 이슈 회피)
   const headers = {
-    'apikey': c.env.SUPABASE_ANON_KEY,
+    'apikey': getAnonKey(c.env),
     'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
   }
   const res = await fetch(
