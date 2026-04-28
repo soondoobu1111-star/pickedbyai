@@ -2836,6 +2836,10 @@ button:focus-visible, a:focus-visible {
     }
     const today = history[history.length - 1]
     const yesterday = history[history.length - 2]
+    if (!today?.unified_v15 && !yesterday?.unified_v15) {
+      listEl.innerHTML = '<div style="color:#888;font-size:0.78rem;">Collecting dimension data — available after next AI check.</div>'
+      return
+    }
     const dimMap = arr => {
       const m = {}
       for (const d of (Array.isArray(arr) ? arr : [])) if (d && d.id) m[d.id] = Number(d.score) || 0
@@ -2852,15 +2856,8 @@ button:focus-visible, a:focus-visible {
       { label: 'Co-Rec', dT: T.corec || 0, dY: Y.corec || 0 },
       { label: 'Web', dT: T.web || 0, dY: Y.web || 0 },
     ]
-    const deltas = rows.map(r => Math.round((r.dT - r.dY) * 10) / 10)
-    const wrap = document.getElementById('d5-last24h-wrap')
-    if (deltas.every(d => d === 0)) {
-      if (wrap) wrap.style.display = 'none'
-      return
-    }
-    if (wrap) wrap.style.display = ''
-    listEl.innerHTML = rows.map((r, i) => {
-      const d = deltas[i]
+    listEl.innerHTML = rows.map(r => {
+      const d = Math.round((r.dT - r.dY) * 10) / 10
       const arrow = d > 0 ? '↑' : d < 0 ? '↓' : '↔'
       const color = d > 0 ? '#4ade80' : d < 0 ? '#e05252' : '#888'
       const sign = d > 0 ? '+' : ''
@@ -3539,12 +3536,8 @@ button:focus-visible, a:focus-visible {
         )
         const latest = myRows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0]
         if (latest) {
-          const rec = latest.recognition_score ?? latest.recognition ?? 0
-          const cat = latest.category_score ?? latest.category ?? 0
-          if (rec > 0 || cat > 0) {
-            quadWrap.style.display = 'block'
-            drawRivalsQuadrant(latest, peers)
-          }
+          quadWrap.style.display = 'block'
+          drawRivalsQuadrant(latest, peers)
         }
       }
     }
@@ -3744,8 +3737,10 @@ button:focus-visible, a:focus-visible {
     const PAD = 40, GOLD = '#FFD700', BG = '#0a0a0a'
     const plotW = W - PAD * 2, plotH = H - PAD * 2
 
-    const recognition = Math.min(latestScore.recognition_score ?? latestScore.recognition ?? 0, 35)
-    const category    = Math.min(latestScore.category_score ?? latestScore.category ?? 0, 35)
+    const _u15dims = latestScore.unified_v15?.dimensions || []
+    const _dimScore = id => (_u15dims.find ? _u15dims.find(d => d.id === id) : null)?.score ?? 0
+    const recognition = Math.min(latestScore.recognition_score ?? latestScore.recognition ?? _dimScore('recognition'), 35)
+    const category    = Math.min(latestScore.category_score ?? latestScore.category ?? _dimScore('category'), 35)
 
     ctx.fillStyle = BG
     ctx.fillRect(0, 0, W, H)
