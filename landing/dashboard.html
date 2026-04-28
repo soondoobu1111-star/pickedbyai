@@ -2759,6 +2759,23 @@ button:focus-visible, a:focus-visible {
       }
     }
 
+    // 헬퍼: 현재 선택된 도메인을 자동 채워서 Quick Check 모달 열기
+    // (BUG-AX-WRONG-PRODUCT 2026-04-28: 모달 빈 상태로 열려서 다른 제품 체크하는 버그 방지)
+    const _openCheckForCurrent = () => {
+      if (typeof openQuickCheck === 'function') openQuickCheck()
+      setTimeout(() => {
+        const inp = document.getElementById('input-product')
+        const urlInp = document.getElementById('input-url')
+        if (inp && prod && prod.product_name) {
+          inp.value = prod.product_name
+          try { inp.dispatchEvent(new Event('input')) } catch (e) {}
+        }
+        if (urlInp && prod && prod.product_url) {
+          urlInp.value = prod.product_url
+        }
+      }, 80)
+    }
+
     if (!rx || !rx.overall) {
       if (empty) empty.style.display = 'block'
       if (main) main.style.display = 'none'
@@ -2775,8 +2792,8 @@ button:focus-visible, a:focus-visible {
         // CASE B: 제품은 있으나 스코어가 한 번도 없음
         setEmpty('📋',
           'No check yet',
-          'Run your first check to score this product across the 4 dimensions and unlock personalized prescriptions.',
-          { label: '+ Run Check', onclick: () => { if (typeof openQuickCheck === 'function') openQuickCheck() } },
+          `Run your first check on ${prod.product_name || 'this product'} to score it across the 4 dimensions and unlock personalized prescriptions.`,
+          { label: '+ Run Check', onclick: _openCheckForCurrent },
           null,
           null
         )
@@ -2784,8 +2801,8 @@ button:focus-visible, a:focus-visible {
         // CASE C: 스코어는 있으나 prescription만 없음 (PRESCRIPTION-02 배포 이전 row)
         setEmpty('⏳',
           'Prescription pending',
-          'Your score is already in. Personalized prescriptions are generated on the next check — the daily cron runs at 00:00 KST and will populate them automatically. Or run a fresh check now.',
-          { label: '+ Run Fresh Check', onclick: () => { if (typeof openQuickCheck === 'function') openQuickCheck() } },
+          `Your score for ${prod.product_name || 'this product'} is already in. Personalized prescriptions are generated on the next check — the daily cron runs at 00:00 KST and will populate them automatically. Or run a fresh check now.`,
+          { label: `+ Run Fresh Check on ${prod.product_name || 'this product'}`, onclick: _openCheckForCurrent },
           { label: 'View Overview', onclick: () => { if (typeof shellNavigateTo === 'function') shellNavigateTo('overview') } },
           'NEXT AUTO-CHECK · 00:00 KST'
         )
