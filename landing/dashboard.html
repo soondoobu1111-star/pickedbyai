@@ -1042,7 +1042,7 @@ button:focus-visible, a:focus-visible {
               <div id="d5-ms-bar" style="height:100%;width:0%;background:#FFD700;transition:width 0.8s;"></div>
             </div>
           </div>
-          <div>
+          <div id="d5-last24h-wrap">
             <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.5rem;">LAST 24H</div>
             <div id="d5-last24h-list" style="display:flex;flex-direction:column;gap:0.25rem;">
               <div style="color:#555;font-size:0.78rem;">—</div>
@@ -2852,8 +2852,15 @@ button:focus-visible, a:focus-visible {
       { label: 'Co-Rec', dT: T.corec || 0, dY: Y.corec || 0 },
       { label: 'Web', dT: T.web || 0, dY: Y.web || 0 },
     ]
-    listEl.innerHTML = rows.map(r => {
-      const d = Math.round((r.dT - r.dY) * 10) / 10
+    const deltas = rows.map(r => Math.round((r.dT - r.dY) * 10) / 10)
+    const wrap = document.getElementById('d5-last24h-wrap')
+    if (deltas.every(d => d === 0)) {
+      if (wrap) wrap.style.display = 'none'
+      return
+    }
+    if (wrap) wrap.style.display = ''
+    listEl.innerHTML = rows.map((r, i) => {
+      const d = deltas[i]
       const arrow = d > 0 ? '↑' : d < 0 ? '↓' : '↔'
       const color = d > 0 ? '#4ade80' : d < 0 ? '#e05252' : '#888'
       const sign = d > 0 ? '+' : ''
@@ -3532,8 +3539,12 @@ button:focus-visible, a:focus-visible {
         )
         const latest = myRows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0]
         if (latest) {
-          quadWrap.style.display = 'block'
-          drawRivalsQuadrant(latest, peers)
+          const rec = latest.recognition_score ?? latest.recognition ?? 0
+          const cat = latest.category_score ?? latest.category ?? 0
+          if (rec > 0 || cat > 0) {
+            quadWrap.style.display = 'block'
+            drawRivalsQuadrant(latest, peers)
+          }
         }
       }
     }
