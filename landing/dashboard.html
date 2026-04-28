@@ -2385,12 +2385,27 @@ button:focus-visible, a:focus-visible {
       })
       resetTurnstile()  // 토큰 1회용 — 사용 후 즉시 리셋
       const data = await res.json()
+      // BUG-CHECK-NAN-01: API 에러 응답 (403/500 등) 또는 score 누락 방어
+      if (!res.ok || data.error) {
+        const reason = data.reason || data.error || `HTTP ${res.status}`
+        alert(`Check failed: ${reason}`)
+        console.error('[runCheckForce] API error', res.status, data)
+        return
+      }
+      const _unifiedScore = data.unified_v15 ? Number(data.unified_v15.score) : null
+      const _legacyScore = data.score != null ? Number(data.score) : null
+      if ((_unifiedScore == null || isNaN(_unifiedScore)) && (_legacyScore == null || isNaN(_legacyScore))) {
+        alert('Check returned no score. The probe may have failed — please try again.')
+        console.error('[runCheckForce] Both unified.score and score are missing/NaN', data)
+        return
+      }
       showResult(data)
       // 빅파이 1.5: unified_v15(4차원 단일) 우선. probe_score/score 이원 폐기.
       // sum(dimensions) === final.score 수학적 일관성 보장.
       const unified = data.unified_v15 || null
       const savedScore = unified ? unified.score : data.score
-      lastCheckResult = { product, url: url || null, score: savedScore, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null, unified }
+      const newPrescription = data.prescription || null
+      lastCheckResult = { product, url: url || null, score: savedScore, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null, unified, prescription: newPrescription }
       if (currentUser) {
         // 빅파이 1.5 OWNER-ONLY-01 (2026-04-21 재확인): verified 제품만 allProducts/DB에 저장.
         // 단순 검색(비검증)은 결과만 보여주고 My Products/Recently Added/Domain Picker에 들어가지 않음.
@@ -2406,23 +2421,28 @@ button:focus-visible, a:focus-visible {
               ai_probe: data.aiProbe || allProducts[existingIdx].ai_probe,
               results: data.results || allProducts[existingIdx].results,
               unified_v15: unified || allProducts[existingIdx].unified_v15 || null,
+              prescription: newPrescription || allProducts[existingIdx].prescription || null,
               created_at: new Date().toISOString(),
               _domainOnly: false,
             }
           } else {
-            allProducts.push({ product_name: product, product_url: url || null, score: savedScore, dimensions: data.dimensions || null, ai_probe: data.aiProbe || null, results: data.results || [], unified_v15: unified || null, created_at: new Date().toISOString() })
+            allProducts.push({ product_name: product, product_url: url || null, score: savedScore, dimensions: data.dimensions || null, ai_probe: data.aiProbe || null, results: data.results || [], unified_v15: unified || null, prescription: newPrescription, created_at: new Date().toISOString() })
           }
           renderMineTab(allProducts, allHistoryData)
           try { await saveHistory('mine') } catch(e) { console.error('[saveHistory] failed', e) }
         }
       }
-      // 체크 완료 훅 — Quick Check 모달 닫기 + 결과 카드 스크롤 (toast 제거, overview 이동 제거)
+      // 체크 완료 훅 — Quick Check 모달 닫기 + 결과 카드 스크롤 + 활성 페인 즉시 갱신
       if (typeof closeQuickCheck === 'function') closeQuickCheck()
+      // 활성 페인 즉시 재렌더 (prescription/score 새 데이터 즉시 반영)
+      try { if (typeof renderD5Overview === 'function') renderD5Overview() } catch(e) { console.error('[post-check] renderD5Overview', e) }
+      try { if (typeof loadActionsPane === 'function') loadActionsPane() } catch(e) { console.error('[post-check] loadActionsPane', e) }
       const resultEl = document.getElementById('check-result')
       if (resultEl) {
         setTimeout(() => resultEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150)
       }
     } catch (err) {
+      console.error('[runCheckForce] exception', err)
       alert('Check failed. Please try again.')
     } finally {
       btn.disabled = false
@@ -2442,8 +2462,11 @@ button:focus-visible, a:focus-visible {
     // unified_v15 있으면 우선. 없으면 raw score 단일 fallback. probe_score 이원 시스템 폐기.
     const unified = unified_v15 || null
     const displayScore = unified ? unified.score : score
-    document.getElementById('result-score').textContent = Math.round(displayScore)
-    document.getElementById('result-bar').style.width = Math.round(Math.min(displayScore, 100)) + '%'
+    // BUG-CHECK-NAN-01: NaN 방어 — undefined/null/NaN 시 "—" 표시
+    const _scoreNum = Number(displayScore)
+    const _scoreSafe = (displayScore != null && !isNaN(_scoreNum)) ? _scoreNum : null
+    document.getElementById('result-score').textContent = _scoreSafe != null ? Math.round(_scoreSafe) : '—'
+    document.getElementById('result-bar').style.width = (_scoreSafe != null ? Math.round(Math.min(_scoreSafe, 100)) : 0) + '%'
 
     // 빅파이 1.5: 위(CAV)는 일부 정보만. Badge / Daily Pulse / Quadrant / Engine Grades는
     // 소유주 확인된 My Products 확장 패널에서만 제공. (CEO 지시 2026-04-17 밤)
