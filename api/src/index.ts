@@ -957,6 +957,18 @@ app.post('/v1/check', async (c) => {
   }
 
   // ── 서버사이드 scores 저장 (FE 의존 제거) ──────────────────
+  // PRESCRIPTION-02 영속화 보강 (2026-04-28): prescription 생성을 INSERT 전으로 이동.
+  // 기존: INSERT 후 응답에만 추가 → 새로고침 시 사라지는 버그.
+  // 수정: 생성 후 INSERT body 및 응답 양쪽에 포함.
+  let prescription: PrescriptionResult | null = null
+  if (unifiedV15) {
+    try {
+      prescription = generatePrescription(unifiedV15)
+    } catch (err) {
+      console.error('[PRESCRIPTION] generate error:', err)
+    }
+  }
+
   // 인증된 사용자면 scores 테이블에 즉시 저장
   const authHeader = c.req.header('Authorization')
   if (authHeader?.startsWith('Bearer ')) {
@@ -978,18 +990,10 @@ app.post('/v1/check', async (c) => {
             product_url: url || null,
             score: finalScore,
             unified_v15: unifiedV15,
+            prescription: prescription,
           }),
         })
       } catch (e) { console.error('[CHECK] save score error:', e) }
-    }
-  }
-
-  let prescription: PrescriptionResult | null = null
-  if (unifiedV15) {
-    try {
-      prescription = generatePrescription(unifiedV15)
-    } catch (err) {
-      console.error('[PRESCRIPTION] generate error:', err)
     }
   }
 
@@ -1075,6 +1079,15 @@ async function dailyRefresh(env: Bindings) {
           console.error('[CRON] unified_v15 error:', err)
         }
       }
+      // PRESCRIPTION-02 영속화 (2026-04-28): cron도 unified_v15 있을 때 prescription 생성·저장
+      let cronPrescription: PrescriptionResult | null = null
+      if (cronUnifiedV15) {
+        try {
+          cronPrescription = generatePrescription(cronUnifiedV15)
+        } catch (err) {
+          console.error('[CRON] prescription error:', err)
+        }
+      }
       await fetch(`${sbUrl}/rest/v1/scores`, {
         method: 'POST',
         headers: { ...headers, 'Prefer': 'return=minimal' },
@@ -1087,9 +1100,10 @@ async function dailyRefresh(env: Bindings) {
           dimensions: result.dimensions,
           ai_probe: result.aiProbe,
           unified_v15: cronUnifiedV15,
+          prescription: cronPrescription,
         }),
       })
-      console.log(`[CRON] ✓ ${task.product_name} score=${savedScore} unified=${cronUnifiedV15 ? cronUnifiedV15.score : 'skip'}`)
+      console.log(`[CRON] ✓ ${task.product_name} score=${savedScore} unified=${cronUnifiedV15 ? cronUnifiedV15.score : 'skip'} rx=${cronPrescription ? 'yes' : 'no'}`)
       // Small delay between scans
       await new Promise(r => setTimeout(r, 2000))
     } catch (err) {
