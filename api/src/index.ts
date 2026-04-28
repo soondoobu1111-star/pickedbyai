@@ -961,15 +961,10 @@ app.post('/v1/check', async (c) => {
   // 기존: API INSERT + FE saveHistory UPDATE/INSERT 이중 쓰기 → race condition.
   // 수정: API에서 UPSERT (오늘자 row 있으면 UPDATE, 없으면 INSERT) + 모든 컬럼 저장.
   let prescription: PrescriptionResult | null = null
-  let _rxDebug: { attempted: boolean; generated: boolean; error: string | null; persistStatus: string | null } = {
-    attempted: !!unifiedV15, generated: false, error: null, persistStatus: null,
-  }
   if (unifiedV15) {
     try {
       prescription = generatePrescription(unifiedV15)
-      _rxDebug.generated = !!prescription
     } catch (err: any) {
-      _rxDebug.error = String(err?.message || err)
       console.error('[PRESCRIPTION] generate error:', err)
     }
   }
@@ -1010,10 +1005,8 @@ app.post('/v1/check', async (c) => {
             headers: sbHeaders,
             body: JSON.stringify(persistBody),
           })
-          _rxDebug.persistStatus = `PATCH ${patchRes.status}`
           if (!patchRes.ok) {
             const errBody = await patchRes.text()
-            _rxDebug.persistStatus += ` ERR: ${errBody.slice(0, 200)}`
             console.error('[CHECK] UPDATE failed', patchRes.status, errBody)
           }
         } else {
@@ -1023,21 +1016,18 @@ app.post('/v1/check', async (c) => {
             headers: sbHeaders,
             body: JSON.stringify(persistBody),
           })
-          _rxDebug.persistStatus = `POST ${postRes.status}`
           if (!postRes.ok) {
             const errBody = await postRes.text()
-            _rxDebug.persistStatus += ` ERR: ${errBody.slice(0, 200)}`
             console.error('[CHECK] INSERT failed', postRes.status, errBody)
           }
         }
       } catch (e: any) {
-        _rxDebug.persistStatus = `EXC: ${String(e?.message || e).slice(0, 200)}`
         console.error('[CHECK] persist error:', e)
       }
     }
   }
 
-  return c.json({ ...engineResult, ...probeData, co_recommendations_top: coRecs, unified_v15: unifiedV15, prescription, _rxDebug })
+  return c.json({ ...engineResult, ...probeData, co_recommendations_top: coRecs, unified_v15: unifiedV15, prescription })
 })
 
 // ── Daily cron: auto-refresh all tracked products ─────────────
