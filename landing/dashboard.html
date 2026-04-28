@@ -5008,8 +5008,11 @@ button:focus-visible, a:focus-visible {
 
     const rec = _dimVal(u15, 'recognition') ?? _dimVal(u14, 'recognition') ?? (Number.isFinite(flatRec) ? flatRec : 0)
     const cat = _dimVal(u15, 'category') ?? _dimVal(u14, 'category') ?? (Number.isFinite(flatCat) ? flatCat : 0)
-    const xPct = Math.max(0, Math.min(100, (rec / 35) * 100))
-    const yPct = Math.max(0, Math.min(100, 100 - (cat / 35) * 100))
+    // Inset mapping (4%~96%) so dots near boundary stay fully inside the map (.rv-map has overflow:hidden + dot is 18px translate(-50%,-50%))
+    const INSET = 4 // %
+    const SPAN = 100 - INSET * 2
+    const xPct = INSET + Math.max(0, Math.min(35, rec)) / 35 * SPAN
+    const yPct = INSET + (1 - Math.max(0, Math.min(35, cat)) / 35) * SPAN
 
     dotsWrap.innerHTML = `
       <button type="button" class="rv-map-dot you" style="left:${xPct}%; top:${yPct}%;" title="${escHtml(productName)} · REC ${rec}/35 · CAT ${cat}/35" aria-label="${escHtml(productName)}">
