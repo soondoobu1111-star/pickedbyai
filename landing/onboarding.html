@@ -439,7 +439,10 @@
       <span><span class="g">picked</span><span class="w">by</span><span class="g">.ai</span></span>
       <span class="beta">BETA</span>
     </a>
-    <a href="/dashboard" class="nav-back">← dashboard</a>
+    <div style="display:flex;align-items:center;gap:1rem;">
+      <a href="/dashboard" class="nav-back">← dashboard</a>
+      <button id="btn-signout" onclick="signOut()" style="display:none;background:transparent;border:1px solid var(--pba-border);border-radius:5px;color:var(--pba-fg-3);font-size:0.75rem;padding:0.35rem 0.75rem;cursor:pointer;transition:all 0.2s;" onmouseover="this.style.color='var(--pba-red)';this.style.borderColor='var(--pba-red)'" onmouseout="this.style.color='var(--pba-fg-3)';this.style.borderColor='var(--pba-border)'">Sign out</button>
+    </div>
   </nav>
 
   <main>
@@ -776,12 +779,19 @@
       }
     }
 
+    // ── Sign out ──────────────────────────────────────────────────
+    async function signOut() {
+      await sb.auth.signOut()
+      window.location.href = '/'
+    }
+
     // ── Init ─────────────────────────────────────────────────────
     ;(async () => {
       const session = await getSession()
       if (!session) {
         updateStepUI(0)
       } else {
+        document.getElementById('btn-signout').style.display = 'block'
         updateStepUI(1)
         setTimeout(() => document.getElementById('input-name')?.focus(), 120)
       }
@@ -789,6 +799,7 @@
 
     sb.auth.onAuthStateChange((_event, session) => {
       if (_event === 'SIGNED_IN' && session) {
+        document.getElementById('btn-signout').style.display = 'block'
         updateStepUI(1)
         setTimeout(() => document.getElementById('input-name')?.focus(), 120)
       }
