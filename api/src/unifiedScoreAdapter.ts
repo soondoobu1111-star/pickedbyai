@@ -106,14 +106,15 @@ export async function buildDimensionContext(
 
 /** 현재 probe snippet에서 co_recommendations 추출 (index.ts extractCoRecommendations와 동일 로직) */
 function extractCoRecsFromSnippet(snippet: string, productName: string): string[] {
+  // 2026-04-28 BUG-RIVAL-NAME-TRUNC fix (mirror of index.ts extractCoRecommendations)
   if (!snippet || snippet.length < 10) return []
   const target = productName.toLowerCase()
   const found = new Set<string>()
-  const numbered = /^\s*\d+[\.\)]\s+([A-Z][A-Za-z0-9\s.\-]{1,40}?)(?:\s*[-–:,\n]|$)/gm
+  const numbered = /^\s*\d+[\.\)]\s+\*{0,2}_?([A-Z][\w\.\-]{2,40}(?:\s+[A-Z][\w\.\-]{1,30}){0,2})_?\*{0,2}/gm
   let m: RegExpExecArray | null
   while ((m = numbered.exec(snippet)) !== null) {
-    const c = m[1].trim()
-    if (c.toLowerCase() !== target && c.length > 1 && c.length < 40) found.add(c)
+    const c = m[1].trim().replace(/[\*_]+$/, '').trim()
+    if (c.toLowerCase() !== target && c.length > 2 && c.length < 50) found.add(c)
   }
   return [...found].slice(0, 8)
 }

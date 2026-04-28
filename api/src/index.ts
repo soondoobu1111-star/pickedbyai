@@ -742,25 +742,31 @@ async function probeGemini(
 }
 
 // ── ENGINE-06: co_recommendations 추출 ────────────────────────
+// 2026-04-28 BUG-RIVAL-NAME-TRUNC fix:
+//  - non-greedy + multiline `$` 조합이 일부 응답(예: "1. Fi\ngma...")에서 2글자만 캡쳐하던 버그
+//  - markdown bold(**Figma**) 미지원으로 일부 응답 미캡쳐
+// 새 정책:
+//  - greedy 매칭 + 단어 경계 + optional 두 번째 단어 (예: "Notion AI", "Adobe XD")
+//  - 최소 길이 3 (2글자 약어 거부)
+//  - markdown bold/이탤릭 마커 양옆 허용
 function extractCoRecommendations(responseText: string, targetProduct: string): string[] {
   if (!responseText || responseText.length < 10) return []
   const target = targetProduct.toLowerCase()
   const found = new Set<string>()
 
-  // 패턴 1: "1. ProductName" / "2. ProductName -" 형식
-  const numbered = /^\s*\d+[\.\)]\s+([A-Z][A-Za-z0-9\s\.\-]{1,40}?)(?:\s*[-–:,\n]|$)/gm
+  // 패턴 1: "1. ProductName" / "2. **Product Name** —"
+  const numbered = /^\s*\d+[\.\)]\s+\*{0,2}_?([A-Z][\w\.\-]{2,40}(?:\s+[A-Z][\w\.\-]{1,30}){0,2})_?\*{0,2}/gm
   let m: RegExpExecArray | null
   while ((m = numbered.exec(responseText)) !== null) {
-    const c = m[1].trim()
-    if (c.toLowerCase() !== target && c.length > 1 && c.length < 40) found.add(c)
+    const c = m[1].trim().replace(/[\*_]+$/, '').trim()
+    if (c.toLowerCase() !== target && c.length > 2 && c.length < 50) found.add(c)
   }
 
   // 패턴 2: "like X, Y, and Z" / "including X, Y" / "recommend X"
-  const inline = /(?:like|including|such as|recommend(?:ed)?|try|use|consider)\s+([A-Z][A-Za-z0-9\s\.\-]{1,30}?)(?:\s*[,;]|\s+and\s+([A-Z][A-Za-z0-9\s\.\-]{1,30}?))?/g
+  const inline = /(?:like|including|such as|recommend(?:ed)?|try|use|consider)\s+\*{0,2}([A-Z][\w\.\-]{2,30}(?:\s+[A-Z][\w\.\-]{1,20})?)\*{0,2}/g
   while ((m = inline.exec(responseText)) !== null) {
-    [m[1], m[2]].forEach(c => {
-      if (c) { const t = c.trim(); if (t.toLowerCase() !== target && t.length > 1 && t.length < 40) found.add(t) }
-    })
+    const c = m[1].trim()
+    if (c.toLowerCase() !== target && c.length > 2 && c.length < 50) found.add(c)
   }
 
   return [...found].slice(0, 8)
@@ -1816,6 +1822,9 @@ app.get('/v1/rivals', async (c) => {
       for (const name of (log.co_recommendations || [])) {
         const key = name.trim()
         if (!key || key.toLowerCase() === product.toLowerCase()) continue
+        // 2026-04-28 defense-in-depth: 과거 잘려 저장된 2글자 약어(예: "Fi", "Ph") 차단.
+        // 새 추출 정규식은 length > 2를 보장하지만, DB에 이미 들어간 잘못된 row를 막기 위해 응답 단계에서도 거부.
+        if (key.length < 3) continue
         peerTotal[key] = (peerTotal[key] || 0) + 1
         if (!peerByEngine[key]) peerByEngine[key] = {}
         peerByEngine[key][src] = (peerByEngine[key][src] || 0) + 1

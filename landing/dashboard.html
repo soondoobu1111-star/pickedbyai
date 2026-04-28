@@ -4979,10 +4979,35 @@ button:focus-visible, a:focus-visible {
     const dotsWrap = document.getElementById('rvMapDots')
     if (!dotsWrap) return
 
-    const u = latestScore?.unified_v15 || latestScore?.score_v15 || latestScore || {}
-    const dims = u?.dimensions || {}
-    const rec = Number(dims.recognition ?? 0)
-    const cat = Number(dims.category ?? 0)
+    // Robust dimension extraction — supports 3 known shapes:
+    // (a) array: dimensions = [{id:'recognition', score:25}, ...]
+    // (b) object: dimensions = { recognition: 25, category: 4, ... }
+    // (c) flat: latestScore.recognition_score / latestScore.category_score
+    function _dimVal(src, key) {
+      if (!src) return null
+      // shape (a) array
+      if (Array.isArray(src.dimensions)) {
+        const found = src.dimensions.find(d => d?.id === key || d?.name === key)
+        if (found) {
+          const v = Number(found.score ?? found.value ?? found.points ?? NaN)
+          if (Number.isFinite(v)) return v
+        }
+      }
+      // shape (b) object
+      if (src.dimensions && typeof src.dimensions === 'object') {
+        const v = Number(src.dimensions[key])
+        if (Number.isFinite(v)) return v
+      }
+      return null
+    }
+
+    const u15 = latestScore?.unified_v15
+    const u14 = latestScore?.score_v15 || latestScore?.score_v14
+    const flatRec = Number(latestScore?.recognition_score ?? latestScore?.recognition ?? NaN)
+    const flatCat = Number(latestScore?.category_score ?? latestScore?.category ?? NaN)
+
+    const rec = _dimVal(u15, 'recognition') ?? _dimVal(u14, 'recognition') ?? (Number.isFinite(flatRec) ? flatRec : 0)
+    const cat = _dimVal(u15, 'category') ?? _dimVal(u14, 'category') ?? (Number.isFinite(flatCat) ? flatCat : 0)
     const xPct = Math.max(0, Math.min(100, (rec / 35) * 100))
     const yPct = Math.max(0, Math.min(100, 100 - (cat / 35) * 100))
 
