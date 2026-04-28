@@ -2378,9 +2378,15 @@ button:focus-visible, a:focus-visible {
 
     try {
       const tsToken = getTurnstileToken()
+      // SINGLE-WRITE-REDESIGN-AUTH-FIX (2026-04-28): API가 영속화 단일 책임자가 되려면
+      // Authorization 헤더가 필수. 없으면 API의 verifyToken 분기를 못 타고 persist 스킵됨.
+      const _session = await sb.auth.getSession()
+      const _accessToken = _session?.data?.session?.access_token
+      const _checkHeaders = { 'Content-Type': 'application/json' }
+      if (_accessToken) _checkHeaders['Authorization'] = `Bearer ${_accessToken}`
       const res = await fetch(`${API_URL}/v1/check`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: _checkHeaders,
         body: JSON.stringify({ product, url: url || undefined, cf_turnstile_token: tsToken || undefined }),
       })
       resetTurnstile()  // 토큰 1회용 — 사용 후 즉시 리셋
@@ -4394,9 +4400,14 @@ button:focus-visible, a:focus-visible {
     if (btn) { btn.disabled = true; btn.textContent = 'Refreshing...' }
     try {
       const tsToken2 = getTurnstileToken()
+      // SINGLE-WRITE-REDESIGN-AUTH-FIX (2026-04-28): Authorization 헤더 필수
+      const _session2 = await sb.auth.getSession()
+      const _accessToken2 = _session2?.data?.session?.access_token
+      const _refreshHeaders = { 'Content-Type': 'application/json' }
+      if (_accessToken2) _refreshHeaders['Authorization'] = `Bearer ${_accessToken2}`
       const res = await fetch(`${API_URL}/v1/check`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: _refreshHeaders,
         body: JSON.stringify({ product: name, url: url || undefined, cf_turnstile_token: tsToken2 || undefined }),
       })
       resetTurnstile()
