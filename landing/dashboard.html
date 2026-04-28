@@ -991,11 +991,11 @@ button:focus-visible, a:focus-visible {
   .rv-map-wrap { display: grid; grid-template-columns: 1fr 220px; gap: 18px; align-items: stretch; }
   .rv-map { position: relative; aspect-ratio: 1 / 1; background: radial-gradient(circle at center, #0e0e0e, #050505 70%), #050505; border: 1px solid var(--pba-border); border-radius: 8px; overflow: hidden; }
   .rv-map::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px); background-size: 12.5% 12.5%; pointer-events: none; }
-  .rv-map-zone { position: absolute; width: 50%; height: 50%; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; pointer-events: none; }
-  .rv-map-zone.tl { top: 0; left: 0; align-items: flex-start; }
-  .rv-map-zone.tr { top: 0; right: 0; align-items: flex-end; text-align: right; }
-  .rv-map-zone.bl { bottom: 0; left: 0; align-items: flex-start; justify-content: flex-end; }
-  .rv-map-zone.br { bottom: 0; right: 0; align-items: flex-end; text-align: right; justify-content: flex-end; }
+  .rv-map-zone { position: absolute; max-width: 46%; padding: 10px 12px; display: flex; flex-direction: column; gap: 3px; pointer-events: none; }
+  .rv-map-zone.tl { top: 8px; left: 8px; align-items: flex-start; }
+  .rv-map-zone.tr { top: 8px; right: 8px; align-items: flex-end; text-align: right; }
+  .rv-map-zone.bl { bottom: 8px; left: 8px; align-items: flex-start; }
+  .rv-map-zone.br { bottom: 8px; right: 8px; align-items: flex-end; text-align: right; }
   .rv-map-zone-name { font-family: var(--pba-font-pixel); font-size: 8px; letter-spacing: 0.2em; }
   .rv-map-zone-desc { font-family: var(--pba-font-pixel); font-size: 6px; letter-spacing: 0.14em; color: var(--pba-fg-5); }
   .rv-map-zone.tl .rv-map-zone-name { color: var(--pba-fg-2); }
@@ -1016,7 +1016,8 @@ button:focus-visible, a:focus-visible {
   .rv-map-dot.you { background: var(--pba-gold); border-color: #0a0a0a; box-shadow: 0 0 0 2px var(--pba-gold-border), 3px 3px 0 #b39700; z-index: 6; }
   .rv-map-dot-pulse { position: absolute; inset: -4px; border-radius: 999px; background: var(--pba-gold); opacity: 0.4; animation: rvpulse 1.8s ease-out infinite; pointer-events: none; }
   @keyframes rvpulse { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(2.2); opacity: 0; } }
-  .rv-map-dot-label { position: absolute; left: 50%; bottom: calc(100% + 4px); transform: translateX(-50%); font-family: var(--pba-font-pixel); font-size: 6px; letter-spacing: 0.14em; color: var(--pba-gold); background: rgba(10,10,10,0.85); padding: 2px 5px; border-radius: 2px; white-space: nowrap; pointer-events: none; }
+  .rv-map-dot-label { position: absolute; left: 50%; bottom: calc(100% + 6px); transform: translateX(-50%); font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.14em; color: var(--pba-gold); background: rgba(10,10,10,0.92); border: 1px solid var(--pba-gold-border); padding: 3px 6px; border-radius: 3px; white-space: nowrap; pointer-events: none; }
+  .rv-map-dot[data-label-pos="below"] .rv-map-dot-label { bottom: auto; top: calc(100% + 6px); }
   .rv-map-side { background: #0d0d0d; border: 1px solid var(--pba-border-faint); border-radius: 8px; padding: 16px 16px 14px; display: flex; flex-direction: column; gap: 10px; }
   .rv-map-side-eye { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.2em; color: var(--pba-gold); }
   .rv-map-side-name { font-size: 18px; color: #fff; font-weight: 700; line-height: 1.2; }
@@ -5008,16 +5009,19 @@ button:focus-visible, a:focus-visible {
 
     const rec = _dimVal(u15, 'recognition') ?? _dimVal(u14, 'recognition') ?? (Number.isFinite(flatRec) ? flatRec : 0)
     const cat = _dimVal(u15, 'category') ?? _dimVal(u14, 'category') ?? (Number.isFinite(flatCat) ? flatCat : 0)
-    // Inset mapping (4%~96%) so dots near boundary stay fully inside the map (.rv-map has overflow:hidden + dot is 18px translate(-50%,-50%))
-    const INSET = 4 // %
+    // Inset mapping (8%~92%) so dots stay clear of zone labels in corners.
+    // 8% (~30px in a 400px map) gives enough room for "MARKET LEADER" / "INVISIBLE" labels.
+    const INSET = 8 // %
     const SPAN = 100 - INSET * 2
     const xPct = INSET + Math.max(0, Math.min(35, rec)) / 35 * SPAN
     const yPct = INSET + (1 - Math.max(0, Math.min(35, cat)) / 35) * SPAN
+    // Auto-flip dot label so it doesn't collide with zone labels at corners
+    const labelBelow = yPct < 25  // dot in top quarter → label below dot
 
     dotsWrap.innerHTML = `
-      <button type="button" class="rv-map-dot you" style="left:${xPct}%; top:${yPct}%;" title="${escHtml(productName)} · REC ${rec}/35 · CAT ${cat}/35" aria-label="${escHtml(productName)}">
+      <button type="button" class="rv-map-dot you" data-label-pos="${labelBelow ? 'below' : 'above'}" style="left:${xPct}%; top:${yPct}%;" title="${escHtml(productName)} · REC ${rec}/35 · CAT ${cat}/35" aria-label="${escHtml(productName)}">
         <span class="rv-map-dot-pulse"></span>
-        <span class="rv-map-dot-label">YOU</span>
+        <span class="rv-map-dot-label">YOU · ${escHtml(productName)}</span>
       </button>
     `
 
