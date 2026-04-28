@@ -2759,21 +2759,42 @@ button:focus-visible, a:focus-visible {
       }
     }
 
-    // 헬퍼: 현재 선택된 도메인을 자동 채워서 Quick Check 모달 열기
-    // (BUG-AX-WRONG-PRODUCT 2026-04-28: 모달 빈 상태로 열려서 다른 제품 체크하는 버그 방지)
-    const _openCheckForCurrent = () => {
-      if (typeof openQuickCheck === 'function') openQuickCheck()
-      setTimeout(() => {
+    // 헬퍼: 모달 없이 현재 선택된 도메인 즉시 갱신
+    // (BUG-AX-WRONG-PRODUCT 2026-04-28: CEO 지적 — 내 제품인데 왜 다시 입력하냐 → 직접 호출로 변경)
+    const _refreshCurrent = async () => {
+      if (!prod || !prod.product_name) return
+      // 인라인 스피너 표시
+      const spinner = document.createElement('div')
+      spinner.id = '_ax_refresh_spinner'
+      spinner.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0d0d0d;border:1px solid #FFD700;border-radius:8px;padding:1.25rem 1.75rem;z-index:99999;font-family:Inter,sans-serif;color:#FFD700;font-weight:600;font-size:0.9rem;box-shadow:0 12px 32px rgba(0,0,0,0.55);'
+      spinner.innerHTML = '<div style="display:flex;align-items:center;gap:0.75rem;"><div style="width:18px;height:18px;border:2px solid #FFD70033;border-top-color:#FFD700;border-radius:50%;animation:_axspin 0.8s linear infinite;"></div><span>Refreshing ' + escHtml(prod.product_name) + '…</span></div><style>@keyframes _axspin{to{transform:rotate(360deg)}}</style>'
+      document.body.appendChild(spinner)
+      try {
+        // input 셋업 (runCheckForce가 input-product/input-url 읽음)
         const inp = document.getElementById('input-product')
         const urlInp = document.getElementById('input-url')
-        if (inp && prod && prod.product_name) {
-          inp.value = prod.product_name
-          try { inp.dispatchEvent(new Event('input')) } catch (e) {}
+        if (inp) inp.value = prod.product_name
+        if (urlInp) urlInp.value = prod.product_url || ''
+        // Turnstile 토큰 대기 (managed widget이 DOM에 이미 있어 자동 검증)
+        const start = Date.now()
+        while (!getTurnstileToken() && Date.now() - start < 8000) {
+          await new Promise(r => setTimeout(r, 100))
         }
-        if (urlInp && prod && prod.product_url) {
-          urlInp.value = prod.product_url
+        if (!getTurnstileToken()) {
+          // 폴백: 토큰이 안 오면 모달을 보여 사용자가 직접 처리
+          spinner.remove()
+          if (typeof openQuickCheck === 'function') openQuickCheck()
+          alert('Security check is loading. Please click Check in the dialog.')
+          return
         }
-      }, 80)
+        // 직접 체크 실행 (모달 안 열림)
+        if (typeof runCheckForce === 'function') await runCheckForce()
+      } catch (e) {
+        console.error('[refreshCurrent] error', e)
+      } finally {
+        const sp = document.getElementById('_ax_refresh_spinner')
+        if (sp) sp.remove()
+      }
     }
 
     if (!rx || !rx.overall) {
@@ -2793,7 +2814,7 @@ button:focus-visible, a:focus-visible {
         setEmpty('📋',
           'No check yet',
           `Run your first check on ${prod.product_name || 'this product'} to score it across the 4 dimensions and unlock personalized prescriptions.`,
-          { label: '+ Run Check', onclick: _openCheckForCurrent },
+          { label: `Run Check on ${prod.product_name || 'this product'}`, onclick: _refreshCurrent },
           null,
           null
         )
@@ -2801,8 +2822,8 @@ button:focus-visible, a:focus-visible {
         // CASE C: 스코어는 있으나 prescription만 없음 (PRESCRIPTION-02 배포 이전 row)
         setEmpty('⏳',
           'Prescription pending',
-          `Your score for ${prod.product_name || 'this product'} is already in. Personalized prescriptions are generated on the next check — the daily cron runs at 00:00 KST and will populate them automatically. Or run a fresh check now.`,
-          { label: `+ Run Fresh Check on ${prod.product_name || 'this product'}`, onclick: _openCheckForCurrent },
+          `Your score for ${prod.product_name || 'this product'} is already in. Click below to refresh now, or wait for the daily cron at 00:00 KST.`,
+          { label: `Refresh ${prod.product_name || 'this product'}`, onclick: _refreshCurrent },
           { label: 'View Overview', onclick: () => { if (typeof shellNavigateTo === 'function') shellNavigateTo('overview') } },
           'NEXT AUTO-CHECK · 00:00 KST'
         )
