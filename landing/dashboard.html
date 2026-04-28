@@ -1706,9 +1706,9 @@ button:focus-visible, a:focus-visible {
     <div class="tr-sec-head" id="trScoreSecHead" style="display:none;">
       <h2>Score <em>trend</em></h2>
       <div class="tr-tabs" data-trend-group="score">
-        <button class="tr-tab on trend-tab-btn" data-trend-tab="daily">DAILY · 30D</button>
-        <button class="tr-tab trend-tab-btn" data-trend-tab="weekly">WEEKLY · 12W</button>
-        <button class="tr-tab trend-tab-btn" data-trend-tab="monthly">MONTHLY · 12MO</button>
+        <button type="button" class="tr-tab on trend-tab-btn" data-trend-tab="daily">DAILY · 30D</button>
+        <button type="button" class="tr-tab trend-tab-btn" data-trend-tab="weekly">WEEKLY · 12W</button>
+        <button type="button" class="tr-tab trend-tab-btn" data-trend-tab="monthly">MONTHLY · 12MO</button>
       </div>
     </div>
 
@@ -1726,10 +1726,10 @@ button:focus-visible, a:focus-visible {
 
       <div class="tr-overlays" id="trend-engine-toggle">
         <span class="tr-overlay-lbl">DIMENSIONS</span>
-        <button class="tr-overlay" data-dim="recognition"><span class="swatch"></span>RECOGNITION</button>
-        <button class="tr-overlay" data-dim="category"><span class="swatch"></span>CATEGORY</button>
-        <button class="tr-overlay" data-dim="corec"><span class="swatch"></span>CO-REC</button>
-        <button class="tr-overlay" data-dim="web"><span class="swatch"></span>WEB</button>
+        <button type="button" class="tr-overlay" data-dim="recognition"><span class="swatch"></span>RECOGNITION</button>
+        <button type="button" class="tr-overlay" data-dim="category"><span class="swatch"></span>CATEGORY</button>
+        <button type="button" class="tr-overlay" data-dim="corec"><span class="swatch"></span>CO-REC</button>
+        <button type="button" class="tr-overlay" data-dim="web"><span class="swatch"></span>WEB</button>
         <!-- legacy hidden checkboxes for backward compatibility with refresh handlers -->
         <input type="checkbox" id="trend-overlay-score" checked style="display:none;">
         <input type="checkbox" id="trend-overlay-recognition" style="display:none;">
@@ -1802,9 +1802,9 @@ button:focus-visible, a:focus-visible {
     <div class="tr-sec-head" id="trVolSecHead" style="display:none;">
       <h2>Volume <em>trend</em></h2>
       <div class="tr-tabs" data-trend-group="volume">
-        <button class="tr-tab on volume-tab-btn" data-volume-tab="daily">DAILY · 30D</button>
-        <button class="tr-tab volume-tab-btn" data-volume-tab="weekly">WEEKLY · 12W</button>
-        <button class="tr-tab volume-tab-btn" data-volume-tab="monthly">MONTHLY · 12MO</button>
+        <button type="button" class="tr-tab on volume-tab-btn" data-volume-tab="daily">DAILY · 30D</button>
+        <button type="button" class="tr-tab volume-tab-btn" data-volume-tab="weekly">WEEKLY · 12W</button>
+        <button type="button" class="tr-tab volume-tab-btn" data-volume-tab="monthly">MONTHLY · 12MO</button>
       </div>
     </div>
 
@@ -3749,11 +3749,18 @@ button:focus-visible, a:focus-visible {
   }
 
   async function loadTrendPane(product, tab) {
+    const prevTab = trendCurrentTab
     trendCurrentTab = tab || 'daily'
     trendCurrentProduct = product
-    _hideAllTrendBlocks()
+
+    // Tab switch (in-place refresh) vs initial load (full hide → show)
+    const ctxCard = document.getElementById('trContextCard')
+    const isTabSwitch = !!(ctxCard && ctxCard.style.display !== 'none' && ctxCard.offsetParent !== null)
+
+    if (!isTabSwitch) _hideAllTrendBlocks()
 
     if (!product) {
+      _hideAllTrendBlocks()
       const e = document.getElementById('trend-empty'); if (e) e.style.display = 'block'
       return
     }
@@ -3761,9 +3768,14 @@ button:focus-visible, a:focus-visible {
     let session = null
     try { const { data } = await sb.auth.getSession(); session = data?.session } catch (_) {}
     if (!session?.access_token) {
+      _hideAllTrendBlocks()
       const e = document.getElementById('trend-empty'); if (e) e.style.display = 'block'
       return
     }
+
+    // Mark loading on chart card to give visual feedback without layout collapse
+    const chartCard = document.getElementById('trend-chart-v2-wrap')
+    if (isTabSwitch && chartCard) chartCard.style.opacity = '0.5'
 
     // Fetch score trend + volume trend in parallel
     const headers = { Authorization: `Bearer ${session.access_token}` }
@@ -3777,13 +3789,19 @@ button:focus-visible, a:focus-visible {
       if (vRes && vRes.ok) volumeData = await vRes.json()
     } catch (e) {
       console.error('[trend] fetch failed', e)
-      const el = document.getElementById('trend-empty'); if (el) el.style.display = 'block'
+      if (chartCard) chartCard.style.opacity = ''
+      if (!isTabSwitch) {
+        const el = document.getElementById('trend-empty'); if (el) el.style.display = 'block'
+      }
       return
     }
+
+    if (chartCard) chartCard.style.opacity = ''
 
     const series = Array.isArray(scoreData?.series) ? scoreData.series : []
     const withScore = series.filter(b => typeof b.score === 'number')
     if (withScore.length === 0) {
+      _hideAllTrendBlocks()
       const el = document.getElementById('trend-empty'); if (el) el.style.display = 'block'
       return
     }
@@ -3791,13 +3809,15 @@ button:focus-visible, a:focus-visible {
     trendLastSeries = series
     const stats = scoreData?.stats || {}
 
-    // Show the layout
+    // Show the layout (idempotent — no flicker on re-show)
     const show = id => { const el = document.getElementById(id); if (el) el.style.display = '' }
     show('trContextCard')
     show('trScoreSecHead')
-    document.getElementById('trend-chart-v2-wrap').style.display = 'block'
+    if (chartCard) chartCard.style.display = 'block'
     show('trXpCard')
-    if (trendCurrentTab === 'daily') show('trHeatCard')
+    // Heatmap only meaningful in daily tab — toggle but keep height stable when switching
+    const heatCard = document.getElementById('trHeatCard')
+    if (heatCard) heatCard.style.display = (trendCurrentTab === 'daily') ? '' : 'none'
     show('trVolSecHead')
 
     renderTrendContext(series, stats)
