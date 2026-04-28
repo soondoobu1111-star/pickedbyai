@@ -1687,10 +1687,14 @@ button:focus-visible, a:focus-visible {
   <!-- Pane: Actions (Phase 2a · PRESCRIPTION-03 + GAP-01) -->
   <div id="shell-pane-actions" class="shell-pane" style="display:none;">
     <div id="ax-empty" class="ov-card" style="display:none;padding:2.5rem 1.5rem;text-align:center;margin-bottom:1.5rem;">
-      <div style="font-size:2.2rem;margin-bottom:0.5rem;">📋</div>
-      <div style="font-size:1rem;font-weight:700;color:#f5f5f5;margin-bottom:0.4rem;">No prescription yet</div>
-      <div style="font-size:0.82rem;color:#666;margin-bottom:1.25rem;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.6;">Run your first check to get personalized prescriptions based on your AI visibility score.</div>
-      <button onclick="if(typeof openQuickCheck==='function')openQuickCheck()" style="display:inline-block;background:#FFD700;color:#0a0a0a;font-weight:700;padding:0.6rem 1.25rem;border-radius:6px;border:none;cursor:pointer;font-size:0.82rem;box-shadow:3px 3px 0 #b39700;font-family:inherit;">+ Run Check</button>
+      <div id="ax-empty-icon" style="font-size:2.2rem;margin-bottom:0.5rem;">📋</div>
+      <div id="ax-empty-title" style="font-size:1rem;font-weight:700;color:#f5f5f5;margin-bottom:0.4rem;">No prescription yet</div>
+      <div id="ax-empty-desc" style="font-size:0.82rem;color:#888;margin-bottom:1.25rem;max-width:480px;margin-left:auto;margin-right:auto;line-height:1.7;">—</div>
+      <div id="ax-empty-actions" style="display:flex;gap:0.6rem;justify-content:center;flex-wrap:wrap;">
+        <button id="ax-empty-btn-primary" style="display:none;background:#FFD700;color:#0a0a0a;font-weight:700;padding:0.6rem 1.25rem;border-radius:6px;border:none;cursor:pointer;font-size:0.82rem;box-shadow:3px 3px 0 #b39700;font-family:inherit;">+ Run Check</button>
+        <button id="ax-empty-btn-secondary" style="display:none;background:transparent;color:#FFD700;font-weight:600;padding:0.6rem 1.25rem;border-radius:6px;border:1px solid #FFD700;cursor:pointer;font-size:0.78rem;font-family:inherit;">View Overview</button>
+      </div>
+      <div id="ax-empty-hint" style="font-size:0.7rem;color:#555;margin-top:1rem;font-family:'JetBrains Mono',monospace;letter-spacing:0.05em;">—</div>
     </div>
 
     <div id="ax-main" style="display:none;">
@@ -2694,10 +2698,64 @@ button:focus-visible, a:focus-visible {
     const main = document.getElementById('ax-main')
     const prod = (typeof pickRepresentativeProduct === 'function') ? pickRepresentativeProduct() : null
     const rx = prod && prod.prescription ? prod.prescription : null
+    const hasScore = !!(prod && (prod.unified_v15 || prod.score != null))
+
+    function setEmpty(icon, title, desc, primary, secondary, hint) {
+      const iconEl = document.getElementById('ax-empty-icon')
+      const titleEl = document.getElementById('ax-empty-title')
+      const descEl = document.getElementById('ax-empty-desc')
+      const hintEl = document.getElementById('ax-empty-hint')
+      const p = document.getElementById('ax-empty-btn-primary')
+      const s = document.getElementById('ax-empty-btn-secondary')
+      if (iconEl) iconEl.textContent = icon
+      if (titleEl) titleEl.textContent = title
+      if (descEl) descEl.textContent = desc
+      if (hintEl) { hintEl.textContent = hint || ''; hintEl.style.display = hint ? 'block' : 'none' }
+      if (p) {
+        if (primary) {
+          p.style.display = 'inline-block'; p.textContent = primary.label
+          p.onclick = primary.onclick
+        } else { p.style.display = 'none' }
+      }
+      if (s) {
+        if (secondary) {
+          s.style.display = 'inline-block'; s.textContent = secondary.label
+          s.onclick = secondary.onclick
+        } else { s.style.display = 'none' }
+      }
+    }
 
     if (!rx || !rx.overall) {
       if (empty) empty.style.display = 'block'
       if (main) main.style.display = 'none'
+      if (!prod) {
+        // CASE A: 도메인/제품 자체가 없음
+        setEmpty('📋',
+          'No domain yet',
+          'Register your first domain to get personalized prescriptions based on your AI visibility score.',
+          { label: '+ Register Domain', onclick: () => { window.location.href = '/register' } },
+          null,
+          null
+        )
+      } else if (!hasScore) {
+        // CASE B: 제품은 있으나 스코어가 한 번도 없음
+        setEmpty('📋',
+          'No check yet',
+          'Run your first check to score this product across the 4 dimensions and unlock personalized prescriptions.',
+          { label: '+ Run Check', onclick: () => { if (typeof openQuickCheck === 'function') openQuickCheck() } },
+          null,
+          null
+        )
+      } else {
+        // CASE C: 스코어는 있으나 prescription만 없음 (PRESCRIPTION-02 배포 이전 row)
+        setEmpty('⏳',
+          'Prescription pending',
+          'Your score is already in. Personalized prescriptions are generated on the next check — the daily cron runs at 00:00 KST and will populate them automatically. Or run a fresh check now.',
+          { label: '+ Run Fresh Check', onclick: () => { if (typeof openQuickCheck === 'function') openQuickCheck() } },
+          { label: 'View Overview', onclick: () => { if (typeof shellNavigateTo === 'function') shellNavigateTo('overview') } },
+          'NEXT AUTO-CHECK · 00:00 KST'
+        )
+      }
       return
     }
     if (empty) empty.style.display = 'none'
