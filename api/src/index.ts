@@ -957,9 +957,9 @@ app.post('/v1/check', async (c) => {
   }
 
   // ── 서버사이드 scores 저장 (FE 의존 제거) ──────────────────
-  // PRESCRIPTION-02 영속화 보강 (2026-04-28): prescription 생성을 INSERT 전으로 이동.
-  // 기존: INSERT 후 응답에만 추가 → 새로고침 시 사라지는 버그.
-  // 수정: 생성 후 INSERT body 및 응답 양쪽에 포함.
+  // SINGLE-WRITE-REDESIGN (2026-04-28): API가 영속화 단일 책임자.
+  // 기존: API INSERT + FE saveHistory UPDATE/INSERT 이중 쓰기 → race condition.
+  // 수정: API에서 UPSERT (오늘자 row 있으면 UPDATE, 없으면 INSERT) + 모든 컬럼 저장.
   let prescription: PrescriptionResult | null = null
   if (unifiedV15) {
     try {
@@ -969,31 +969,53 @@ app.post('/v1/check', async (c) => {
     }
   }
 
-  // 인증된 사용자면 scores 테이블에 즉시 저장
+  // 인증된 사용자면 scores 테이블에 UPSERT (오늘자 row 기준)
   const authHeader = c.req.header('Authorization')
   if (authHeader?.startsWith('Bearer ')) {
     const user = await verifyToken(authHeader.slice(7), c.env)
     if (user) {
       const sbUrl = getSbUrl(c.env)
       const finalScore = unifiedV15 ? Math.round(unifiedV15.score) : (engineResult.score ?? 0)
+      const sbHeaders = {
+        'apikey': c.env.SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
+        'Content-Type': 'application/json',
+      }
+      const today = new Date().toISOString().split('T')[0]
+      const persistBody = {
+        user_id: user.id,
+        product_name: name,
+        product_url: url || null,
+        score: finalScore,
+        unified_v15: unifiedV15,
+        prescription: prescription,
+        dimensions: (engineResult as any).dimensions ?? null,
+        ai_probe: (probeData as any).aiProbe ?? null,
+        results: (engineResult as any).results ?? null,
+      }
       try {
-        await fetch(`${sbUrl}/rest/v1/scores`, {
-          method: 'POST',
-          headers: {
-            'apikey': c.env.SUPABASE_SERVICE_KEY,
-            'Authorization': `Bearer ${c.env.SUPABASE_SERVICE_KEY}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            user_id: user.id,
-            product_name: name,
-            product_url: url || null,
-            score: finalScore,
-            unified_v15: unifiedV15,
-            prescription: prescription,
-          }),
-        })
-      } catch (e) { console.error('[CHECK] save score error:', e) }
+        // 1. 오늘자 row 검색
+        const findUrl = `${sbUrl}/rest/v1/scores?select=id&user_id=eq.${encodeURIComponent(user.id)}&product_name=eq.${encodeURIComponent(name)}&created_at=gte.${today}T00:00:00.000Z&limit=1`
+        const findRes = await fetch(findUrl, { headers: sbHeaders })
+        const found: Array<{ id: string }> = findRes.ok ? await findRes.json() : []
+        if (found.length > 0) {
+          // UPDATE
+          const patchRes = await fetch(`${sbUrl}/rest/v1/scores?id=eq.${found[0].id}`, {
+            method: 'PATCH',
+            headers: sbHeaders,
+            body: JSON.stringify(persistBody),
+          })
+          if (!patchRes.ok) console.error('[CHECK] UPDATE failed', patchRes.status, await patchRes.text())
+        } else {
+          // INSERT
+          const postRes = await fetch(`${sbUrl}/rest/v1/scores`, {
+            method: 'POST',
+            headers: sbHeaders,
+            body: JSON.stringify(persistBody),
+          })
+          if (!postRes.ok) console.error('[CHECK] INSERT failed', postRes.status, await postRes.text())
+        }
+      } catch (e) { console.error('[CHECK] persist error:', e) }
     }
   }
 

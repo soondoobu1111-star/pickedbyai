@@ -4324,85 +4324,22 @@ button:focus-visible, a:focus-visible {
 
   // ── Save to History (shared) ───────────────────────────────
   async function saveHistory(tag) {
-    if (!lastCheckResult || !currentUser) return
-    const today = new Date().toISOString().split('T')[0]
-    const { data: todayCheck } = await sb
-      .from('scores').select('id')
-      .eq('user_id', currentUser.id)
-      .eq('product_name', lastCheckResult.product)
-      .gte('created_at', today + 'T00:00:00.000Z')
-      .limit(1)
-    // BUG-SCORE-FIELD-LEGACY-01 fix (2026-04-22): unified.score 우선 저장 (빅파이 1.5 단일 시스템)
-    const __persistScore = Math.round(lastCheckResult.unified?.score ?? lastCheckResult.score)
-    if (todayCheck && todayCheck.length > 0) {
-      // Update today's existing record with latest score
-      await sb.from('scores').update({
-        score: __persistScore,
-        results: lastCheckResult.results,
-        dimensions: lastCheckResult.dimensions || null,
-        ai_probe: lastCheckResult.aiProbe || null,
-        unified_v15: lastCheckResult.unified || null,
-      }).eq('id', todayCheck[0].id)
-      setSavedBtn()
-      loadHistory()
-      return
-    }
-    // Max 5 total
-    const { data: existing } = await sb.from('scores').select('product_name').eq('user_id', currentUser.id)
-    const distinctProducts = [...new Set((existing || []).map(r => r.product_name))]
-    if (!distinctProducts.includes(lastCheckResult.product) && distinctProducts.length >= 5) {
-      return  // Max 5 products reached — silently skip
-    }
-    await sb.from('scores').insert({
-      user_id: currentUser.id,
-      product_name: lastCheckResult.product,
-      product_url: lastCheckResult.url,
-      score: __persistScore,
-      results: lastCheckResult.results,
-      dimensions: lastCheckResult.dimensions || null,
-      ai_probe: lastCheckResult.aiProbe || null,
-      unified_v15: lastCheckResult.unified || null,
-    })
-    loadHistory()
+    // SINGLE-WRITE-REDESIGN (2026-04-28): API가 영속화 단일 책임자.
+    // 기존 DB UPDATE/INSERT 이중 쓰기 제거 — race condition 근본 해결.
+    // API `/v1/check`가 이미 UPSERT (모든 컬럼) 처리. FE는 DB 동기화만.
+    if (!currentUser) return
+    setSavedBtn()
+    await loadHistory()
   }
 
   function setSavedBtn() { /* no-op: save button removed */ }
 
   // ── autoSave for Refresh Score ─────────────────────────────
+  // SINGLE-WRITE-REDESIGN (2026-04-28): API가 영속화 단일 책임자.
+  // refreshProduct → /v1/check 호출 → API UPSERT → 완료. autoSave는 동기화만.
   async function autoSave(tag) {
-    if (!lastCheckResult || !currentUser) return
-    const today = new Date().toISOString().split('T')[0]
-    const { data: todayCheck } = await sb
-      .from('scores').select('id, score')
-      .eq('user_id', currentUser.id)
-      .eq('product_name', lastCheckResult.product)
-      .gte('created_at', today + 'T00:00:00.000Z')
-      .limit(1)
-    // BUG-SCORE-FIELD-LEGACY-01 fix (2026-04-22): unified.score 우선 저장
-    const __persistScore = Math.round(lastCheckResult.unified?.score ?? lastCheckResult.score)
-    if (todayCheck && todayCheck.length > 0) {
-      const existing = todayCheck[0]
-      await sb.from('scores').update({
-        score: __persistScore,
-        results: lastCheckResult.results,
-        dimensions: lastCheckResult.dimensions || null,
-        ai_probe: lastCheckResult.aiProbe || null,
-        unified_v15: lastCheckResult.unified || null,
-      }).eq('id', existing.id)
-      loadHistory()
-      return
-    }
-    await sb.from('scores').insert({
-      user_id: currentUser.id,
-      product_name: lastCheckResult.product,
-      product_url: lastCheckResult.url,
-      score: __persistScore,
-      results: lastCheckResult.results,
-      dimensions: lastCheckResult.dimensions || null,
-      ai_probe: lastCheckResult.aiProbe || null,
-      unified_v15: lastCheckResult.unified || null,
-    })
-    loadHistory()
+    if (!currentUser) return
+    await loadHistory()
   }
 
   // ── Delete product (all history) ───────────────────────────
