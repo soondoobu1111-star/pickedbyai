@@ -617,6 +617,125 @@ button:focus-visible, a:focus-visible {
   outline: 1px solid var(--pba-gold);
   outline-offset: 2px;
 }
+
+  /* ============ ACTIONS PANE — specific styles (PRESCRIPTION-03) ============ */
+  .ax-h1 { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; margin: 0 0 20px; flex-wrap: wrap; }
+  .ax-h1 h1 { margin: 0; }
+  .ax-h1-meta { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-5); }
+
+  .ax-diag { padding: 26px 26px 22px; }
+  .ax-diag-top { display: grid; grid-template-columns: 1fr auto; gap: 28px; align-items: flex-start; }
+  .ax-diag-eyebrow { font-family: var(--pba-font-pixel); font-size: 7.5px; letter-spacing: 0.22em; color: var(--pba-gold); text-transform: uppercase; margin-bottom: 10px; }
+  .ax-diag h2 { font-family: var(--pba-font-body); font-weight: 800; font-size: 28px; line-height: 1.2; letter-spacing: -0.5px; color: #fff; margin: 0 0 12px; max-width: 640px; }
+  .ax-diag h2 em { color: var(--pba-gold); font-style: normal; }
+  .ax-diag p { color: var(--pba-fg-2); font-size: 14.5px; line-height: 1.7; margin: 0; max-width: 640px; }
+  .ax-tier-big { font-family: var(--pba-font-pixel); font-size: 11px; letter-spacing: 0.22em; color: var(--pba-gold); padding: 10px 16px; background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); border-radius: 6px; white-space: nowrap; flex: none; }
+  .ax-gap { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--pba-border-faint); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 18px; }
+  .ax-gap .lbl { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-5); }
+  .ax-gap .lbl b { color: var(--pba-gold); font-weight: normal; }
+  .ax-gap-track { height: 8px; background: #0a0a0a; border: 1px solid var(--pba-border-faint); border-radius: 999px; overflow: hidden; }
+  .ax-gap-fill { height: 100%; background: var(--pba-gold); border-radius: 999px; }
+  .ax-gap .eta { font-family: var(--pba-font-mono); font-size: 12.5px; color: var(--pba-fg-2); }
+  .ax-gap .eta i { color: var(--pba-fg-5); font-style: normal; }
+
+  .ax-dimgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 14px; }
+  .ax-dimcard { padding: 18px 18px 16px; }
+  .ax-dimcard-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 14px; }
+  .ax-dimcard-name { font-family: var(--pba-font-pixel); font-size: 8px; letter-spacing: 0.18em; color: #fff; }
+  .ax-dimcard-tier { font-family: var(--pba-font-pixel); font-size: 8px; letter-spacing: 0.16em; padding: 4px 8px; border-radius: 3px; border: 1px solid; flex: none; }
+  .ax-dimcard-tier.t1 { color: var(--pba-gold); background: var(--pba-gold-bg); border-color: var(--pba-gold-border); }
+  .ax-dimcard-tier.t2 { color: #C0C0C0; background: #0d0d0d; border-color: #2a2a2a; }
+  .ax-dimcard-tier.t3 { color: #E07A57; background: #1a0e08; border-color: #3a1d10; }
+  .ax-dim-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--pba-border-faint); gap: 12px; }
+  .ax-dim-summary { font-size: 12.5px; color: var(--pba-fg-2); line-height: 1.5; flex: 1; }
+  .ax-pot { font-family: var(--pba-font-mono); font-size: 12px; color: var(--pba-gold); background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); padding: 5px 10px; border-radius: 999px; white-space: nowrap; flex: none; }
+  .ax-pot.muted { color: var(--pba-fg-3); background: #0d0d0d; border-color: var(--pba-border-faint); }
+
+  .ax-section-head { display: flex; align-items: baseline; justify-content: space-between; margin: 32px 0 12px; gap: 16px; flex-wrap: wrap; }
+  .ax-section-head h2 { font-family: var(--pba-font-body); font-weight: 800; font-size: 18px; color: #fff; margin: 0; letter-spacing: -0.2px; }
+  .ax-section-head h2 em { color: var(--pba-gold); font-style: normal; font-weight: 800; }
+  .ax-section-head .meta { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-5); }
+  .ax-rx-list { display: flex; flex-direction: column; gap: 12px; }
+  .ax-rx { display: grid; grid-template-columns: 56px 1fr auto; gap: 22px; align-items: flex-start; padding: 22px 22px 20px; }
+  .ax-rx.in-progress { border-left: 2px solid var(--pba-gold); padding-left: 20px; }
+  .ax-rx.done { opacity: 0.55; }
+  .ax-rx.done .ax-rx-title { text-decoration: line-through; color: var(--pba-fg-3); }
+  .ax-rx-num { font-family: var(--pba-font-pixel); font-size: 26px; color: var(--pba-gold); letter-spacing: 0.02em; line-height: 1; padding-top: 4px; }
+  .ax-rx-body { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .ax-rx-title { font-family: var(--pba-font-body); font-size: 17px; font-weight: 700; color: #fff; line-height: 1.35; letter-spacing: -0.2px; margin: 0; }
+  .ax-rx-desc { font-size: 13.5px; color: var(--pba-fg-2); line-height: 1.65; margin: 0; max-width: 620px; }
+  .ax-rx-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .ax-pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px; border: 1px solid var(--pba-border-faint); border-radius: 999px; background: #0d0d0d; font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.16em; color: var(--pba-fg-4); }
+  .ax-pill .v { font-family: var(--pba-font-mono); font-size: 11.5px; letter-spacing: 0; color: var(--pba-gold); font-weight: 600; }
+  .ax-pill .v.neutral { color: #fff; }
+  .ax-pill .dots { display: inline-flex; gap: 3px; }
+  .ax-pill .dots i { width: 6px; height: 6px; border-radius: 999px; background: #2a2a2a; display: block; }
+  .ax-pill .dots i.on { background: var(--pba-gold); }
+  .ax-rx-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex: none; }
+  .ax-check { position: relative; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; padding: 8px 12px; border: 1px solid var(--pba-border); border-radius: 6px; font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-3); background: transparent; transition: background .15s, color .15s, border-color .15s; }
+  .ax-check:hover { color: #fff; border-color: var(--pba-fg-4); }
+  .ax-check input { position: absolute; opacity: 0; pointer-events: none; }
+  .ax-check .box { width: 14px; height: 14px; border: 1px solid var(--pba-border); display: inline-flex; align-items: center; justify-content: center; background: #0a0a0a; }
+  .ax-check .box svg { opacity: 0; transition: opacity .15s; }
+  .ax-rx.done .ax-check { background: var(--pba-gold-bg); border-color: var(--pba-gold-border); color: var(--pba-gold); }
+  .ax-rx.done .ax-check .box { border-color: var(--pba-gold); background: var(--pba-gold); }
+  .ax-rx.done .ax-check .box svg { opacity: 1; }
+  .ax-rx-link { color: var(--pba-fg-5); text-decoration: none; font-size: 11px; display: inline-flex; align-items: center; gap: 6px; }
+  .ax-rx-link:hover { color: var(--pba-gold); }
+
+  .ax-bench { display: grid; grid-template-columns: 240px 1fr; gap: 28px; padding: 24px 26px 22px; }
+  .ax-bench-left { display: flex; flex-direction: column; gap: 8px; }
+  .ax-bench-left .lbl { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-5); }
+  .ax-bench-left .cat { font-family: var(--pba-font-mono); font-size: 13px; color: var(--pba-gold); margin-bottom: 6px; }
+  .ax-bench-left .rank-num { font-family: var(--pba-font-mono); font-size: 64px; font-weight: 700; color: #fff; line-height: 1; letter-spacing: -3px; }
+  .ax-bench-left .rank-num span { color: var(--pba-fg-5); font-size: 32px; }
+  .ax-bench-left .rank-of { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-4); margin-top: 4px; }
+  .ax-bench-right { display: flex; flex-direction: column; border-left: 1px solid var(--pba-border-faint); padding-left: 28px; }
+  .ax-bench-right > .lbl { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-5); margin-bottom: 12px; }
+  .ax-leader-row { display: grid; grid-template-columns: 28px 1fr auto; align-items: center; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--pba-border-faint); }
+  .ax-leader-row:last-of-type { border-bottom: none; }
+  .ax-leader-rank { font-family: var(--pba-font-pixel); font-size: 9px; color: var(--pba-fg-5); }
+  .ax-leader-name { font-size: 14px; color: #fff; font-weight: 500; }
+  .ax-leader-score { display: flex; align-items: center; gap: 10px; }
+  .ax-leader-score .num { font-family: var(--pba-font-mono); font-size: 14px; color: #fff; font-weight: 600; }
+  .ax-leader-tier { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.16em; padding: 4px 8px; border-radius: 3px; border: 1px solid; }
+  .ax-leader-tier.perfect { color: var(--pba-green); background: #001a08; border-color: #003318; }
+  .ax-leader-tier.strong { color: var(--pba-gold); background: var(--pba-gold-bg); border-color: var(--pba-gold-border); }
+  .ax-bench-foot { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--pba-border-faint); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .ax-bench-foot .msg { font-size: 13px; color: var(--pba-fg-2); }
+  .ax-bench-foot .msg b { color: var(--pba-gold); font-weight: 600; }
+  .ax-bench-foot .gap-num { font-family: var(--pba-font-mono); font-size: 14px; color: #FF6B6B; font-weight: 600; }
+
+  .ax-all { margin-top: 16px; }
+  .ax-all-head { width: 100%; background: transparent; border: 1px solid var(--pba-border); border-radius: 6px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; color: var(--pba-fg-2); font-family: var(--pba-font-pixel); font-size: 8px; letter-spacing: 0.18em; transition: border-color .15s, color .15s, background .15s; }
+  .ax-all-head:hover { color: #fff; border-color: var(--pba-fg-5); }
+  .ax-all-head .chev { transition: transform .2s; }
+  .ax-all.open .ax-all-head { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-bottom-color: transparent; background: var(--pba-bg-2); color: #fff; }
+  .ax-all.open .ax-all-head .chev { transform: rotate(180deg); }
+  .ax-all-body { display: none; border: 1px solid var(--pba-border); border-top: none; border-radius: 0 0 6px 6px; background: var(--pba-bg-2); padding: 8px 18px 16px; }
+  .ax-all.open .ax-all-body { display: block; }
+  .ax-group { padding: 14px 0 6px; border-top: 1px solid var(--pba-border-faint); }
+  .ax-group:first-child { border-top: none; padding-top: 8px; }
+  .ax-group-name { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.2em; color: var(--pba-gold); margin-bottom: 8px; }
+  .ax-mini { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--pba-border-faint); }
+  .ax-mini:last-of-type { border-bottom: none; }
+  .ax-mini-title { font-size: 13.5px; color: var(--pba-fg-1); }
+  .ax-mini .dots { display: inline-flex; gap: 3px; }
+  .ax-mini .dots i { width: 6px; height: 6px; border-radius: 999px; background: #2a2a2a; display: block; }
+  .ax-mini .dots i.on { background: var(--pba-gold); }
+  .ax-mini .impact { font-family: var(--pba-font-mono); font-size: 11.5px; color: var(--pba-gold); font-weight: 600; }
+
+  @media (max-width: 880px) {
+    .ax-diag-top { grid-template-columns: 1fr; }
+    .ax-tier-big { align-self: flex-start; }
+    .ax-dimgrid { grid-template-columns: 1fr; }
+    .ax-rx { grid-template-columns: 40px 1fr; gap: 14px; }
+    .ax-rx-actions { grid-column: 1 / -1; flex-direction: row; align-items: center; justify-content: space-between; }
+    .ax-bench { grid-template-columns: 1fr; gap: 18px; }
+    .ax-bench-right { border-left: none; padding-left: 0; border-top: 1px solid var(--pba-border-faint); padding-top: 18px; }
+    .ax-gap { grid-template-columns: 1fr; gap: 10px; }
+    .ax-bench-foot { flex-direction: column; align-items: flex-start; }
+  }
   </style>
 </head>
 <body>
@@ -1565,37 +1684,84 @@ button:focus-visible, a:focus-visible {
     </div>
   </div>
 
-  <!-- Pane: Actions (D9a · 04-26 일) -->
+  <!-- Pane: Actions (Phase 2a · PRESCRIPTION-03 + GAP-01) -->
   <div id="shell-pane-actions" class="shell-pane" style="display:none;">
-    <div class="card mb-6">
-      <div class="section-header">
-        <div class="section-title">Actions — What should you do next?</div>
-        <div class="section-sub">Action Items · Weekly Narrative · Improvement Guide</div>
+    <div id="ax-empty" class="ov-card" style="display:none;padding:2.5rem 1.5rem;text-align:center;margin-bottom:1.5rem;">
+      <div style="font-size:2.2rem;margin-bottom:0.5rem;">📋</div>
+      <div style="font-size:1rem;font-weight:700;color:#f5f5f5;margin-bottom:0.4rem;">No prescription yet</div>
+      <div style="font-size:0.82rem;color:#666;margin-bottom:1.25rem;max-width:400px;margin-left:auto;margin-right:auto;line-height:1.6;">Run your first check to get personalized prescriptions based on your AI visibility score.</div>
+      <button onclick="if(typeof openQuickCheck==='function')openQuickCheck()" style="display:inline-block;background:#FFD700;color:#0a0a0a;font-weight:700;padding:0.6rem 1.25rem;border-radius:6px;border:none;cursor:pointer;font-size:0.82rem;box-shadow:3px 3px 0 #b39700;font-family:inherit;">+ Run Check</button>
+    </div>
+
+    <div id="ax-main" style="display:none;">
+      <div class="ax-h1">
+        <h1 class="page-h1" style="margin:0;">Actions</h1>
+        <span class="ax-h1-meta" id="ax-meta">PRESCRIPTION · GENERATED —</span>
       </div>
-      <div style="text-align:center;padding:3rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;margin-bottom:1.25rem;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ COMING D9A · 04-26 SUN</div>
-        <div style="font-size:15px;color:#f5f5f5;font-weight:500;margin-bottom:6px;">Today's playbook</div>
-        <div style="font-size:12.5px;color:#666;line-height:1.7;max-width:460px;margin:0 auto;">Three rule-based Action Items from your weakest dimension, Weekly Narrative (5 templates: Big Mover / Stagnant / Regression / Breakthrough / First Week), completed action log, and a next-tier progress gauge.</div>
-      </div>
-      <!-- Improvement Guide Toggle (계정 이메일 자동 사용) -->
-      <div style="padding:1rem 1.1rem;background:#0d0d0d;border:1px solid #FFD70022;border-radius:8px;">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;">
+
+      <!-- ROW 1 — DIAGNOSIS HEADER -->
+      <section class="ov-card ax-diag" aria-label="Diagnosis">
+        <div class="ax-diag-top">
           <div>
-            <div style="font-size:0.9rem;font-weight:700;color:#fff;margin-bottom:0.25rem;">Improvement Guide</div>
-            <div style="font-size:0.73rem;color:#888;line-height:1.5;">Personalized tips sent to your account email after each check.</div>
+            <div class="ax-diag-eyebrow" id="ax-diag-eyebrow">◆ DIAGNOSIS</div>
+            <h2 id="ax-diag-headline">—</h2>
+            <p id="ax-diag-body">—</p>
           </div>
-          <label style="position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;cursor:pointer;">
-            <input type="checkbox" id="actions-guide-toggle" onchange="toggleGuideSubscription(this.checked)" style="opacity:0;width:0;height:0;" />
-            <span style="position:absolute;inset:0;background:#333;border-radius:12px;transition:background 0.2s;"></span>
-            <span style="position:absolute;top:3px;left:3px;width:18px;height:18px;background:#888;border-radius:50%;transition:all 0.2s;"></span>
-          </label>
+          <div class="ax-tier-big" id="ax-diag-tier">◆ —</div>
         </div>
-        <div id="actions-guide-ok" style="display:none;color:#4ade80;font-size:0.75rem;margin-top:0.5rem;">✓ Guide enabled — sent to your account email.</div>
+        <div class="ax-gap">
+          <span class="lbl" id="ax-gap-lbl">GAP TO NEXT TIER · — PTS NEEDED</span>
+          <div class="ax-gap-track"><div class="ax-gap-fill" id="ax-gap-fill" style="width:0%"></div></div>
+          <span class="eta" id="ax-gap-eta">— → — <i>· est. — weeks</i></span>
+        </div>
+      </section>
+
+      <!-- ROW 2 — 4-DIMENSION DIAGNOSIS -->
+      <div class="ax-section-head">
+        <h2>By dimension</h2>
+        <span class="meta">RECOGNITION · CATEGORY · CO-REC · WEB</span>
       </div>
-      <style>
-        #actions-guide-toggle:checked + span { background: #FFD700 !important; }
-        #actions-guide-toggle:checked + span + span { left: 23px !important; background: #0a0a0a !important; }
-      </style>
+      <div class="ax-dimgrid" id="ax-dimgrid"></div>
+
+      <!-- ROW 3 — TOP 3 PRESCRIPTIONS -->
+      <div class="ax-section-head">
+        <h2>Top <em>3</em> prescriptions</h2>
+        <span class="meta" id="ax-rx-meta">SORTED BY IMPACT · NEXT 30 DAYS</span>
+      </div>
+      <div class="ax-rx-list" id="ax-rx-list"></div>
+
+      <!-- ROW 4 — BENCHMARK -->
+      <div class="ax-section-head" id="ax-bench-head" style="display:none;">
+        <h2>Category benchmark</h2>
+        <span class="meta">UPDATED DAILY</span>
+      </div>
+      <section class="ov-card ax-bench" id="ax-bench" style="display:none;" aria-label="Category benchmark">
+        <div class="ax-bench-left">
+          <span class="lbl">CATEGORY</span>
+          <span class="cat" id="ax-bench-cat">—</span>
+          <span class="rank-num" id="ax-bench-rank">—</span>
+          <span class="rank-of">YOUR RANK</span>
+        </div>
+        <div class="ax-bench-right">
+          <span class="lbl">CATEGORY LEADERS</span>
+          <div id="ax-bench-leaders"></div>
+          <div class="ax-bench-foot" id="ax-bench-foot" style="display:none;">
+            <span class="msg" id="ax-bench-msg">—</span>
+            <span class="gap-num" id="ax-bench-gap-num">—</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ROW 5 — ALL ACTIONS (collapsible) -->
+      <div class="ax-all" id="ax-all-wrap" style="display:none;">
+        <button class="ax-all-head" id="ax-all-toggle" aria-expanded="false" aria-controls="ax-all-body">
+          <span id="ax-all-count">SEE ALL ACTIONS</span>
+          <span class="chev" aria-hidden="true">
+            <svg width="10" height="6" viewBox="0 0 10 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"><path d="M1 1l4 4 4-4"/></svg>
+          </span>
+        </button>
+        <div class="ax-all-body" id="ax-all-body"></div>
+      </div>
     </div>
   </div>
 
@@ -2516,6 +2682,257 @@ button:focus-visible, a:focus-visible {
     }
     // 🔴 non-verified fallback 제거 — verified 제품 없으면 Empty State 로 유도
     return null
+  }
+
+  // PRESCRIPTION-03: Actions Pane renderer (빅파이 1.6 Phase 2a)
+  function loadActionsPane() {
+    const wrap = document.getElementById('shell-pane-actions')
+    if (!wrap) return
+    if (!document.body.classList.contains('pane-actions')) return
+
+    const empty = document.getElementById('ax-empty')
+    const main = document.getElementById('ax-main')
+    const prod = (typeof pickRepresentativeProduct === 'function') ? pickRepresentativeProduct() : null
+    const rx = prod && prod.prescription ? prod.prescription : null
+
+    if (!rx || !rx.overall) {
+      if (empty) empty.style.display = 'block'
+      if (main) main.style.display = 'none'
+      return
+    }
+    if (empty) empty.style.display = 'none'
+    if (main) main.style.display = 'block'
+
+    // Meta
+    const metaEl = document.getElementById('ax-meta')
+    if (metaEl) {
+      const ts = rx.generatedAt ? new Date(rx.generatedAt) : null
+      const tsStr = ts ? ts.toLocaleString('en-US', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '—'
+      metaEl.textContent = `PRESCRIPTION · GENERATED ${tsStr}`
+    }
+
+    // Diagnosis header
+    const levelLabels = { invisible:'INVISIBLE', emerging:'EMERGING', growing:'GROWING', strong:'STRONG', perfect:'PERFECT' }
+    const level = rx.overall.level || 'invisible'
+    const eyebrowEl = document.getElementById('ax-diag-eyebrow')
+    if (eyebrowEl) eyebrowEl.textContent = `◆ DIAGNOSIS · ${levelLabels[level] || 'INVISIBLE'}`
+    const tierEl = document.getElementById('ax-diag-tier')
+    if (tierEl) tierEl.textContent = `◆ ${levelLabels[level] || 'INVISIBLE'}`
+
+    // Build headline from weakest dimension
+    const weakest = (rx.diagnoses || []).slice().sort((a,b) => {
+      const aPct = a.max>0 ? (a.score/a.max) : 0
+      const bPct = b.max>0 ? (b.score/b.max) : 0
+      return aPct - bPct
+    })[0]
+    const headlineEl = document.getElementById('ax-diag-headline')
+    if (headlineEl) {
+      if (weakest) {
+        headlineEl.innerHTML = `You're ${level} — but stuck on <em>${escHtml(weakest.label || weakest.dimension)}</em>`
+      } else {
+        headlineEl.textContent = `You're ${level}`
+      }
+    }
+    const bodyEl = document.getElementById('ax-diag-body')
+    if (bodyEl) bodyEl.textContent = rx.overall.summary || ''
+
+    // Gap bar
+    const gap = rx.overall.gap || {}
+    const gapLblEl = document.getElementById('ax-gap-lbl')
+    const gapFillEl = document.getElementById('ax-gap-fill')
+    const gapEtaEl = document.getElementById('ax-gap-eta')
+    if (gap.nextLevel && gap.nextThreshold != null) {
+      const cur = Number(gap.currentScore) || 0
+      const next = Number(gap.nextThreshold) || 0
+      const pts = Number(gap.pointsNeeded) || 0
+      const fillPct = next > 0 ? Math.min(100, (cur / next) * 100) : 0
+      if (gapLblEl) gapLblEl.innerHTML = `GAP TO <b>${(levelLabels[gap.nextLevel]||'NEXT').toUpperCase()}</b> · ${pts} PTS NEEDED`
+      if (gapFillEl) gapFillEl.style.width = fillPct + '%'
+      // ETA: rough estimate — 3 pts/week
+      const etaWeeks = pts > 0 ? Math.max(1, Math.ceil(pts / 3)) : 0
+      if (gapEtaEl) gapEtaEl.innerHTML = `${cur} → ${next} <i>· est. ${etaWeeks}–${etaWeeks+1} weeks</i>`
+    } else {
+      if (gapLblEl) gapLblEl.textContent = 'AT MAXIMUM TIER · MAINTAIN'
+      if (gapFillEl) gapFillEl.style.width = '100%'
+      if (gapEtaEl) gapEtaEl.innerHTML = `${gap.currentScore || 0} <i>· top tier</i>`
+    }
+
+    // 4-dimension cards
+    const dimGrid = document.getElementById('ax-dimgrid')
+    if (dimGrid) {
+      const tierClass = (lvl) => {
+        if (lvl === 'perfect' || lvl === 'strong') return 't1'
+        if (lvl === 'growing' || lvl === 'emerging') return 't2'
+        return 't3'
+      }
+      const tierLabel = (lvl) => {
+        if (lvl === 'perfect') return 'T1 · PERFECT'
+        if (lvl === 'strong')  return 'T1 · STRONG'
+        if (lvl === 'growing') return 'T2 · OK'
+        if (lvl === 'emerging') return 'T2 · EMERGING'
+        return 'T3 · WEAK'
+      }
+      const dimNameMap = { recognition:'RECOGNITION', category:'CATEGORY RANK', co_rec:'CO-RECOMMENDATION', web_authority:'WEB SIGNALS' }
+      const gapsByDim = {}
+      ;(gap.dimensionGaps || []).forEach(g => { gapsByDim[g.dimension] = g })
+
+      dimGrid.innerHTML = (rx.diagnoses || []).map(d => {
+        const max = Number(d.max) || 0
+        const sc = Number(d.score) || 0
+        const pct = max > 0 ? (sc / max) * 100 : 0
+        const isFull = pct >= 100
+        const name = dimNameMap[d.dimension] || (d.label || d.dimension || '—').toUpperCase()
+        const dGap = gapsByDim[d.dimension]
+        const potGain = dGap ? Math.round(Number(dGap.potentialGain) || 0) : 0
+        const potHtml = isFull
+          ? `<span class="ax-pot muted">MAXED</span>`
+          : `<span class="ax-pot">+${potGain} PTS</span>`
+        return `
+          <section class="ov-card ax-dimcard">
+            <div class="ax-dimcard-head">
+              <div class="ax-dimcard-name">${escHtml(name)}</div>
+              <div class="ax-dimcard-tier ${tierClass(d.level)}">${escHtml(tierLabel(d.level))}</div>
+            </div>
+            <div class="ov-dim">
+              <div class="ov-dim-head">
+                <span class="ov-dim-val">${sc}<i> / ${max}</i></span>
+                <span class="ov-dim-val" style="font-size:11px;color:${isFull?'var(--pba-green)':'var(--pba-fg-5)'}">${Math.round(pct)}%</span>
+              </div>
+              <div class="ov-dim-track"><div class="ov-dim-fill${isFull?' full':''}" style="width:${pct}%"></div></div>
+            </div>
+            <div class="ax-dim-foot">
+              <span class="ax-dim-summary">${escHtml(d.summary || '')}</span>
+              ${potHtml}
+            </div>
+          </section>`
+      }).join('')
+    }
+
+    // Top 3 prescriptions
+    const rxList = document.getElementById('ax-rx-list')
+    if (rxList) {
+      const top3 = (rx.prescriptions || []).slice(0, 3)
+      if (top3.length === 0) {
+        rxList.innerHTML = '<div style="color:#555;font-size:0.85rem;padding:14px 0;">No prescriptions available.</div>'
+      } else {
+        rxList.innerHTML = top3.map((a, i) => {
+          const num = String(i+1).padStart(2, '0')
+          const diff = Number(a.difficulty) || 1
+          const dotsHtml = [0,1,2].map(j => `<i class="${j<diff?'on':''}"></i>`).join('')
+          const linkHtml = a.externalUrl ? `<a class="ax-rx-link" href="${escHtml(a.externalUrl)}" target="_blank" rel="noopener">DOCS ↗</a>` : ''
+          const inProg = i === 0 ? ' in-progress' : ''
+          return `
+            <article class="ov-card ax-rx${inProg}" data-rx data-action-id="${escHtml(a.id || '')}">
+              <div class="ax-rx-num">${num}</div>
+              <div class="ax-rx-body">
+                <h3 class="ax-rx-title">${escHtml(a.title || '—')}</h3>
+                <p class="ax-rx-desc">${escHtml(a.description || '')}</p>
+                <div class="ax-rx-meta">
+                  <span class="ax-pill">DIFFICULTY <span class="dots">${dotsHtml}</span></span>
+                  <span class="ax-pill">IMPACT <span class="v">+${Math.round(Number(a.estimatedImpact)||0)} PTS</span></span>
+                  <span class="ax-pill">TIME <span class="v neutral">${escHtml(a.timeToComplete || '—')}</span></span>
+                </div>
+              </div>
+              <div class="ax-rx-actions">
+                <label class="ax-check" data-check>
+                  <input type="checkbox"/>
+                  <span class="box"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="square"><path d="M2 5l2 2 4-4"/></svg></span>
+                  <span class="label">MARK DONE</span>
+                </label>
+                ${linkHtml}
+              </div>
+            </article>`
+        }).join('')
+        // Wire up checkboxes
+        rxList.querySelectorAll('[data-rx]').forEach(rxEl => {
+          const cb = rxEl.querySelector('[data-check] input')
+          if (cb) {
+            cb.addEventListener('change', () => {
+              rxEl.classList.toggle('done', cb.checked)
+              if (cb.checked) rxEl.classList.remove('in-progress')
+            })
+          }
+        })
+      }
+    }
+
+    // Benchmark
+    const bench = rx.benchmark || {}
+    const benchHead = document.getElementById('ax-bench-head')
+    const benchEl = document.getElementById('ax-bench')
+    if (bench.category && (bench.yourRank || (bench.leaders||[]).length > 0)) {
+      if (benchHead) benchHead.style.display = 'flex'
+      if (benchEl) benchEl.style.display = 'grid'
+      const catEl = document.getElementById('ax-bench-cat')
+      if (catEl) catEl.textContent = bench.category
+      const rankEl = document.getElementById('ax-bench-rank')
+      const totalLeaders = (bench.leaders||[]).length
+      if (rankEl) {
+        const rk = bench.yourRank
+        rankEl.innerHTML = rk ? `#${rk}<span>/${totalLeaders + (rk > totalLeaders ? rk - totalLeaders : 0) || '?'}</span>` : '—'
+      }
+      const leadersWrap = document.getElementById('ax-bench-leaders')
+      if (leadersWrap) {
+        leadersWrap.innerHTML = (bench.leaders || []).slice(0, 3).map((name, i) => `
+          <div class="ax-leader-row">
+            <span class="ax-leader-rank">#${i+1}</span>
+            <span class="ax-leader-name">${escHtml(name)}</span>
+            <span class="ax-leader-score"></span>
+          </div>`).join('')
+      }
+      // Hide foot for now (no concrete delta data)
+      const benchFoot = document.getElementById('ax-bench-foot')
+      if (benchFoot) benchFoot.style.display = 'none'
+    } else {
+      if (benchHead) benchHead.style.display = 'none'
+      if (benchEl) benchEl.style.display = 'none'
+    }
+
+    // All actions (collapsible)
+    const allWrap = document.getElementById('ax-all-wrap')
+    const allBody = document.getElementById('ax-all-body')
+    const allCount = document.getElementById('ax-all-count')
+    const allActions = rx.allActions || []
+    if (allActions.length > 3 && allWrap && allBody) {
+      allWrap.style.display = 'block'
+      if (allCount) allCount.textContent = `SEE ALL ${allActions.length} ACTIONS`
+      const groups = {}
+      allActions.forEach(a => {
+        const key = a.dimension || 'other'
+        if (!groups[key]) groups[key] = []
+        groups[key].push(a)
+      })
+      const dimNameMap = { recognition:'RECOGNITION', category:'CATEGORY RANK', co_rec:'CO-RECOMMENDATION', web_authority:'WEB SIGNALS' }
+      allBody.innerHTML = Object.entries(groups).map(([dim, list]) => {
+        const items = list.map(a => {
+          const diff = Number(a.difficulty) || 1
+          const dotsHtml = [0,1,2].map(j => `<i class="${j<diff?'on':''}"></i>`).join('')
+          const impact = Math.round(Number(a.estimatedImpact)||0)
+          return `
+            <div class="ax-mini">
+              <span class="ax-mini-title">${escHtml(a.title || '—')}</span>
+              <span class="dots">${dotsHtml}</span>
+              <span class="impact">+${impact} PTS</span>
+            </div>`
+        }).join('')
+        return `
+          <div class="ax-group">
+            <div class="ax-group-name">${escHtml(dimNameMap[dim] || dim.toUpperCase())} · ${list.length} ACTIONS</div>
+            ${items}
+          </div>`
+      }).join('')
+      // Wire toggle
+      const toggle = document.getElementById('ax-all-toggle')
+      if (toggle && !toggle.dataset.wired) {
+        toggle.dataset.wired = '1'
+        toggle.addEventListener('click', () => {
+          const open = allWrap.classList.toggle('open')
+          toggle.setAttribute('aria-expanded', open ? 'true' : 'false')
+        })
+      }
+    } else if (allWrap) {
+      allWrap.style.display = 'none'
+    }
   }
 
   function renderD5Overview() {
@@ -4265,6 +4682,10 @@ button:focus-visible, a:focus-visible {
     if (typeof renderD5Overview === 'function') {
       try { renderD5Overview() } catch(e) { console.error('[D5] loadHistory render failed', e) }
     }
+    // PRESCRIPTION-03: refresh Actions pane if active
+    if (typeof loadActionsPane === 'function') {
+      try { loadActionsPane() } catch(e) { console.error('[actions] loadHistory render failed', e) }
+    }
     // D3: domain picker label + menu refresh (loaded products → dropdown)
     if (typeof refreshDomainLabel === 'function') {
       try { refreshDomainLabel() } catch(e) {}
@@ -5138,6 +5559,7 @@ button:focus-visible, a:focus-visible {
     if (typeof loadTrendPane === 'function') try { loadTrendPane(name, trendCurrentTab || 'daily') } catch(e) {}
     if (typeof loadRivalsPane === 'function') try { loadRivalsPane(name) } catch(e) {}
     if (typeof renderJourneyPane === 'function') try { renderJourneyPane() } catch(e) {}
+    if (typeof loadActionsPane === 'function') try { loadActionsPane() } catch(e) {}
   }
 
   // Close domain menu on outside click
@@ -5303,6 +5725,13 @@ button:focus-visible, a:focus-visible {
           .slice()
           .sort((a,b) => new Date(a.created_at) - new Date(b.created_at)) : [];
         try { renderJourneyPane(hist); } catch(e) { console.error('[journey] enter pane', e); }
+      }
+    }
+
+    // 6d. PRESCRIPTION-03 Actions pane (Phase 2a · 빅파이 1.6)
+    if (key === 'actions') {
+      if (typeof loadActionsPane === 'function') {
+        try { loadActionsPane(); } catch(e) { console.error('[actions] enter pane', e); }
       }
     }
 
