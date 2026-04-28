@@ -1075,9 +1075,9 @@ button:focus-visible, a:focus-visible {
   .jr-hero-medal svg { width: 96px; height: 96px; }
   .jr-hero-medal-tier { font-family: var(--pba-font-pixel); font-size: 8px; letter-spacing: 0.2em; color: var(--pba-gold); }
 
-  .jr-arc-card { padding: 32px 24px 24px; }
-  .jr-arc { display: grid; grid-template-columns: 1fr 40px 1fr 40px 1fr 40px 1fr; align-items: stretch; margin-bottom: 22px; }
-  .jr-stage { position: relative; display: flex; flex-direction: column; align-items: center; }
+  .jr-arc-card { padding: 32px 24px 30px; }
+  .jr-arc { display: grid; grid-template-columns: 1fr 72px 1fr 72px 1fr 72px 1fr; align-items: stretch; margin-bottom: 22px; gap: 0; }
+  .jr-stage { position: relative; display: flex; flex-direction: column; align-items: center; min-width: 0; }
   .jr-stage-flag { position: relative; width: 22px; height: 28px; margin-bottom: 8px; display: grid; place-items: center; }
   .jr-stage-flag svg { width: 16px; height: 22px; }
   .jr-stage-flag.locked-flag svg { width: 18px; height: 22px; }
@@ -1102,12 +1102,12 @@ button:focus-visible, a:focus-visible {
   .jr-stage-status.locked { color: var(--pba-fg-5); background: transparent; border: 1px solid var(--pba-border-faint); }
   .jr-stage-meta { font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.16em; color: var(--pba-fg-5); }
 
-  .jr-bridge { position: relative; align-self: center; width: 100%; padding: 0 6px; display: flex; flex-direction: column; gap: 6px; align-items: center; margin-top: 36px; }
+  .jr-bridge { position: relative; align-self: center; width: 100%; padding: 0 6px; margin-top: 70px; }
   .jr-bridge-track { width: 100%; height: 6px; background: #050505; border: 1px solid var(--pba-border-faint); border-radius: 999px; overflow: hidden; }
   .jr-bridge-fill { height: 100%; background: var(--pba-gold); border-radius: 999px; }
   .jr-bridge.partial .jr-bridge-fill { background: repeating-linear-gradient(45deg, var(--pba-gold) 0 6px, #b39700 6px 12px); animation: jrShift 1.2s linear infinite; }
   @keyframes jrShift { 0% { background-position: 0 0; } 100% { background-position: 12px 0; } }
-  .jr-bridge-label { font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.16em; color: var(--pba-fg-4); white-space: nowrap; }
+  .jr-bridge-label { position: absolute; top: -14px; left: 50%; transform: translateX(-50%); font-family: var(--pba-font-pixel); font-size: 6px; letter-spacing: 0.14em; color: var(--pba-fg-4); white-space: nowrap; background: var(--pba-bg); padding: 0 4px; pointer-events: none; }
   .jr-bridge.filled .jr-bridge-label { color: var(--pba-gold); }
   .jr-bridge.partial .jr-bridge-label { color: var(--pba-gold); }
 
@@ -4833,7 +4833,10 @@ button:focus-visible, a:focus-visible {
         const enter = tierEntryDate[tier.id]
         const next = TIER_DEFS[idx + 1] && tierEntryDate[TIER_DEFS[idx + 1].id]
         statusHtml = `<div class="jr-stage-status">✓ PASSED</div>`
-        metaHtml = enter && next ? `<div class="jr-stage-meta">DAY ${dayOf(enter)}–${dayOf(next)}</div>` : `<div class="jr-stage-meta">PASSED</div>`
+        // Show DAY range only if we have transition data; otherwise show "—" (avoid duplicate "PASSED")
+        metaHtml = enter && next
+          ? `<div class="jr-stage-meta">DAY ${dayOf(enter)}–${dayOf(next)}</div>`
+          : `<div class="jr-stage-meta" style="visibility:hidden;">—</div>`
       } else if (idx === currentIdx) {
         stageCls = 'current'
         const enter = tierEntryDate[tier.id]
