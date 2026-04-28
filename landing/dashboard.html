@@ -902,6 +902,152 @@ button:focus-visible, a:focus-visible {
     .tr-xp-flags { grid-template-columns: repeat(2, 1fr); gap: 18px; }
     .tr-heat { overflow-x: auto; }
   }
+
+  /* ============ RIVALS PANE — Claude Design 2026-04-28 ============ */
+  .rv-explainer { padding: 26px 28px; }
+  .rv-explainer-grid { display: grid; grid-template-columns: 88px 1fr; gap: 24px; align-items: center; }
+  .rv-explainer-glyph { width: 88px; height: 88px; background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); border-radius: 8px; display: grid; place-items: center; flex: none; }
+  .rv-explainer-glyph svg { width: 56px; height: 56px; }
+  .rv-explainer-eye { font-family: var(--pba-font-pixel); font-size: 7.5px; letter-spacing: 0.22em; color: var(--pba-gold); margin-bottom: 8px; }
+  .rv-explainer-h { font-family: var(--pba-font-body); font-weight: 800; font-size: 22px; line-height: 1.32; letter-spacing: -0.4px; color: #fff; margin: 0 0 10px; max-width: 720px; }
+  .rv-explainer-h em { color: var(--pba-gold); font-style: normal; }
+  .rv-explainer-p { font-size: 13.5px; color: var(--pba-fg-2); line-height: 1.65; margin: 0; max-width: 680px; }
+  .rv-explainer-p b { color: #fff; font-weight: 500; }
+
+  .rv-engines-card { padding: 22px 26px 24px; }
+  .rv-engines-note { display: flex; align-items: center; gap: 12px; margin-bottom: 22px; padding: 11px 14px; background: #0a0a0a; border: 1px dashed var(--pba-border); border-radius: 6px; font-size: 12.5px; color: var(--pba-fg-2); line-height: 1.5; }
+  .rv-engines-note-tag { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.2em; color: var(--pba-gold); background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); padding: 5px 8px; border-radius: 3px; flex: none; }
+  .rv-engines-note b { color: #fff; font-weight: 500; }
+  .rv-engines-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .rv-engine { background: #0d0d0d; border: 1px solid var(--pba-border-faint); border-radius: 6px; padding: 16px 16px 14px; }
+  .rv-engine-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .rv-engine-glyph { width: 28px; height: 28px; display: grid; place-items: center; background: #0a0800; border: 1px solid var(--pba-gold-border); border-radius: 4px; color: var(--pba-gold); font-family: var(--pba-font-pixel); font-size: 11px; flex: none; }
+  .rv-engine-glyph[data-eng="gpt"] { background: #0a0a0a; border-color: var(--pba-border); color: var(--pba-fg-1); }
+  .rv-engine-glyph[data-eng="gem"] { background: #0a0a0a; border-color: var(--pba-border); color: var(--pba-fg-2); }
+  .rv-engine-name { font-family: var(--pba-font-pixel); font-size: 8px; letter-spacing: 0.2em; color: #fff; flex: 1; }
+  .rv-engine-status { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.16em; padding: 4px 7px; border-radius: 3px; flex: none; }
+  .rv-engine-status.ok { color: var(--pba-gold); background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); }
+  .rv-engine-status.partial { color: var(--pba-fg-2); background: #141414; border: 1px solid var(--pba-border); }
+  .rv-engine-status.fail { color: #FF8080; background: #1a0505; border: 1px solid #3a1010; }
+  .rv-engine-stat { font-family: var(--pba-font-mono); display: flex; align-items: baseline; margin-bottom: 10px; }
+  .rv-engine-stat .num { font-size: 32px; color: #fff; font-weight: 700; line-height: 1; letter-spacing: -1px; }
+  .rv-engine-stat .den { font-size: 14px; color: var(--pba-fg-5); margin-left: 6px; }
+  .rv-engine-track { height: 6px; background: #050505; border: 1px solid var(--pba-border-faint); border-radius: 999px; overflow: hidden; }
+  .rv-engine-fill { height: 100%; background: var(--pba-gold); border-radius: 999px; }
+  .rv-engine-fill.partial { background: var(--pba-fg-3); }
+  .rv-engine-foot { display: flex; justify-content: space-between; margin-top: 10px; font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.16em; color: var(--pba-fg-5); }
+
+  .rv-roster-card { padding: 22px 26px 18px; }
+  .rv-roster-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; gap: 14px; flex-wrap: wrap; }
+  .rv-roster-eye { font-family: var(--pba-font-pixel); font-size: 7.5px; letter-spacing: 0.22em; color: var(--pba-gold); }
+  .rv-tier-legend { display: flex; gap: 6px; flex-wrap: wrap; }
+  .rv-tier-chip { font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.16em; padding: 4px 8px; border-radius: 999px; border: 1px solid; }
+  .rv-tier-chip.frequent { color: var(--pba-gold); background: var(--pba-gold-bg); border-color: var(--pba-gold-border); }
+  .rv-tier-chip.occasional { color: var(--pba-fg-2); background: #141414; border-color: var(--pba-border); }
+  .rv-tier-chip.rare { color: var(--pba-fg-4); background: transparent; border-color: var(--pba-border-faint); }
+  .rv-roster { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1px; }
+  /* Reduced columns: rank | tier | name | bar | engines | mentions */
+  .rv-row { display: grid; grid-template-columns: 38px 18px 1fr 90px 100px; align-items: center; gap: 14px; padding: 14px 8px; background: #0d0d0d; border-radius: 4px; transition: background .12s; }
+  .rv-row:hover { background: #141414; }
+  .rv-row.top { background: #0a0800; border: 1px solid var(--pba-gold-border); padding: 13px 7px; }
+  .rv-row.top:hover { background: #0e0b00; }
+  .rv-rank { font-family: var(--pba-font-pixel); font-size: 8px; letter-spacing: 0.14em; color: var(--pba-fg-4); text-align: center; }
+  .rv-row.top .rv-rank { color: var(--pba-gold); }
+  .rv-tier-mark { font-family: var(--pba-font-mono); font-size: 14px; color: var(--pba-fg-5); text-align: center; }
+  .rv-row.tier-frequent .rv-tier-mark { color: var(--pba-gold); }
+  .rv-row.tier-occasional .rv-tier-mark { color: var(--pba-fg-2); }
+  .rv-row.tier-rare .rv-tier-mark { color: var(--pba-fg-5); }
+  .rv-row-main { min-width: 0; }
+  .rv-row-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .rv-name { font-size: 14.5px; color: #fff; font-weight: 600; }
+  .rv-row.top .rv-name { color: var(--pba-gold); }
+  .rv-row-bar { height: 4px; background: #050505; border: 1px solid var(--pba-border-faint); border-radius: 999px; overflow: hidden; }
+  .rv-row-fill { height: 100%; background: var(--pba-fg-5); border-radius: 999px; transition: width .8s ease; }
+  .rv-row.tier-frequent .rv-row-fill { background: var(--pba-gold); }
+  .rv-row.tier-occasional .rv-row-fill { background: var(--pba-fg-3); }
+  .rv-engines { display: flex; gap: 4px; }
+  .rv-eng-mini { width: 22px; height: 22px; display: grid; place-items: center; background: #141414; border: 1px solid var(--pba-border); border-radius: 4px; font-family: var(--pba-font-pixel); font-size: 9px; color: var(--pba-fg-2); }
+  .rv-eng-mini.eng-ppx { color: var(--pba-gold); border-color: var(--pba-gold-border); background: var(--pba-gold-bg); }
+  .rv-eng-mini.eng-gpt { color: #fff; }
+  .rv-eng-mini.eng-gem { color: var(--pba-fg-1); }
+  .rv-row-mentions { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+  .rv-row-mentions .num { font-family: var(--pba-font-mono); font-size: 22px; color: #fff; font-weight: 700; line-height: 1; letter-spacing: -0.5px; }
+  .rv-row.top .rv-row-mentions .num { color: var(--pba-gold); }
+  .rv-row-mentions .lbl { font-family: var(--pba-font-pixel); font-size: 6px; letter-spacing: 0.16em; color: var(--pba-fg-5); }
+  .rv-roster-foot { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--pba-border-faint); display: flex; justify-content: space-between; align-items: center; }
+  .rv-roster-foot .lbl { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-5); }
+  .rv-roster-foot .val { font-family: var(--pba-font-mono); font-size: 13px; color: var(--pba-fg-2); }
+  .rv-roster-foot .val b { color: #fff; font-weight: 600; }
+
+  .rv-map-card { padding: 22px 26px 24px; }
+  .rv-map-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+  .rv-map-eye { font-family: var(--pba-font-pixel); font-size: 7.5px; letter-spacing: 0.22em; color: var(--pba-gold); margin-bottom: 6px; }
+  .rv-map-cap { font-size: 12.5px; color: var(--pba-fg-3); margin: 0; max-width: 540px; line-height: 1.55; }
+  .rv-map-legend { display: flex; gap: 14px; flex-wrap: wrap; }
+  .rv-map-leg-item { display: inline-flex; align-items: center; gap: 6px; font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-3); }
+  .rv-map-leg-item .dot { width: 10px; height: 10px; border-radius: 999px; flex: none; }
+  .rv-map-leg-item .dot.you { background: var(--pba-gold); box-shadow: 0 0 0 2px #0a0a0a, 0 0 0 3px var(--pba-gold-border); }
+  .rv-map-leg-item .dot.rival { background: var(--pba-fg-3); }
+  .rv-map-wrap { display: grid; grid-template-columns: 1fr 220px; gap: 18px; align-items: stretch; }
+  .rv-map { position: relative; aspect-ratio: 1 / 1; background: radial-gradient(circle at center, #0e0e0e, #050505 70%), #050505; border: 1px solid var(--pba-border); border-radius: 8px; overflow: hidden; }
+  .rv-map::before { content: ''; position: absolute; inset: 0; background-image: linear-gradient(to right, rgba(255,255,255,0.025) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.025) 1px, transparent 1px); background-size: 12.5% 12.5%; pointer-events: none; }
+  .rv-map-zone { position: absolute; width: 50%; height: 50%; padding: 12px 14px; display: flex; flex-direction: column; gap: 4px; pointer-events: none; }
+  .rv-map-zone.tl { top: 0; left: 0; align-items: flex-start; }
+  .rv-map-zone.tr { top: 0; right: 0; align-items: flex-end; text-align: right; }
+  .rv-map-zone.bl { bottom: 0; left: 0; align-items: flex-start; justify-content: flex-end; }
+  .rv-map-zone.br { bottom: 0; right: 0; align-items: flex-end; text-align: right; justify-content: flex-end; }
+  .rv-map-zone-name { font-family: var(--pba-font-pixel); font-size: 8px; letter-spacing: 0.2em; }
+  .rv-map-zone-desc { font-family: var(--pba-font-pixel); font-size: 6px; letter-spacing: 0.14em; color: var(--pba-fg-5); }
+  .rv-map-zone.tl .rv-map-zone-name { color: var(--pba-fg-2); }
+  .rv-map-zone.tr .rv-map-zone-name { color: var(--pba-gold); }
+  .rv-map-zone.bl .rv-map-zone-name { color: #FF6B6B; }
+  .rv-map-zone.br .rv-map-zone-name { color: var(--pba-fg-2); }
+  .rv-map-axis-x, .rv-map-axis-y { position: absolute; background: var(--pba-border); pointer-events: none; }
+  .rv-map-axis-x { left: 0; right: 0; top: 50%; height: 1px; }
+  .rv-map-axis-y { top: 0; bottom: 0; left: 50%; width: 1px; }
+  .rv-map-axis-lbl { position: absolute; font-family: var(--pba-font-pixel); font-size: 6px; letter-spacing: 0.16em; color: var(--pba-fg-6); pointer-events: none; }
+  .rv-map-axis-lbl.x-min { bottom: 4px; left: 6px; }
+  .rv-map-axis-lbl.x-mid { bottom: 4px; left: 50%; transform: translateX(-50%); color: var(--pba-fg-5); }
+  .rv-map-axis-lbl.x-max { bottom: 4px; right: 6px; }
+  .rv-map-axis-lbl.y-mid { top: 50%; left: 6px; transform: translateY(-50%) rotate(-90deg); transform-origin: left center; color: var(--pba-fg-5); white-space: nowrap; }
+  .rv-map-axis-lbl.y-max { top: 4px; left: 6px; }
+  .rv-map-dots { position: absolute; inset: 0; pointer-events: none; }
+  .rv-map-dot { position: absolute; transform: translate(-50%, -50%); width: 18px; height: 18px; border-radius: 999px; background: var(--pba-fg-3); border: 2px solid #0a0a0a; cursor: pointer; pointer-events: auto; padding: 0; }
+  .rv-map-dot.you { background: var(--pba-gold); border-color: #0a0a0a; box-shadow: 0 0 0 2px var(--pba-gold-border), 3px 3px 0 #b39700; z-index: 6; }
+  .rv-map-dot-pulse { position: absolute; inset: -4px; border-radius: 999px; background: var(--pba-gold); opacity: 0.4; animation: rvpulse 1.8s ease-out infinite; pointer-events: none; }
+  @keyframes rvpulse { 0% { transform: scale(1); opacity: 0.5; } 100% { transform: scale(2.2); opacity: 0; } }
+  .rv-map-dot-label { position: absolute; left: 50%; bottom: calc(100% + 4px); transform: translateX(-50%); font-family: var(--pba-font-pixel); font-size: 6px; letter-spacing: 0.14em; color: var(--pba-gold); background: rgba(10,10,10,0.85); padding: 2px 5px; border-radius: 2px; white-space: nowrap; pointer-events: none; }
+  .rv-map-side { background: #0d0d0d; border: 1px solid var(--pba-border-faint); border-radius: 8px; padding: 16px 16px 14px; display: flex; flex-direction: column; gap: 10px; }
+  .rv-map-side-eye { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.2em; color: var(--pba-gold); }
+  .rv-map-side-name { font-size: 18px; color: #fff; font-weight: 700; line-height: 1.2; }
+  .rv-map-side-zone { align-self: flex-start; font-family: var(--pba-font-pixel); font-size: 7.5px; letter-spacing: 0.2em; padding: 5px 9px; border-radius: 3px; color: var(--pba-fg-2); background: #141414; border: 1px solid var(--pba-border); }
+  .rv-map-side-zone.z-market-leader { color: var(--pba-gold); background: var(--pba-gold-bg); border-color: var(--pba-gold-border); }
+  .rv-map-side-zone.z-niche-player { color: var(--pba-fg-1); }
+  .rv-map-side-zone.z-challenger { color: var(--pba-fg-1); }
+  .rv-map-side-zone.z-invisible { color: #FF8080; background: #1a0505; border-color: #3a1010; }
+  .rv-map-side-stats { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; padding-top: 12px; border-top: 1px solid var(--pba-border-faint); }
+  .rv-map-side-stats > div { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .rv-map-side-stats .lbl { font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.16em; color: var(--pba-fg-5); }
+  .rv-map-side-stats .val { font-family: var(--pba-font-mono); font-size: 13px; color: #fff; font-weight: 600; }
+
+  @media (max-width: 1080px) {
+    .rv-engines-grid { grid-template-columns: 1fr; }
+    .rv-map-wrap { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 880px) {
+    .rv-explainer-grid { grid-template-columns: 1fr; gap: 14px; }
+    .rv-explainer-glyph { width: 56px; height: 56px; }
+    .rv-explainer-glyph svg { width: 36px; height: 36px; }
+    .rv-row { grid-template-columns: 28px 16px 1fr; grid-template-areas: "rank tier main" "rank tier engines" "rank tier metrics"; row-gap: 8px; }
+    .rv-rank { grid-area: rank; }
+    .rv-tier-mark { grid-area: tier; }
+    .rv-row-main { grid-area: main; }
+    .rv-engines { grid-area: engines; justify-self: start; }
+    .rv-row-mentions { grid-area: metrics; flex-direction: row; align-items: baseline; gap: 6px; justify-self: start; }
+    .rv-row-mentions .num { font-size: 18px; }
+    .rv-roster-foot { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .rv-roster-head { flex-direction: column; align-items: flex-start; }
+  }
   </style>
 </head>
 <body>
@@ -1831,69 +1977,151 @@ button:focus-visible, a:focus-visible {
 
   </div>
 
-  <!-- Pane: Rivals — redesigned 2026-04-28 -->
+  <!-- Pane: Rivals — Claude Design 2026-04-28 (sections 1,2,3,4 only; movement removed by CEO) -->
   <div id="shell-pane-rivals" class="shell-pane" style="display:none;">
 
-    <!-- How Co-Mentions Work (always visible) -->
-    <div class="card mb-6" style="background:#0d0d0d;border-color:#1a1a1a;">
-      <div style="display:flex;align-items:flex-start;gap:0.85rem;">
-        <div style="font-size:1.15rem;line-height:1;margin-top:2px;">🔍</div>
-        <div style="flex:1;">
-          <div style="font-size:0.78rem;font-weight:700;color:#e0e0e0;margin-bottom:0.3rem;text-transform:uppercase;letter-spacing:0.07em;">
-            What is a Co-Mention?
-            <span class="dim-tip" data-tip="We send live probes to AI engines (Perplexity, Gemini) and ask them about your product category. Any other product AI names in the same response = a co-mention. These are the tools fighting you for AI recommendation slots.">?</span>
+    <div class="tr-h1">
+      <h1 class="page-h1" style="margin:0;">Rivals</h1>
+    </div>
+
+    <!-- ============ SECTION 1 — EXPLAINER (always visible) ============ -->
+    <section class="ov-card rv-explainer" aria-label="What is a co-mention">
+      <div class="rv-explainer-grid">
+        <div class="rv-explainer-glyph" aria-hidden="true">
+          <svg viewBox="0 0 32 32" shape-rendering="crispEdges">
+            <g fill="#FFD700">
+              <rect x="6" y="4" width="14" height="2"/>
+              <rect x="4" y="6" width="2" height="14"/>
+              <rect x="20" y="6" width="2" height="14"/>
+              <rect x="6" y="20" width="14" height="2"/>
+              <rect x="8" y="8" width="10" height="10" fill="#0a0800"/>
+              <rect x="10" y="10" width="2" height="2"/>
+              <rect x="14" y="10" width="2" height="2"/>
+              <rect x="10" y="14" width="6" height="2"/>
+              <rect x="20" y="20" width="2" height="2"/>
+              <rect x="22" y="22" width="2" height="2"/>
+              <rect x="24" y="24" width="2" height="2"/>
+              <rect x="26" y="26" width="2" height="2"/>
+            </g>
+          </svg>
+        </div>
+        <div>
+          <div class="rv-explainer-eye">◆ HOW RIVALS WORK</div>
+          <h2 class="rv-explainer-h">When AI suggests your product, <em>who does it suggest alongside?</em></h2>
+          <p class="rv-explainer-p">Any tool AI names in the same breath as yours = a rival in AI's mind — competing for the same recommendation slot. We track every co-mention across <b>Perplexity</b>, <b>GPT</b>, and <b>Gemini</b> to show who's fighting for your category.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 2 — AI ENGINES QUERIED ============ -->
+    <div class="tr-sec-head">
+      <h2>AI engines <em>queried</em></h2>
+    </div>
+
+    <section class="ov-card rv-engines-card" aria-label="AI engines used to measure">
+      <div class="rv-engines-note">
+        <span class="rv-engines-note-tag">NOTE</span>
+        <span>These are the AI engines we probe — they're how we <b>measure</b> your visibility, not who you compete against. Your real rivals appear below.</span>
+      </div>
+      <div class="rv-engines-grid" id="rvEnginesGrid">
+        <!-- populated by JS from API engines{} -->
+      </div>
+    </section>
+
+    <!-- Empty state (overall — shown when neither peers nor engines data) -->
+    <section class="ov-card tr-empty-card" id="rivals-empty" style="display:none;">
+      <div class="glyph">◇ ◆ ◇</div>
+      <h3>No co-mentions detected yet</h3>
+      <p>This is normal for new or early-stage products. Co-mention data builds up as you run more checks. Rivals will appear here automatically once AI starts grouping your product with others.</p>
+    </section>
+
+    <!-- ============ SECTION 3 — CO-MENTIONED TOOLS (Roster) ============ -->
+    <div class="tr-sec-head" id="rvRosterHead" style="display:none;">
+      <h2>Co-mentioned <em>tools</em></h2>
+    </div>
+
+    <section class="ov-card rv-roster-card" id="rivals-peers-wrap" aria-label="Co-mentioned rival roster" style="display:none;">
+      <div class="rv-roster-head">
+        <span class="rv-roster-eye">◆ FIGHTER ROSTER · WHO AI NAMES WITH YOU</span>
+        <div class="rv-tier-legend">
+          <span class="rv-tier-chip frequent">★ FREQUENT · 5+</span>
+          <span class="rv-tier-chip occasional">◆ OCCASIONAL · 2–4</span>
+          <span class="rv-tier-chip rare">◇ RARE · 1</span>
+        </div>
+      </div>
+      <ol class="rv-roster" id="rvRoster">
+        <!-- populated by JS -->
+      </ol>
+      <div class="rv-roster-foot">
+        <span class="lbl" id="rivals-peers-sub">TOTAL CO-MENTIONS</span>
+        <span class="val" id="rvRosterTotals">—</span>
+      </div>
+    </section>
+
+    <!-- ============ SECTION 4 — AI VISIBILITY MAP (YOU dot + zones only) ============ -->
+    <div class="tr-sec-head" id="rvMapHead" style="display:none;">
+      <h2>AI visibility <em>map</em></h2>
+    </div>
+
+    <section class="ov-card rv-map-card" id="rivals-quadrant-wrap" aria-label="AI visibility 2-axis map" style="display:none;">
+      <div class="rv-map-head">
+        <div>
+          <div class="rv-map-eye">◆ AWARENESS SPACE · RECOGNITION × CATEGORY RANK</div>
+          <p class="rv-map-cap">Your position in AI's awareness space. Higher-right = AI knows you and ranks you in your category.</p>
+        </div>
+        <div class="rv-map-legend">
+          <span class="rv-map-leg-item"><span class="dot you"></span><span id="rvMapLegYou">YOU</span></span>
+        </div>
+      </div>
+
+      <div class="rv-map-wrap">
+        <div class="rv-map">
+          <div class="rv-map-zone tl">
+            <span class="rv-map-zone-name">NICHE PLAYER</span>
+            <span class="rv-map-zone-desc">Strong category, low recognition</span>
           </div>
-          <div style="font-size:0.77rem;color:#666;line-height:1.6;">
-            We ask AI: <em style="color:#888;">"What tools are similar to [your product]?"</em><br>
-            Any tool AI names alongside yours = a rival in AI's mind — competing for the same recommendation slot.
+          <div class="rv-map-zone tr">
+            <span class="rv-map-zone-name">MARKET LEADER</span>
+            <span class="rv-map-zone-desc">High recognition + category rank</span>
           </div>
-        </div>
-      </div>
-      <!-- Engine coverage badges -->
-      <div id="rivals-engines-row" style="display:flex;gap:0.55rem;flex-wrap:wrap;align-items:center;margin-top:0.85rem;padding-top:0.75rem;border-top:1px solid #1a1a1a;">
-        <span style="font-size:0.68rem;color:#444;">AI engines queried
-          <span class="dim-tip" data-tip="These are the AI engines we use to run probes on your product — they are our measurement tools, NOT your competitors.">?</span>
-        </span>
-      </div>
-    </div>
+          <div class="rv-map-zone bl">
+            <span class="rv-map-zone-name">INVISIBLE</span>
+            <span class="rv-map-zone-desc">Unknown to AI</span>
+          </div>
+          <div class="rv-map-zone br">
+            <span class="rv-map-zone-name">CHALLENGER</span>
+            <span class="rv-map-zone-desc">Recognized, weak category fit</span>
+          </div>
 
-    <!-- Empty state -->
-    <div id="rivals-empty" style="display:none;text-align:center;padding:2.5rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;margin-bottom:1.5rem;">
-      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:10px;">✦ NO CO-MENTIONS YET</div>
-      <div style="font-size:0.84rem;color:#888;line-height:1.8;max-width:400px;margin:0 auto;">No co-mentions detected yet — this is normal for new or early-stage products.</div>
-      <div style="font-size:0.74rem;color:#555;margin-top:0.5rem;line-height:1.6;max-width:360px;margin:0.5rem auto 0;">
-        Co-mention data builds up as you run more checks. Rivals will appear here automatically once AI starts grouping your product with others.
-      </div>
-    </div>
+          <span class="rv-map-axis-x"></span>
+          <span class="rv-map-axis-y"></span>
 
-    <!-- Section 1: Co-Mentioned Tools -->
-    <div id="rivals-peers-wrap" class="card mb-6" style="display:none;">
-      <div class="section-header">
-        <div class="section-title">
-          Co-Mentioned Tools
-          <span class="dim-tip" data-tip="These products appeared in the same AI response as yours. The higher the co-mention count, the more consistently AI groups you together — meaning you're competing for the same AI recommendation slot.">?</span>
-        </div>
-        <div class="section-sub" id="rivals-peers-sub">Products AI recommends alongside yours in the same response</div>
-      </div>
-      <div id="rivals-peers-table" style="margin-top:0.5rem;"></div>
-    </div>
+          <span class="rv-map-axis-lbl x-min">0</span>
+          <span class="rv-map-axis-lbl x-mid">RECOGNITION ▶</span>
+          <span class="rv-map-axis-lbl x-max">35</span>
+          <span class="rv-map-axis-lbl y-mid">◀ CATEGORY</span>
+          <span class="rv-map-axis-lbl y-max">35</span>
 
-    <!-- Section 2: AI Visibility Map -->
-    <div id="rivals-quadrant-wrap" class="card mb-6" style="display:none;">
-      <div class="section-header">
-        <div class="section-title">
-          AI Visibility Map
-          <span class="dim-tip" data-tip="X-axis: Recognition score (0–35) — how well AI identifies your product by name when directly asked. Y-axis: Category Rank (0–35) — whether AI places you in its top picks for your category. Goal: top-right corner (Market Leader).">?</span>
+          <div class="rv-map-dots" id="rvMapDots"></div>
         </div>
-        <div class="section-sub">Your position vs. co-mentioned tools in AI's awareness space</div>
+
+        <aside class="rv-map-side" id="rvMapSide">
+          <div class="rv-map-side-eye">◆ YOUR POSITION</div>
+          <div class="rv-map-side-name" id="rvMapSideName">—</div>
+          <div class="rv-map-side-zone" id="rvMapSideZone">—</div>
+          <div class="rv-map-side-stats">
+            <div><span class="lbl">RECOGNITION</span><span class="val" id="rvMapSideRec">— / 35</span></div>
+            <div><span class="lbl">CATEGORY</span><span class="val" id="rvMapSideCat">— / 35</span></div>
+          </div>
+        </aside>
       </div>
-      <div style="position:relative;width:100%;max-width:420px;margin:0.75rem auto 0;">
-        <canvas id="rivals-quadrant" width="420" height="320" style="display:block;width:100%;"></canvas>
-      </div>
-      <div style="display:flex;gap:1.5rem;flex-wrap:wrap;justify-content:center;margin-top:0.6rem;font-size:0.7rem;color:#666;">
-        <span><span style="color:#FFD700;">●</span> You</span>
-        <span><span style="color:#555;">●</span> Co-mentioned rivals <span class="dim-tip" data-tip="Rival positions are estimated from their co-mention frequency relative to yours — not from independent scans.">?</span></span>
-      </div>
+    </section>
+
+    <!-- legacy hidden DOM kept for backward-compat with old loaders -->
+    <div style="display:none;">
+      <div id="rivals-engines-row"></div>
+      <div id="rivals-peers-table"></div>
+      <canvas id="rivals-quadrant" width="420" height="320"></canvas>
     </div>
 
   </div>
@@ -4578,23 +4806,22 @@ button:focus-visible, a:focus-visible {
   let rivalsLoaded = false
   let rivalsCurrentProduct = null
 
+  // 2026-04-28 Claude Design merge: Rivals pane (Sections 1+2+3+4 only; Movement removed by CEO)
   async function loadRivalsPane(product) {
-    const emptyEl    = document.getElementById('rivals-empty')
-    const peersWrap  = document.getElementById('rivals-peers-wrap')
-    const quadWrap   = document.getElementById('rivals-quadrant-wrap')
-    const enginesRow = document.getElementById('rivals-engines-row')
+    const emptyEl     = document.getElementById('rivals-empty')
+    const peersWrap   = document.getElementById('rivals-peers-wrap')
+    const peersHead   = document.getElementById('rvRosterHead')
+    const mapWrap     = document.getElementById('rivals-quadrant-wrap')
+    const mapHead     = document.getElementById('rvMapHead')
+    const enginesGrid = document.getElementById('rvEnginesGrid')
 
-    ;[emptyEl, peersWrap, quadWrap].forEach(el => { if (el) el.style.display = 'none' })
+    const hide = el => { if (el) el.style.display = 'none' }
+    const show = el => { if (el) el.style.display = '' }
+    hide(emptyEl); hide(peersWrap); hide(peersHead); hide(mapWrap); hide(mapHead)
 
     if (!product) {
-      if (emptyEl) {
-        emptyEl.innerHTML = `
-          <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:10px;">✦ NO PRODUCT SELECTED</div>
-          <div style="font-size:0.84rem;color:#888;line-height:1.8;max-width:400px;margin:0 auto;">Check a product first to see co-mention data.</div>
-          <div style="font-size:0.74rem;color:#555;margin-top:0.5rem;line-height:1.6;">Use the <strong style="color:#666;">+ Check</strong> button at the top to run your first scan.</div>
-        `
-        emptyEl.style.display = 'block'
-      }
+      if (enginesGrid) enginesGrid.innerHTML = ''
+      show(emptyEl)
       return
     }
 
@@ -4611,63 +4838,179 @@ button:focus-visible, a:focus-visible {
     const hasPeers   = peers.length > 0
     const hasEngines = Object.keys(engines).filter(k => engines[k].probes > 0).length > 0
 
-    // ── Engine coverage badges ─────────────────────────────────
-    if (enginesRow && hasEngines) {
-      const labels = { perplexity: 'Perplexity', gpt: 'GPT', gemini: 'Gemini' }
-      const badges = Object.entries(engines)
-        .filter(([, v]) => v.probes > 0)
-        .map(([key, val]) => {
-          const recognized = (val.recognized || 0) > 0
-          const icon  = recognized ? '✅' : '○'
-          const color = recognized ? '#5a9' : '#555'
-          const name  = labels[key] || (key.charAt(0).toUpperCase() + key.slice(1))
-          const tipText = recognized
-            ? `${name} recognized your product in ${val.recognized} of ${val.probes} probe${val.probes !== 1 ? 's' : ''}.`
-            : `${name} ran ${val.probes} probe${val.probes !== 1 ? 's' : ''} but did not recognize your product.`
-          return `<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 9px;background:#111;border:1px solid #1e1e1e;border-radius:4px;font-size:0.7rem;color:${color};">
-            ${icon} ${name}
-            <span style="color:#3a3a3a;">${val.probes}×</span>
-            <span class="dim-tip" data-tip="${tipText}">?</span>
-          </span>`
-        }).join('')
-      const label = enginesRow.querySelector('span') || enginesRow
-      enginesRow.innerHTML = `<span style="font-size:0.68rem;color:#444;">AI engines queried <span class="dim-tip" data-tip="These are the AI engines we use to run probes on your product — our measurement tools, NOT your competitors.">?</span></span>${badges}`
+    // ── Section 2: AI Engines Queried (3 cards, real data) ─────
+    if (enginesGrid) {
+      enginesGrid.innerHTML = renderRvEngines(engines)
     }
 
     if (!hasPeers && !hasEngines) {
-      if (emptyEl) emptyEl.style.display = 'block'
+      show(emptyEl)
+      rivalsLoaded = true
       return
     }
 
-    // ── Co-Mentioned Tools ─────────────────────────────────────
-    if (!hasPeers) {
-      if (emptyEl) emptyEl.style.display = 'block'
-    } else {
-      if (peersWrap) {
-        const sub = document.getElementById('rivals-peers-sub')
-        if (sub) {
-          sub.textContent = data.category
-            ? `Tools AI recommends alongside "${product}" in the "${data.category}" category`
-            : `Tools AI recommends alongside "${product}"`
-        }
-        peersWrap.style.display = 'block'
-        renderRivalsPeers(peers, product)
-      }
+    // ── Section 3: Fighter Roster (real peers, omit delta/desc/rec/cat) ─
+    if (hasPeers && peersWrap) {
+      show(peersHead)
+      show(peersWrap)
+      renderRvRoster(peers)
+    }
 
-      // ── AI Visibility Map ──────────────────────────────────
-      if (quadWrap && typeof allHistoryData !== 'undefined') {
-        const myRows = (allHistoryData || []).filter(r =>
-          (r.product_name || '').toLowerCase() === product.toLowerCase()
-        )
-        const latest = myRows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0]
-        if (latest) {
-          quadWrap.style.display = 'block'
-          drawRivalsQuadrant(latest, peers)
-        }
+    // ── Section 4: AI Visibility Map (YOU dot + zone labels only) ─────
+    if (mapWrap && typeof allHistoryData !== 'undefined') {
+      const myRows = (allHistoryData || []).filter(r => (r.product_name || '').toLowerCase() === product.toLowerCase())
+      const latest = myRows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0]
+      if (latest) {
+        show(mapHead)
+        show(mapWrap)
+        renderRvMap(product, latest)
       }
     }
 
     rivalsLoaded = true
+  }
+
+  // ───── Section 2 renderer ─────
+  function renderRvEngines(engines) {
+    const ENGINES_META = {
+      perplexity: { name: 'PERPLEXITY', glyph: 'P', dataEng: 'ppx' },
+      gpt:        { name: 'GPT',        glyph: 'G', dataEng: 'gpt' },
+      gemini:     { name: 'GEMINI',     glyph: '◆', dataEng: 'gem' },
+    }
+    return ['perplexity', 'gpt', 'gemini'].map(key => {
+      const meta = ENGINES_META[key]
+      const row = engines[key] || {}
+      const probes = Number(row.probes) || 0
+      const recognized = Number(row.recognized) || 0
+      const rate = probes > 0 ? (recognized / probes) * 100 : 0
+      const ratePct = Math.round(rate)
+      let statusCls, statusTxt
+      if (probes === 0) { statusCls = 'fail'; statusTxt = '— NO PROBES' }
+      else if (rate >= 60) { statusCls = 'ok'; statusTxt = '✓ RECOGNIZED' }
+      else if (rate > 0)  { statusCls = 'partial'; statusTxt = '~ PARTIAL' }
+      else { statusCls = 'fail'; statusTxt = '✗ NOT FOUND' }
+      const fillCls = rate >= 60 ? '' : 'partial'
+      const fillW = Math.max(0, Math.min(100, rate)).toFixed(1)
+      return `
+        <div class="rv-engine">
+          <div class="rv-engine-head">
+            <span class="rv-engine-glyph" data-eng="${meta.dataEng}" aria-hidden="true">${meta.glyph}</span>
+            <span class="rv-engine-name">${meta.name}</span>
+            <span class="rv-engine-status ${statusCls}" title="Recognized in ${recognized} of ${probes} probes">${statusTxt}</span>
+          </div>
+          <div class="rv-engine-stat">
+            <span class="num">${recognized}</span><span class="den">/ ${probes}</span>
+          </div>
+          <div class="rv-engine-track">
+            <div class="rv-engine-fill ${fillCls}" style="width: ${fillW}%;"></div>
+          </div>
+          <div class="rv-engine-foot">
+            <span>${ratePct}% RECOGNITION</span>
+            <span>${probes} PROBE${probes !== 1 ? 'S' : ''}</span>
+          </div>
+        </div>
+      `
+    }).join('')
+  }
+
+  // ───── Section 3 renderer ─────
+  function _engineKey(srcEngine) {
+    const s = String(srcEngine || '').toLowerCase()
+    if (s.includes('perplex')) return 'ppx'
+    if (s.includes('gpt') || s.includes('chatgpt') || s.includes('openai')) return 'gpt'
+    if (s.includes('gemini') || s.includes('google')) return 'gem'
+    return 'gpt'
+  }
+  function _tierOf(m) { return m >= 5 ? 'frequent' : m >= 2 ? 'occasional' : 'rare' }
+  function _tierMark(m) { return m >= 5 ? '★' : m >= 2 ? '◆' : '◇' }
+
+  function renderRvRoster(peers) {
+    const ol = document.getElementById('rvRoster')
+    const totalsEl = document.getElementById('rvRosterTotals')
+    const subLbl = document.getElementById('rivals-peers-sub')
+    if (!ol) return
+
+    const norm = peers.map(p => ({
+      name: String(p.name || p.product || '').trim() || '—',
+      mentions: Number(p.count ?? p.mentions ?? 0),
+      engines: Array.isArray(p.engines) && p.engines.length
+        ? p.engines.map(_engineKey)
+        : [_engineKey(p.source_engine)],
+    })).filter(p => p.name && p.mentions > 0)
+      .sort((a, b) => b.mentions - a.mentions)
+
+    if (norm.length === 0) { ol.innerHTML = ''; if (totalsEl) totalsEl.textContent = '—'; return }
+    const top = norm[0]
+    ol.innerHTML = norm.map((r, i) => {
+      const rank = i + 1
+      const tier = _tierOf(r.mentions)
+      const isTop = rank === 1
+      const engineBadges = [...new Set(r.engines)].map(e => {
+        const map = { ppx: 'P', gpt: 'G', gem: '◆' }
+        return `<span class="rv-eng-mini eng-${e}" title="${e.toUpperCase()}">${map[e] || '?'}</span>`
+      }).join('')
+      const pct = Math.max(2, (r.mentions / top.mentions) * 100)
+      return `
+        <li class="rv-row ${isTop ? 'top' : ''} tier-${tier}">
+          <span class="rv-rank">#${String(rank).padStart(2, '0')}</span>
+          <span class="rv-tier-mark">${_tierMark(r.mentions)}</span>
+          <div class="rv-row-main">
+            <div class="rv-row-head">
+              <span class="rv-name">${escHtml(r.name)}</span>
+            </div>
+            <div class="rv-row-bar"><div class="rv-row-fill" style="width:${pct}%"></div></div>
+          </div>
+          <div class="rv-engines">${engineBadges}</div>
+          <div class="rv-row-mentions">
+            <span class="num">${r.mentions}</span>
+            <span class="lbl">CO-MENTIONS</span>
+          </div>
+        </li>
+      `
+    }).join('')
+
+    const totalMentions = norm.reduce((s, r) => s + r.mentions, 0)
+    if (totalsEl) totalsEl.innerHTML = `<b>${totalMentions}</b> across <b>${norm.length} rival${norm.length !== 1 ? 's' : ''}</b>`
+    if (subLbl) subLbl.textContent = `TOTAL CO-MENTIONS · ${norm.length} RIVAL${norm.length !== 1 ? 'S' : ''}`
+  }
+
+  // ───── Section 4 renderer (YOU dot + zone labels only — no rival dots) ─────
+  function renderRvMap(productName, latestScore) {
+    const dotsWrap = document.getElementById('rvMapDots')
+    if (!dotsWrap) return
+
+    const u = latestScore?.unified_v15 || latestScore?.score_v15 || latestScore || {}
+    const dims = u?.dimensions || {}
+    const rec = Number(dims.recognition ?? 0)
+    const cat = Number(dims.category ?? 0)
+    const xPct = Math.max(0, Math.min(100, (rec / 35) * 100))
+    const yPct = Math.max(0, Math.min(100, 100 - (cat / 35) * 100))
+
+    dotsWrap.innerHTML = `
+      <button type="button" class="rv-map-dot you" style="left:${xPct}%; top:${yPct}%;" title="${escHtml(productName)} · REC ${rec}/35 · CAT ${cat}/35" aria-label="${escHtml(productName)}">
+        <span class="rv-map-dot-pulse"></span>
+        <span class="rv-map-dot-label">YOU</span>
+      </button>
+    `
+
+    // Side panel
+    const setTxt = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v }
+    setTxt('rvMapSideName', productName)
+    setTxt('rvMapSideRec', `${rec} / 35`)
+    setTxt('rvMapSideCat', `${cat} / 35`)
+    setTxt('rvMapLegYou', `YOU · ${productName}`)
+
+    const hi = 17.5
+    let zone
+    if (rec >= hi && cat >= hi) zone = 'MARKET LEADER'
+    else if (rec < hi && cat >= hi) zone = 'NICHE PLAYER'
+    else if (rec >= hi && cat < hi) zone = 'CHALLENGER'
+    else zone = 'INVISIBLE'
+    const zoneEl = document.getElementById('rvMapSideZone')
+    if (zoneEl) {
+      zoneEl.textContent = zone
+      zoneEl.className = 'rv-map-side-zone z-' + zone.toLowerCase().replace(/ /g, '-')
+    }
   }
 
   function drawRivalsSankey(product, engines, peers, category) {
