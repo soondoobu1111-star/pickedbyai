@@ -87,11 +87,11 @@ function classifyDimensionLevel(score: number, max: number): PrescriptionLevel {
 // ===== 레벨 요약 텍스트 =====
 
 const LEVEL_SUMMARIES: Record<PrescriptionLevel, string> = {
-  invisible: 'AI가 아직 당신의 제품을 모릅니다. 지금이 시작할 때입니다.',
-  emerging: 'AI가 알기 시작했지만, 추천까지는 갈 길이 멉니다.',
-  growing: '성장 중입니다. 차별화 전략이 다음 레벨의 열쇠입니다.',
-  strong: '강한 존재감! Top 3 진입과 방어 전략에 집중하세요.',
-  perfect: '최고 수준의 AI Visibility. 유지와 확장에 집중하세요.',
+  invisible: "AI doesn't know your product yet. Now is the time to start.",
+  emerging: 'AI is starting to notice you, but recommendations are still far off.',
+  growing: "You're growing. Differentiation is the key to the next level.",
+  strong: 'Strong presence! Focus on cracking the top 3 and defending position.',
+  perfect: 'Top-tier AI visibility. Focus on maintaining and expanding.',
 }
 
 // ===== 20규칙 룰셋 =====
@@ -103,44 +103,44 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-rec-inv-01',
         dimension: 'recognition',
-        title: 'Product Hunt에 런치하세요',
-        description: 'AI 학습 데이터에 제품이 포함되려면 주요 플랫폼에 존재해야 합니다. Product Hunt 런치는 AI 크롤러가 수집하는 핵심 소스입니다.',
+        title: 'Launch on Product Hunt',
+        description: 'For AI training data to include your product, you need presence on major platforms. A Product Hunt launch is a core source AI crawlers ingest.',
         difficulty: 2,
         estimatedImpact: 8,
-        timeToComplete: '반나절',
+        timeToComplete: 'Half day',
         externalUrl: 'https://www.producthunt.com/posts/new',
         priority: 10,
       },
       {
         id: 'rx-rec-inv-02',
         dimension: 'recognition',
-        title: 'llms.txt 파일을 도메인 루트에 추가하세요',
-        description: 'llms.txt는 AI가 제품 정보를 정확히 이해하도록 돕는 표준입니다. 제품명, 설명, 주요 기능을 구조화하여 /llms.txt에 배포하세요.',
+        title: 'Add an llms.txt file at your domain root',
+        description: 'llms.txt is a standard that helps AI accurately understand your product. Structure your product name, description, and key features and publish at /llms.txt.',
         difficulty: 1,
         estimatedImpact: 5,
-        timeToComplete: '30분',
+        timeToComplete: '30 min',
         externalUrl: 'https://llmstxt.org',
         priority: 15,
       },
       {
         id: 'rx-rec-inv-03',
         dimension: 'recognition',
-        title: 'Hacker News Show HN에 제품을 소개하세요',
-        description: 'HN은 AI 학습 데이터의 핵심 소스입니다. "Show HN: {제품명} - {한줄소개}" 형식으로 포스팅하면 AI 인식 확률이 크게 높아집니다.',
+        title: 'Post your product on Hacker News Show HN',
+        description: 'HN is a core source for AI training data. Posting in the "Show HN: {product} - {one-liner}" format significantly raises the odds AI will recognize you.',
         difficulty: 2,
         estimatedImpact: 7,
-        timeToComplete: '2시간',
+        timeToComplete: '2 hours',
         externalUrl: 'https://news.ycombinator.com/showhn.html',
         priority: 12,
       },
       {
         id: 'rx-rec-inv-04',
         dimension: 'recognition',
-        title: '영문 위키백과에 제품 문서를 생성하세요',
-        description: '위키백과는 거의 모든 AI의 학습 데이터입니다. Notable한 제품이라면 위키 문서가 AI 인식의 가장 확실한 경로입니다.',
+        title: 'Create an English Wikipedia article for your product',
+        description: 'Wikipedia is in nearly every AI training set. If your product meets notability, a Wikipedia article is the surest route to AI recognition.',
         difficulty: 3,
         estimatedImpact: 10,
-        timeToComplete: '1일 이상',
+        timeToComplete: '1+ day',
         externalUrl: 'https://en.wikipedia.org/wiki/Wikipedia:Your_first_article',
         priority: 20,
       },
@@ -149,21 +149,21 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-rec-emg-01',
         dimension: 'recognition',
-        title: '미인식 AI 엔진 타겟 콘텐츠를 작성하세요',
-        description: 'Engine Grades에서 F등급인 엔진을 확인하세요. 해당 AI가 주로 크롤링하는 플랫폼(Gemini=YouTube/Reddit, Perplexity=최신 웹)에 제품 관련 콘텐츠를 게시하세요.',
+        title: 'Create content targeting AI engines that miss you',
+        description: 'Check which engines have an F grade in Engine Grades. Publish product content on the platforms that AI primarily crawls (Gemini=YouTube/Reddit, Perplexity=fresh web).',
         difficulty: 2,
         estimatedImpact: 6,
-        timeToComplete: '반나절',
+        timeToComplete: 'Half day',
         priority: 10,
       },
       {
         id: 'rx-rec-emg-02',
         dimension: 'recognition',
-        title: '기술 블로그에 제품 사용 사례 글을 작성하세요',
-        description: 'Medium, Dev.to, 자사 블로그에 "How to use {제품} for {use-case}" 글을 작성하세요. AI가 제품을 추천하려면 구체적 사용 사례 텍스트가 필요합니다.',
+        title: 'Write product use-case posts on tech blogs',
+        description: 'Publish "How to use {product} for {use-case}" posts on Medium, Dev.to, and your own blog. For AI to recommend a product, it needs concrete use-case text.',
         difficulty: 2,
         estimatedImpact: 5,
-        timeToComplete: '3시간',
+        timeToComplete: '3 hours',
         priority: 15,
       },
     ],
@@ -171,21 +171,21 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-rec-grw-01',
         dimension: 'recognition',
-        title: 'AI 추천 시 정확한 제품 설명이 나오도록 공식 문서를 보강하세요',
-        description: '인식은 되지만 부정확한 정보가 전달될 수 있습니다. 공식 웹사이트의 메타 태그, 제품 설명, FAQ를 명확하게 업데이트하세요.',
+        title: 'Tighten official docs so AI recommendations describe you accurately',
+        description: "You're recognized, but inaccurate info may surface. Update meta tags, product descriptions, and FAQs on your official site so the messaging is unambiguous.",
         difficulty: 2,
         estimatedImpact: 4,
-        timeToComplete: '반나절',
+        timeToComplete: 'Half day',
         priority: 10,
       },
       {
         id: 'rx-rec-grw-02',
         dimension: 'recognition',
-        title: '업계 팟캐스트/인터뷰에 출연하세요',
-        description: '팟캐스트 트랜스크립트는 AI 학습 데이터에 포함됩니다. 제품의 차별점을 명확히 전달하는 인터뷰가 "알고 있다"에서 "추천한다"로 전환시킵니다.',
+        title: 'Appear on industry podcasts and interviews',
+        description: 'Podcast transcripts end up in AI training data. An interview that clearly explains your differentiation is what flips AI from "knows you" to "recommends you".',
         difficulty: 3,
         estimatedImpact: 5,
-        timeToComplete: '1일',
+        timeToComplete: '1 day',
         priority: 15,
       },
     ],
@@ -193,21 +193,21 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-rec-str-01',
         dimension: 'recognition',
-        title: '두 AI 엔진 모두에서 "추천" 등급을 달성하세요',
-        description: 'C등급(인식만)인 엔진이 있다면 해당 AI에게 직접 제품을 추천해달라고 요청해보고, 어떤 정보가 부족한지 파악하세요. 경쟁사 대비 차별점 콘텐츠가 핵심입니다.',
+        title: 'Reach "recommended" grade on both AI engines',
+        description: 'If any engine sits at grade C (recognition only), ask that AI directly to recommend your product and see what context is missing. Differentiation content vs. competitors is the lever.',
         difficulty: 2,
         estimatedImpact: 4,
-        timeToComplete: '반나절',
+        timeToComplete: 'Half day',
         priority: 10,
       },
       {
         id: 'rx-rec-str-02',
         dimension: 'recognition',
-        title: '제품 비교 글에서 1위로 언급되도록 콘텐츠를 강화하세요',
-        description: '"Best {category}" 비교 글에서 1위로 언급되는 것이 AI 추천의 핵심 신호입니다. 자사 블로그 외 제3자 리뷰어에게 비교 글 작성을 요청하세요.',
+        title: 'Strengthen content so comparison posts list you #1',
+        description: 'Being mentioned first in "Best {category}" comparisons is a core signal for AI recommendations. Beyond your own blog, ask third-party reviewers to publish comparisons.',
         difficulty: 3,
         estimatedImpact: 5,
-        timeToComplete: '1일',
+        timeToComplete: '1 day',
         priority: 15,
       },
     ],
@@ -215,21 +215,21 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-rec-prf-01',
         dimension: 'recognition',
-        title: 'AI 인식 상태를 주간 모니터링하세요',
-        description: '이미 훌륭한 수준입니다. pickedby.ai Daily Pulse로 주간 변화를 추적하고, 경쟁사 진입이나 AI 모델 업데이트로 인한 순위 변동에 대비하세요.',
+        title: 'Monitor AI recognition weekly',
+        description: "You're already in great shape. Use pickedby.ai Daily Pulse to track weekly changes and stay ahead of rank shifts from new entrants or AI model updates.",
         difficulty: 1,
         estimatedImpact: 1,
-        timeToComplete: '10분/주',
+        timeToComplete: '10 min/week',
         priority: 50,
       },
       {
         id: 'rx-rec-prf-02',
         dimension: 'recognition',
-        title: '새로운 AI 엔진(Claude, Grok)으로 커버리지를 확장하세요',
-        description: '현재 측정되는 2개 엔진 외에도 Claude, Grok 등 새로운 AI에서의 인식을 확인하세요. 다양한 AI에서 추천되는 것이 장기적 방어선입니다.',
+        title: 'Expand coverage to new AI engines (Claude, Grok)',
+        description: 'Beyond the two engines we currently measure, check recognition on new AIs like Claude and Grok. Being recommended across many AIs is your long-term moat.',
         difficulty: 2,
         estimatedImpact: 2,
-        timeToComplete: '2시간',
+        timeToComplete: '2 hours',
         priority: 55,
       },
     ],
@@ -241,21 +241,21 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-cat-inv-01',
         dimension: 'category',
-        title: '"Best {category}" 블로그 글을 작성하세요',
-        description: 'AI에게 "best {당신의 카테고리}"를 물었을 때 당신이 등장하지 않습니다. "Best {category} tools in 2026" 비교 글을 작성하여 제품을 카테고리 맥락에 배치하세요.',
+        title: 'Publish a "Best {category}" blog post',
+        description: 'When AI is asked "best {your category}" you don\'t show up. Write a "Best {category} tools in 2026" comparison post to anchor your product in category context.',
         difficulty: 2,
         estimatedImpact: 7,
-        timeToComplete: '3시간',
+        timeToComplete: '3 hours',
         priority: 10,
       },
       {
         id: 'rx-cat-inv-02',
         dimension: 'category',
-        title: '메타 태그와 제목에 카테고리 키워드를 포함하세요',
-        description: '웹사이트 title, meta description, h1에 "{category} tool" 키워드를 명시적으로 넣으세요. AI는 웹 크롤링 시 이 태그를 카테고리 분류에 사용합니다.',
+        title: 'Include category keywords in meta tags and titles',
+        description: 'Put the "{category} tool" keyword explicitly in your site title, meta description, and h1. AI uses these tags during crawling to classify category.',
         difficulty: 1,
         estimatedImpact: 4,
-        timeToComplete: '30분',
+        timeToComplete: '30 min',
         priority: 15,
       },
     ],
@@ -263,21 +263,21 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-cat-emg-01',
         dimension: 'category',
-        title: '틈새(niche) 카테고리를 선점하세요',
-        description: '대형 카테고리에서 경쟁이 어렵다면, 더 구체적인 하위 카테고리를 노리세요. 예: "AI tool" 대신 "AI visibility checker"처럼 좁은 영역에서 1위를 달성하세요.',
+        title: 'Claim a niche sub-category',
+        description: 'If the broad category is too competitive, target a narrower sub-category. Example: aim for #1 in "AI visibility checker" instead of "AI tool".',
         difficulty: 2,
         estimatedImpact: 6,
-        timeToComplete: '반나절',
+        timeToComplete: 'Half day',
         priority: 10,
       },
       {
         id: 'rx-cat-emg-02',
         dimension: 'category',
-        title: 'G2, Capterra에 제품을 등록하세요',
-        description: 'AI는 G2/Capterra 같은 소프트웨어 디렉토리를 카테고리 랭킹의 핵심 소스로 사용합니다. 제품 프로필을 완성하고 초기 리뷰를 확보하세요.',
+        title: 'List your product on G2 and Capterra',
+        description: 'AI relies on software directories like G2 and Capterra as core sources for category rankings. Complete your product profile and seed initial reviews.',
         difficulty: 2,
         estimatedImpact: 6,
-        timeToComplete: '2시간',
+        timeToComplete: '2 hours',
         externalUrl: 'https://www.g2.com/products/new',
         priority: 12,
       },
@@ -286,21 +286,21 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-cat-grw-01',
         dimension: 'category',
-        title: '제3자 비교 리뷰에서 상위 언급을 확보하세요',
-        description: '카테고리 순위를 높이려면 제3자가 작성한 비교 글에서 상위에 언급되어야 합니다. 리뷰어/블로거에게 제품 리뷰를 요청하세요.',
+        title: 'Earn top mentions in third-party comparison reviews',
+        description: 'To climb the category rank, you need top placement in comparison posts written by third parties. Reach out to reviewers and bloggers to cover your product.',
         difficulty: 3,
         estimatedImpact: 5,
-        timeToComplete: '1일',
+        timeToComplete: '1 day',
         priority: 10,
       },
       {
         id: 'rx-cat-grw-02',
         dimension: 'category',
-        title: '경쟁사 대비 차별화 포인트를 명확히 하세요',
-        description: 'AI가 "best {category}"에 대답할 때, 차별화된 이유가 있는 제품을 추천합니다. "vs {경쟁사}" 비교 페이지를 만들어 차별점을 구조화하세요.',
+        title: 'Sharpen your differentiation vs. competitors',
+        description: 'When AI answers "best {category}" it picks products with a clear reason to stand out. Build "vs {competitor}" comparison pages that structure your differentiation.',
         difficulty: 2,
         estimatedImpact: 5,
-        timeToComplete: '반나절',
+        timeToComplete: 'Half day',
         priority: 12,
       },
     ],
@@ -308,21 +308,21 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-cat-str-01',
         dimension: 'category',
-        title: 'Top 3 진입을 위해 유저 리뷰를 집중 확보하세요',
-        description: '카테고리 상위권에 진입하려면 리뷰 수와 품질이 결정적입니다. Product Hunt, G2에서 실제 유저 리뷰를 요청하세요.',
+        title: 'Concentrate on user reviews to crack the Top 3',
+        description: 'Volume and quality of reviews are decisive at the top of a category. Ask real users to leave reviews on Product Hunt and G2.',
         difficulty: 2,
         estimatedImpact: 4,
-        timeToComplete: '반나절',
+        timeToComplete: 'Half day',
         priority: 10,
       },
       {
         id: 'rx-cat-str-02',
         dimension: 'category',
-        title: '인접 카테고리로 영역을 확장하세요',
-        description: '현재 카테고리에서 강하다면, 인접한 새 카테고리에서도 인지도를 확보하세요. 다중 카테고리 존재감이 AI 추천 확률을 높입니다.',
+        title: 'Expand into adjacent categories',
+        description: "If you're strong in your current category, build awareness in adjacent ones too. Presence across multiple categories raises your AI recommendation odds.",
         difficulty: 3,
         estimatedImpact: 4,
-        timeToComplete: '1일',
+        timeToComplete: '1 day',
         priority: 15,
       },
     ],
@@ -330,11 +330,11 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-cat-prf-01',
         dimension: 'category',
-        title: '카테고리 1위 방어 전략을 수립하세요',
-        description: '축하합니다! 카테고리 최상위입니다. 주간 모니터링으로 순위 변동을 감지하고, 신규 경쟁자 진입 시 즉시 대응하세요.',
+        title: 'Build a defense plan for your #1 category position',
+        description: "Congrats — you're at the top of the category. Monitor rank shifts weekly and respond immediately when new competitors enter.",
         difficulty: 1,
         estimatedImpact: 1,
-        timeToComplete: '10분/주',
+        timeToComplete: '10 min/week',
         priority: 50,
       },
     ],
@@ -346,32 +346,32 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-cor-inv-01',
         dimension: 'corec',
-        title: 'AlternativeTo에 제품을 등록하세요',
-        description: 'AI가 "X 대안"을 추천할 때 AlternativeTo 데이터를 참고합니다. 경쟁사의 Alternative로 등록하면 함께 추천될 확률이 높아집니다.',
+        title: 'List your product on AlternativeTo',
+        description: 'AI references AlternativeTo data when recommending "alternatives to X". Listing yourself as an alternative to competitors raises the odds you get co-recommended.',
         difficulty: 1,
         estimatedImpact: 5,
-        timeToComplete: '30분',
+        timeToComplete: '30 min',
         externalUrl: 'https://alternativeto.net/submit/',
         priority: 10,
       },
       {
         id: 'rx-cor-inv-02',
         dimension: 'corec',
-        title: '"vs {경쟁사}" 비교 글을 작성하세요',
-        description: 'AI가 제품 추천 시 함께 언급할 대안을 찾습니다. "{내 제품} vs {경쟁사}" 비교 콘텐츠가 있으면 Co-Recommendation에 포함될 확률이 크게 높아집니다.',
+        title: 'Write "vs {competitor}" comparison posts',
+        description: 'When AI recommends a product, it looks for alternatives to mention alongside. "{your product} vs {competitor}" comparison content sharply raises your co-recommendation odds.',
         difficulty: 2,
         estimatedImpact: 5,
-        timeToComplete: '2시간',
+        timeToComplete: '2 hours',
         priority: 12,
       },
       {
         id: 'rx-cor-inv-03',
         dimension: 'corec',
-        title: 'Reddit "대안 추천" 스레드에 참여하세요',
-        description: '"looking for {category} alternative" 스레드를 찾아 자연스럽게 제품을 소개하세요. Reddit은 AI 학습 데이터의 핵심 소스입니다.',
+        title: 'Join Reddit "alternative recommendation" threads',
+        description: 'Find "looking for {category} alternative" threads and introduce your product naturally. Reddit is a core source for AI training data.',
         difficulty: 1,
         estimatedImpact: 4,
-        timeToComplete: '1시간',
+        timeToComplete: '1 hour',
         priority: 15,
       },
     ],
@@ -379,21 +379,21 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-cor-emg-01',
         dimension: 'corec',
-        title: '크로스 프로모션 파트너십을 시도하세요',
-        description: '함께 추천되는 제품들과 상호 링크/언급 파트너십을 만드세요. "Pairs well with {파트너}" 문구가 AI 추천에서 함께 언급되는 효과를 줍니다.',
+        title: 'Try cross-promotion partnerships',
+        description: 'Build mutual link/mention partnerships with products that get recommended alongside you. "Pairs well with {partner}" phrasing helps you co-appear in AI recommendations.',
         difficulty: 2,
         estimatedImpact: 4,
-        timeToComplete: '반나절',
+        timeToComplete: 'Half day',
         priority: 10,
       },
       {
         id: 'rx-cor-emg-02',
         dimension: 'corec',
-        title: '비교 리뷰 플랫폼에서 리뷰를 확보하세요',
-        description: 'G2, Capterra, TrustRadius 등에서 리뷰가 많을수록 AI가 동일 카테고리 경쟁사와 함께 언급할 확률이 높아집니다.',
+        title: 'Collect reviews on comparison platforms',
+        description: 'The more reviews you have on G2, Capterra, TrustRadius, etc., the more likely AI is to mention you alongside same-category competitors.',
         difficulty: 2,
         estimatedImpact: 4,
-        timeToComplete: '반나절',
+        timeToComplete: 'Half day',
         priority: 12,
       },
     ],
@@ -401,11 +401,11 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-cor-grw-01',
         dimension: 'corec',
-        title: '통합(Integration) 마켓플레이스에 등록하세요',
-        description: 'Zapier, Make.com 등 통합 플랫폼에 등록하면 다른 도구와의 연결 맥락이 생겨 Co-Recommendation이 자연스럽게 증가합니다.',
+        title: 'List on integration marketplaces',
+        description: 'Listing on Zapier, Make.com, and similar integration platforms creates connective context with other tools, lifting co-recommendation naturally.',
         difficulty: 3,
         estimatedImpact: 4,
-        timeToComplete: '1일',
+        timeToComplete: '1 day',
         priority: 10,
       },
     ],
@@ -413,11 +413,11 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-cor-str-01',
         dimension: 'corec',
-        title: '상위 경쟁사를 벤치마크하고 차별화하세요',
-        description: 'CoRec 리더보드에서 당신과 함께 추천되는 상위 제품들을 분석하세요. 그들의 강점을 인정하되, 당신만의 차별점을 강화하는 콘텐츠를 만드세요.',
+        title: 'Benchmark top peers and double down on differentiation',
+        description: 'Analyze the top products that get co-recommended with you on the CoRec leaderboard. Acknowledge their strengths, then publish content that sharpens your unique edge.',
         difficulty: 2,
         estimatedImpact: 3,
-        timeToComplete: '반나절',
+        timeToComplete: 'Half day',
         priority: 10,
       },
     ],
@@ -425,11 +425,11 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-cor-prf-01',
         dimension: 'corec',
-        title: 'Co-Recommendation 네트워크를 모니터링하세요',
-        description: '훌륭합니다! 다양한 제품과 함께 추천되고 있습니다. 새로운 경쟁자가 진입하는지 주간 확인하고, 기존 파트너십을 유지하세요.',
+        title: 'Monitor your Co-Recommendation network',
+        description: 'Great work — you get co-recommended with a wide range of products. Check weekly for new entrants and maintain your existing partnerships.',
         difficulty: 1,
         estimatedImpact: 1,
-        timeToComplete: '10분/주',
+        timeToComplete: '10 min/week',
         priority: 50,
       },
     ],
@@ -441,21 +441,21 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-web-inv-01',
         dimension: 'web',
-        title: 'Hacker News, Reddit, Product Hunt에 글을 게시하세요',
-        description: 'Tier-1 사이트(HN, Reddit, PH, G2, Capterra)에 제품이 한 번도 언급되지 않았습니다. 이 플랫폼에 제품을 소개하는 것이 Web Authority의 첫걸음입니다.',
+        title: 'Post on Hacker News, Reddit, and Product Hunt',
+        description: 'Your product has zero mentions on Tier-1 sites (HN, Reddit, PH, G2, Capterra). Introducing your product on these platforms is the first step toward Web Authority.',
         difficulty: 2,
         estimatedImpact: 4,
-        timeToComplete: '2시간',
+        timeToComplete: '2 hours',
         priority: 10,
       },
       {
         id: 'rx-web-inv-02',
         dimension: 'web',
-        title: '업계 미디어에 보도자료를 배포하세요',
-        description: 'TechCrunch, The Verge 같은 Tier-1 미디어에 보도자료를 보내세요. 어렵다면 IndieHackers, BetaList 같은 Tier-2부터 시작하세요.',
+        title: 'Distribute press releases to industry media',
+        description: 'Pitch press releases to Tier-1 media like TechCrunch and The Verge. If that feels out of reach, start with Tier-2 outlets like IndieHackers and BetaList.',
         difficulty: 3,
         estimatedImpact: 5,
-        timeToComplete: '1일',
+        timeToComplete: '1 day',
         priority: 15,
       },
     ],
@@ -463,11 +463,11 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-web-emg-01',
         dimension: 'web',
-        title: 'Tier-1 사이트 언급을 확보하세요',
-        description: '현재 Tier-2 사이트에서만 언급되고 있습니다. TechCrunch, Wired 등 Tier-1 미디어에 피칭하거나, 업계 컨퍼런스 발표를 통해 Tier-1 커버리지를 확보하세요.',
+        title: 'Secure mentions on Tier-1 sites',
+        description: "You're only mentioned on Tier-2 sites today. Pitch Tier-1 media like TechCrunch and Wired, or earn Tier-1 coverage through industry conference talks.",
         difficulty: 3,
         estimatedImpact: 4,
-        timeToComplete: '1일',
+        timeToComplete: '1 day',
         priority: 10,
       },
     ],
@@ -475,11 +475,11 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-web-grw-01',
         dimension: 'web',
-        title: '게스트 포스트와 외부 기고를 늘리세요',
-        description: '업계 블로그, 미디어에 게스트 포스트를 작성하세요. 자연스러운 백링크가 Web Authority를 높이고, AI가 신뢰할 수 있는 소스로 인식하게 합니다.',
+        title: 'Increase guest posts and outside contributions',
+        description: 'Write guest posts for industry blogs and media. Natural backlinks lift Web Authority and signal to AI that you are a trustworthy source.',
         difficulty: 2,
         estimatedImpact: 3,
-        timeToComplete: '반나절',
+        timeToComplete: 'Half day',
         priority: 10,
       },
     ],
@@ -487,11 +487,11 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-web-str-01',
         dimension: 'web',
-        title: '정기적인 미디어 노출 전략을 수립하세요',
-        description: '분기별 보도자료, 월별 블로그 기고 등 꾸준한 미디어 노출 루틴을 만드세요. 일회성이 아닌 지속적 존재감이 Web Authority 유지의 핵심입니다.',
+        title: 'Set up a regular media presence cadence',
+        description: 'Create a steady media routine — quarterly press releases, monthly blog contributions. Continuous presence, not one-off hits, is the key to sustaining Web Authority.',
         difficulty: 2,
         estimatedImpact: 2,
-        timeToComplete: '반나절',
+        timeToComplete: 'Half day',
         priority: 10,
       },
     ],
@@ -499,11 +499,11 @@ const PRESCRIPTION_RULES: Record<DimensionId, Record<PrescriptionLevel, Action[]
       {
         id: 'rx-web-prf-01',
         dimension: 'web',
-        title: 'Web Authority를 유지하며 새로운 채널을 탐색하세요',
-        description: '최고 수준의 웹 권위를 달성했습니다. 기존 채널 유지에 집중하되, 신규 미디어 플랫폼이나 팟캐스트 등으로 채널을 다각화하세요.',
+        title: 'Maintain Web Authority while exploring new channels',
+        description: "You've reached top-tier web authority. Keep your existing channels healthy and diversify into new media platforms and podcasts.",
         difficulty: 1,
         estimatedImpact: 1,
-        timeToComplete: '10분/주',
+        timeToComplete: '10 min/week',
         priority: 50,
       },
     ],
@@ -527,13 +527,13 @@ function buildDiagnosis(
       const recognizedCount = [gemini, perplexity].filter(e => e?.recognized).length
       const recommendedCount = [gemini, perplexity].filter(e => e?.recommended).length
       summary = recognizedCount === 0
-        ? 'AI 엔진 2개 중 0개가 당신을 인식합니다.'
+        ? '0 of 2 AI engines recognize you.'
         : recommendedCount === 2
-        ? '모든 AI 엔진이 당신을 추천합니다!'
-        : `AI 엔진 2개 중 ${recognizedCount}개가 인식, ${recommendedCount}개가 추천합니다.`
+        ? 'Every AI engine recommends you!'
+        : `${recognizedCount} of 2 AI engines recognize you, ${recommendedCount} recommend you.`
       detail = [
-        `Gemini: ${gemini?.recommended ? '추천 (A등급)' : gemini?.recognized ? '인식만 (C등급)' : '미인식 (F등급)'}`,
-        `Perplexity: ${perplexity?.recommended ? '추천 (A등급)' : perplexity?.recognized ? '인식만 (C등급)' : '미인식 (F등급)'}`,
+        `Gemini: ${gemini?.recommended ? 'Recommended (Grade A)' : gemini?.recognized ? 'Recognized only (Grade C)' : 'Not recognized (Grade F)'}`,
+        `Perplexity: ${perplexity?.recommended ? 'Recommended (Grade A)' : perplexity?.recognized ? 'Recognized only (Grade C)' : 'Not recognized (Grade F)'}`,
       ].join(' / ')
       break
     }
@@ -544,26 +544,26 @@ function buildDiagnosis(
         return best == null ? r.rank : Math.min(best, r.rank)
       }, null) ?? null
       summary = bestRank === null
-        ? 'AI에게 "best" 질문을 했을 때 카테고리 순위권에 등장하지 않습니다.'
+        ? 'You don\'t appear in category rankings when AI is asked "best" questions.'
         : bestRank <= 3
-        ? `카테고리 Top ${bestRank}! 상위권에 안착했습니다.`
-        : `카테고리 ${bestRank}위. 상위권 진입이 필요합니다.`
+        ? `Category Top ${bestRank}! You\'re anchored at the top.`
+        : `Ranked #${bestRank} in category. You need to break into the top tier.`
       detail = bestRank === null
-        ? '"best {category}" 쿼리에서 Top-20에 미등장'
-        : `최고 순위: ${bestRank}위`
+        ? 'Not in Top-20 for "best {category}" queries'
+        : `Best rank: #${bestRank}`
       break
     }
     case 'corec': {
       const uniqueCount = (dim.breakdown.unique_count as number) ?? 0
       summary = uniqueCount === 0
-        ? 'AI가 다른 제품을 추천할 때 당신이 함께 언급되지 않습니다.'
+        ? "You aren't mentioned alongside other products when AI gives recommendations."
         : uniqueCount <= 3
-        ? `${uniqueCount}개 제품과 함께 추천됩니다. 더 넓은 네트워크가 필요합니다.`
-        : `${uniqueCount}개 제품과 함께 추천되고 있습니다.`
+        ? `Co-recommended with ${uniqueCount} products. You need a wider network.`
+        : `Co-recommended with ${uniqueCount} products.`
       const top5 = (dim.breakdown.top_5 as string[]) ?? []
       detail = top5.length > 0
-        ? `함께 추천되는 제품: ${top5.join(', ')}`
-        : '함께 추천되는 제품 없음'
+        ? `Co-recommended with: ${top5.join(', ')}`
+        : 'No co-recommended products'
       break
     }
     case 'web': {
@@ -571,15 +571,15 @@ function buildDiagnosis(
       const tier2 = (dim.breakdown.tier2_count as number) ?? 0
       const total = tier1 + tier2
       summary = total === 0
-        ? '주요 웹사이트에서 제품이 언급되지 않습니다.'
-        : `Tier-1 ${tier1}건, Tier-2 ${tier2}건의 웹 언급이 있습니다.`
+        ? "You aren't mentioned on any major websites yet."
+        : `${tier1} Tier-1 and ${tier2} Tier-2 web mentions.`
       detail = total === 0
-        ? 'Tier-1/2 사이트 언급 0건'
-        : `Tier-1(TechCrunch 등): ${tier1}건 / Tier-2(블로그 등): ${tier2}건`
+        ? '0 Tier-1/2 site mentions'
+        : `Tier-1 (TechCrunch, etc.): ${tier1} / Tier-2 (blogs, etc.): ${tier2}`
       break
     }
     default: {
-      summary = `점수: ${dim.score}/${dim.max}`
+      summary = `Score: ${dim.score}/${dim.max}`
       detail = ''
     }
   }
