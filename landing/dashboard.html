@@ -2385,6 +2385,11 @@ button:focus-visible, a:focus-visible {
       })
       resetTurnstile()  // 토큰 1회용 — 사용 후 즉시 리셋
       const data = await res.json()
+      // 🔴 RX-DEBUG (2026-04-28): prescription 진단용 — 임시
+      if (data._rxDebug) {
+        console.log('%c[RX_DEBUG]', 'background:#FFD700;color:#000;padding:2px 6px;font-weight:700;', JSON.stringify(data._rxDebug, null, 2))
+        console.log('[RX_DEBUG] prescription in response:', !!data.prescription, data.prescription ? `(level=${data.prescription.overall?.level}, top3=${data.prescription.prescriptions?.length})` : '')
+      }
       // BUG-CHECK-NAN-01: API 에러 응답 (403/500 등) 또는 score 누락 방어
       if (!res.ok || data.error) {
         const reason = data.reason || data.error || `HTTP ${res.status}`
