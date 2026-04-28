@@ -1049,6 +1049,147 @@ button:focus-visible, a:focus-visible {
     .rv-roster-foot { flex-direction: column; align-items: flex-start; gap: 4px; }
     .rv-roster-head { flex-direction: column; align-items: flex-start; }
   }
+
+  /* ============ JOURNEY PANE — Claude Design 2026-04-29 ============ */
+  .t-invisible { color: #FF6B6B; }
+  .t-emerging  { color: #FFA94D; }
+  .t-strong    { color: #FFD93D; }
+  .t-perfect   { color: #6BE08F; }
+
+  .jr-hero { position: relative; overflow: hidden; padding: 28px 32px 30px; }
+  .jr-hero-bg { position: absolute; inset: 0; background: radial-gradient(circle at 88% 28%, rgba(255,215,0,0.08), transparent 45%), radial-gradient(circle at 8% 88%, rgba(255,215,0,0.04), transparent 40%); pointer-events: none; }
+  .jr-hero-bg::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle 1px at 12% 22%, #FFD700 50%, transparent 51%), radial-gradient(circle 1px at 82% 14%, #FFD700 50%, transparent 51%), radial-gradient(circle 1px at 92% 64%, #FFD700 50%, transparent 51%), radial-gradient(circle 1px at 4% 72%, #FFD700 50%, transparent 51%), radial-gradient(circle 1px at 60% 88%, #FFD700 50%, transparent 51%), radial-gradient(circle 1px at 38% 6%, #FFD700 50%, transparent 51%); opacity: 0.3; pointer-events: none; }
+  .jr-hero-grid { position: relative; display: grid; grid-template-columns: 1fr 180px; gap: 32px; align-items: center; }
+  .jr-hero-eye { font-family: var(--pba-font-pixel); font-size: 8px; letter-spacing: 0.22em; color: var(--pba-gold); margin-bottom: 16px; }
+  .jr-hero-h { font-family: var(--pba-font-body); font-weight: 800; font-size: 32px; line-height: 1.22; letter-spacing: -0.6px; color: #fff; margin: 0 0 22px; max-width: 720px; }
+  .jr-hero-h em { font-style: normal; }
+  .jr-hero-h em:not(.t-invisible):not(.t-emerging):not(.t-strong):not(.t-perfect) { color: var(--pba-gold); }
+  .jr-hero-meta { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--pba-border-faint); padding-top: 16px; }
+  .jr-hero-meta-cell { display: flex; flex-direction: column; gap: 4px; padding-right: 16px; border-right: 1px solid var(--pba-border-faint); }
+  .jr-hero-meta-cell:last-child { border-right: none; padding-right: 0; }
+  .jr-hero-meta-cell .lbl { font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.18em; color: var(--pba-fg-5); }
+  .jr-hero-meta-cell .val { font-size: 14px; color: #fff; font-weight: 600; }
+  .jr-hero-meta-cell .val.mono { font-family: var(--pba-font-mono); font-size: 18px; letter-spacing: -0.3px; }
+  .jr-hero-meta-cell .val.tier-pill { align-self: flex-start; font-family: var(--pba-font-pixel); font-size: 8.5px; letter-spacing: 0.2em; color: var(--pba-gold); background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); padding: 5px 9px; border-radius: 3px; }
+  .jr-hero-medal { position: relative; display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px 14px 14px; background: #0a0800; border: 2px solid var(--pba-gold); border-radius: 8px; box-shadow: 3px 3px 0 #b39700; }
+  .jr-hero-medal svg { width: 96px; height: 96px; }
+  .jr-hero-medal-tier { font-family: var(--pba-font-pixel); font-size: 8px; letter-spacing: 0.2em; color: var(--pba-gold); }
+
+  .jr-arc-card { padding: 32px 24px 24px; }
+  .jr-arc { display: grid; grid-template-columns: 1fr 40px 1fr 40px 1fr 40px 1fr; align-items: stretch; margin-bottom: 22px; }
+  .jr-stage { position: relative; display: flex; flex-direction: column; align-items: center; }
+  .jr-stage-flag { position: relative; width: 22px; height: 28px; margin-bottom: 8px; display: grid; place-items: center; }
+  .jr-stage-flag svg { width: 16px; height: 22px; }
+  .jr-stage-flag.locked-flag svg { width: 18px; height: 22px; }
+  .jr-stage.passed .jr-stage-flag::after { content: ''; position: absolute; bottom: -3px; left: 50%; transform: translateX(-50%); width: 10px; height: 2px; background: var(--pba-gold); }
+  .jr-stage-hero { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 6px; }
+  .jr-stage-hero-glyph { font-family: var(--pba-font-pixel); font-size: 22px; color: var(--pba-gold); text-shadow: 2px 2px 0 #b39700; animation: jrBob 1.6s ease-in-out infinite; }
+  @keyframes jrBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+  .jr-stage-hero-label { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-gold); background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); padding: 3px 6px; border-radius: 3px; }
+  .jr-stage-card { width: 100%; background: #0d0d0d; border: 1px solid var(--pba-border); border-radius: 6px; padding: 12px 8px 10px; text-align: center; display: flex; flex-direction: column; gap: 5px; }
+  .jr-stage.passed .jr-stage-card { background: #0a0800; border-color: var(--pba-gold-border); }
+  .jr-stage.current .jr-stage-card { background: var(--pba-gold-bg); border: 2px solid var(--pba-gold); box-shadow: 3px 3px 0 #b39700; transform: translate(-1px, -1px); }
+  .jr-stage.locked .jr-stage-card { background: transparent; border-style: dashed; border-color: var(--pba-border-faint); opacity: 0.7; }
+  .jr-stage-idx { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.2em; color: var(--pba-fg-5); }
+  .jr-stage.current .jr-stage-idx { color: var(--pba-gold); }
+  .jr-stage-name { font-family: var(--pba-font-pixel); font-size: 10px; letter-spacing: 0.16em; line-height: 1.2; }
+  .jr-stage-range { font-family: var(--pba-font-mono); font-size: 12px; color: var(--pba-fg-3); }
+  .jr-stage.current .jr-stage-range { color: var(--pba-gold); font-weight: 600; }
+  .jr-stage.locked .jr-stage-range { color: var(--pba-fg-5); }
+  .jr-stage-status { font-family: var(--pba-font-pixel); font-size: 7.5px; letter-spacing: 0.18em; padding: 4px 6px; border-radius: 3px; margin: 4px 0 2px; }
+  .jr-stage.passed .jr-stage-status { color: var(--pba-gold); background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); }
+  .jr-stage-status.active { color: #fff; background: var(--pba-gold); border: 1px solid var(--pba-gold); }
+  .jr-stage-status.locked { color: var(--pba-fg-5); background: transparent; border: 1px solid var(--pba-border-faint); }
+  .jr-stage-meta { font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.16em; color: var(--pba-fg-5); }
+
+  .jr-bridge { position: relative; align-self: center; width: 100%; padding: 0 6px; display: flex; flex-direction: column; gap: 6px; align-items: center; margin-top: 36px; }
+  .jr-bridge-track { width: 100%; height: 6px; background: #050505; border: 1px solid var(--pba-border-faint); border-radius: 999px; overflow: hidden; }
+  .jr-bridge-fill { height: 100%; background: var(--pba-gold); border-radius: 999px; }
+  .jr-bridge.partial .jr-bridge-fill { background: repeating-linear-gradient(45deg, var(--pba-gold) 0 6px, #b39700 6px 12px); animation: jrShift 1.2s linear infinite; }
+  @keyframes jrShift { 0% { background-position: 0 0; } 100% { background-position: 12px 0; } }
+  .jr-bridge-label { font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.16em; color: var(--pba-fg-4); white-space: nowrap; }
+  .jr-bridge.filled .jr-bridge-label { color: var(--pba-gold); }
+  .jr-bridge.partial .jr-bridge-label { color: var(--pba-gold); }
+
+  .jr-arc-foot { display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid var(--pba-border-faint); gap: 16px; flex-wrap: wrap; }
+  .jr-arc-next { display: flex; flex-direction: column; gap: 4px; }
+  .jr-arc-next-eye { font-family: var(--pba-font-pixel); font-size: 7.5px; letter-spacing: 0.2em; color: var(--pba-gold); }
+  .jr-arc-next-h { font-size: 14px; color: var(--pba-fg-2); }
+  .jr-arc-next-h b { color: #fff; font-weight: 600; }
+  .jr-arc-next-est { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.16em; color: var(--pba-fg-5); }
+
+  .jr-timeline-card { padding: 22px 26px 24px; }
+  .jr-timeline { list-style: none; margin: 0; padding: 0; }
+  .jr-ev { display: grid; grid-template-columns: 24px 1fr; gap: 14px; padding: 14px 0; position: relative; }
+  .jr-ev:not(:last-child) { border-bottom: 1px solid var(--pba-border-faint); }
+  .jr-ev-rail { position: relative; display: flex; justify-content: center; }
+  .jr-ev-rail::before { content: ''; position: absolute; top: 0; bottom: -28px; left: 50%; width: 2px; background: var(--pba-border-faint); transform: translateX(-50%); }
+  .jr-ev:last-child .jr-ev-rail::before { display: none; }
+  .jr-ev-dot { width: 12px; height: 12px; background: var(--pba-fg-5); border: 2px solid var(--pba-bg); border-radius: 999px; position: relative; z-index: 2; margin-top: 4px; }
+  .jr-ev.up .jr-ev-dot, .jr-ev.first .jr-ev-dot { background: var(--pba-gold); box-shadow: 0 0 0 2px var(--pba-gold-border); }
+  .jr-ev.down .jr-ev-dot { background: #FF6B6B; }
+  .jr-ev.progress .jr-ev-dot { background: var(--pba-fg-2); }
+  .jr-ev-body { display: flex; flex-direction: column; gap: 6px; }
+  .jr-ev-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .jr-ev-badge { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; padding: 4px 7px; border-radius: 3px; }
+  .jr-ev-badge.up { color: var(--pba-gold); background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); }
+  .jr-ev-badge.first { color: #fff; background: var(--pba-gold); border: 1px solid var(--pba-gold); }
+  .jr-ev-badge.down { color: #FF8080; background: #1a0505; border: 1px solid #3a1010; }
+  .jr-ev-badge.progress { color: var(--pba-fg-1); background: #141414; border: 1px solid var(--pba-border); }
+  .jr-ev-badge.milestone { color: var(--pba-fg-2); background: transparent; border: 1px solid var(--pba-border); }
+  .jr-ev-date { font-family: var(--pba-font-mono); font-size: 11.5px; color: var(--pba-fg-3); }
+  .jr-ev-day { font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.16em; color: var(--pba-fg-5); }
+  .jr-ev-line { font-size: 14px; color: #fff; display: inline-flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .jr-ev-from, .jr-ev-to { font-family: var(--pba-font-pixel); font-size: 10px; letter-spacing: 0.16em; }
+  .jr-ev-arrow { color: var(--pba-fg-4); font-family: var(--pba-font-mono); }
+  .jr-ev-note { color: var(--pba-fg-2); font-size: 13px; }
+  .jr-ev-foot { display: inline-flex; align-items: baseline; gap: 8px; }
+  .jr-ev-foot .lbl { font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.18em; color: var(--pba-fg-5); }
+  .jr-ev-foot .val { font-family: var(--pba-font-mono); font-size: 13px; color: #fff; font-weight: 600; }
+
+  .jr-trophy-card { padding: 24px 26px 22px; }
+  .jr-trophy-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .jr-tr { background: #0d0d0d; border: 1px solid var(--pba-border-faint); border-radius: 8px; padding: 18px 14px 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; transition: transform .15s, border-color .15s; }
+  .jr-tr.unlocked { border-color: var(--pba-gold-border); background: #0a0800; }
+  .jr-tr.unlocked:hover { transform: translate(-1px, -1px); box-shadow: 2px 2px 0 #b39700; }
+  .jr-tr.locked { border-style: dashed; opacity: 0.6; }
+  .jr-tr-medal { position: relative; width: 56px; height: 56px; display: grid; place-items: center; margin-bottom: 4px; }
+  .jr-tr-medal-bg { position: absolute; inset: 0; background: var(--pba-gold-bg); border: 2px solid var(--pba-gold); border-radius: 50%; }
+  .jr-tr.locked .jr-tr-medal-bg { background: #0a0a0a; border: 2px dashed var(--pba-border); }
+  .jr-tr.unlocked .jr-tr-medal-bg::before, .jr-tr.unlocked .jr-tr-medal-bg::after { content: ''; position: absolute; background: var(--pba-gold); }
+  .jr-tr.unlocked .jr-tr-medal-bg::before { top: -4px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; }
+  .jr-tr.unlocked .jr-tr-medal-bg::after { bottom: -4px; left: 50%; transform: translateX(-50%); width: 4px; height: 4px; }
+  .jr-tr-icon { position: relative; z-index: 2; font-family: var(--pba-font-pixel); font-size: 22px; color: var(--pba-gold); text-shadow: 2px 2px 0 #b39700; line-height: 1; }
+  .jr-tr.locked .jr-tr-icon { color: var(--pba-fg-5); text-shadow: none; }
+  .jr-tr-name { font-family: var(--pba-font-pixel); font-size: 9px; letter-spacing: 0.18em; color: #fff; }
+  .jr-tr.locked .jr-tr-name { color: var(--pba-fg-3); }
+  .jr-tr-desc { font-size: 11.5px; color: var(--pba-fg-3); line-height: 1.4; min-height: 32px; }
+  .jr-tr-foot { margin-top: auto; padding-top: 8px; border-top: 1px solid var(--pba-border-faint); width: 100%; display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+  .jr-tr.unlocked .jr-tr-foot { border-top-color: var(--pba-gold-border); }
+  .jr-tr-foot .lbl { font-family: var(--pba-font-pixel); font-size: 6px; letter-spacing: 0.18em; color: var(--pba-fg-5); }
+  .jr-tr.unlocked .jr-tr-foot .lbl { color: var(--pba-gold); }
+  .jr-tr-foot .val { font-family: var(--pba-font-mono); font-size: 10.5px; color: #fff; }
+  .jr-tr-foot .val.muted { color: var(--pba-fg-4); font-size: 10px; }
+  .jr-trophy-foot { margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--pba-border-faint); }
+  .jr-trophy-progress { display: flex; align-items: center; gap: 14px; }
+  .jr-trophy-progress-track { flex: 1; height: 8px; background: #050505; border: 1px solid var(--pba-border-faint); border-radius: 999px; overflow: hidden; }
+  .jr-trophy-progress-fill { height: 100%; background: var(--pba-gold); border-radius: 999px; }
+  .jr-trophy-progress-label { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-3); white-space: nowrap; }
+
+  @media (max-width: 1080px) {
+    .jr-trophy-grid { grid-template-columns: repeat(2, 1fr); }
+    .jr-arc { grid-template-columns: 1fr; gap: 4px; }
+    .jr-bridge { width: 60%; margin: 4px auto; transform: rotate(90deg); padding: 8px 0; margin-top: 4px; }
+    .jr-bridge-label { transform: rotate(-90deg); }
+  }
+  @media (max-width: 880px) {
+    .jr-hero-grid { grid-template-columns: 1fr; gap: 20px; }
+    .jr-hero-medal { max-width: 200px; margin: 0 auto; }
+    .jr-hero-h { font-size: 24px; }
+    .jr-hero-meta { grid-template-columns: 1fr 1fr; gap: 14px; }
+    .jr-hero-meta-cell { border-right: none; padding-right: 0; }
+    .jr-trophy-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+  }
   </style>
 </head>
 <body>
@@ -2128,48 +2269,129 @@ button:focus-visible, a:focus-visible {
   </div>
 
   <!-- Pane: Journey (D6 JOURNEY-01 · 2026-04-22 구현 · MVP scores 기반) -->
+  <!-- Pane: Journey — Claude Design 2026-04-29 (sections 1,2,3,4 — streak removed) -->
   <div id="shell-pane-journey" class="shell-pane" style="display:none;">
-    <div class="card mb-4" style="padding:1.3rem 1.4rem;">
-      <div class="section-header" style="margin-bottom:1rem;">
-        <div class="section-title">Journey — How far have you come?</div>
-        <div class="section-sub">Hero's Arc · 4 stages of AI recognition</div>
-      </div>
-      <div id="journey-empty" style="display:none;text-align:center;padding:2rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ NO JOURNEY YET</div>
-        <div style="font-size:13px;color:#aaa;line-height:1.6;max-width:440px;margin:0 auto;">Run your first check to start the journey. Each tier advancement becomes a milestone.</div>
-      </div>
-      <div id="heros-arc" style="display:none;position:relative;padding:1.5rem 0.5rem 1.2rem;">
-        <div id="heros-arc-stages" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.4rem;position:relative;">
-          <div class="arc-stage" data-stage="invisible" style="text-align:center;padding:0.7rem 0.4rem;background:#0d0d0d;border:1px solid #e05252;border-radius:6px;opacity:0.4;">
-            <div style="font-size:1.2rem;margin-bottom:0.25rem;">🔴</div>
-            <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#e05252;letter-spacing:0.18em;">INVISIBLE</div>
-            <div style="font-size:0.65rem;color:#555;margin-top:0.3rem;">&lt; 15</div>
+
+    <!-- EMPTY STATE -->
+    <section class="ov-card tr-empty-card" id="journey-empty" style="display:none;">
+      <div class="glyph">◆ ◇ ◆</div>
+      <h3>Your journey hasn't started yet</h3>
+      <p>Run your first check to begin the climb. Each tier advancement becomes a milestone — saved forever in your quest log.</p>
+    </section>
+
+    <div id="journey-main" style="display:none;">
+
+      <!-- ============ SECTION 1 — HERO HEADLINE ============ -->
+      <section class="ov-card jr-hero" aria-label="Journey hero summary">
+        <div class="jr-hero-bg" aria-hidden="true"></div>
+        <div class="jr-hero-grid">
+          <div class="jr-hero-main">
+            <div class="jr-hero-eye" id="jrHeroEye">◆ HERO'S ARC · — DAYS</div>
+            <h2 class="jr-hero-h" id="jrHeroH">—</h2>
+            <div class="jr-hero-meta">
+              <div class="jr-hero-meta-cell">
+                <span class="lbl">FIRST CHECK</span>
+                <span class="val" id="jrMetaFirstDate">—</span>
+              </div>
+              <div class="jr-hero-meta-cell">
+                <span class="lbl">DAYS LIVE</span>
+                <span class="val mono" id="jrMetaDaysLive">—</span>
+              </div>
+              <div class="jr-hero-meta-cell">
+                <span class="lbl">CHECKS RUN</span>
+                <span class="val mono" id="jrMetaChecksRun">—</span>
+              </div>
+              <div class="jr-hero-meta-cell">
+                <span class="lbl">CURRENT TIER</span>
+                <span class="val tier-pill" id="jrMetaTier">◆ —</span>
+              </div>
+            </div>
           </div>
-          <div class="arc-stage" data-stage="emerging" style="text-align:center;padding:0.7rem 0.4rem;background:#0d0d0d;border:1px solid #f59e0b;border-radius:6px;opacity:0.4;">
-            <div style="font-size:1.2rem;margin-bottom:0.25rem;">🟡</div>
-            <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#f59e0b;letter-spacing:0.18em;">EMERGING</div>
-            <div style="font-size:0.65rem;color:#555;margin-top:0.3rem;">15 – 34</div>
-          </div>
-          <div class="arc-stage" data-stage="strong" style="text-align:center;padding:0.7rem 0.4rem;background:#0d0d0d;border:1px solid #4ade80;border-radius:6px;opacity:0.4;">
-            <div style="font-size:1.2rem;margin-bottom:0.25rem;">🟢</div>
-            <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#4ade80;letter-spacing:0.18em;">STRONG</div>
-            <div style="font-size:0.65rem;color:#555;margin-top:0.3rem;">35 – 59</div>
-          </div>
-          <div class="arc-stage" data-stage="perfect" style="text-align:center;padding:0.7rem 0.4rem;background:#0d0d0d;border:1px solid #FFD700;border-radius:6px;opacity:0.4;">
-            <div style="font-size:1.2rem;margin-bottom:0.25rem;">🏆</div>
-            <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#FFD700;letter-spacing:0.18em;">PERFECT</div>
-            <div style="font-size:0.65rem;color:#555;margin-top:0.3rem;">60 +</div>
+          <div class="jr-hero-medal" aria-hidden="true">
+            <svg viewBox="0 0 64 64" shape-rendering="crispEdges">
+              <g fill="#FFD700">
+                <rect x="20" y="6"  width="4" height="6"/>
+                <rect x="30" y="6"  width="4" height="6"/>
+                <rect x="40" y="6"  width="4" height="6"/>
+                <rect x="18" y="12" width="28" height="4"/>
+                <rect x="18" y="16" width="4" height="4"/>
+                <rect x="42" y="16" width="4" height="4"/>
+              </g>
+              <g fill="#FFD700">
+                <rect x="14" y="22" width="36" height="4"/>
+                <rect x="12" y="26" width="2" height="20"/>
+                <rect x="50" y="26" width="2" height="20"/>
+                <rect x="14" y="46" width="2" height="6"/>
+                <rect x="48" y="46" width="2" height="6"/>
+                <rect x="16" y="52" width="4" height="4"/>
+                <rect x="44" y="52" width="4" height="4"/>
+                <rect x="20" y="56" width="24" height="4"/>
+              </g>
+              <g fill="#0a0800"><rect x="14" y="26" width="36" height="20"/></g>
+              <g fill="#FFD700">
+                <rect x="30" y="28" width="4" height="2"/>
+                <rect x="28" y="30" width="8" height="2"/>
+                <rect x="22" y="32" width="20" height="4"/>
+                <rect x="26" y="36" width="12" height="2"/>
+                <rect x="24" y="38" width="4" height="4"/>
+                <rect x="36" y="38" width="4" height="4"/>
+              </g>
+            </svg>
+            <div class="jr-hero-medal-tier" id="jrMedalTier">★ TIER — / 4</div>
           </div>
         </div>
-        <div id="heros-arc-summary" style="margin-top:1rem;padding:0.7rem 0.9rem;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;font-size:0.8rem;color:#ccc;line-height:1.6;">—</div>
+      </section>
+
+      <!-- ============ SECTION 2 — HERO'S ARC LADDER ============ -->
+      <div class="tr-sec-head">
+        <h2>Hero's <em>arc</em></h2>
       </div>
+
+      <section class="ov-card jr-arc-card" aria-label="4-tier progression ladder">
+        <div class="jr-arc" id="jrArc"></div>
+        <div class="jr-arc-foot">
+          <div class="jr-arc-next">
+            <span class="jr-arc-next-eye">◆ NEXT MILESTONE</span>
+            <span class="jr-arc-next-h" id="jrArcNextH">—</span>
+          </div>
+          <span class="jr-arc-next-est" id="jrArcNextEst">—</span>
+        </div>
+      </section>
+
+      <!-- ============ SECTION 3 — QUEST LOG ============ -->
+      <div class="tr-sec-head">
+        <h2>Quest <em>log</em></h2>
+        <span class="meta" id="jrTimelineMeta">— EVENTS</span>
+      </div>
+
+      <section class="ov-card jr-timeline-card" aria-label="Tier transition timeline">
+        <ol class="jr-timeline" id="jrTimeline"></ol>
+      </section>
+
+      <!-- ============ SECTION 4 — TROPHY SHELF ============ -->
+      <div class="tr-sec-head">
+        <h2>Trophy <em>shelf</em></h2>
+        <span class="meta" id="jrTrophyMeta">8 BADGES · — UNLOCKED</span>
+      </div>
+
+      <section class="ov-card jr-trophy-card" aria-label="Achievement badges">
+        <div class="jr-trophy-grid" id="jrTrophyGrid"></div>
+        <div class="jr-trophy-foot">
+          <div class="jr-trophy-progress">
+            <div class="jr-trophy-progress-track"><div class="jr-trophy-progress-fill" id="jrTrophyFill" style="width:0%"></div></div>
+            <span class="jr-trophy-progress-label" id="jrTrophyLabel">— / 8 UNLOCKED · 0%</span>
+          </div>
+        </div>
+      </section>
     </div>
-    <div class="card mb-4" style="padding:1.3rem 1.4rem;">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:0.9rem;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;">TIMELINE</div>
-        <div id="journey-timeline-count" style="font-size:0.72rem;color:#555;font-family:'JetBrains Mono',monospace;">—</div>
-      </div>
-      <div id="journey-timeline" style="display:flex;flex-direction:column;gap:0.5rem;"></div>
+
+    <!-- legacy hidden DOM (preserved for older callers) -->
+    <div style="display:none;">
+      <div id="heros-arc"></div>
+      <div id="heros-arc-stages"></div>
+      <div id="heros-arc-summary"></div>
+      <div id="journey-timeline"></div>
+      <div id="journey-timeline-count"></div>
     </div>
   </div>
 
@@ -4509,55 +4731,363 @@ button:focus-visible, a:focus-visible {
     return { current: prevPi, events }
   }
 
+  // 2026-04-29 Claude Design merge: Journey pane (Sections 1+2+3+4 — streak removed by CEO)
+  const TIER_DEFS = [
+    { id: 'invisible', name: 'INVISIBLE', min: 0,  max: 35,  cls: 't-invisible' },
+    { id: 'emerging',  name: 'EMERGING',  min: 36, max: 60,  cls: 't-emerging' },
+    { id: 'strong',    name: 'STRONG',    min: 61, max: 80,  cls: 't-strong' },
+    { id: 'perfect',   name: 'PERFECT',   min: 81, max: 100, cls: 't-perfect' },
+  ]
+
+  function _fmtPxDate(iso) {
+    if (!iso) return '—'
+    const d = new Date(iso)
+    if (isNaN(d.getTime())) return '—'
+    const months = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']
+    return `${d.getFullYear()}·${months[d.getMonth()]}·${String(d.getDate()).padStart(2,'0')}`
+  }
+
   function renderJourneyPane(history) {
     const empty = document.getElementById('journey-empty')
-    const arc = document.getElementById('heros-arc')
-    const summary = document.getElementById('heros-arc-summary')
-    const timeline = document.getElementById('journey-timeline')
-    const countEl = document.getElementById('journey-timeline-count')
-    if (!arc || !timeline) return
+    const main = document.getElementById('journey-main')
+    if (!main) return
     if (!history || history.length === 0) {
       if (empty) empty.style.display = 'block'
-      arc.style.display = 'none'
-      timeline.innerHTML = ''
-      if (countEl) countEl.textContent = '—'
+      main.style.display = 'none'
       return
     }
     if (empty) empty.style.display = 'none'
-    arc.style.display = 'block'
-    const { current, events } = computeHerosArc(history)
-    document.querySelectorAll('.arc-stage').forEach(s => {
-      const on = s.dataset.stage === current
-      s.style.opacity = on ? '1' : '0.35'
-      s.style.boxShadow = on ? '3px 3px 0 #b39700' : 'none'
+    main.style.display = 'block'
+
+    const sorted = history.slice().sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
+    const first = sorted[0]
+    const last = sorted[sorted.length - 1]
+    const firstScore = Number(first?.unified_v15?.score ?? first?.score) || 0
+    const lastScore = Number(last?.unified_v15?.score ?? last?.score) || 0
+
+    const tierByScore = s => TIER_DEFS.find(t => s >= t.min && s <= t.max) || TIER_DEFS[0]
+    const startTier = tierByScore(firstScore)
+    const currentTier = tierByScore(lastScore)
+    const currentIdx = TIER_DEFS.findIndex(t => t.id === currentTier.id)
+
+    const { events: arcEvents } = computeHerosArc(history)
+    const tierUps = arcEvents.filter(e => e.type === 'upgrade').length
+
+    const daysLive = Math.max(1, Math.round((new Date(last.created_at) - new Date(first.created_at)) / 86400000))
+    const checksRun = sorted.length
+
+    // ─── Section 1: Hero Headline
+    const eyeEl = document.getElementById('jrHeroEye')
+    if (eyeEl) eyeEl.textContent = `◆ HERO'S ARC · ${daysLive} DAY${daysLive !== 1 ? 'S' : ''}`
+    const hEl = document.getElementById('jrHeroH')
+    if (hEl) {
+      const delta = Math.round((lastScore - firstScore) * 10) / 10
+      const deltaStr = delta >= 0 ? `+${delta}` : `${delta}`
+      const tierUpStr = tierUps > 0 ? `${tierUps} tier-up${tierUps !== 1 ? 's' : ''}` : 'climbing'
+      const climb = currentIdx >= 3 ? 'top tier reached.' : tierUps > 0 ? 'still climbing.' : 'just started.'
+      if (startTier.id === currentTier.id && tierUps === 0) {
+        hEl.innerHTML = `Currently <em class="${currentTier.cls}">${currentTier.name}</em><br>— <em>${deltaStr} pts</em>, ${tierUpStr}, ${climb}`
+      } else {
+        hEl.innerHTML = `From <em class="${startTier.cls}">${startTier.name}</em> to <em class="${currentTier.cls}">${currentTier.name}</em><br>— <em>${deltaStr} pts</em>, <em>${tierUpStr}</em>, ${climb}`
+      }
+    }
+    const setTxt = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t }
+    setTxt('jrMetaFirstDate', _fmtPxDate(first.created_at))
+    setTxt('jrMetaDaysLive', String(daysLive))
+    setTxt('jrMetaChecksRun', String(checksRun))
+    setTxt('jrMetaTier', `★ ${currentTier.name}`)
+    setTxt('jrMedalTier', `★ TIER ${currentIdx + 1} / 4`)
+
+    // ─── Section 2: Hero's Arc Ladder (4 stages + 3 bridges)
+    renderJourneyArc(currentIdx, currentTier, lastScore, arcEvents, sorted)
+
+    // ─── Section 3: Quest Log Timeline
+    renderJourneyTimeline(arcEvents, sorted, first)
+
+    // ─── Section 4: Trophy Shelf
+    renderJourneyTrophies(arcEvents, sorted, currentIdx, currentTier)
+  }
+
+  function renderJourneyArc(currentIdx, currentTier, lastScore, arcEvents, sorted) {
+    const arcEl = document.getElementById('jrArc')
+    if (!arcEl) return
+
+    // Compute when each tier was first reached (for "DAY x-y" labels)
+    const tierEntryDate = {} // tierId -> date entered
+    const firstScore = Number(sorted[0]?.unified_v15?.score ?? sorted[0]?.score) || 0
+    const startTier = TIER_DEFS.find(t => firstScore >= t.min && firstScore <= t.max)
+    if (startTier) tierEntryDate[startTier.id] = sorted[0].created_at
+    arcEvents.forEach(ev => {
+      if (ev.type === 'upgrade') tierEntryDate[ev.pi] = ev.date
     })
-    if (summary) {
-      const lastRow = history[history.length - 1]
-      const scoreLast = Number(lastRow?.unified_v15?.score ?? lastRow?.score) || 0
-      summary.innerHTML = `Current stage: <b style="color:#FFD700;">${String(current || 'invisible').toUpperCase()}</b> · Score <b style="color:#FFD700;">${scoreLast}</b> · Tier transitions: <b style="color:#FFD700;">${events.length}</b>`
+    const dayOf = iso => {
+      const d = new Date(iso) - new Date(sorted[0].created_at)
+      return Math.max(1, Math.round(d / 86400000) + 1)
     }
-    if (countEl) countEl.textContent = events.length + (events.length === 1 ? ' milestone' : ' milestones')
-    if (events.length === 0) {
-      timeline.innerHTML = '<div style="color:#555;font-size:0.78rem;padding:0.5rem 0;">No tier transitions yet. Keep running checks to unlock milestones.</div>'
-      return
-    }
-    const passIcons = { perfect: '🏆', strong: '🟢', emerging: '🟡', invisible: '🔴' }
-    const passColors = { perfect: '#FFD700', strong: '#4ade80', emerging: '#f59e0b', invisible: '#e05252' }
-    timeline.innerHTML = events.slice().reverse().map(ev => {
-      const icon = passIcons[ev.pi] || '•'
-      const color = passColors[ev.pi] || '#888'
-      const when = new Date(ev.date).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: getUserTimezone() })
-      const typeBadge = ev.type === 'upgrade' ? '↑ UP' : ev.type === 'downgrade' ? '↓ DOWN' : 'START'
-      return `
-        <div style="display:flex;align-items:center;gap:0.8rem;padding:0.55rem 0.75rem;background:#0d0d0d;border:1px solid ${color}33;border-radius:6px;">
-          <span style="font-size:1rem;">${icon}</span>
-          <div style="flex:1;min-width:0;">
-            <div style="font-size:0.82rem;color:#e5e5e5;font-weight:600;">${escHtml(ev.label)}</div>
-            <div style="font-size:0.72rem;color:#777;font-family:'JetBrains Mono',monospace;">${escHtml(when)} · ${escHtml(ev.note)}</div>
+
+    const parts = []
+    TIER_DEFS.forEach((tier, idx) => {
+      let stageCls, statusHtml, metaHtml
+      if (idx < currentIdx) {
+        stageCls = 'passed'
+        const enter = tierEntryDate[tier.id]
+        const next = TIER_DEFS[idx + 1] && tierEntryDate[TIER_DEFS[idx + 1].id]
+        statusHtml = `<div class="jr-stage-status">✓ PASSED</div>`
+        metaHtml = enter && next ? `<div class="jr-stage-meta">DAY ${dayOf(enter)}–${dayOf(next)}</div>` : `<div class="jr-stage-meta">PASSED</div>`
+      } else if (idx === currentIdx) {
+        stageCls = 'current'
+        const enter = tierEntryDate[tier.id]
+        statusHtml = `<div class="jr-stage-status active">▶ ACTIVE · ${Math.round(lastScore)} PTS</div>`
+        metaHtml = enter ? `<div class="jr-stage-meta">DAY ${dayOf(enter)} → NOW</div>` : `<div class="jr-stage-meta">CURRENT</div>`
+      } else {
+        stageCls = 'locked'
+        statusHtml = `<div class="jr-stage-status locked">◇ LOCKED</div>`
+        metaHtml = `<div class="jr-stage-meta">${tier.min}+ PTS</div>`
+      }
+
+      const flagSvg = stageCls === 'locked'
+        ? `<div class="jr-stage-flag locked-flag"><svg viewBox="0 0 14 16" shape-rendering="crispEdges" aria-hidden="true"><rect x="3" y="6" width="8" height="8" fill="#444"/><rect x="4" y="3" width="6" height="3" fill="#444"/><rect x="5" y="2" width="4" height="1" fill="#444"/><rect x="6" y="9" width="2" height="3" fill="#0a0a0a"/></svg></div>`
+        : stageCls === 'current'
+        ? `<div class="jr-stage-hero"><span class="jr-stage-hero-glyph">★</span><span class="jr-stage-hero-label">YOU</span></div>`
+        : `<div class="jr-stage-flag"><svg viewBox="0 0 12 16" shape-rendering="crispEdges" aria-hidden="true"><rect x="2" y="0" width="2" height="16" fill="#FFD700"/><rect x="4" y="0" width="8" height="6" fill="#FFD700"/><rect x="6" y="2" width="4" height="2" fill="#0a0800"/></svg></div>`
+
+      parts.push(`
+        <div class="jr-stage ${stageCls}" data-tier="${tier.id}">
+          ${flagSvg}
+          <div class="jr-stage-card">
+            <div class="jr-stage-idx">${String(idx + 1).padStart(2, '0')}</div>
+            <div class="jr-stage-name ${tier.cls}">${tier.name}</div>
+            <div class="jr-stage-range">${tier.min}–${tier.max}</div>
+            ${statusHtml}
+            ${metaHtml}
           </div>
-          <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:${color};border:1px solid ${color};padding:3px 6px;border-radius:3px;letter-spacing:0.15em;white-space:nowrap;">${typeBadge}</span>
-        </div>`
+        </div>
+      `)
+      // Bridge after each stage except last
+      if (idx < TIER_DEFS.length - 1) {
+        const next = TIER_DEFS[idx + 1]
+        let bridgeCls, fillW, label
+        if (idx < currentIdx) {
+          bridgeCls = 'filled'
+          const ptsCovered = next.min - tier.min
+          fillW = '100%'
+          label = `+${ptsCovered} PTS`
+        } else if (idx === currentIdx) {
+          bridgeCls = 'partial'
+          const span = next.min - tier.min
+          const within = Math.max(0, lastScore - tier.min)
+          fillW = `${Math.max(5, Math.min(95, (within / span) * 100))}%`
+          label = `+${Math.max(0, next.min - Math.round(lastScore))} PTS TO GO`
+        } else {
+          bridgeCls = ''
+          fillW = '0%'
+          label = `+${next.min - tier.min} PTS`
+        }
+        parts.push(`
+          <div class="jr-bridge ${bridgeCls}" data-bridge="${idx + 1}">
+            <div class="jr-bridge-track"><div class="jr-bridge-fill" style="width:${fillW}"></div></div>
+            <span class="jr-bridge-label">${label}</span>
+          </div>
+        `)
+      }
+    })
+    arcEl.innerHTML = parts.join('')
+
+    // Footer: next milestone + ETA
+    const nextTier = TIER_DEFS[currentIdx + 1]
+    const nextEl = document.getElementById('jrArcNextH')
+    const estEl = document.getElementById('jrArcNextEst')
+    if (nextEl) {
+      if (nextTier) {
+        const gap = Math.max(1, nextTier.min - Math.round(lastScore))
+        nextEl.innerHTML = `<b>${nextTier.name}</b> at score ${nextTier.min} — you're <b>+${gap} pts away</b>`
+        if (estEl) {
+          // ETA from recent gain rate (last 14 days)
+          const recent = sorted.slice(-14)
+          if (recent.length >= 2) {
+            const span = (new Date(recent[recent.length - 1].created_at) - new Date(recent[0].created_at)) / 86400000
+            const gain = (Number(recent[recent.length - 1]?.unified_v15?.score ?? recent[recent.length - 1]?.score) || 0) - (Number(recent[0]?.unified_v15?.score ?? recent[0]?.score) || 0)
+            const ratePerDay = span > 0 ? gain / span : 0
+            if (ratePerDay > 0) {
+              const days = Math.ceil(gap / ratePerDay)
+              const wks = Math.max(1, Math.round(days / 7))
+              estEl.textContent = `EST. ${wks}–${wks + 2} WEEKS AT CURRENT PACE`
+            } else {
+              estEl.textContent = `RUN MORE CHECKS TO ESTIMATE PACE`
+            }
+          } else {
+            estEl.textContent = `RUN MORE CHECKS TO ESTIMATE PACE`
+          }
+        }
+      } else {
+        nextEl.innerHTML = `<b>You're at the top tier</b> — keep maintaining your <b>PERFECT</b> score`
+        if (estEl) estEl.textContent = 'MAINTAIN'
+      }
+    }
+  }
+
+  function renderJourneyTimeline(arcEvents, sorted, first) {
+    const ol = document.getElementById('jrTimeline')
+    const meta = document.getElementById('jrTimelineMeta')
+    if (!ol) return
+
+    const tierByScore = s => TIER_DEFS.find(t => s >= t.min && s <= t.max) || TIER_DEFS[0]
+    const dayOf = iso => Math.max(1, Math.round((new Date(iso) - new Date(first.created_at)) / 86400000) + 1)
+
+    // Build events: tier-up / tier-down / first / milestone-progress
+    const events = []
+    // First event
+    events.push({
+      type: 'first',
+      date: first.created_at,
+      score: Number(first?.unified_v15?.score ?? first?.score) || 0,
+      day: 1,
+      note: `First check run · ${tierByScore(Number(first?.unified_v15?.score ?? first?.score) || 0).name}`,
+    })
+    // Tier transitions
+    arcEvents.forEach(ev => {
+      if (ev.type === 'upgrade') {
+        events.push({
+          type: 'tier-up',
+          date: ev.date,
+          from: TIER_DEFS.find(t => t.id === ev.pi) ? null : null,  // resolved below
+          to: ev.pi.toUpperCase(),
+          score: ev.score,
+          day: dayOf(ev.date),
+        })
+      } else if (ev.type === 'downgrade') {
+        events.push({
+          type: 'tier-down',
+          date: ev.date,
+          score: ev.score,
+          day: dayOf(ev.date),
+          note: ev.label,
+        })
+      }
+    })
+    // Resolve "from" for tier-up by walking arcEvents
+    let prevPi = tierByScore(Number(first?.unified_v15?.score ?? first?.score) || 0).id
+    let tIdx = 0
+    arcEvents.forEach(ev => {
+      if (ev.type === 'upgrade') {
+        const evt = events.find(e => e.type === 'tier-up' && e.date === ev.date)
+        if (evt) evt.from = prevPi.toUpperCase()
+        prevPi = ev.pi
+      } else if (ev.type === 'downgrade') {
+        prevPi = ev.pi
+      }
+    })
+
+    // Milestone-progress: detect +N pts gained in last 7 days
+    if (sorted.length >= 2) {
+      const recent = sorted.slice(-7)
+      if (recent.length >= 2) {
+        const a = Number(recent[0]?.unified_v15?.score ?? recent[0]?.score) || 0
+        const b = Number(recent[recent.length - 1]?.unified_v15?.score ?? recent[recent.length - 1]?.score) || 0
+        const delta = Math.round((b - a) * 10) / 10
+        if (delta >= 3) {
+          events.push({
+            type: 'milestone-progress',
+            date: recent[recent.length - 1].created_at,
+            score: b,
+            day: dayOf(recent[recent.length - 1].created_at),
+            note: `+${delta} pts in last 7 days`,
+          })
+        }
+      }
+    }
+
+    // Sort newest first
+    events.sort((a, b) => new Date(b.date) - new Date(a.date))
+
+    if (meta) meta.textContent = `${events.length} EVENT${events.length !== 1 ? 'S' : ''}`
+
+    const TIER_CLASS = { INVISIBLE: 't-invisible', EMERGING: 't-emerging', STRONG: 't-strong', PERFECT: 't-perfect' }
+
+    ol.innerHTML = events.map(ev => {
+      let badge, body, cls
+      if (ev.type === 'tier-up') {
+        cls = 'up'
+        badge = `<span class="jr-ev-badge up">▲ TIER UP</span>`
+        body = `<span class="jr-ev-from ${TIER_CLASS[ev.from] || ''}">${ev.from || '—'}</span><span class="jr-ev-arrow">→</span><span class="jr-ev-to ${TIER_CLASS[ev.to] || ''}">${ev.to}</span>`
+      } else if (ev.type === 'tier-down') {
+        cls = 'down'
+        badge = `<span class="jr-ev-badge down">▼ DROP</span>`
+        body = `<span class="jr-ev-note">${escHtml(ev.note || 'Score dipped')}</span>`
+      } else if (ev.type === 'first') {
+        cls = 'first'
+        badge = `<span class="jr-ev-badge first">★ STARTED</span>`
+        body = `<span class="jr-ev-note">${escHtml(ev.note)}</span>`
+      } else {
+        cls = 'progress'
+        badge = `<span class="jr-ev-badge progress">◆ PROGRESS</span>`
+        body = `<span class="jr-ev-note">${escHtml(ev.note)}</span>`
+      }
+      return `<li class="jr-ev ${cls}">
+        <div class="jr-ev-rail"><span class="jr-ev-dot"></span></div>
+        <div class="jr-ev-body">
+          <div class="jr-ev-head">${badge}<span class="jr-ev-date">${_fmtPxDate(ev.date)}</span><span class="jr-ev-day">DAY ${ev.day}</span></div>
+          <div class="jr-ev-line">${body}</div>
+          <div class="jr-ev-foot"><span class="lbl">SCORE</span><span class="val mono">${Math.round(ev.score)}</span></div>
+        </div>
+      </li>`
     }).join('')
+  }
+
+  function renderJourneyTrophies(arcEvents, sorted, currentIdx, currentTier) {
+    const wrap = document.getElementById('jrTrophyGrid')
+    if (!wrap) return
+
+    const first = sorted[0]
+    const firstUp = arcEvents.find(e => e.type === 'upgrade')
+    const strongEv = arcEvents.find(e => e.type === 'upgrade' && (e.pi === 'strong' || e.pi === 'perfect'))
+    const lastScore = Number(sorted[sorted.length - 1]?.unified_v15?.score ?? sorted[sorted.length - 1]?.score) || 0
+
+    const trophies = [
+      { id: 'first-check', icon: '★', name: 'FIRST CHECK', desc: 'Ran your first AI recognition check',
+        unlocked: !!first, date: first ? _fmtPxDate(first.created_at) : '', hint: '—' },
+      { id: 'first-tierup', icon: '▲', name: 'TIER UP', desc: 'Climbed up at least one tier',
+        unlocked: !!firstUp, date: firstUp ? _fmtPxDate(firstUp.date) : '', hint: 'Run more checks' },
+      { id: 'tier-strong', icon: '♔', name: 'BECAME STRONG', desc: 'Crossed score 61 — STRONG tier',
+        unlocked: currentIdx >= 2, date: strongEv ? _fmtPxDate(strongEv.date) : '', hint: `+${Math.max(1, 61 - Math.round(lastScore))} pts to go` },
+      { id: 'tier-perfect', icon: '✪', name: 'PERFECT', desc: 'Reach the top tier — score 81+',
+        unlocked: currentIdx >= 3, date: currentIdx >= 3 ? _fmtPxDate(sorted[sorted.length - 1].created_at) : '', hint: `+${Math.max(1, 81 - Math.round(lastScore))} pts to go` },
+      // 4 locked badges (Phase 2c REWARD-01에서 정식 구현)
+      { id: 'streak-7', icon: '✦', name: '7-DAY STREAK', desc: '7 consecutive days of checks',
+        unlocked: false, hint: 'Coming soon' },
+      { id: 'streak-14', icon: '✦', name: '14-DAY STREAK', desc: '14 consecutive days of checks',
+        unlocked: false, hint: 'Coming soon' },
+      { id: 'first-mention', icon: '◆', name: 'FIRST MENTION', desc: 'AI engine first named your product',
+        unlocked: false, hint: 'Coming soon' },
+      { id: 'all-engines', icon: '◇', name: 'ALL 3 ENGINES', desc: 'Recognized by Perplexity, GPT, & Gemini',
+        unlocked: false, hint: 'Coming soon' },
+    ]
+
+    wrap.innerHTML = trophies.map(t => {
+      const cls = t.unlocked ? 'unlocked' : 'locked'
+      const foot = t.unlocked
+        ? `<div class="jr-tr-foot"><span class="lbl">UNLOCKED</span><span class="val">${escHtml(t.date || '—')}</span></div>`
+        : `<div class="jr-tr-foot"><span class="lbl">LOCKED</span><span class="val muted">${escHtml(t.hint || '—')}</span></div>`
+      return `<div class="jr-tr ${cls}" data-id="${t.id}">
+        <div class="jr-tr-medal">
+          <div class="jr-tr-medal-bg" aria-hidden="true"></div>
+          <span class="jr-tr-icon">${t.icon}</span>
+        </div>
+        <div class="jr-tr-name">${t.name}</div>
+        <div class="jr-tr-desc">${t.desc}</div>
+        ${foot}
+      </div>`
+    }).join('')
+
+    const unlockedCount = trophies.filter(t => t.unlocked).length
+    const total = trophies.length
+    const pct = Math.round((unlockedCount / total) * 100)
+    const fillEl = document.getElementById('jrTrophyFill')
+    const lblEl = document.getElementById('jrTrophyLabel')
+    const metaEl = document.getElementById('jrTrophyMeta')
+    if (fillEl) fillEl.style.width = pct + '%'
+    if (lblEl) lblEl.textContent = `${unlockedCount} / ${total} UNLOCKED · ${pct}%`
+    if (metaEl) metaEl.textContent = `${total} BADGES · ${unlockedCount} UNLOCKED · ${total - unlockedCount} LOCKED`
   }
 
 
