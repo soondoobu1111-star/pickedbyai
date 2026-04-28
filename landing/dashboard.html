@@ -2856,8 +2856,13 @@ button:focus-visible, a:focus-visible {
       { label: 'Co-Rec', dT: T.corec || 0, dY: Y.corec || 0 },
       { label: 'Web', dT: T.web || 0, dY: Y.web || 0 },
     ]
-    listEl.innerHTML = rows.map(r => {
-      const d = Math.round((r.dT - r.dY) * 10) / 10
+    const deltas = rows.map(r => Math.round((r.dT - r.dY) * 10) / 10)
+    if (deltas.every(d => d === 0)) {
+      listEl.innerHTML = '<div style="color:#555;font-size:0.78rem;">No change since yesterday.</div>'
+      return
+    }
+    listEl.innerHTML = rows.map((r, i) => {
+      const d = deltas[i]
       const arrow = d > 0 ? '↑' : d < 0 ? '↓' : '↔'
       const color = d > 0 ? '#4ade80' : d < 0 ? '#e05252' : '#888'
       const sign = d > 0 ? '+' : ''
@@ -3813,11 +3818,15 @@ button:focus-visible, a:focus-visible {
     ctx.textAlign = 'center'
     ctx.fillText('YOU', myX, myY + 3)
 
-    // Score label
+    // Score label — 우측/상단 끝 잘림 방지
     ctx.fillStyle = GOLD
     ctx.font = '10px Inter, sans-serif'
+    const labelText = `R:${recognition} / C:${category}`
+    const labelW = ctx.measureText(labelText).width
+    const labelX = (myX + 12 + labelW > W - 4) ? myX - 12 - labelW : myX + 12
+    const labelY = myY - 6 < 12 ? myY + 20 : myY - 6
     ctx.textAlign = 'left'
-    ctx.fillText(`R:${recognition} / C:${category}`, myX + 12, myY - 6)
+    ctx.fillText(labelText, labelX, labelY)
   }
 
   // ── localStorage Set helpers ───────────────────────────────
