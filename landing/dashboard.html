@@ -736,6 +736,172 @@ button:focus-visible, a:focus-visible {
     .ax-gap { grid-template-columns: 1fr; gap: 10px; }
     .ax-bench-foot { flex-direction: column; align-items: flex-start; }
   }
+
+  /* ============ TREND PANE — Claude Design 2026-04-28 ============ */
+  .tr-h1 { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; margin: 0 0 20px; flex-wrap: wrap; }
+  .tr-h1 h1 { margin: 0; }
+  .tr-h1-meta { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-5); }
+
+  .tr-context { padding: 22px 26px 20px; }
+  .tr-context-grid { display: grid; grid-template-columns: 1fr auto auto; gap: 28px; align-items: center; }
+  .tr-context-eye { font-family: var(--pba-font-pixel); font-size: 7.5px; letter-spacing: 0.22em; color: var(--pba-gold); margin-bottom: 8px; }
+  .tr-context h2 { font-family: var(--pba-font-body); font-weight: 800; font-size: 24px; line-height: 1.3; letter-spacing: -0.4px; color: #fff; margin: 0; max-width: 720px; }
+  .tr-context h2 em { color: var(--pba-gold); font-style: normal; }
+  .tr-context-delta { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+  .tr-context-delta .num { font-family: var(--pba-font-mono); font-size: 38px; font-weight: 700; color: var(--pba-gold); line-height: 1; letter-spacing: -1.5px; }
+  .tr-context-delta .lbl { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-5); }
+  .tr-context-tier { font-family: var(--pba-font-pixel); font-size: 11px; letter-spacing: 0.22em; color: var(--pba-gold); padding: 10px 16px; background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); border-radius: 6px; white-space: nowrap; }
+
+  .tr-sec-head { display: flex; align-items: baseline; justify-content: space-between; margin: 32px 0 12px; gap: 16px; flex-wrap: wrap; }
+  .tr-sec-head h2 { font-family: var(--pba-font-body); font-weight: 800; font-size: 18px; color: #fff; margin: 0; letter-spacing: -0.2px; }
+  .tr-sec-head h2 em { color: var(--pba-gold); font-style: normal; font-weight: 800; }
+
+  .tr-tabs { display: inline-flex; gap: 0; border: 1px solid var(--pba-border); border-radius: 6px; overflow: hidden; background: #0a0a0a; }
+  .tr-tab { background: transparent; border: none; padding: 8px 16px; font-family: var(--pba-font-pixel); font-size: 8px; letter-spacing: 0.18em; color: var(--pba-fg-4); cursor: pointer; transition: background .15s, color .15s; border-right: 1px solid var(--pba-border-faint); }
+  .tr-tab:last-child { border-right: none; }
+  .tr-tab:hover { color: #fff; }
+  .tr-tab.on { background: var(--pba-gold); color: #0a0a0a; box-shadow: inset 0 0 0 1px var(--pba-gold); }
+
+  .tr-chart-card { padding: 20px 22px 18px; }
+  .tr-chart-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+  .tr-chart-title { font-family: var(--pba-font-pixel); font-size: 9px; letter-spacing: 0.2em; color: #fff; }
+  .tr-chart-wrap { position: relative; width: 100%; }
+  .tr-chart { width: 100%; height: auto; display: block; }
+  .tr-chart .gridline { stroke: #1a1a1a; stroke-width: 1; }
+  .tr-chart .gridline.major { stroke: #222; }
+  .tr-chart .axis-label { font-family: 'JetBrains Mono', monospace; font-size: 9px; fill: var(--pba-fg-5); }
+  .tr-chart .tier-label { font-family: 'Press Start 2P', monospace; font-size: 6.5px; fill: var(--pba-fg-5); letter-spacing: 0.1em; }
+  .tr-chart .area-fill { fill: url(#trAreaGrad); opacity: 1; }
+  .tr-chart .line { fill: none; stroke: var(--pba-gold); stroke-width: 2; }
+  .tr-chart .line.dim { stroke: #555; stroke-width: 1.2; opacity: 0.6; stroke-dasharray: 3 3; }
+  .tr-chart .line.dim.recognition { stroke: #C0C0C0; }
+  .tr-chart .line.dim.category { stroke: #8b8b8b; }
+  .tr-chart .line.dim.corec { stroke: #6a6a6a; }
+  .tr-chart .line.dim.web { stroke: #4a4a4a; }
+  .tr-chart .pt-current { fill: #fff; stroke: var(--pba-gold); stroke-width: 2; }
+  .tr-chart .tier-band { fill-opacity: 0.04; }
+  .tr-chart .flag-line { stroke: var(--pba-gold); stroke-width: 1; stroke-dasharray: 2 2; }
+  .tr-chart .flag-text { font-family: 'Press Start 2P', monospace; font-size: 6px; fill: var(--pba-gold); letter-spacing: 0.1em; }
+  .tr-chart .now-line { stroke: var(--pba-gold); stroke-width: 1; stroke-dasharray: 1 3; opacity: 0.5; }
+
+  .tr-overlays { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--pba-border-faint); }
+  .tr-overlay-lbl { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-5); margin-right: 6px; }
+  .tr-overlay { display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border: 1px solid var(--pba-border-faint); border-radius: 999px; background: #0d0d0d; font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.16em; color: var(--pba-fg-4); cursor: pointer; user-select: none; transition: color .15s, border-color .15s, background .15s; }
+  .tr-overlay:hover { color: #fff; border-color: var(--pba-fg-5); }
+  .tr-overlay.on { color: var(--pba-gold); border-color: var(--pba-gold-border); background: var(--pba-gold-bg); }
+  .tr-overlay .swatch { width: 10px; height: 3px; border-radius: 1px; background: #555; flex: none; }
+  .tr-overlay[data-dim="recognition"] .swatch { background: #C0C0C0; }
+  .tr-overlay[data-dim="category"] .swatch { background: #8b8b8b; }
+  .tr-overlay[data-dim="corec"] .swatch { background: #6a6a6a; }
+  .tr-overlay[data-dim="web"] .swatch { background: #4a4a4a; }
+
+  .tr-stats { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1px; background: var(--pba-border-faint); border: 1px solid var(--pba-border-faint); border-radius: 6px; overflow: hidden; margin-top: 14px; }
+  .tr-stat { background: #141414; padding: 14px 14px; }
+  .tr-stat .lbl { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-5); margin-bottom: 6px; display: block; }
+  .tr-stat .val { font-family: var(--pba-font-mono); font-size: 22px; color: #fff; font-weight: 700; line-height: 1; letter-spacing: -0.5px; }
+  .tr-stat .val.pos { color: var(--pba-gold); }
+  .tr-stat .val.neg { color: #FF6B6B; }
+  .tr-stat .sub { font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.16em; color: var(--pba-fg-6); margin-top: 4px; display: block; }
+  .tr-stat .streak-flame { color: var(--pba-gold); font-family: var(--pba-font-mono); font-size: 16px; }
+
+  .tr-xp { padding: 22px 26px 20px; margin-top: 14px; }
+  .tr-xp-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+  .tr-xp-eye { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.2em; color: var(--pba-gold); }
+  .tr-xp-curr { font-family: var(--pba-font-mono); font-size: 14px; color: var(--pba-fg-3); }
+  .tr-xp-curr b { color: #fff; font-weight: 700; }
+  .tr-xp-track { position: relative; height: 28px; background: #050505; border: 1px solid var(--pba-border); border-radius: 4px; padding: 4px; box-shadow: inset 0 0 0 1px #000; }
+  .tr-xp-cells { display: grid; grid-template-columns: repeat(50, 1fr); gap: 2px; height: 100%; }
+  .tr-xp-cell { background: #1a1a1a; border-radius: 1px; }
+  .tr-xp-cell.on { background: var(--pba-gold); box-shadow: 0 0 4px rgba(255, 215, 0, 0.4); }
+  .tr-xp-flags { position: relative; display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 22px; }
+  .tr-xp-flag { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; position: relative; }
+  .tr-xp-flag::before { content: ''; position: absolute; top: -22px; left: 0; width: 1px; height: 18px; background: var(--pba-border); }
+  .tr-xp-flag.passed::before { background: var(--pba-gold); }
+  .tr-xp-flag.current::before { background: var(--pba-gold); width: 2px; box-shadow: 0 0 6px rgba(255, 215, 0, 0.6); }
+  .tr-xp-flag .tier-name { font-family: var(--pba-font-pixel); font-size: 7.5px; letter-spacing: 0.18em; color: var(--pba-fg-5); }
+  .tr-xp-flag.passed .tier-name { color: var(--pba-fg-3); }
+  .tr-xp-flag.current .tier-name { color: var(--pba-gold); }
+  .tr-xp-flag .tier-range { font-family: var(--pba-font-mono); font-size: 11px; color: var(--pba-fg-5); }
+  .tr-xp-flag.passed .tier-range { color: var(--pba-fg-3); }
+  .tr-xp-flag.current .tier-range { color: #fff; }
+  .tr-xp-flag .tier-mark { font-family: var(--pba-font-pixel); font-size: 9px; color: var(--pba-fg-6); }
+  .tr-xp-flag.passed .tier-mark { color: var(--pba-gold); }
+  .tr-xp-flag.current .tier-mark { color: var(--pba-gold); }
+  .tr-xp-foot { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--pba-border-faint); display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .tr-xp-foot .msg { font-size: 13px; color: var(--pba-fg-2); }
+  .tr-xp-foot .msg b { color: var(--pba-gold); font-weight: 600; }
+
+  .tr-heat { padding: 22px 26px 20px; margin-top: 14px; }
+  .tr-heat-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; gap: 12px; flex-wrap: wrap; }
+  .tr-heat-grid { display: grid; grid-template-columns: 22px 1fr; gap: 6px; }
+  .tr-heat-days { display: grid; grid-template-rows: repeat(7, 1fr); gap: 3px; align-items: center; padding-top: 16px; }
+  .tr-heat-day-lbl { font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.12em; color: var(--pba-fg-6); height: 14px; line-height: 14px; }
+  .tr-heat-cells-wrap { overflow: hidden; }
+  .tr-heat-months { display: grid; grid-template-columns: repeat(13, 1fr); gap: 3px; font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.12em; color: var(--pba-fg-5); margin-bottom: 4px; height: 12px; }
+  .tr-heat-month { grid-column: span 4; }
+  .tr-heat-month:nth-child(2) { grid-column: span 5; }
+  .tr-heat-month:nth-child(3) { grid-column: span 4; }
+  .tr-heat-cells { display: grid; grid-template-columns: repeat(13, 1fr); grid-auto-rows: 14px; grid-auto-flow: column; gap: 3px; }
+  .tr-heat-cells > .col { display: grid; grid-template-rows: repeat(7, 14px); gap: 3px; }
+  .tr-heat-cell { background: #1a1a1a; border-radius: 2px; transition: transform .1s; }
+  .tr-heat-cell:hover { transform: scale(1.4); }
+  .tr-heat-cell.l0 { background: #0d0d0d; border: 1px solid #1a1a1a; }
+  .tr-heat-cell.l1 { background: #2a2410; }
+  .tr-heat-cell.l2 { background: #4a3d18; }
+  .tr-heat-cell.l3 { background: #806a23; }
+  .tr-heat-cell.l4 { background: #b89730; }
+  .tr-heat-cell.l5 { background: var(--pba-gold); box-shadow: 0 0 3px rgba(255,215,0,0.4); }
+  .tr-heat-cell.empty { background: #050505; border: 1px solid #0e0e0e; }
+  .tr-heat-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--pba-border-faint); flex-wrap: wrap; gap: 12px; }
+  .tr-heat-legend { display: flex; align-items: center; gap: 6px; font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.16em; color: var(--pba-fg-5); }
+  .tr-heat-legend i { width: 12px; height: 12px; border-radius: 2px; display: inline-block; }
+  .tr-heat-legend i.l0 { background: #0d0d0d; border: 1px solid #1a1a1a; }
+  .tr-heat-legend i.l1 { background: #2a2410; }
+  .tr-heat-legend i.l2 { background: #4a3d18; }
+  .tr-heat-legend i.l3 { background: #806a23; }
+  .tr-heat-legend i.l4 { background: #b89730; }
+  .tr-heat-legend i.l5 { background: var(--pba-gold); }
+
+  .tr-vol-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .tr-vol-card { padding: 18px 18px 16px; }
+  .tr-vol-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; gap: 8px; }
+  .tr-vol-name { font-family: var(--pba-font-pixel); font-size: 7.5px; letter-spacing: 0.18em; color: var(--pba-fg-3); }
+  .tr-vol-icon { font-family: var(--pba-font-mono); font-size: 14px; color: var(--pba-gold); line-height: 1; }
+  .tr-vol-num { font-family: var(--pba-font-mono); font-size: 36px; color: #fff; font-weight: 700; line-height: 1; letter-spacing: -1.5px; }
+  .tr-vol-num span { font-size: 14px; color: var(--pba-fg-5); font-weight: 400; margin-left: 4px; }
+  .tr-vol-delta { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.16em; }
+  .tr-vol-delta.pos { color: var(--pba-gold); }
+  .tr-vol-delta.neg { color: #FF6B6B; }
+  .tr-vol-delta .arrow { font-family: var(--pba-font-mono); font-size: 11px; }
+  .tr-vol-dots { display: grid; grid-template-columns: repeat(20, 1fr); gap: 2px; margin-top: 14px; padding: 10px; background: #050505; border: 1px solid var(--pba-border-faint); border-radius: 4px; }
+  .tr-vol-dot { aspect-ratio: 1; background: #1a1a1a; border-radius: 1px; }
+  .tr-vol-dot.on { background: var(--pba-gold); box-shadow: 0 0 2px rgba(255,215,0,0.5); }
+  .tr-vol-dot.faint { background: #2a2410; }
+  .tr-vol-spark { display: flex; align-items: flex-end; gap: 2px; height: 28px; margin-top: 12px; }
+  .tr-vol-spark i { flex: 1; background: #2a2a2a; border-radius: 1px; min-height: 2px; }
+  .tr-vol-spark i.on { background: var(--pba-gold); }
+  .tr-vol-foot { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--pba-border-faint); display: flex; justify-content: space-between; align-items: center; }
+  .tr-vol-foot .lbl { font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.16em; color: var(--pba-fg-5); }
+  .tr-vol-foot .val { font-family: var(--pba-font-mono); font-size: 11px; color: var(--pba-fg-3); }
+
+  .tr-empty-card { padding: 60px 26px; text-align: center; }
+  .tr-empty-card .glyph { font-family: var(--pba-font-pixel); font-size: 32px; color: var(--pba-gold); margin-bottom: 14px; letter-spacing: 0.1em; }
+  .tr-empty-card h3 { font-family: var(--pba-font-body); font-weight: 700; font-size: 17px; color: #fff; margin: 0 0 8px; }
+  .tr-empty-card p { font-size: 13.5px; color: var(--pba-fg-3); margin: 0 auto; max-width: 420px; line-height: 1.6; }
+
+  @media (max-width: 1080px) {
+    .tr-vol-grid { grid-template-columns: repeat(2, 1fr); }
+    .tr-stats { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 880px) {
+    .tr-context-grid { grid-template-columns: 1fr; gap: 14px; }
+    .tr-context-delta { align-items: flex-start; flex-direction: row; gap: 10px; align-items: baseline; }
+    .tr-vol-grid { grid-template-columns: 1fr; }
+    .tr-stats { grid-template-columns: repeat(2, 1fr); }
+    .tr-xp-cells { grid-template-columns: repeat(25, 1fr); }
+    .tr-xp-flags { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+    .tr-heat { overflow-x: auto; }
+  }
   </style>
 </head>
 <body>
@@ -1502,73 +1668,167 @@ button:focus-visible, a:focus-visible {
 
   <!-- Pane: Trend (D6 TREND-01 · 2026-04-22 구현) -->
   <div id="shell-pane-trend" class="shell-pane" style="display:none;">
-    <div class="card mb-6" style="padding:1.3rem 1.4rem;">
-      <div class="section-header" style="margin-bottom:1rem;">
-        <div class="section-title">Trend — How is it changing?</div>
-        <div class="section-sub">Daily 30d (live) · Weekly 12w · Monthly 12mo (after 30d data)</div>
+
+    <div class="tr-h1">
+      <h1 class="page-h1" style="margin:0;">Trend</h1>
+      <span class="tr-h1-meta" id="trMetaSnapshots">— SNAPSHOTS</span>
+    </div>
+
+    <!-- CONTEXT BANNER -->
+    <section class="ov-card tr-context" id="trContextCard" aria-label="Trend summary" style="display:none;">
+      <div class="tr-context-grid">
+        <div>
+          <div class="tr-context-eye">◆ GROWTH STORY · <span id="trContextPeriod">30 DAYS</span></div>
+          <h2 id="trContextHeadline">—</h2>
+        </div>
+        <div class="tr-context-delta">
+          <span class="num" id="trContextDelta">—</span>
+          <span class="lbl" id="trContextDeltaLbl">PTS · 30D</span>
+        </div>
+        <div class="tr-context-tier" id="trContextTier">◆ —</div>
       </div>
-      <div id="trend-tabs" style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
-        <button data-trend-tab="daily" class="trend-tab-btn on" style="background:#FFD700;color:#0a0a0a;border:none;padding:0.45rem 0.9rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:6px;font-family:inherit;">Daily (30d)</button>
-        <button data-trend-tab="weekly" class="trend-tab-btn" style="background:#0d0d0d;color:#888;border:1px solid #2a2a2a;padding:0.45rem 0.9rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:6px;font-family:inherit;">Weekly (12w)</button>
-        <button data-trend-tab="monthly" class="trend-tab-btn" style="background:#0d0d0d;color:#888;border:1px solid #2a2a2a;padding:0.45rem 0.9rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:6px;font-family:inherit;">Monthly (12mo)</button>
-      </div>
-      <div id="trend-empty" style="display:none;text-align:center;padding:3rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ NO TREND DATA</div>
-        <div style="font-size:13px;color:#aaa;line-height:1.6;max-width:460px;margin:0 auto;">Come back tomorrow to see your first trend point. Daily cron captures a new score every day at midnight KST.</div>
-      </div>
-      <div id="trend-teaser" style="display:none;text-align:center;padding:2.5rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:8px;">✦ BUILDING UP</div>
-        <div id="trend-teaser-msg" style="font-size:13px;color:#aaa;line-height:1.6;max-width:500px;margin:0 auto;">—</div>
-      </div>
-      <div id="trend-chart-v2-wrap" style="display:none;position:relative;height:260px;margin-bottom:1rem;">
-        <canvas id="trend-chart-v2"></canvas>
-      </div>
-      <div id="trend-stats" style="display:none;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.5rem;margin-bottom:1rem;"></div>
-      <div id="trend-engine-toggle" style="display:none;gap:1rem;align-items:center;flex-wrap:wrap;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#666;letter-spacing:0.2em;">OVERLAY:</div>
-        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="trend-overlay-score" checked style="accent-color:#FFD700;"> Total Score</label>
-        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="trend-overlay-recognition" style="accent-color:#4ade80;"> Recognition</label>
-        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="trend-overlay-category" style="accent-color:#60a5fa;"> Category</label>
-      </div>
-      <div id="trend-category-notice" style="display:none;margin-top:0.7rem;padding:0.7rem 0.9rem;background:#0d0d0d;border:1px dashed #3a3a1a;border-radius:6px;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#60a5fa;letter-spacing:0.18em;margin-bottom:0.35rem;">◇ CATEGORY AWAITING</div>
-        <div style="font-size:0.75rem;color:#aaa;line-height:1.55;">AI didn't surface a clear category label for this product yet. The auto-inferrer runs again on every Check — once a category hint appears, ranking measurement kicks in automatically.</div>
+    </section>
+
+    <!-- EMPTY STATE -->
+    <section class="ov-card tr-empty-card" id="trend-empty" style="display:none;">
+      <div class="glyph">✦</div>
+      <h3>No trend data yet</h3>
+      <p>Come back tomorrow to see your first trend point. Daily cron captures a new score every day at midnight KST.</p>
+    </section>
+
+    <section class="ov-card tr-empty-card" id="trend-teaser" style="display:none;">
+      <div class="glyph">✦</div>
+      <h3>Building up</h3>
+      <p id="trend-teaser-msg">—</p>
+    </section>
+
+    <!-- ============ SCORE TREND ============ -->
+    <div class="tr-sec-head" id="trScoreSecHead" style="display:none;">
+      <h2>Score <em>trend</em></h2>
+      <div class="tr-tabs" data-trend-group="score">
+        <button class="tr-tab on trend-tab-btn" data-trend-tab="daily">DAILY · 30D</button>
+        <button class="tr-tab trend-tab-btn" data-trend-tab="weekly">WEEKLY · 12W</button>
+        <button class="tr-tab trend-tab-btn" data-trend-tab="monthly">MONTHLY · 12MO</button>
       </div>
     </div>
 
-    <!-- ═══ Volume Trend (빅파이 1.5.1 · 2026-04-22 CEO 승인 · 누적체계) ═══ -->
-    <div class="card mb-6" style="padding:1.3rem 1.4rem;">
-      <div class="section-header" style="margin-bottom:1rem;">
-        <div class="section-title">Volume Trend — How much are you mentioned?</div>
-        <div class="section-sub">Absolute counts · mentions · citations · sources · co-recommendations</div>
+    <section class="ov-card tr-chart-card" id="trend-chart-v2-wrap" aria-label="Score trend chart" style="display:none;">
+      <div class="tr-chart-head">
+        <span class="tr-chart-title" id="trChartTitle">TOTAL SCORE · LAST 30 DAYS</span>
+        <span class="tr-chart-title" style="color: var(--pba-fg-5);"><span id="trChartRange">—</span></span>
       </div>
-      <div id="volume-tabs" style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap;">
-        <button data-volume-tab="daily" class="volume-tab-btn on" style="background:#FFD700;color:#0a0a0a;border:none;padding:0.45rem 0.9rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:6px;font-family:inherit;">Daily (30d)</button>
-        <button data-volume-tab="weekly" class="volume-tab-btn" style="background:#0d0d0d;color:#888;border:1px solid #2a2a2a;padding:0.45rem 0.9rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:6px;font-family:inherit;">Weekly (12w)</button>
-        <button data-volume-tab="monthly" class="volume-tab-btn" style="background:#0d0d0d;color:#888;border:1px solid #2a2a2a;padding:0.45rem 0.9rem;font-weight:700;font-size:0.75rem;cursor:pointer;border-radius:6px;font-family:inherit;">Monthly (12mo)</button>
+
+      <div class="tr-chart-wrap">
+        <svg class="tr-chart" id="trChart" viewBox="0 0 800 280" preserveAspectRatio="none" aria-hidden="true"></svg>
+        <!-- legacy canvas kept hidden for compatibility (not rendered) -->
+        <canvas id="trend-chart-v2" style="display:none;"></canvas>
       </div>
-      <div id="volume-empty" style="display:none;text-align:center;padding:2.5rem 1rem;border:1px dashed #2a2a2a;border-radius:8px;background:#0d0d0d;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#FFD700;letter-spacing:0.2em;margin-bottom:10px;">✦ BUILDING UP VOLUME</div>
-        <div style="font-size:13px;color:#e5e5e5;line-height:1.65;max-width:540px;margin:0 auto 14px;font-weight:500;">Volume metrics track how often AI systems mention you across daily probes. You need <strong style="color:#FFD700;">3–5 days of probe history</strong> before trends become meaningful.</div>
-        <div style="display:inline-flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;font-size:11px;color:#888;">
-          <span style="padding:4px 10px;background:#141414;border:1px solid #2a2a2a;border-radius:4px;">Daily cron · 00:00 KST</span>
-          <span style="padding:4px 10px;background:#141414;border:1px solid #2a2a2a;border-radius:4px;">5 probes / product / day</span>
-          <span style="padding:4px 10px;background:#141414;border:1px solid #2a2a2a;border-radius:4px;">Runs automatically</span>
+
+      <div class="tr-overlays" id="trend-engine-toggle">
+        <span class="tr-overlay-lbl">DIMENSIONS</span>
+        <button class="tr-overlay" data-dim="recognition"><span class="swatch"></span>RECOGNITION</button>
+        <button class="tr-overlay" data-dim="category"><span class="swatch"></span>CATEGORY</button>
+        <button class="tr-overlay" data-dim="corec"><span class="swatch"></span>CO-REC</button>
+        <button class="tr-overlay" data-dim="web"><span class="swatch"></span>WEB</button>
+        <!-- legacy hidden checkboxes for backward compatibility with refresh handlers -->
+        <input type="checkbox" id="trend-overlay-score" checked style="display:none;">
+        <input type="checkbox" id="trend-overlay-recognition" style="display:none;">
+        <input type="checkbox" id="trend-overlay-category" style="display:none;">
+      </div>
+
+      <div class="tr-stats" id="trend-stats">
+        <!-- populated by renderTrendStatsV3 -->
+      </div>
+
+      <div id="trend-category-notice" style="display:none;margin-top:0.9rem;padding:0.7rem 0.9rem;background:#0d0d0d;border:1px dashed #3a3a1a;border-radius:6px;">
+        <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#60a5fa;letter-spacing:0.18em;margin-bottom:0.35rem;">◇ CATEGORY AWAITING</div>
+        <div style="font-size:0.75rem;color:#aaa;line-height:1.55;">AI didn't surface a clear category label for this product yet. The auto-inferrer runs again on every Check — once a category hint appears, ranking measurement kicks in automatically.</div>
+      </div>
+    </section>
+
+    <!-- PIXEL XP-BAR -->
+    <section class="ov-card tr-xp" id="trXpCard" aria-label="Tier progression" style="display:none;">
+      <div class="tr-xp-head">
+        <span class="tr-xp-eye">◆ TIER PROGRESSION · ALL-TIME</span>
+        <span class="tr-xp-curr" id="trXpCurr">SCORE <b>—</b> / 100 · TIER — / 4</span>
+      </div>
+      <div class="tr-xp-track">
+        <div class="tr-xp-cells" id="trXpCells"></div>
+      </div>
+      <div class="tr-xp-flags" id="trXpFlags">
+        <div class="tr-xp-flag" data-tier="invisible"><span class="tier-mark">◆</span><span class="tier-name">INVISIBLE</span><span class="tier-range">0–35</span></div>
+        <div class="tr-xp-flag" data-tier="emerging"><span class="tier-mark">◆</span><span class="tier-name">EMERGING</span><span class="tier-range">36–60</span></div>
+        <div class="tr-xp-flag" data-tier="strong"><span class="tier-mark">★</span><span class="tier-name">STRONG</span><span class="tier-range">61–80</span></div>
+        <div class="tr-xp-flag" data-tier="perfect"><span class="tier-mark">◇</span><span class="tier-name">PERFECT</span><span class="tier-range">81–100</span></div>
+      </div>
+      <div class="tr-xp-foot">
+        <span class="msg" id="trXpFootMsg">—</span>
+        <span class="msg" id="trXpFootEta" style="color: var(--pba-fg-5); font-family: var(--pba-font-mono); font-size: 12px;">—</span>
+      </div>
+    </section>
+
+    <!-- HEATMAP (daily only) -->
+    <section class="ov-card tr-heat" id="trHeatCard" aria-label="Daily activity heatmap" style="display:none;">
+      <div class="tr-heat-head">
+        <span class="tr-chart-title">DAILY DELTA HEATMAP · LAST 13 WEEKS</span>
+        <span class="tr-chart-title" id="trHeatStreak" style="color: var(--pba-fg-5);">—</span>
+      </div>
+      <div class="tr-heat-grid">
+        <div class="tr-heat-days">
+          <span class="tr-heat-day-lbl">M</span>
+          <span class="tr-heat-day-lbl"></span>
+          <span class="tr-heat-day-lbl">W</span>
+          <span class="tr-heat-day-lbl"></span>
+          <span class="tr-heat-day-lbl">F</span>
+          <span class="tr-heat-day-lbl"></span>
+          <span class="tr-heat-day-lbl">S</span>
         </div>
-        <div style="margin-top:14px;font-size:11.5px;color:#666;line-height:1.55;max-width:520px;margin-left:auto;margin-right:auto;">Tip: Run a manual Check now to seed today's probe log. Tomorrow's cron will then have a baseline to compare against.</div>
+        <div class="tr-heat-cells-wrap">
+          <div class="tr-heat-months" id="trHeatMonths"></div>
+          <div class="tr-heat-cells" id="trHeatCells"></div>
+        </div>
       </div>
-      <div id="volume-chart-wrap" style="display:none;position:relative;height:240px;margin-bottom:1rem;">
-        <canvas id="volume-chart"></canvas>
+      <div class="tr-heat-foot">
+        <div class="tr-heat-legend">
+          <span>LESS</span>
+          <i class="l0"></i><i class="l1"></i><i class="l2"></i><i class="l3"></i><i class="l4"></i><i class="l5"></i>
+          <span>MORE</span>
+        </div>
+        <span class="tr-chart-title" style="color: var(--pba-fg-5);">EACH CELL = ONE DAY · BRIGHTNESS = SCORE DELTA</span>
       </div>
-      <div id="volume-stats" style="display:none;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.5rem;margin-bottom:1rem;"></div>
-      <div id="volume-layers" style="display:none;gap:1rem;align-items:center;flex-wrap:wrap;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#666;letter-spacing:0.2em;">LAYERS:</div>
-        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="volume-layer-mentions" checked style="accent-color:#FFD700;"> Mentions</label>
-        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="volume-layer-citations" style="accent-color:#4ade80;"> Citations</label>
-        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="volume-layer-sources" style="accent-color:#60a5fa;"> Sources</label>
-        <label style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;font-size:0.78rem;color:#ccc;"><input type="checkbox" id="volume-layer-corec" style="accent-color:#f472b6;"> Co-Rec peers</label>
+    </section>
+
+    <!-- ============ VOLUME TREND ============ -->
+    <div class="tr-sec-head" id="trVolSecHead" style="display:none;">
+      <h2>Volume <em>trend</em></h2>
+      <div class="tr-tabs" data-trend-group="volume">
+        <button class="tr-tab on volume-tab-btn" data-volume-tab="daily">DAILY · 30D</button>
+        <button class="tr-tab volume-tab-btn" data-volume-tab="weekly">WEEKLY · 12W</button>
+        <button class="tr-tab volume-tab-btn" data-volume-tab="monthly">MONTHLY · 12MO</button>
       </div>
     </div>
+
+    <div class="tr-vol-grid" id="trVolGrid" style="display:none;"></div>
+
+    <!-- Volume empty state (legacy ID preserved) -->
+    <section class="ov-card tr-empty-card" id="volume-empty" style="display:none;">
+      <div class="glyph">✦</div>
+      <h3>Building up volume</h3>
+      <p>Volume metrics track how often AI systems mention you across daily probes. You need 3–5 days of probe history before trends become meaningful. Daily cron runs automatically at 00:00 KST.</p>
+    </section>
+
+    <!-- legacy hidden DOM kept for backward-compat with old handlers -->
+    <div style="display:none;">
+      <canvas id="volume-chart"></canvas>
+      <div id="volume-chart-wrap"></div>
+      <div id="volume-stats"></div>
+      <div id="volume-layers"></div>
+      <input type="checkbox" id="volume-layer-mentions" checked>
+      <input type="checkbox" id="volume-layer-citations">
+      <input type="checkbox" id="volume-layer-sources">
+      <input type="checkbox" id="volume-layer-corec">
+    </div>
+
   </div>
 
   <!-- Pane: Rivals — redesigned 2026-04-28 -->
@@ -3457,55 +3717,148 @@ button:focus-visible, a:focus-visible {
   let trendCurrentProduct = null
   let trendLastSeries = null
 
+  // Trend Pane — Claude Design SVG renderer (2026-04-28)
+  let trendActiveOverlays = new Set()
+
+  function _hideAllTrendBlocks() {
+    ['trContextCard','trend-empty','trend-teaser','trScoreSecHead','trend-chart-v2-wrap','trXpCard','trHeatCard','trVolSecHead','trVolGrid','volume-empty']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.style.display = 'none' })
+  }
+
+  function _passTier(score) {
+    const s = Number(score) || 0
+    if (s >= 81) return { name: 'PERFECT', mark: '◇', min: 81, max: 100, idx: 3 }
+    if (s >= 61) return { name: 'STRONG', mark: '★', min: 61, max: 80, idx: 2 }
+    if (s >= 36) return { name: 'EMERGING', mark: '◆', min: 36, max: 60, idx: 1 }
+    return { name: 'INVISIBLE', mark: '◆', min: 0, max: 35, idx: 0 }
+  }
+
+  function _formatTickLabel(label, tab) {
+    if (typeof label !== 'string') return ''
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(label)
+    if (!m) return label
+    const mon = parseInt(m[2], 10)
+    if (tab === 'monthly') return MONTH_NAMES[mon - 1] || m[2]
+    if (tab === 'weekly') {
+      const d = new Date(parseInt(m[1]), mon - 1, parseInt(m[3], 10))
+      const jan1 = new Date(d.getFullYear(), 0, 1)
+      const wk = Math.ceil(((d - jan1) / 86400000 + jan1.getDay() + 1) / 7)
+      return MONTH_NAMES[mon - 1] + ' W' + wk
+    }
+    return `${m[2]}-${m[3]}`
+  }
+
   async function loadTrendPane(product, tab) {
     trendCurrentTab = tab || 'daily'
     trendCurrentProduct = product
-    const empty = document.getElementById('trend-empty')
-    const teaser = document.getElementById('trend-teaser')
-    const teaserMsg = document.getElementById('trend-teaser-msg')
-    const chartWrap = document.getElementById('trend-chart-v2-wrap')
-    const statsWrap = document.getElementById('trend-stats')
-    const toggleWrap = document.getElementById('trend-engine-toggle')
-    if (empty) empty.style.display = 'none'
-    if (teaser) teaser.style.display = 'none'
-    if (chartWrap) chartWrap.style.display = 'none'
-    if (statsWrap) statsWrap.style.display = 'none'
-    if (toggleWrap) toggleWrap.style.display = 'none'
+    _hideAllTrendBlocks()
 
-    if (!product) { if (empty) empty.style.display = 'block'; return }
+    if (!product) {
+      const e = document.getElementById('trend-empty'); if (e) e.style.display = 'block'
+      return
+    }
 
     let session = null
     try { const { data } = await sb.auth.getSession(); session = data?.session } catch (_) {}
-    if (!session?.access_token) { if (empty) empty.style.display = 'block'; return }
-
-    try {
-      const res = await fetch(`${API_URL}/v1/scores/trend?product=${encodeURIComponent(product)}&tab=${trendCurrentTab}`, {
-        headers: { Authorization: `Bearer ${session.access_token}` }
-      })
-      if (!res.ok) throw new Error('HTTP ' + res.status)
-      const data = await res.json()
-      const series = Array.isArray(data?.series) ? data.series : []
-      const withScore = series.filter(b => typeof b.score === 'number')
-      if (withScore.length === 0) { if (empty) empty.style.display = 'block'; return }
-      if (trendCurrentTab !== 'daily' && withScore.length < 1) {
-        if (teaser) {
-          teaser.style.display = 'block'
-          if (teaserMsg) teaserMsg.textContent = trendCurrentTab === 'weekly'
-            ? `Weekly rolling average needs ≥3 weeks of data. You have ${withScore.length} so far — keep running daily checks.`
-            : `Monthly rolling average needs ≥3 months of data. You have ${withScore.length} so far — keep running daily checks.`
-        }
-        return
-      }
-      trendLastSeries = series
-      if (chartWrap) chartWrap.style.display = 'block'
-      if (statsWrap) statsWrap.style.display = 'grid'
-      if (toggleWrap) toggleWrap.style.display = 'flex'
-      drawTrendChartV2(series, trendCurrentTab)
-      renderTrendStats(data.stats || {})
-    } catch (e) {
-      console.error('[trend] load failed', e)
-      if (empty) empty.style.display = 'block'
+    if (!session?.access_token) {
+      const e = document.getElementById('trend-empty'); if (e) e.style.display = 'block'
+      return
     }
+
+    // Fetch score trend + volume trend in parallel
+    const headers = { Authorization: `Bearer ${session.access_token}` }
+    let scoreData = null, volumeData = null
+    try {
+      const [sRes, vRes] = await Promise.all([
+        fetch(`${API_URL}/v1/scores/trend?product=${encodeURIComponent(product)}&tab=${trendCurrentTab}`, { headers }),
+        fetch(`${API_URL}/v1/scores/volume?product=${encodeURIComponent(product)}&tab=${trendCurrentTab}`, { headers }).catch(() => null),
+      ])
+      if (sRes.ok) scoreData = await sRes.json()
+      if (vRes && vRes.ok) volumeData = await vRes.json()
+    } catch (e) {
+      console.error('[trend] fetch failed', e)
+      const el = document.getElementById('trend-empty'); if (el) el.style.display = 'block'
+      return
+    }
+
+    const series = Array.isArray(scoreData?.series) ? scoreData.series : []
+    const withScore = series.filter(b => typeof b.score === 'number')
+    if (withScore.length === 0) {
+      const el = document.getElementById('trend-empty'); if (el) el.style.display = 'block'
+      return
+    }
+
+    trendLastSeries = series
+    const stats = scoreData?.stats || {}
+
+    // Show the layout
+    const show = id => { const el = document.getElementById(id); if (el) el.style.display = '' }
+    show('trContextCard')
+    show('trScoreSecHead')
+    document.getElementById('trend-chart-v2-wrap').style.display = 'block'
+    show('trXpCard')
+    if (trendCurrentTab === 'daily') show('trHeatCard')
+    show('trVolSecHead')
+
+    renderTrendContext(series, stats)
+    drawTrendChartV2(series, trendCurrentTab)
+    renderTrendStatsV3(stats, trendCurrentTab)
+    renderTrendXp(series)
+    if (trendCurrentTab === 'daily') renderTrendHeat(series)
+
+    // Volume rendering
+    const vSeries = Array.isArray(volumeData?.series) ? volumeData.series : []
+    const anyNonZero = vSeries.some(b => (Number(b.mentions) || 0) + (Number(b.citation_count) || 0) + (Number(b.corec_degree) || 0) > 0)
+    const volGrid = document.getElementById('trVolGrid')
+    const volEmpty = document.getElementById('volume-empty')
+    if (anyNonZero) {
+      volumeLastSeries = vSeries
+      if (volGrid) volGrid.style.display = ''
+      if (volEmpty) volEmpty.style.display = 'none'
+      renderTrendVolume(vSeries, trendCurrentTab)
+    } else {
+      if (volGrid) volGrid.style.display = 'none'
+      if (volEmpty) volEmpty.style.display = ''
+    }
+
+    // Snapshots count meta
+    const meta = document.getElementById('trMetaSnapshots')
+    if (meta) meta.textContent = `${withScore.length} SNAPSHOT${withScore.length === 1 ? '' : 'S'}`
+  }
+
+  function renderTrendContext(series, stats) {
+    const last = series[series.length - 1]
+    const lastScore = Number(last?.score ?? 0)
+    const tier = _passTier(lastScore)
+    const delta = Number(stats.delta_first_last ?? 0)
+    const deltaSign = delta >= 0 ? '+' : ''
+    const periodTxt = trendCurrentTab === 'daily' ? '30 DAYS' : trendCurrentTab === 'weekly' ? '12 WEEKS' : '12 MONTHS'
+    const periodShort = trendCurrentTab === 'daily' ? '30D' : trendCurrentTab === 'weekly' ? '12W' : '12MO'
+
+    // Find fastest period (largest jump)
+    let bestIdx = -1, bestJump = -Infinity
+    for (let i = 1; i < series.length; i++) {
+      const a = Number(series[i - 1]?.score), b = Number(series[i]?.score)
+      if (Number.isFinite(a) && Number.isFinite(b) && (b - a) > bestJump) { bestJump = b - a; bestIdx = i }
+    }
+    let fastestLabel = ''
+    if (bestIdx >= 0 && bestJump > 0) {
+      fastestLabel = _formatTickLabel(series[bestIdx]?.bucket_start || '', trendCurrentTab) || ''
+    }
+
+    const headline = delta > 0
+      ? `You gained <em>${deltaSign}${Math.round(delta * 10) / 10} pts</em> in ${periodTxt.toLowerCase()}${fastestLabel ? ` — fastest was <em>${escHtml(fastestLabel)}</em>` : ''}`
+      : delta < 0
+      ? `You lost <em>${Math.round(delta * 10) / 10} pts</em> in ${periodTxt.toLowerCase()} — keep running checks to stabilize`
+      : `Score is <em>steady</em> over ${periodTxt.toLowerCase()} — try a Check to seed fresh signal`
+
+    const setTxt = (id, t) => { const el = document.getElementById(id); if (el) el.textContent = t }
+    const setHTML = (id, h) => { const el = document.getElementById(id); if (el) el.innerHTML = h }
+    setTxt('trContextPeriod', periodTxt)
+    setHTML('trContextHeadline', headline)
+    setTxt('trContextDelta', `${deltaSign}${Math.round(delta * 10) / 10}`)
+    setTxt('trContextDeltaLbl', `PTS · ${periodShort}`)
+    setTxt('trContextTier', `${tier.mark} ${tier.name}`)
   }
 
   // X축 라벨 축약 (탭별 포맷)
@@ -3527,126 +3880,358 @@ button:focus-visible, a:focus-visible {
     return `${m[2]}-${m[3]}`
   }
 
-  function drawTrendChartV2(series, _tab) {
-    const canvas = document.getElementById('trend-chart-v2')
-    if (!canvas || typeof Chart === 'undefined') return
-    if (trendChartV2) { try { trendChartV2.destroy() } catch (_) {} trendChartV2 = null }
-    const labels = series.map(b => b.bucket_start)
-    const scoreOn = document.getElementById('trend-overlay-score')?.checked ?? true
-    const recOn = document.getElementById('trend-overlay-recognition')?.checked ?? false
-    const catOn = document.getElementById('trend-overlay-category')?.checked ?? false
-    // Category 데이터 가용성 검사 (전부 null이면 overlay 무효)
-    const catHasData = series.some(b => b?.dimensions?.category != null)
-    const catNotice = document.getElementById('trend-category-notice')
-    if (catNotice) {
-      catNotice.style.display = (catOn && !catHasData) ? 'block' : 'none'
+  // SVG line+area chart with tier bands (replaces Chart.js)
+  function drawTrendChartV2(series, tab) {
+    const svg = document.getElementById('trChart')
+    if (!svg) return
+    const data = series.filter(b => typeof b.score === 'number')
+    if (data.length === 0) { svg.innerHTML = ''; return }
+
+    const W = 800, H = 280, padL = 38, padR = 16, padT = 18, padB = 30
+    const innerW = W - padL - padR, innerH = H - padT - padB
+    const xScale = i => data.length === 1 ? padL + innerW / 2 : padL + (i / (data.length - 1)) * innerW
+    const yScale = v => padT + (1 - Math.max(0, Math.min(100, v)) / 100) * innerH
+
+    const TIER_BANDS = [
+      { name: 'INVISIBLE', min: 0,  max: 35,  color: '#FF6B6B' },
+      { name: 'EMERGING',  min: 36, max: 60,  color: '#FFA94D' },
+      { name: 'STRONG',    min: 61, max: 80,  color: '#FFD700' },
+      { name: 'PERFECT',   min: 81, max: 100, color: '#3DDC84' },
+    ]
+
+    const parts = []
+    parts.push(`<defs><linearGradient id="trAreaGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0%" stop-color="#FFD700" stop-opacity="0.32"/><stop offset="100%" stop-color="#FFD700" stop-opacity="0.02"/></linearGradient></defs>`)
+
+    TIER_BANDS.forEach(b => {
+      const y1 = yScale(b.max), y2 = yScale(b.min)
+      parts.push(`<rect class="tier-band" x="${padL}" y="${y1}" width="${innerW}" height="${y2 - y1}" fill="${b.color}"/>`)
+      parts.push(`<text class="tier-label" x="${W - padR - 4}" y="${(y1 + y2) / 2 + 3}" text-anchor="end">${b.name}</text>`)
+    });
+
+    [0, 25, 50, 75, 100].forEach(v => {
+      const y = yScale(v)
+      parts.push(`<line class="gridline${v % 50 === 0 ? ' major' : ''}" x1="${padL}" x2="${W - padR}" y1="${y}" y2="${y}"/>`)
+      parts.push(`<text class="axis-label" x="${padL - 6}" y="${y + 3}" text-anchor="end">${v}</text>`)
+    })
+
+    // X-axis labels (5 evenly spaced ticks)
+    const tickIdx = data.length <= 5
+      ? data.map((_, i) => i)
+      : [0, Math.floor((data.length - 1) * 0.25), Math.floor((data.length - 1) * 0.5), Math.floor((data.length - 1) * 0.75), data.length - 1]
+    tickIdx.forEach(i => {
+      const x = xScale(i)
+      const lbl = _formatTickLabel(data[i]?.bucket_start || '', tab)
+      parts.push(`<line class="gridline" x1="${x}" x2="${x}" y1="${padT}" y2="${H - padB}"/>`)
+      parts.push(`<text class="axis-label" x="${x}" y="${H - padB + 14}" text-anchor="middle">${escHtml(lbl)}</text>`)
+    })
+
+    // Area fill
+    if (data.length >= 2) {
+      let area = `M ${xScale(0)} ${yScale(0)} `
+      data.forEach((d, i) => area += `L ${xScale(i)} ${yScale(d.score)} `)
+      area += `L ${xScale(data.length - 1)} ${yScale(0)} Z`
+      parts.push(`<path class="area-fill" d="${area}"/>`)
     }
-    const datasets = []
-    if (scoreOn) datasets.push({
-      label: 'Total Score',
-      data: series.map(b => b.score),
-      borderColor: '#FFD700', backgroundColor: 'transparent',
-      pointBackgroundColor: series.map(b => b.data_quality === 'missing' ? '#333' : '#FFD700'),
-      pointRadius: 4, pointHoverRadius: 6, borderWidth: 2, tension: 0.3, spanGaps: true,
+
+    // Dimension overlays
+    const dimMax = { recognition: 35, category: 35, corec: 20, web: 10 }
+    const catHasData = data.some(b => b?.dimensions?.category != null)
+    const catNotice = document.getElementById('trend-category-notice')
+    if (catNotice) catNotice.style.display = (trendActiveOverlays.has('category') && !catHasData) ? 'block' : 'none'
+
+    trendActiveOverlays.forEach(dim => {
+      if (dim === 'category' && !catHasData) return
+      const max = dimMax[dim]
+      let path = ''
+      let started = false
+      data.forEach((d, i) => {
+        const v = d?.dimensions?.[dim]
+        if (v == null) return
+        const norm = (Number(v) / max) * 100
+        path += (started ? 'L ' : 'M ') + xScale(i) + ' ' + yScale(norm) + ' '
+        started = true
+      })
+      if (path) parts.push(`<path class="line dim ${dim}" d="${path}"/>`)
     })
-    if (recOn) datasets.push({
-      label: 'Recognition (35)', data: series.map(b => b?.dimensions?.recognition),
-      borderColor: '#4ade80', backgroundColor: 'transparent',
-      pointBackgroundColor: '#4ade80', pointRadius: 3, pointHoverRadius: 5, borderWidth: 2, tension: 0.3, spanGaps: true,
-    })
-    if (catOn && catHasData) datasets.push({
-      label: 'Category (35)', data: series.map(b => b?.dimensions?.category),
-      borderColor: '#60a5fa', backgroundColor: 'transparent',
-      pointBackgroundColor: '#60a5fa', pointRadius: 3, pointHoverRadius: 5, borderWidth: 2, tension: 0.3, spanGaps: true,
-    })
-    trendChartV2 = new Chart(canvas, {
-      type: 'line',
-      data: { labels, datasets },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        layout: { padding: { top: 6, bottom: 2 } },
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: { display: datasets.length > 0, position: 'bottom', labels: { color: '#888', font: { size: 11 }, padding: 12, boxWidth: 8, boxHeight: 8 } },
-          tooltip: {
-            mode: 'index',
-            intersect: false,
-            callbacks: {
-              title: items => items?.[0]?.label || '',
-              label: ctx => ctx.parsed.y !== null && ctx.parsed.y !== undefined ? ` ${ctx.dataset.label}: ${ctx.parsed.y}` : null,
-              afterBody: items => {
-                const idx = items?.[0]?.dataIndex ?? -1
-                const row = series[idx]
-                if (!row) return []
-                const lines = []
-                if (row.data_quality === 'missing') lines.push('⚠ No data this day (cron missed)')
-                if (row.pass_indicator) lines.push(`Indicator: ${String(row.pass_indicator).toUpperCase()}`)
-                return lines
-              }
-            }
-          }
-        },
-        scales: {
-          x: {
-            afterBuildTicks(axis) {
-              if (!axis.ticks || axis.ticks.length < 2 || !labels.length) return;
-              var lastIdx = labels.length - 1;
-              var lastTick = axis.ticks[axis.ticks.length - 1];
-              if (lastTick.value !== lastIdx) {
-                if (lastIdx - lastTick.value <= 2) axis.ticks.pop();
-                axis.ticks.push({ value: lastIdx });
-              }
-            },
-            ticks: {
-              color: '#555', font: { size: 10 }, maxRotation: 0, autoSkip: true, autoSkipPadding: 14,
-              callback: function(_value, index) { return formatChartDateTick(labels[index], _tab) }
-            },
-            grid: { color: '#1a1a1a' }
-          },
-          y: { min: 0, max: 100, ticks: { color: '#555', font: { size: 10 }, stepSize: 20 }, grid: { color: '#1a1a1a' } }
-        }
-      }
-    })
+
+    // Main score line
+    let linePath = ''
+    data.forEach((d, i) => { linePath += (i === 0 ? 'M ' : 'L ') + xScale(i) + ' ' + yScale(d.score) + ' ' })
+    parts.push(`<path class="line" d="${linePath}"/>`)
+
+    // Current point + NOW marker
+    const lastX = xScale(data.length - 1), lastScore = data[data.length - 1].score, lastY = yScale(lastScore)
+    parts.push(`<line class="now-line" x1="${lastX}" x2="${lastX}" y1="${padT}" y2="${H - padB}"/>`)
+    parts.push(`<circle class="pt-current" cx="${lastX}" cy="${lastY}" r="5"/>`)
+    parts.push(`<text class="flag-text" x="${lastX - 4}" y="${lastY - 9}" text-anchor="end">NOW · ${Math.round(lastScore)}</text>`)
+
+    svg.innerHTML = parts.join('')
+
+    // Title + range
+    const title = document.getElementById('trChartTitle')
+    const range = document.getElementById('trChartRange')
+    if (title) title.textContent = tab === 'daily' ? 'TOTAL SCORE · LAST 30 DAYS' : tab === 'weekly' ? 'TOTAL SCORE · LAST 12 WEEKS' : 'TOTAL SCORE · LAST 12 MONTHS'
+    if (range && data.length > 0) {
+      const first = _formatTickLabel(data[0]?.bucket_start || '', tab)
+      const last = _formatTickLabel(data[data.length - 1]?.bucket_start || '', tab)
+      range.textContent = `${first} → ${last}`.toUpperCase()
+    }
   }
 
-  function renderTrendStats(stats) {
+  function renderTrendStatsV3(stats, tab) {
     const wrap = document.getElementById('trend-stats')
     if (!wrap) return
     const delta = Number(stats.delta_first_last ?? 0)
-    const items = [
-      { label: 'MIN', val: stats.min ?? 0, color: '#aaa' },
-      { label: 'MAX', val: stats.max ?? 0, color: '#FFD700' },
-      { label: 'AVG', val: stats.avg ?? 0, color: '#aaa' },
-      { label: 'Δ', val: (delta > 0 ? '+' : '') + delta, color: delta > 0 ? '#4ade80' : delta < 0 ? '#e05252' : '#888' },
-      { label: 'STREAK', val: (stats.streak_days ?? 0) + 'd', color: '#FFD700' },
+    const period = tab === 'daily' ? 'DAY' : tab === 'weekly' ? 'WEEK' : 'MO'
+    const deltaPos = delta > 0, deltaNeg = delta < 0
+    const deltaCls = deltaPos ? 'pos' : deltaNeg ? 'neg' : ''
+    const deltaSign = deltaPos ? '+' : ''
+    const streak = Number(stats.streak_days ?? 0)
+    wrap.innerHTML = `
+      <div class="tr-stat"><span class="lbl">MIN</span><span class="val">${escHtml(String(stats.min ?? 0))}</span><span class="sub">LOWEST · ${period}</span></div>
+      <div class="tr-stat"><span class="lbl">MAX</span><span class="val pos">${escHtml(String(stats.max ?? 0))}</span><span class="sub">PEAK · ${period}</span></div>
+      <div class="tr-stat"><span class="lbl">AVG</span><span class="val">${escHtml(String(stats.avg ?? 0))}</span><span class="sub">MEAN · ${period}</span></div>
+      <div class="tr-stat"><span class="lbl">DELTA</span><span class="val ${deltaCls}">${deltaSign}${Math.round(delta * 10) / 10}</span><span class="sub">VS START</span></div>
+      <div class="tr-stat"><span class="lbl">STREAK</span><span class="val pos"><span class="streak-flame">★</span> ${streak}</span><span class="sub">${period}S UP</span></div>
+    `
+  }
+
+  // XP-bar: 50 cells representing 0-100 score (each cell = 2 points)
+  function renderTrendXp(series) {
+    const cells = document.getElementById('trXpCells')
+    const curr = document.getElementById('trXpCurr')
+    const flagsWrap = document.getElementById('trXpFlags')
+    const footMsg = document.getElementById('trXpFootMsg')
+    const footEta = document.getElementById('trXpFootEta')
+    if (!cells) return
+
+    const last = series[series.length - 1]
+    const score = Math.max(0, Math.min(100, Number(last?.score ?? 0)))
+    const tier = _passTier(score)
+    const filled = Math.round(score / 2)
+
+    let html = ''
+    for (let i = 0; i < 50; i++) html += `<div class="tr-xp-cell ${i < filled ? 'on' : ''}"></div>`
+    cells.innerHTML = html
+
+    if (curr) curr.innerHTML = `SCORE <b>${Math.round(score)}</b> / 100 · TIER ${tier.idx + 1} / 4`
+
+    if (flagsWrap) {
+      flagsWrap.querySelectorAll('.tr-xp-flag').forEach(flag => {
+        flag.classList.remove('passed', 'current')
+        const t = flag.dataset.tier
+        const order = { invisible: 0, emerging: 1, strong: 2, perfect: 3 }
+        if (order[t] < tier.idx) flag.classList.add('passed')
+        else if (order[t] === tier.idx) flag.classList.add('current')
+      })
+    }
+
+    // Next milestone
+    const nextTier = tier.idx < 3 ? [{ name: 'EMERGING', min: 36 }, { name: 'STRONG', min: 61 }, { name: 'PERFECT', min: 81 }, null][tier.idx] : null
+    if (footMsg) {
+      if (nextTier) {
+        const gap = nextTier.min - Math.round(score)
+        footMsg.innerHTML = `Next milestone: <b>${nextTier.name}</b> at score ${nextTier.min} — you're ${gap} pts away`
+      } else {
+        footMsg.innerHTML = `You're at the top tier — keep maintaining your <b>PERFECT</b> score`
+      }
+    }
+    if (footEta) {
+      if (nextTier) {
+        const gap = nextTier.min - Math.round(score)
+        const weeks = Math.max(1, Math.ceil(gap / 3))
+        footEta.textContent = `EST. ${weeks}–${weeks + 2} WEEKS`
+      } else {
+        footEta.textContent = 'MAINTAIN'
+      }
+    }
+  }
+
+  // Heatmap: 13 weeks × 7 days, brightness = daily delta vs prior day
+  function renderTrendHeat(series) {
+    const grid = document.getElementById('trHeatCells')
+    const months = document.getElementById('trHeatMonths')
+    const streakLbl = document.getElementById('trHeatStreak')
+    if (!grid) return
+
+    // Build a date→delta map from series (last 91 days)
+    const deltaMap = new Map()
+    for (let i = 1; i < series.length; i++) {
+      const a = Number(series[i - 1]?.score), b = Number(series[i]?.score)
+      const dateKey = (series[i]?.bucket_start || '').slice(0, 10)
+      if (Number.isFinite(a) && Number.isFinite(b) && dateKey) deltaMap.set(dateKey, b - a)
+    }
+
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    // Find Monday-anchored start: 13 weeks back
+    const start = new Date(today)
+    start.setDate(start.getDate() - 90) // 13 weeks ≈ 91 days
+    // Align to Monday
+    const dow = (start.getDay() + 6) % 7 // Mon=0, Sun=6
+    start.setDate(start.getDate() - dow)
+
+    const pad = n => String(n).padStart(2, '0')
+    const fmt = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+
+    let html = ''
+    let activeDays = 0, currentStreak = 0, longestStreak = 0, runningStreak = 0
+    const monthLabels = []
+    for (let w = 0; w < 13; w++) {
+      html += '<div class="col">'
+      for (let d = 0; d < 7; d++) {
+        const date = new Date(start)
+        date.setDate(start.getDate() + w * 7 + d)
+        const isFuture = date > today
+        if (isFuture) { html += '<div class="tr-heat-cell empty"></div>'; continue }
+        const key = fmt(date)
+        const delta = deltaMap.get(key)
+        let lvl = 0
+        if (delta != null) {
+          activeDays++
+          runningStreak++
+          if (runningStreak > longestStreak) longestStreak = runningStreak
+          const abs = Math.abs(delta)
+          if (abs >= 5) lvl = 5
+          else if (abs >= 3) lvl = 4
+          else if (abs >= 1.5) lvl = 3
+          else if (abs >= 0.5) lvl = 2
+          else lvl = 1
+        } else {
+          lvl = 0
+          runningStreak = 0
+        }
+        html += `<div class="tr-heat-cell l${lvl}" title="${key}${delta != null ? ' Δ' + (delta > 0 ? '+' : '') + (Math.round(delta * 10) / 10) : ''}"></div>`
+        if (d === 0) {
+          const monIdx = date.getMonth()
+          monthLabels.push(MONTH_NAMES[monIdx]?.toUpperCase() || '')
+        }
+      }
+      html += '</div>'
+    }
+    grid.innerHTML = html
+    // Compress months to 3 unique
+    if (months) {
+      const unique = [...new Set(monthLabels)].slice(-3)
+      months.innerHTML = unique.map(m => `<span class="tr-heat-month">${escHtml(m)}</span>`).join('')
+    }
+    if (streakLbl) streakLbl.textContent = `${activeDays} ACTIVE DAYS · LONGEST STREAK ${longestStreak} DAYS`
+  }
+
+  // Volume: 4 dot-matrix cards
+  function renderTrendVolume(series, tab) {
+    const grid = document.getElementById('trVolGrid')
+    if (!grid) return
+
+    // Aggregate latest period totals
+    const last = series[series.length - 1] || {}
+    const prev = series[series.length - 2] || null
+
+    const periodLbl = tab === 'daily' ? '24H' : tab === 'weekly' ? '7D' : '30D'
+    const totalLbl = tab === 'daily' ? '30D' : tab === 'weekly' ? '12W' : '12MO'
+
+    function calcDelta(curr, prior) {
+      if (!Number.isFinite(curr) || !Number.isFinite(prior) || prior === 0) return curr > 0 ? '+new' : '—'
+      const pct = ((curr - prior) / prior) * 100
+      const sign = pct >= 0 ? '+' : ''
+      return `${sign}${Math.round(pct)}%`
+    }
+    function totalSum(field) {
+      return series.reduce((s, b) => s + (Number(b?.[field]) || 0), 0)
+    }
+
+    const fields = [
+      { name: 'MENTIONS',  icon: '◆', curr: Number(last.mentions) || 0,        prior: prev ? Number(prev.mentions) || 0 : 0,        total: totalSum('mentions') },
+      { name: 'CITATIONS', icon: '✦', curr: Number(last.citation_count) || 0,  prior: prev ? Number(prev.citation_count) || 0 : 0,  total: totalSum('citation_count') },
+      { name: 'SOURCES',   icon: '★', curr: Number(last.source_diversity) || 0, prior: prev ? Number(prev.source_diversity) || 0 : 0, total: totalSum('source_diversity') },
+      { name: 'CO-RECS',   icon: '◇', curr: Number(last.corec_degree) || 0,    prior: prev ? Number(prev.corec_degree) || 0 : 0,    total: totalSum('corec_degree') },
     ]
-    wrap.innerHTML = items.map(it => `
-      <div style="padding:0.55rem 0.6rem;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;text-align:center;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#666;letter-spacing:0.18em;margin-bottom:0.25rem;">${it.label}</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;color:${it.color};font-weight:700;">${escHtml(String(it.val))}</div>
-      </div>`).join('')
+
+    // Find max per field across series for dot-fill scaling
+    const maxByField = {
+      MENTIONS: Math.max(1, ...series.map(b => Number(b.mentions) || 0)),
+      CITATIONS: Math.max(1, ...series.map(b => Number(b.citation_count) || 0)),
+      SOURCES: Math.max(1, ...series.map(b => Number(b.source_diversity) || 0)),
+      'CO-RECS': Math.max(1, ...series.map(b => Number(b.corec_degree) || 0)),
+    }
+
+    grid.innerHTML = fields.map(d => {
+      const fieldKey = d.name
+      const fillRatio = Math.min(1, d.curr / maxByField[fieldKey])
+      const filled = Math.round(fillRatio * 100)
+      let dotsHtml = ''
+      for (let i = 0; i < 100; i++) {
+        const cls = i < filled ? 'on' : (i < filled + 4 ? 'faint' : '')
+        dotsHtml += `<div class="tr-vol-dot ${cls}"></div>`
+      }
+      // Sparkline from last 14 buckets
+      const recent = series.slice(-14)
+      const sparkVals = recent.map(b => {
+        const f = fieldKey === 'MENTIONS' ? 'mentions' : fieldKey === 'CITATIONS' ? 'citation_count' : fieldKey === 'SOURCES' ? 'source_diversity' : 'corec_degree'
+        return Number(b[f]) || 0
+      })
+      const sparkMax = Math.max(1, ...sparkVals)
+      let sparkHtml = ''
+      for (let i = 0; i < 14; i++) {
+        const v = sparkVals[i] || 0
+        const h = Math.max(2, Math.round((v / sparkMax) * 100))
+        const on = i >= sparkVals.length - 3 ? 'on' : ''
+        sparkHtml += `<i class="${on}" style="height:${h}%"></i>`
+      }
+      const deltaTxt = calcDelta(d.curr, d.prior)
+      const isPos = deltaTxt.startsWith('+')
+      return `
+        <article class="ov-card tr-vol-card">
+          <div class="tr-vol-head">
+            <span class="tr-vol-name">${d.name}</span>
+            <span class="tr-vol-icon">${d.icon}</span>
+          </div>
+          <div class="tr-vol-num">${d.curr.toLocaleString()}<span>· ${periodLbl}</span></div>
+          <div class="tr-vol-delta ${isPos ? 'pos' : 'neg'}"><span class="arrow">${isPos ? '▲' : '▼'}</span> ${escHtml(deltaTxt)} VS PRIOR</div>
+          <div class="tr-vol-dots">${dotsHtml}</div>
+          <div class="tr-vol-spark">${sparkHtml}</div>
+          <div class="tr-vol-foot">
+            <span class="lbl">TOTAL · ${totalLbl}</span>
+            <span class="val">${d.total.toLocaleString()}</span>
+          </div>
+        </article>
+      `
+    }).join('')
   }
 
   function initTrendTabs() {
+    // Score tabs (.trend-tab-btn)
     document.querySelectorAll('.trend-tab-btn').forEach(btn => {
       if (btn.__bound) return; btn.__bound = true
       btn.addEventListener('click', () => {
         const tab = btn.dataset.trendTab
         if (!tab) return
-        document.querySelectorAll('.trend-tab-btn').forEach(b => {
-          const on = b.dataset.trendTab === tab
-          b.classList.toggle('on', on)
-          b.style.background = on ? '#FFD700' : '#0d0d0d'
-          b.style.color = on ? '#0a0a0a' : '#888'
-          b.style.border = on ? 'none' : '1px solid #2a2a2a'
-        })
+        document.querySelectorAll('.trend-tab-btn').forEach(b => b.classList.toggle('on', b.dataset.trendTab === tab))
         const prod = trendCurrentProduct || (typeof pickRepresentativeProduct === 'function' ? (pickRepresentativeProduct()?.product_name || null) : null)
         if (prod) loadTrendPane(prod, tab)
       })
-    });
-    ['trend-overlay-score','trend-overlay-recognition','trend-overlay-category'].forEach(id => {
-      const el = document.getElementById(id)
-      if (el && !el.__bound) { el.__bound = true; el.addEventListener('change', () => { if (trendLastSeries) drawTrendChartV2(trendLastSeries, trendCurrentTab) }) }
+    })
+    // Volume tabs (.volume-tab-btn) — drive same loadTrendPane (unified)
+    document.querySelectorAll('.volume-tab-btn').forEach(btn => {
+      if (btn.__bound) return; btn.__bound = true
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.volumeTab
+        if (!tab) return
+        document.querySelectorAll('.volume-tab-btn').forEach(b => b.classList.toggle('on', b.dataset.volumeTab === tab))
+        const prod = trendCurrentProduct || (typeof pickRepresentativeProduct === 'function' ? (pickRepresentativeProduct()?.product_name || null) : null)
+        if (prod) loadTrendPane(prod, tab)
+      })
+    })
+    // Dimension overlays
+    document.querySelectorAll('.tr-overlay').forEach(b => {
+      if (b.__bound) return; b.__bound = true
+      b.addEventListener('click', () => {
+        const dim = b.dataset.dim
+        if (!dim) return
+        if (trendActiveOverlays.has(dim)) { trendActiveOverlays.delete(dim); b.classList.remove('on') }
+        else { trendActiveOverlays.add(dim); b.classList.add('on') }
+        if (trendLastSeries) drawTrendChartV2(trendLastSeries, trendCurrentTab)
+      })
     })
   }
 
@@ -3833,30 +4418,14 @@ button:focus-visible, a:focus-visible {
   }
 
   // Trend pane Volume 섹션
+  // 2026-04-28 Claude Design merge: Volume now rendered inside loadTrendPane.
+  // Keep legacy signature for backward compatibility, delegate to unified renderer.
   async function loadVolumePane(product, tab) {
     volumeCurrentTab = tab || 'daily'
     volumeCurrentProduct = product
-    const empty = document.getElementById('volume-empty')
-    const chartWrap = document.getElementById('volume-chart-wrap')
-    const statsWrap = document.getElementById('volume-stats')
-    const layersWrap = document.getElementById('volume-layers')
-    if (empty) empty.style.display = 'none'
-    if (chartWrap) chartWrap.style.display = 'none'
-    if (statsWrap) statsWrap.style.display = 'none'
-    if (layersWrap) layersWrap.style.display = 'none'
-
-    if (!product) { if (empty) empty.style.display = 'block'; return }
-    const data = await fetchVolume(product, volumeCurrentTab)
-    if (!data || !Array.isArray(data.series)) { if (empty) empty.style.display = 'block'; return }
-    const series = data.series
-    const anyNonZero = series.some(b => (Number(b.mentions) || 0) + (Number(b.citation_count) || 0) + (Number(b.corec_degree) || 0) > 0)
-    if (!anyNonZero) { if (empty) empty.style.display = 'block'; return }
-    volumeLastSeries = series
-    if (chartWrap) chartWrap.style.display = 'block'
-    if (statsWrap) statsWrap.style.display = 'grid'
-    if (layersWrap) layersWrap.style.display = 'flex'
-    drawVolumeChart(series, volumeCurrentTab)
-    renderVolumeStats(data.stats || {})
+    if (typeof loadTrendPane === 'function') {
+      try { await loadTrendPane(product, tab || trendCurrentTab || 'daily') } catch (e) { console.error('[volume->trend] delegate failed', e) }
+    }
   }
 
   function drawVolumeChart(series, _vtab) {
