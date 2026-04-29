@@ -1259,6 +1259,14 @@ button:focus-visible, a:focus-visible {
         </span>
         <span style="color:var(--pba-fg-4);font-size:10px;margin-left:2px;" aria-hidden="true">▼</span>
       </button>
+      <!-- 2026-04-29 E안 안전장치 4: Last refreshed indicator + Refresh now button -->
+      <span id="shell-last-refresh" style="display:none;margin-left:0.7rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#888;align-items:center;gap:0.4rem;">
+        <span id="shell-last-refresh-text">—</span>
+        <button id="shell-refresh-now-btn" onclick="triggerRefreshNow()" title="Run a fresh check now"
+          style="background:transparent;border:1px solid #2a2a2a;border-radius:4px;color:#FFD700;font-family:'Press Start 2P',monospace;font-size:6.5px;letter-spacing:0.16em;padding:3px 7px;cursor:pointer;">
+          ↻ REFRESH
+        </button>
+      </span>
       <div id="shell-domain-menu" style="display:none;position:absolute;top:calc(100% + 6px);left:0;min-width:240px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:8px;padding:0.4rem;box-shadow:0 8px 24px rgba(0,0,0,0.6);z-index:500;">
         <div id="shell-domain-list" style="display:flex;flex-direction:column;gap:2px;"></div>
         <div style="height:1px;background:#1a1a1a;margin:0.4rem 0;"></div>
@@ -7124,7 +7132,56 @@ button:focus-visible, a:focus-visible {
     if (typeof loadRivalsPane === 'function') try { loadRivalsPane(name) } catch(e) {}
     if (typeof renderJourneyPane === 'function') try { renderJourneyPane() } catch(e) {}
     if (typeof loadActionsPane === 'function') try { loadActionsPane() } catch(e) {}
+    // 2026-04-29 E안 안전장치 4: Last refreshed indicator
+    if (typeof updateLastRefreshIndicator === 'function') updateLastRefreshIndicator(name)
   }
+
+  // 2026-04-29 E안 안전장치 4: Last refreshed indicator + Refresh now
+  function updateLastRefreshIndicator(productName) {
+    const wrap = document.getElementById('shell-last-refresh')
+    const txt = document.getElementById('shell-last-refresh-text')
+    if (!wrap || !txt) return
+    const rows = (allHistoryData || []).filter(r => (r.product_name || '').toLowerCase() === (productName || '').toLowerCase())
+    if (rows.length === 0) {
+      wrap.style.display = 'none'
+      return
+    }
+    const latest = rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0]
+    const ageMs = Date.now() - new Date(latest.created_at).getTime()
+    const hours = Math.floor(ageMs / 3600000)
+    const minutes = Math.floor((ageMs % 3600000) / 60000)
+    let ageText
+    if (hours >= 24) {
+      const days = Math.floor(hours / 24)
+      ageText = `${days}d ago`
+    } else if (hours >= 1) {
+      ageText = `${hours}h ago`
+    } else {
+      ageText = `${Math.max(1, minutes)}m ago`
+    }
+    // Stale warning if > 25h (cron should run every 24h)
+    const stale = hours >= 25
+    txt.textContent = `Updated ${ageText}`
+    txt.style.color = stale ? '#FFA94D' : '#888'
+    wrap.style.display = 'inline-flex'
+  }
+
+  function triggerRefreshNow() {
+    // Quick Check modal 트리거 — 기존 모달 재사용
+    const name = _selectedDomainName
+    if (!name) { if (typeof showToast === 'function') showToast('Select a product first', 'error'); return }
+    if (typeof openQuickCheck === 'function') {
+      // 도메인 자동 채우기를 위해 input 사전 세팅
+      try {
+        const input = document.getElementById('product')
+        if (input) input.value = name
+      } catch(e) {}
+      openQuickCheck()
+    } else {
+      window.location.reload()
+    }
+  }
+  window.triggerRefreshNow = triggerRefreshNow
 
   // Close domain menu on outside click
   document.addEventListener('click', function(e) {

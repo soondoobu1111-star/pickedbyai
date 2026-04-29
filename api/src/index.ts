@@ -923,6 +923,16 @@ app.post('/v1/check', async (c) => {
   console.log(`[DC] ${colo}`)
 
   const startMs = Date.now()
+
+  // 2026-04-29 FIX-USERID-LOGPROBES (E안 Fix 3):
+  // 인증 토큰을 probe 실행 전에 1회 검증 → logProbes에 userId 첨부
+  // 효과: probe_logs.user_id NULL 방지 → Volume API user_id 필터 매칭 → 24h Volume 즉시 노출
+  let authedUser: { id: string } | null = null
+  const authHeaderEarly = c.req.header('Authorization')
+  if (authHeaderEarly?.startsWith('Bearer ')) {
+    try { authedUser = await verifyToken(authHeaderEarly.slice(7), c.env) } catch {}
+  }
+
   // ENGINE-06: probe 스코어 + co_recommendations + 엔진 실행 병렬 처리
   const [engineResult, probeData, coRecs] = await Promise.all([
     runEngine(c.env, name, url),
@@ -930,7 +940,12 @@ app.post('/v1/check', async (c) => {
     getCoRecommendations(c.env, name),
   ])
   // P1-03: Log probe results (non-blocking)
-  await logProbes(c.env, name, engineResult.aiProbe, { productUrl: url, triggerType: 'manual', startMs })
+  await logProbes(c.env, name, engineResult.aiProbe, {
+    userId: authedUser?.id,
+    productUrl: url,
+    triggerType: 'manual',
+    startMs,
+  })
 
   // ── UNIFIED_SCORE_V15 (빅파이 1.5 Phase 1 Step 3, B안 병존) ─
   // PROBE_REDESIGN_D7=true → D안 역방향 스무고개 사용 (D7+)
@@ -976,10 +991,10 @@ app.post('/v1/check', async (c) => {
   }
 
   // 인증된 사용자면 scores 테이블에 UPSERT (오늘자 row 기준)
-  const authHeader = c.req.header('Authorization')
-  if (authHeader?.startsWith('Bearer ')) {
-    const user = await verifyToken(authHeader.slice(7), c.env)
-    if (user) {
+  // 2026-04-29: 위에서 이미 verifyToken 1회 호출. authedUser 재사용.
+  if (authedUser) {
+    {
+      const user = authedUser
       const sbUrl = getSbUrl(c.env)
       const finalScore = unifiedV15 ? Math.round(unifiedV15.score) : (engineResult.score ?? 0)
       const sbHeaders = {
@@ -1040,7 +1055,6 @@ app.post('/v1/check', async (c) => {
 async function dailyRefresh(env: Bindings) {
   const sbUrl = getSbUrl(env)
   const today = new Date().toISOString().split('T')[0]
-  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
 
   const headers = {
     'apikey': env.SUPABASE_SERVICE_KEY,
@@ -1048,15 +1062,18 @@ async function dailyRefresh(env: Bindings) {
     'Content-Type': 'application/json',
   }
 
-  // 1. Get all tracked products from last 30 days
+  // 2026-04-29 E안 Fix 1: 추적 소스를 domains.status=verified로 변경.
+  // 이전: scores 30일 내 row → 자기강화 실패(scores INSERT 실패=영구 누락) 위험.
+  // 변경: domains 테이블 verified status → 사용자가 명시 등록한 도메인 100% 추적 보장.
+  // 페이지네이션: 1000+ 도메인 대비 limit 충분 (현재 MAU 기준 안전).
   const trackedRes = await fetch(
-    `${sbUrl}/rest/v1/scores?select=user_id,product_name,product_url&created_at=gte.${thirtyDaysAgo}&limit=1000`,
+    `${sbUrl}/rest/v1/domains?status=eq.verified&select=id,user_id,product_name,domain_url&limit=2000`,
     { headers }
   )
-  if (!trackedRes.ok) { console.error('[CRON] fetch tracked failed', await trackedRes.text()); return }
-  const tracked: Array<{ user_id: string; product_name: string; product_url: string | null }> = await trackedRes.json()
+  if (!trackedRes.ok) { console.error('[CRON] fetch verified domains failed', await trackedRes.text()); return }
+  const tracked: Array<{ id: string; user_id: string; product_name: string; domain_url: string | null }> = await trackedRes.json()
 
-  // 2. Get today's already-scanned (user_id, product_name) pairs
+  // 오늘 이미 scan된 (user_id, product_name) 페어 (멱등성 보장: cron 재실행 시 중복 INSERT 방지)
   const todayRes = await fetch(
     `${sbUrl}/rest/v1/scores?select=user_id,product_name&created_at=gte.${today}T00:00:00.000Z`,
     { headers }
@@ -1064,18 +1081,22 @@ async function dailyRefresh(env: Bindings) {
   const todayScanned: Array<{ user_id: string; product_name: string }> = todayRes.ok ? await todayRes.json() : []
   const todaySet = new Set(todayScanned.map(r => `${r.user_id}::${r.product_name}`))
 
-  // 3. Deduplicate: one task per (user_id, product_name), skip already scanned today
+  // Deduplicate (한 도메인이 여러 번 verified 등록된 경우 1회만)
   const seen = new Set<string>()
-  const tasks: Array<{ user_id: string; product_name: string; product_url: string | null }> = []
+  type Task = { id: string; user_id: string; product_name: string; product_url: string | null }
+  const tasks: Task[] = []
   for (const row of tracked) {
     const key = `${row.user_id}::${row.product_name}`
     if (!seen.has(key) && !todaySet.has(key)) {
       seen.add(key)
-      tasks.push(row)
+      tasks.push({ id: row.id, user_id: row.user_id, product_name: row.product_name, product_url: row.domain_url })
     }
   }
 
-  console.log(`[CRON] daily refresh: ${tasks.length} products to scan (db=${sbUrl.includes('xzec') ? 'staging' : 'prod'})`)
+  console.log(`[CRON] daily refresh: ${tasks.length} verified domains to scan (db=${sbUrl.includes('xzec') ? 'staging' : 'prod'})`)
+
+  // 2026-04-29 E안 안전장치 3: KPI 카운터
+  let kpiSuccess = 0, kpiFailRunEngine = 0, kpiZeroScore = 0, kpiInsertFail = 0
 
   // 4. Scan each product sequentially (avoid rate limits)
   for (const task of tasks) {
@@ -1124,7 +1145,28 @@ async function dailyRefresh(env: Bindings) {
           console.error('[CRON] prescription error:', err)
         }
       }
-      await fetch(`${sbUrl}/rest/v1/scores`, {
+      // 2026-04-29 E안 안전장치 2: score=0 row DB INSERT 거부.
+      // 모든 probe 실패 → savedScore=0 → 의미 없는 row 저장 차단.
+      // 다음 cron이 retry 시 정상 score 산출 가능.
+      if (savedScore <= 0) {
+        kpiZeroScore++
+        console.warn(`[CRON] ⚠️ ${task.product_name} score=0 — INSERT skipped (probe likely failed). Adding to retry queue.`)
+        try {
+          // retry queue 자동 등록 (Fix 2)
+          await recordCheckResult(
+            env,
+            { id: task.id, user_id: task.user_id, product_name: task.product_name, domain_url: task.product_url } as any,
+            { ok: false, error: 'score_zero_probe_failed' } as any
+          )
+        } catch (retryErr) { console.error(`[CRON] retry queue register failed for ${task.product_name}:`, retryErr) }
+        await new Promise(r => setTimeout(r, 2000))
+        continue
+      }
+
+      // 2026-04-29 E안 안전장치 1: scores INSERT res.ok 검증.
+      // 이전: Prefer:return=minimal + res.ok 미검증 → silent failure.
+      // 변경: 응답 status 검증 → 실패 시 ALERT + retry 등록.
+      const insertRes = await fetch(`${sbUrl}/rest/v1/scores`, {
         method: 'POST',
         headers: { ...headers, 'Prefer': 'return=minimal' },
         body: JSON.stringify({
@@ -1139,12 +1181,44 @@ async function dailyRefresh(env: Bindings) {
           prescription: cronPrescription,
         }),
       })
-      console.log(`[CRON] ✓ ${task.product_name} score=${savedScore} unified=${cronUnifiedV15 ? cronUnifiedV15.score : 'skip'} rx=${cronPrescription ? 'yes' : 'no'}`)
+      if (!insertRes.ok) {
+        kpiInsertFail++
+        const errBody = await insertRes.text().catch(() => '')
+        console.error(`[CRON] ✗ INSERT failed ${task.product_name} status=${insertRes.status} body=${errBody.substring(0, 200)}`)
+        try {
+          await recordCheckResult(
+            env,
+            { id: task.id, user_id: task.user_id, product_name: task.product_name, domain_url: task.product_url } as any,
+            { ok: false, error: `insert_failed_${insertRes.status}` } as any
+          )
+        } catch (retryErr) { console.error(`[CRON] retry queue register failed for ${task.product_name}:`, retryErr) }
+      } else {
+        kpiSuccess++
+        console.log(`[CRON] ✓ ${task.product_name} score=${savedScore} unified=${cronUnifiedV15 ? cronUnifiedV15.score : 'skip'} rx=${cronPrescription ? 'yes' : 'no'}`)
+      }
       // Small delay between scans
       await new Promise(r => setTimeout(r, 2000))
     } catch (err) {
+      // 2026-04-29 E안 Fix 2: cron 실패 시 retry queue 자동 등록.
+      // 매분 cron(processRetryQueue)이 1분 내 픽업 → 자가 회복.
+      kpiFailRunEngine++
       console.error(`[CRON] ✗ ${task.product_name}`, err)
+      try {
+        await recordCheckResult(
+          env,
+          { id: task.id, user_id: task.user_id, product_name: task.product_name, domain_url: task.product_url } as any,
+          { ok: false, error: String(err).substring(0, 200) } as any
+        )
+      } catch (retryErr) { console.error(`[CRON] retry queue register failed for ${task.product_name}:`, retryErr) }
     }
+  }
+
+  // 2026-04-29 E안 안전장치 3: KPI 종합 출력 + 임계 초과 시 ALERT
+  const kpiTotal = tasks.length
+  const failRate = kpiTotal > 0 ? Math.round(((kpiFailRunEngine + kpiZeroScore + kpiInsertFail) / kpiTotal) * 100) : 0
+  console.log(`[CRON KPI] total=${kpiTotal} success=${kpiSuccess} fail=${kpiFailRunEngine} zero=${kpiZeroScore} insertFail=${kpiInsertFail} failRate=${failRate}%`)
+  if (kpiTotal > 0 && failRate >= 30) {
+    console.error(`[CRON ALERT] 🚨 daily refresh fail rate ${failRate}% (threshold 30%) — investigate immediately`)
   }
 
   console.log('[CRON] daily refresh (engine scan) complete')
