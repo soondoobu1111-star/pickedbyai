@@ -1,0 +1,150 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1200px; height: 1200px; background: #0a0a0a; color: #f5f5f5; font-family: 'Inter', system-ui, sans-serif; overflow: hidden; }
+  body {
+    padding: 80px 90px;
+    position: relative;
+  }
+  body::before {
+    content: ''; position: absolute; inset: 40px;
+    border: 3px solid #FFD700;
+    box-shadow: 6px 6px 0 #b39700;
+    pointer-events: none;
+  }
+  .corner { position: absolute; width: 24px; height: 24px; background: #FFD700; }
+  .c1 { top: 28px; left: 28px; }
+  .c2 { top: 28px; right: 28px; }
+  .c3 { bottom: 28px; left: 28px; }
+  .c4 { bottom: 28px; right: 28px; }
+
+  .title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 30px;
+    color: #FFD700;
+    letter-spacing: 3px;
+    text-shadow: 4px 4px 0 #b39700;
+    margin-top: 20px;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: #888;
+    margin-bottom: 56px;
+    letter-spacing: 1px;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 90px 1fr 90px;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 22px;
+    padding: 18px 24px;
+    border: 2px solid #222;
+    background: #111;
+    box-shadow: 4px 4px 0 #1a1a1a;
+  }
+  .row.hot { border-color: #FFD700; background: #1a1500; box-shadow: 4px 4px 0 #b39700; }
+
+  .layer {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 28px;
+    color: #FFD700;
+    text-align: center;
+  }
+  .label {
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #f5f5f5;
+    letter-spacing: 0.5px;
+  }
+  .label small {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    color: #888;
+    margin-top: 4px;
+    letter-spacing: 0;
+  }
+  .count {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 36px;
+    color: #FFD700;
+    text-align: right;
+    text-shadow: 2px 2px 0 #b39700;
+  }
+  .row:not(.hot) .count { color: #f5f5f5; text-shadow: 2px 2px 0 #333; }
+
+  .total {
+    margin-top: 40px;
+    padding: 24px;
+    text-align: center;
+    border: 3px solid #FFD700;
+    background: #1a1500;
+    box-shadow: 6px 6px 0 #b39700;
+  }
+  .total-label {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 20px;
+    color: #888;
+    letter-spacing: 4px;
+    margin-bottom: 8px;
+  }
+  .total-num {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 64px;
+    color: #FFD700;
+    text-shadow: 5px 5px 0 #b39700;
+  }
+</style>
+</head>
+<body>
+  <div class="corner c1"></div>
+  <div class="corner c2"></div>
+  <div class="corner c3"></div>
+  <div class="corner c4"></div>
+
+  <div class="title">4-LAYER DEFECT TREE</div>
+  <div class="subtitle">// found after launch. fixed in one PR.</div>
+
+  <div class="row">
+    <div class="layer">L0</div>
+    <div class="label">Root Cause<small>silent fail · NOT NULL absent · score=0 saved</small></div>
+    <div class="count">5</div>
+  </div>
+  <div class="row hot">
+    <div class="layer">L1</div>
+    <div class="label">Polluted Data<small>scores 0/null rows · user_id NULL · truncated names</small></div>
+    <div class="count">4</div>
+  </div>
+  <div class="row hot">
+    <div class="layer">L2</div>
+    <div class="label">Render Contradictions<small>last-row assumption scattered · filter divergence</small></div>
+    <div class="count">17</div>
+  </div>
+  <div class="row">
+    <div class="layer">L3</div>
+    <div class="label">User Trust<small>manual check · no monitoring · "why INVISIBLE?"</small></div>
+    <div class="count">4</div>
+  </div>
+  <div class="row">
+    <div class="layer">L4</div>
+    <div class="label">Structure<small>no helper · duplicate tierByScore · dead code</small></div>
+    <div class="count">3</div>
+  </div>
+
+  <div class="total">
+    <div class="total-label">TOTAL DEFECTS</div>
+    <div class="total-num">33</div>
+  </div>
+</body>
+</html>

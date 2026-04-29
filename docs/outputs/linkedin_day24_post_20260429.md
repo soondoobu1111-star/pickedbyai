@@ -1,0 +1,161 @@
+# LinkedIn Post — Day 24 (2026-04-29 EOD)
+> 기반: 옵션 C 신규 본문 (안 1 vulnerability 훅)
+> 변경 사유: 04-29 프로덕션 배포 + 결함 33개 fix + dead code -426줄 = 오늘만 가능한 스토리
+
+---
+
+## 본문 (영어, 1,500자 이내)
+
+```
+Day 24. I shipped pickedby.ai to production yesterday.
+
+Then I found 33 bugs. In my own code.
+
+Eleven dead functions still being called. A score of zero
+silently saved as if it were a real measurement. A user ID
+quietly dropped from logs. Six display bugs masking the same
+root cause across four panels.
+
+I deleted 426 lines to ship clean.
+
+Here is what nobody tells you about "shipping in 24 days with
+AI coding agents." Shipping fast and shipping right are not
+the same skill. The agent will happily produce code that runs.
+You still have to read every line.
+
+The lesson cost me a full day. Worth it.
+
+What I shipped is a tool that checks whether GPT, Gemini,
+Claude, Grok, and Perplexity actually recommend your product.
+
+I ran it on three products people know.
+Figma: 95. Notion: 87.5. Stripe: 95.
+I ran it on myself.
+27.5.
+
+That gap is the product.
+
+Most founders score under 40. That is not a niche problem.
+That is the default state of the internet right now. AI
+buying decisions are already happening, and most products
+have no idea where they stand.
+
+So pickedby.ai v1.6 stops being a scale.
+It becomes a personal trainer.
+
+Score low on Direct Recognition? Here is the exact action.
+Claim your brand on Perplexity Pages. Get cited by three
+Tier-1 blogs. Submit to two AI-indexed directories.
+
+No LLM. Pure rule-based logic. Zero cost per prescription.
+The lower your score, the more specific the prescription gets.
+
+DEPLOY-GATE passed 12 of 13 checks. The one that did not:
+email delivery. Still working on it. Everything else is live.
+
+Free. No signup. Just type your domain.
+https://pickedby.ai
+
+If you want the full launch story:
+https://pickedby.ai/blog/we-posted-on-indie-hackers-day-12
+
+Building in public, solo founder, AI coding agents.
+Day 25 starts now.
+
+#BuildInPublic #AIVisibility #GEO #IndieHackers #ShipFast
+```
+
+**실자수**: ~1,470자. LinkedIn 본문 한도(3,000자) 내.
+
+---
+
+## 옵션 C / 안 1 핵심 훅 분석
+
+| 요소 | 본문 위치 | 임팩트 |
+|------|----------|-------|
+| **24일 milestone** | "Day 24" 첫 단어 | 정확성 회복 |
+| **Vulnerability 훅** | "33 bugs in my own code" 3번째 줄 | 첫 3초 어텐션 그래버 |
+| **구체 디테일** | "Eleven dead functions / score of zero / user ID dropped / six display bugs" | "AI 티" 안 나는 dev 디테일 |
+| **Counterintuitive number** | "deleted 426 lines to ship clean" | 공유 가능 한 줄 |
+| **AI agents 메타 토픽** | "Shipping fast and shipping right are not the same skill" | 04-29 LinkedIn 가장 뜨거운 토픽 친화 |
+| **GT-01 벤치마크** | Figma 95 / Notion 87.5 / Stripe 95 / 나 27.5 | Big name 권위 + 자기 vulnerability |
+| **Pivot 메타포** | "stops being a scale. It becomes a personal trainer" | v1.6 핵심 한 문장 |
+| **Specific prescription 예시** | Perplexity Pages / Tier-1 blogs / AI directories | Action 가능성 입증 |
+| **DEPLOY-GATE 12/13** | "Still working on it. Everything else is live" | 사회적 증거 + 정직 |
+
+---
+
+## AI 슬롭 체크 (금지어 검증)
+
+| 금지어 | 포함 여부 |
+|--------|----------|
+| delve | 없음 |
+| crucial | 없음 |
+| robust | 없음 |
+| comprehensive | 없음 |
+| em dash (—) | 없음 (모두 마침표/쉼표) |
+| 이모지 | 없음 |
+| "What I've found is" | 없음 |
+| "This is the real takeaway" | 없음 |
+| "game-changing" / "revolutionary" | 없음 |
+
+---
+
+## 이미지 첨부 (선택, 강력 권장)
+
+**이미지 1 (필수): "33 BUGS LATER" 카드**
+- 상단: `Day 24 — Shipped`
+- 중앙: `33 bugs found / 426 lines deleted`
+- 하단: `score: 27.5 / 100`
+- 배경 #0a0a0a / 골드 #FFD700 / Press Start 2P
+- 1200×1200
+
+**이미지 2 (선택): GT-01 벤치마크 막대 차트**
+- Figma 95 / Notion 87.5 / Stripe 95 / pickedby.ai 27.5
+- 캡션: `the gap is the product`
+- 동일 디자인 시스템
+
+---
+
+## 게시 후 액션 (CEO)
+
+| 시점 | 액션 |
+|------|------|
+| 게시 직후 | 개인 네트워크 5명에게 좋아요 요청 DM |
+| +30분 | 첫 댓글 2개 즉시 답글 (알고리즘 부스트) |
+| +2시간 | pickedby.ai 회사 페이지에서 재공유 |
+| +24시간 | 모든 댓글 영어 답변 |
+
+---
+
+## 응답 시나리오
+
+| 댓글 유형 | 답글 |
+|-----------|------|
+| "What were the 33 bugs?" | "Mostly silent failures. Score-of-zero rows quietly saved. dead functions still wired up. user IDs dropped from logs. The dangerous kind, not the loud kind. AI agents are great at writing code that runs. You still have to read it." |
+| "How did you find them all?" | "Gave up on patching. Built a 4-layer defect tree. Fixed every layer in one PR instead of eleven. Took a full day. Five-gate deploy script passed clean after." |
+| "What's the prescription engine?" | "Rule-based. No LLM. Score low on Direct Recognition? Step 1: claim Perplexity Pages. Step 2: three Tier-1 citations. Step 3: AI-indexed directories. Specific, free, repeatable. Phase 2 launch." |
+| "Why is your score only 27.5?" | "24 days old. That is the actual baseline for a new product. The point is I now know which 72.5 points to go after, in what order. That is what the prescription engine returns." |
+| "How is this different from SEO tools?" | "SEO measures Google. We measure GPT, Gemini, Claude, Grok, Perplexity. Different crawlers, different citation logic. Your SEO score and your AI score can look nothing alike." |
+| "AI agents replacing devs?" | "Replacing typing, yes. Replacing reading, no. The 33 bugs were all in code I had not actually read. That is on me." |
+
+---
+
+## 금지사항 재확인
+
+- "AI 추천 보장" 카피 ❌
+- "DM me for demo" ❌
+- 과장 표현 (game-changing, revolutionary) ❌
+- 링크 2개 초과 ❌ (현재 2개: pickedby.ai + blog)
+
+---
+
+## 게시 타이밍
+
+- 프로덕션 LIVE 확인 완료 (2026-04-29 EOD) ✅
+- **권장 타이밍**: 04-30 평일 오전 8~10시 KST (LinkedIn 알고리즘 피크)
+- 게시 직전 04-30 자정 cron(`PBA-CRON-01`) 검증 결과 확인 후 게시 (KPI 알림 트리거 시 보류)
+
+---
+
+*CEO 검토 후 직접 게시. Claude는 대리 게시 불가. · 2026-04-29 EOD KST*
