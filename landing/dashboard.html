@@ -7198,6 +7198,10 @@ button:focus-visible, a:focus-visible {
     const name = _selectedDomainName || prod?.product_name || ''
     lbl.textContent = name || 'Select a product'
     _updateDomainBadge(name)
+    // 2026-04-29 E안 안전장치 4: 첫 페이지 로드 + 도메인 변경 시 모두 호출
+    if (typeof updateLastRefreshIndicator === 'function' && name) {
+      try { updateLastRefreshIndicator(name) } catch(e) {}
+    }
   }
 
   // ═══════════════════════════════════════════════════════════
