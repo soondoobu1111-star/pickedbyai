@@ -2925,18 +2925,6 @@ button:focus-visible, a:focus-visible {
     } catch { /* non-critical */ }
   }
 
-  function isOwnedDomain(productUrl) {
-    if (!productUrl || !verifiedDomains.length) return null
-    try {
-      const inputHost = new URL(productUrl.startsWith('http') ? productUrl : 'https://' + productUrl).hostname.replace(/^www\./, '')
-      return verifiedDomains.find(d => {
-        try {
-          const ownHost = new URL(d.domain_url).hostname.replace(/^www\./, '')
-          return inputHost === ownHost
-        } catch { return false }
-      }) || null
-    } catch { return null }
-  }
 
   function maskEmail(email) {
     const [local, domain] = email.split('@')
@@ -3447,20 +3435,6 @@ button:focus-visible, a:focus-visible {
   }
 
   // 빅파이 1.5 보조 시각화: Daily Pulse + Pass Indicator + 2D Quadrant + Engine Grades
-  function renderUnifiedExtras(unified) {
-    const pulseEl = document.getElementById('result-daily-pulse')
-    const extrasEl = document.getElementById('result-v15-extras')
-    if (!pulseEl || !extrasEl) return
-    if (!unified) {
-      pulseEl.style.display = 'none'
-      extrasEl.style.display = 'none'
-      return
-    }
-    pulseEl.innerHTML = buildDailyPulseHtml(unified)
-    pulseEl.style.display = 'block'
-    extrasEl.innerHTML = buildUnifiedExtrasHtml(unified)
-    extrasEl.style.display = 'block'
-  }
 
   // ═══════════════════════════════════════════════════════════
   // D5 OVERVIEW · Phase 1.5.1 renderer
@@ -3477,7 +3451,7 @@ button:focus-visible, a:focus-visible {
       const sel = (allProducts || []).find(p => (p.product_name || '').toLowerCase() === _selectedDomainName.toLowerCase())
       if (sel) return sel
     }
-    const scoreOf = (p) => Number(p.unified_v15?.score ?? p.score) || 0
+    const scoreOf = (p) => (_scoreOfRow(p) ?? 0)
     const verifiedProducts = (allProducts || []).filter(p => verifiedNames.has((p.product_name || '').toLowerCase()))
     if (verifiedProducts.length > 0) {
       return [...verifiedProducts].sort((a,b) => scoreOf(b) - scoreOf(a))[0]
@@ -3906,8 +3880,8 @@ button:focus-visible, a:focus-visible {
         .filter(r => (r.product_name || '').toLowerCase() === (prod.product_name || '').toLowerCase())
         .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
       if (_ph.length >= 2) {
-        const _cur  = Number(_ph[0]?.unified_v15?.score ?? _ph[0]?.score) || 0
-        const _prev = Number(_ph[1]?.unified_v15?.score ?? _ph[1]?.score) || 0
+        const _cur  = (_scoreOfRow(_ph[0]) ?? 0)
+        const _prev = (_scoreOfRow(_ph[1]) ?? 0)
         const _d    = Math.round((_cur - _prev) * 10) / 10
         deltaEl.textContent = `Δ last 24h: ${_d > 0 ? '+' : ''}${_d}`
         deltaEl.style.color = _d > 0 ? '#4ade80' : _d < 0 ? '#e05252' : '#888'
@@ -4073,7 +4047,7 @@ button:focus-visible, a:focus-visible {
     const recent7 = (history || []).slice(-7)
     if (recent7.length < 2) { card.style.display = 'none'; return }
     card.style.display = 'block'
-    const scoreOf = r => Number(r?.unified_v15?.score ?? r?.score) || 0
+    const scoreOf = r => (_scoreOfRow(r) ?? 0)
     const first = scoreOf(recent7[0])
     const last = scoreOf(recent7[recent7.length - 1])
     const delta = Math.round(last - first)
@@ -4127,51 +4101,6 @@ button:focus-visible, a:focus-visible {
   }
 
   // Section 9 — Last 24h dimensional deltas
-  function renderD5Last24h(history, unified) {
-    const listEl = document.getElementById('d5-last24h-list')
-    if (!listEl) return
-    if (!history || history.length < 2) {
-      listEl.innerHTML = '<div style="color:#888;font-size:0.78rem;">First data point captured — check back tomorrow for Δ.</div>'
-      return
-    }
-    const today = history[history.length - 1]
-    const yesterday = history[history.length - 2]
-    if (!today?.unified_v15 && !yesterday?.unified_v15) {
-      listEl.innerHTML = '<div style="color:#888;font-size:0.78rem;">Collecting dimension data — available after next AI check.</div>'
-      return
-    }
-    const dimMap = arr => {
-      const m = {}
-      for (const d of (Array.isArray(arr) ? arr : [])) if (d && d.id) m[d.id] = Number(d.score) || 0
-      return m
-    }
-    const T = dimMap(today?.unified_v15?.dimensions)
-    const Y = dimMap(yesterday?.unified_v15?.dimensions)
-    const scoreT = Number(today?.unified_v15?.score ?? today?.score) || 0
-    const scoreY = Number(yesterday?.unified_v15?.score ?? yesterday?.score) || 0
-    const rows = [
-      { label: 'Score', dT: scoreT, dY: scoreY },
-      { label: 'Recognition', dT: T.recognition || 0, dY: Y.recognition || 0 },
-      { label: 'Category', dT: T.category || 0, dY: Y.category || 0 },
-      { label: 'Co-Rec', dT: T.corec || 0, dY: Y.corec || 0 },
-      { label: 'Web', dT: T.web || 0, dY: Y.web || 0 },
-    ]
-    const deltas = rows.map(r => Math.round((r.dT - r.dY) * 10) / 10)
-    if (deltas.every(d => d === 0)) {
-      listEl.innerHTML = '<div style="color:#555;font-size:0.78rem;">No change since yesterday.</div>'
-      return
-    }
-    listEl.innerHTML = rows.map((r, i) => {
-      const d = deltas[i]
-      const arrow = d > 0 ? '↑' : d < 0 ? '↓' : '↔'
-      const color = d > 0 ? '#4ade80' : d < 0 ? '#e05252' : '#888'
-      const sign = d > 0 ? '+' : ''
-      return `<div style="display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;">
-        <span style="color:#aaa;">${escHtml(r.label)}</span>
-        <span style="font-family:'JetBrains Mono',monospace;color:${color};font-weight:600;">${arrow} ${sign}${d}</span>
-      </div>`
-    }).join('')
-  }
 
   // Section 10 — Actions Top 1 (rule-based, no LLM)
   function renderD5ActionTop(unified) {
@@ -4798,6 +4727,8 @@ button:focus-visible, a:focus-visible {
     { id: 'strong',    name: 'STRONG',    min: 61, max: 80,  cls: 't-strong' },
     { id: 'perfect',   name: 'PERFECT',   min: 81, max: 100, cls: 't-perfect' },
   ]
+  // 2026-04-29 통합: tierByScore 중복 2곳 제거 → 단일 정의.
+  function tierByScore(s) { return TIER_DEFS.find(t => s >= t.min && s <= t.max) || TIER_DEFS[0] }
 
   function _fmtPxDate(iso) {
     if (!iso) return '—'
@@ -4826,7 +4757,6 @@ button:focus-visible, a:focus-visible {
     const firstScore = Number(_scoreOfRow(first) ?? 0)
     const lastScore = Number(_scoreOfRow(last) ?? 0)
 
-    const tierByScore = s => TIER_DEFS.find(t => s >= t.min && s <= t.max) || TIER_DEFS[0]
     const startTier = tierByScore(firstScore)
     const currentTier = tierByScore(lastScore)
     const currentIdx = TIER_DEFS.findIndex(t => t.id === currentTier.id)
@@ -4875,7 +4805,7 @@ button:focus-visible, a:focus-visible {
 
     // Compute when each tier was first reached (for "DAY x-y" labels)
     const tierEntryDate = {} // tierId -> date entered
-    const firstScore = Number(sorted[0]?.unified_v15?.score ?? sorted[0]?.score) || 0
+    const firstScore = (_scoreOfRow(sorted[0]) ?? 0)
     const startTier = TIER_DEFS.find(t => firstScore >= t.min && firstScore <= t.max)
     if (startTier) tierEntryDate[startTier.id] = sorted[0].created_at
     arcEvents.forEach(ev => {
@@ -4970,7 +4900,7 @@ button:focus-visible, a:focus-visible {
           const recent = sorted.slice(-14)
           if (recent.length >= 2) {
             const span = (new Date(recent[recent.length - 1].created_at) - new Date(recent[0].created_at)) / 86400000
-            const gain = (Number(recent[recent.length - 1]?.unified_v15?.score ?? recent[recent.length - 1]?.score) || 0) - (Number(recent[0]?.unified_v15?.score ?? recent[0]?.score) || 0)
+            const gain = ((_scoreOfRow(recent[recent.length - 1]) ?? 0)) - ((_scoreOfRow(recent[0]) ?? 0))
             const ratePerDay = span > 0 ? gain / span : 0
             if (ratePerDay > 0) {
               const days = Math.ceil(gap / ratePerDay)
@@ -4995,7 +4925,6 @@ button:focus-visible, a:focus-visible {
     const meta = document.getElementById('jrTimelineMeta')
     if (!ol) return
 
-    const tierByScore = s => TIER_DEFS.find(t => s >= t.min && s <= t.max) || TIER_DEFS[0]
     const dayOf = iso => Math.max(1, Math.round((new Date(iso) - new Date(first.created_at)) / 86400000) + 1)
 
     // Build events: tier-up / tier-down / first / milestone-progress
@@ -5004,9 +4933,9 @@ button:focus-visible, a:focus-visible {
     events.push({
       type: 'first',
       date: first.created_at,
-      score: Number(first?.unified_v15?.score ?? first?.score) || 0,
+      score: (_scoreOfRow(first) ?? 0),
       day: 1,
-      note: `First check run · ${tierByScore(Number(first?.unified_v15?.score ?? first?.score) || 0).name}`,
+      note: `First check run · ${tierByScore((_scoreOfRow(first) ?? 0)).name}`,
     })
     // Tier transitions
     arcEvents.forEach(ev => {
@@ -5030,7 +4959,7 @@ button:focus-visible, a:focus-visible {
       }
     })
     // Resolve "from" for tier-up by walking arcEvents
-    let prevPi = tierByScore(Number(first?.unified_v15?.score ?? first?.score) || 0).id
+    let prevPi = tierByScore((_scoreOfRow(first) ?? 0)).id
     let tIdx = 0
     arcEvents.forEach(ev => {
       if (ev.type === 'upgrade') {
@@ -5046,8 +4975,8 @@ button:focus-visible, a:focus-visible {
     if (sorted.length >= 2) {
       const recent = sorted.slice(-7)
       if (recent.length >= 2) {
-        const a = Number(recent[0]?.unified_v15?.score ?? recent[0]?.score) || 0
-        const b = Number(recent[recent.length - 1]?.unified_v15?.score ?? recent[recent.length - 1]?.score) || 0
+        const a = (_scoreOfRow(recent[0]) ?? 0)
+        const b = (_scoreOfRow(recent[recent.length - 1]) ?? 0)
         const delta = Math.round((b - a) * 10) / 10
         if (delta >= 3) {
           events.push({
@@ -5105,7 +5034,7 @@ button:focus-visible, a:focus-visible {
     const first = sorted[0]
     const firstUp = arcEvents.find(e => e.type === 'upgrade')
     const strongEv = arcEvents.find(e => e.type === 'upgrade' && (e.pi === 'strong' || e.pi === 'perfect'))
-    const lastScore = Number(sorted[sorted.length - 1]?.unified_v15?.score ?? sorted[sorted.length - 1]?.score) || 0
+    const lastScore = (_scoreOfRow(sorted[sorted.length - 1]) ?? 0)
 
     const trophies = [
       { id: 'first-check', icon: '★', name: 'FIRST CHECK', desc: 'Ran your first AI recognition check',
@@ -5351,27 +5280,6 @@ button:focus-visible, a:focus-visible {
     })
   }
 
-  function renderVolumeStats(stats) {
-    const wrap = document.getElementById('volume-stats')
-    if (!wrap) return
-    const growth = stats.growth_pct
-    const delta = Number(stats.delta_first_last ?? 0)
-    const items = [
-      { label: 'TOTAL', val: stats.mentions_total ?? 0, color: '#FFD700' },
-      { label: 'PEAK', val: stats.mentions_peak ?? 0, color: '#FFD700', sub: stats.mentions_peak_day },
-      { label: 'RECOG %', val: (stats.recognition_rate_avg ?? 0) + '%', color: '#4ade80' },
-      { label: 'Δ MENTIONS', val: (delta > 0 ? '+' : '') + delta, color: delta > 0 ? '#4ade80' : delta < 0 ? '#e05252' : '#888' },
-      { label: 'GROWTH', val: (growth == null ? '—' : (growth > 0 ? '+' : '') + growth + '%'), color: growth == null ? '#888' : (growth > 0 ? '#4ade80' : '#e05252') },
-      { label: 'CITATIONS', val: stats.citation_count_total ?? 0, color: '#60a5fa' },
-      { label: 'CO-REC MAX', val: stats.corec_degree_max ?? 0, color: '#f472b6' },
-    ]
-    wrap.innerHTML = items.map(it => `
-      <div style="padding:0.55rem 0.6rem;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;text-align:center;">
-        <div style="font-family:'Press Start 2P',monospace;font-size:6px;color:#666;letter-spacing:0.18em;margin-bottom:0.25rem;">${it.label}</div>
-        <div style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;color:${it.color};font-weight:700;">${escHtml(String(it.val))}</div>
-        ${it.sub ? `<div style="font-size:0.62rem;color:#666;margin-top:0.15rem;">${escHtml(String(it.sub))}</div>` : ''}
-      </div>`).join('')
-  }
 
   function initVolumeTabs() {
     document.querySelectorAll('.volume-tab-btn').forEach(btn => {
@@ -5641,132 +5549,6 @@ button:focus-visible, a:focus-visible {
     }
   }
 
-  function drawRivalsSankey(product, engines, peers, category) {
-    const canvas = document.getElementById('rivals-sankey')
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    const W = canvas.width, H = canvas.height
-    ctx.clearRect(0, 0, W, H)
-
-    const PAD = 20, NODE_W = 100, NODE_H_UNIT = 22, GAP = 6
-    const GOLD = '#FFD700', DIM = '#333', TEXT = '#ccc', BG = '#0a0a0a'
-
-    // Engine nodes (left column)
-    const engineKeys = Object.keys(engines).filter(k => engines[k].probes > 0)
-    const totalProbes = engineKeys.reduce((s, k) => s + engines[k].probes, 0) || 1
-
-    const leftNodes = engineKeys.map((key, i) => ({
-      key,
-      label: key.charAt(0).toUpperCase() + key.slice(1),
-      probes: engines[key].probes,
-      recognized: engines[key].recognized || 0,
-    }))
-
-    // Right nodes: our product first, then peers
-    const totalRight = leftNodes.reduce((s, n) => s + n.recognized, 0) || 1
-    const peerMaxCount = peers.length > 0 ? Math.max(...peers.map(p => p.count)) : 1
-    const rightNodes = [
-      { label: product, count: totalRight, isMe: true },
-      ...peers.slice(0, 5).map(p => ({ label: p.name, count: p.count, isMe: false })),
-    ]
-
-    // Layout
-    const lx = PAD + NODE_W / 2
-    const rx = W - PAD - NODE_W / 2
-    const midX = W / 2
-
-    function nodeHeight(val, total) { return Math.max(14, Math.round((val / total) * (H - PAD * 2 - GAP * (leftNodes.length - 1)))) }
-
-    // Compute left node heights + y positions
-    let ly = PAD
-    for (const n of leftNodes) {
-      n.h = nodeHeight(n.probes, totalProbes)
-      n.y = ly
-      ly += n.h + GAP
-    }
-
-    // Compute right node heights + y positions
-    const totalRightH = H - PAD * 2 - GAP * (rightNodes.length - 1)
-    const rightTotal = rightNodes.reduce((s, n) => s + n.count, 0) || 1
-    let ry = PAD
-    for (const n of rightNodes) {
-      n.h = Math.max(14, Math.round((n.count / rightTotal) * totalRightH))
-      n.y = ry
-      ry += n.h + GAP
-    }
-
-    // Draw background
-    ctx.fillStyle = BG
-    ctx.fillRect(0, 0, W, H)
-
-    // Draw bezier flows (left → right)
-    for (const ln of leftNodes) {
-      for (const rn of rightNodes) {
-        const alpha = rn.isMe ? 0.35 : 0.15
-        const color = rn.isMe ? GOLD : '#555'
-        ctx.beginPath()
-        ctx.moveTo(lx + NODE_W / 2, ln.y + ln.h / 2)
-        ctx.bezierCurveTo(
-          midX, ln.y + ln.h / 2,
-          midX, rn.y + rn.h / 2,
-          rx - NODE_W / 2, rn.y + rn.h / 2
-        )
-        ctx.strokeStyle = color
-        ctx.globalAlpha = alpha
-        ctx.lineWidth = rn.isMe ? 2 : 1
-        ctx.stroke()
-        ctx.globalAlpha = 1
-      }
-    }
-
-    // Draw left nodes (engines)
-    for (const n of leftNodes) {
-      ctx.fillStyle = '#1a1a1a'
-      ctx.strokeStyle = '#444'
-      ctx.lineWidth = 1
-      roundRect(ctx, lx - NODE_W / 2, n.y, NODE_W, n.h, 4)
-      ctx.fill(); ctx.stroke()
-      ctx.fillStyle = TEXT
-      ctx.font = '11px Inter, sans-serif'
-      ctx.textAlign = 'center'
-      ctx.fillText(n.label, lx, n.y + n.h / 2 + 4)
-      ctx.fillStyle = '#555'
-      ctx.font = '9px Inter, sans-serif'
-      ctx.fillText(`${n.probes} probes`, lx, n.y + n.h / 2 + 16)
-    }
-
-    // Draw right nodes (products)
-    for (const n of rightNodes) {
-      ctx.fillStyle = n.isMe ? '#1a1500' : '#111'
-      ctx.strokeStyle = n.isMe ? GOLD : '#333'
-      ctx.lineWidth = n.isMe ? 1.5 : 1
-      roundRect(ctx, rx - NODE_W / 2, n.y, NODE_W, n.h, 4)
-      ctx.fill(); ctx.stroke()
-      ctx.fillStyle = n.isMe ? GOLD : TEXT
-      ctx.font = n.isMe ? 'bold 11px Inter, sans-serif' : '10px Inter, sans-serif'
-      ctx.textAlign = 'center'
-      const label = n.label.length > 12 ? n.label.slice(0, 11) + '…' : n.label
-      ctx.fillText(label, rx, n.y + n.h / 2 + (n.h > 22 ? 4 : 4))
-    }
-
-    // Category label in center
-    if (category) {
-      ctx.fillStyle = '#444'
-      ctx.font = '9px Inter, sans-serif'
-      ctx.textAlign = 'center'
-      ctx.fillText(category, midX, H / 2)
-    }
-
-    // Legend
-    const legendEl = document.getElementById('rivals-sankey-legend')
-    if (legendEl) {
-      legendEl.innerHTML = `
-        <span style="display:flex;align-items:center;gap:4px;"><span style="width:12px;height:12px;background:#1a1500;border:1px solid #FFD700;border-radius:2px;display:inline-block;"></span> Your product</span>
-        <span style="display:flex;align-items:center;gap:4px;"><span style="width:12px;height:12px;background:#111;border:1px solid #333;border-radius:2px;display:inline-block;"></span> Co-recommended rivals</span>
-        ${category ? `<span style="color:#555;">Category: ${category}</span>` : ''}
-      `
-    }
-  }
 
   function roundRect(ctx, x, y, w, h, r) {
     ctx.beginPath()
@@ -5782,143 +5564,7 @@ button:focus-visible, a:focus-visible {
     ctx.closePath()
   }
 
-  function renderRivalsPeers(peers, myProduct) {
-    const el = document.getElementById('rivals-peers-table')
-    if (!el) return
-    const maxCount = Math.max(...peers.map(p => p.count), 1)
-    const intensityLabel = (i) => i === 0 ? 'Top rival' : i === 1 ? 'Frequent' : 'Occasional'
-    const barColor = (i) => i === 0 ? '#FFD700' : i === 1 ? '#888' : '#444'
-    const engineLabels = { perplexity: 'Perplexity', gpt: 'GPT', gemini: 'Gemini' }
-    el.innerHTML = `
-      <div style="display:grid;gap:0.4rem;">
-        ${peers.map((p, i) => {
-          const pct = Math.round((p.count / maxCount) * 100)
-          const engineBadges = Object.entries(p.by_engine || {})
-            .map(([k, v]) => {
-              const name = engineLabels[k] || k.charAt(0).toUpperCase() + k.slice(1)
-              return `<span style="background:#1a1a1a;border:1px solid #2a2a2a;color:#555;font-size:0.62rem;padding:1px 5px;border-radius:3px;" title="${name} mentioned this tool ${v} time(s)">${name}</span>`
-            }).join(' ')
-          return `<div style="padding:0.65rem 0.8rem;background:#0d0d0d;border:1px solid #1e1e1e;border-radius:6px;">
-            <div style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;margin-bottom:0.4rem;">
-              <div style="display:flex;align-items:center;gap:0.55rem;min-width:0;">
-                <span style="font-family:'Press Start 2P',monospace;font-size:6px;color:#333;flex-shrink:0;">#${i+1}</span>
-                <span style="font-size:0.84rem;color:#e0e0e0;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${p.name}</span>
-                <span style="font-size:0.65rem;color:#555;flex-shrink:0;">${intensityLabel(i)}</span>
-              </div>
-              <div style="text-align:right;flex-shrink:0;">
-                <span style="font-size:0.8rem;color:#FFD700;font-weight:700;">${p.count}×</span>
-                <span class="dim-tip" data-tip="AI mentioned '${p.name}' alongside '${myProduct}' in ${p.count} probe response${p.count !== 1 ? 's' : ''}. This means they compete for the same AI recommendation slot.">?</span>
-              </div>
-            </div>
-            <div style="height:3px;background:#1a1a1a;border-radius:2px;overflow:hidden;margin-bottom:0.35rem;">
-              <div style="height:100%;width:${pct}%;background:${barColor(i)};border-radius:2px;transition:width 0.5s;"></div>
-            </div>
-            <div style="display:flex;gap:0.3rem;flex-wrap:wrap;">${engineBadges}</div>
-          </div>`
-        }).join('')}
-      </div>
-      <p style="font-size:0.69rem;color:#3a3a3a;margin-top:0.65rem;line-height:1.5;">
-        Co-mention data is extracted from live probe logs and grows with each check. More checks = more accurate picture of who AI groups with <strong style="color:#555;">${myProduct}</strong>.
-      </p>
-    `
-  }
 
-  function drawRivalsQuadrant(latestScore, peers) {
-    const canvas = document.getElementById('rivals-quadrant')
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    const W = canvas.width, H = canvas.height
-    ctx.clearRect(0, 0, W, H)
-
-    const PAD = 40, GOLD = '#FFD700', BG = '#0a0a0a'
-    const plotW = W - PAD * 2, plotH = H - PAD * 2
-
-    const _u15dims = latestScore.unified_v15?.dimensions || []
-    const _dimScore = id => (_u15dims.find ? _u15dims.find(d => d.id === id) : null)?.score ?? 0
-    const recognition = Math.min(latestScore.recognition_score ?? latestScore.recognition ?? _dimScore('recognition'), 35)
-    const category    = Math.min(latestScore.category_score ?? latestScore.category ?? _dimScore('category'), 35)
-
-    ctx.fillStyle = BG
-    ctx.fillRect(0, 0, W, H)
-
-    // Grid lines
-    ctx.strokeStyle = '#1a1a1a'
-    ctx.lineWidth = 1
-    for (let i = 0; i <= 4; i++) {
-      const x = PAD + (i / 4) * plotW
-      const y = PAD + (i / 4) * plotH
-      ctx.beginPath(); ctx.moveTo(x, PAD); ctx.lineTo(x, PAD + plotH); ctx.stroke()
-      ctx.beginPath(); ctx.moveTo(PAD, y); ctx.lineTo(PAD + plotW, y); ctx.stroke()
-    }
-
-    // Quadrant dividers (17.5 = midpoint of 35)
-    ctx.strokeStyle = '#2a2a2a'
-    ctx.lineWidth = 1.5
-    ctx.setLineDash([4, 4])
-    const midX = PAD + (17.5 / 35) * plotW
-    const midY = PAD + plotH - (17.5 / 35) * plotH
-    ctx.beginPath(); ctx.moveTo(midX, PAD); ctx.lineTo(midX, PAD + plotH); ctx.stroke()
-    ctx.beginPath(); ctx.moveTo(PAD, midY); ctx.lineTo(PAD + plotW, midY); ctx.stroke()
-    ctx.setLineDash([])
-
-    // Quadrant labels
-    ctx.fillStyle = '#2a2a2a'
-    ctx.font = '9px Inter, sans-serif'
-    ctx.textAlign = 'center'
-    ctx.fillText('NICHE PLAYER', PAD + plotW * 0.25, PAD + 14)
-    ctx.fillText('MARKET LEADER', PAD + plotW * 0.75, PAD + 14)
-    ctx.fillText('INVISIBLE', PAD + plotW * 0.25, PAD + plotH - 6)
-    ctx.fillText('CHALLENGER', PAD + plotW * 0.75, PAD + plotH - 6)
-
-    // Axes labels
-    ctx.fillStyle = '#444'
-    ctx.font = '9px Inter, sans-serif'
-    ctx.textAlign = 'center'
-    ctx.fillText('Recognition →', PAD + plotW / 2, H - 6)
-    ctx.save()
-    ctx.translate(10, PAD + plotH / 2)
-    ctx.rotate(-Math.PI / 2)
-    ctx.fillText('Category ↑', 0, 0)
-    ctx.restore()
-
-    // Axis ticks
-    ctx.fillStyle = '#444'
-    ctx.font = '8px Inter, sans-serif'
-    ctx.textAlign = 'center'
-    ;[0, 10, 20, 35].forEach(v => {
-      const x = PAD + (v / 35) * plotW
-      ctx.fillText(v, x, PAD + plotH + 14)
-      const y = PAD + plotH - (v / 35) * plotH
-      ctx.textAlign = 'right'
-      ctx.fillText(v, PAD - 5, y + 3)
-      ctx.textAlign = 'center'
-    })
-
-    // Plot our product
-    const myX = PAD + (recognition / 35) * plotW
-    const myY = PAD + plotH - (category / 35) * plotH
-    ctx.beginPath()
-    ctx.arc(myX, myY, 8, 0, Math.PI * 2)
-    ctx.fillStyle = GOLD
-    ctx.fill()
-    ctx.strokeStyle = '#b39700'
-    ctx.lineWidth = 2
-    ctx.stroke()
-    ctx.fillStyle = '#000'
-    ctx.font = 'bold 8px Inter, sans-serif'
-    ctx.textAlign = 'center'
-    ctx.fillText('YOU', myX, myY + 3)
-
-    // Score label — 우측/상단 끝 잘림 방지
-    ctx.fillStyle = GOLD
-    ctx.font = '10px Inter, sans-serif'
-    const labelText = `R:${recognition} / C:${category}`
-    const labelW = ctx.measureText(labelText).width
-    const labelX = (myX + 12 + labelW > W - 4) ? myX - 12 - labelW : myX + 12
-    const labelY = myY - 6 < 12 ? myY + 20 : myY - 6
-    ctx.textAlign = 'left'
-    ctx.fillText(labelText, labelX, labelY)
-  }
 
   // ── localStorage Set helpers ───────────────────────────────
   function getMineSet() {
@@ -5937,14 +5583,6 @@ button:focus-visible, a:focus-visible {
   }
 
   function setSavedBtn() { /* no-op: save button removed */ }
-
-  // ── autoSave for Refresh Score ─────────────────────────────
-  // SINGLE-WRITE-REDESIGN (2026-04-28): API가 영속화 단일 책임자.
-  // refreshProduct → /v1/check 호출 → API UPSERT → 완료. autoSave는 동기화만.
-  async function autoSave(tag) {
-    if (!currentUser) return
-    await loadHistory()
-  }
 
   // ── Delete product (all history) ───────────────────────────
   async function deleteProduct(productName) {
@@ -5984,34 +5622,6 @@ button:focus-visible, a:focus-visible {
   }
 
   // ── Refresh product score ───────────────────────────────────
-  async function refreshProduct(name, url, checkedAt, idx, tag) {
-    if (isSameDay(checkedAt)) {
-      alert('Already refreshed today. Come back tomorrow!')
-      return
-    }
-    const btn = document.getElementById(`refresh-btn-${idx}`)
-    if (btn) { btn.disabled = true; btn.textContent = 'Refreshing...' }
-    try {
-      const tsToken2 = getTurnstileToken()
-      // SINGLE-WRITE-REDESIGN-AUTH-FIX (2026-04-28): Authorization 헤더 필수
-      const _session2 = await sb.auth.getSession()
-      const _accessToken2 = _session2?.data?.session?.access_token
-      const _refreshHeaders = { 'Content-Type': 'application/json' }
-      if (_accessToken2) _refreshHeaders['Authorization'] = `Bearer ${_accessToken2}`
-      const res = await fetch(`${API_URL}/v1/check`, {
-        method: 'POST',
-        headers: _refreshHeaders,
-        body: JSON.stringify({ product: name, url: url || undefined, cf_turnstile_token: tsToken2 || undefined }),
-      })
-      resetTurnstile()
-      const data = await res.json()
-      lastCheckResult = { product: name, url: url || null, score: data.score, results: data.results, dimensions: data.dimensions || null, aiProbe: data.aiProbe || null }
-      await autoSave(tag)
-    } catch (err) {
-      alert('Refresh failed. Please try again.')
-      if (btn) { btn.disabled = false; btn.textContent = 'Refresh Score' }
-    }
-  }
 
   // ── Badge Embed (Tools tab) ────────────────────────────────
   function buildBadgeSnippet(tier, score, size, shape) {
@@ -6923,15 +6533,6 @@ button:focus-visible, a:focus-visible {
   // ── Verify Ownership Popup ────────────────────────────────
   let _verifyPopupToken = ''
 
-  function showVerifyPopup(product, url) {
-    if (!currentUser) return
-    _verifyPopupToken = `<meta name="pickedby-site-verification" content="${genVerifyToken(currentUser.id, product)}">`
-    const el = document.getElementById('verify-popup-token-code')
-    if (el) el.textContent = _verifyPopupToken
-    const titleEl = document.getElementById('verify-popup-product-name')
-    if (titleEl) titleEl.textContent = `"${product}"`
-    document.getElementById('verify-popup').style.display = 'flex'
-  }
 
   function closeVerifyPopup() {
     document.getElementById('verify-popup').style.display = 'none'
@@ -7067,33 +6668,6 @@ button:focus-visible, a:focus-visible {
   }
 
   // Guide toggle — 계정 이메일 자동 사용 (이메일 입력란 제거, on/off 토글)
-  async function toggleGuideSubscription(enabled) {
-    const ok = document.getElementById('actions-guide-ok')
-    const email = currentUser?.email
-    if (!email) return
-    if (!enabled) {
-      if (ok) ok.style.display = 'none'
-      localStorage.setItem('pba_guide_enabled', '0')
-      return
-    }
-    try {
-      const r = await fetch(API_URL + '/v1/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          source: 'actions-guide',
-          marketing_consent: true,
-          product: lastCheckResult ? lastCheckResult.product : undefined,
-          score: lastCheckResult ? lastCheckResult.score : undefined,
-        }),
-      })
-      if (r.ok) {
-        if (ok) ok.style.display = 'block'
-        localStorage.setItem('pba_guide_enabled', '1')
-      }
-    } catch(e) { console.error('[guide] subscribe failed', e) }
-  }
 
   // ── EMAIL-CAPTURE-01: Flow 2 — send guide ─────────────────
   async function submitGuideEmail() {
@@ -7152,7 +6726,7 @@ button:focus-visible, a:focus-visible {
     const items = (allProducts || [])
       .filter(p => !p._domainOnly && verifiedNames.has((p.product_name || '').toLowerCase()))
       .map(p => {
-        const s = Math.round(Number(p.unified_v15?.score ?? p.score) || 0)
+        const s = Math.round((_scoreOfRow(p) ?? 0))
         return { name: p.product_name, verified: true, score: s }
       })
     // 최고점 순 (모두 verified)
