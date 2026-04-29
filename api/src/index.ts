@@ -2125,8 +2125,15 @@ function buildTrendSeries(
       })
       continue
     }
-    const scoreSum = bucketRows.reduce((s, r) => s + (Number(r.unified_v15?.score ?? r.score) || 0), 0)
-    const avgScore = Math.round(scoreSum / bucketRows.length)
+    // 2026-04-29 L2-16 fix: bucket 내 score=0/null row(자정 cron 실패 산물) 제외 후 평균.
+    // 그렇지 않으면 정상 91 + 실패 0 = 평균 45.5로 왜곡됨.
+    const scoreableRows = bucketRows.filter(r => {
+      const s = Number(r.unified_v15?.score ?? r.score)
+      return Number.isFinite(s) && s > 0
+    })
+    const avgScore = scoreableRows.length === 0
+      ? null  // 모두 실패면 missing 취급 (FE filter가 처리)
+      : Math.round(scoreableRows.reduce((s, r) => s + (Number(r.unified_v15?.score ?? r.score) || 0), 0) / scoreableRows.length)
     const dimSum: Record<string, number> = { recognition: 0, category: 0, corec: 0, web: 0 }
     const dimCount: Record<string, number> = { recognition: 0, category: 0, corec: 0, web: 0 }
     for (const r of bucketRows) {
@@ -2176,7 +2183,9 @@ function buildTrendSeries(
 }
 
 function computeTrendStats(series: TrendBucket[]) {
-  const withScore = series.filter(b => typeof b.score === 'number') as Array<TrendBucket & { score: number }>
+  // 2026-04-29 L2-17 fix: score=0 bucket(자정 cron 실패 산물) 제외.
+  // typeof===number만 보면 0이 통과해서 min/delta 왜곡됨.
+  const withScore = series.filter(b => typeof b.score === 'number' && (b.score as number) > 0) as Array<TrendBucket & { score: number }>
   if (withScore.length === 0) {
     return { min: 0, max: 0, avg: 0, delta_first_last: 0, streak_days: 0 }
   }

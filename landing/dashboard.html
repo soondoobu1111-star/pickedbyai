@@ -2545,6 +2545,48 @@ button:focus-visible, a:focus-visible {
   let allProducts = []
   let allHistoryData = []
 
+  // ═══════════════════════════════════════════════════════════
+  // 2026-04-29 통합 fix — 단일 진실의 원천 (Single Source of Truth)
+  // 모든 "latest score" 산출은 이 헬퍼만 사용. 분산된 가정/불일치 차단.
+  // ═══════════════════════════════════════════════════════════
+  function _scoreOfRow(row) {
+    if (!row) return null
+    const v = row?.unified_v15?.score
+    if (Number.isFinite(v)) return Number(v)
+    const v2 = row?.score
+    if (Number.isFinite(v2)) return Number(v2)
+    return null
+  }
+  // 유효한 score(>0) row만. 자정 cron 실패로 만들어진 score=0/null row 거부.
+  function isValidScoreRow(row) {
+    const s = _scoreOfRow(row)
+    return Number.isFinite(s) && s > 0
+  }
+  // 시리즈/배열에서 마지막 valid row. fallback: 마지막 row (정보 손실 방지).
+  function getValidLatest(rows) {
+    if (!Array.isArray(rows) || rows.length === 0) return null
+    for (let i = rows.length - 1; i >= 0; i--) {
+      if (isValidScoreRow(rows[i])) return rows[i]
+    }
+    return rows[rows.length - 1] || null
+  }
+  // 시계열 desc 정렬에서 첫 valid row. fallback: 첫 row.
+  function getValidLatestFromDesc(rowsDesc) {
+    if (!Array.isArray(rowsDesc) || rowsDesc.length === 0) return null
+    for (const r of rowsDesc) {
+      if (isValidScoreRow(r)) return r
+    }
+    return rowsDesc[0] || null
+  }
+  // 첫번째 valid row (asc 정렬 가정).
+  function getValidFirst(rowsAsc) {
+    if (!Array.isArray(rowsAsc) || rowsAsc.length === 0) return null
+    for (const r of rowsAsc) {
+      if (isValidScoreRow(r)) return r
+    }
+    return rowsAsc[0] || null
+  }
+
   // ── Auth ───────────────────────────────────────────────────
   async function signInWithGoogle() {
     const { error } = await sb.auth.signInWithOAuth({
@@ -4306,11 +4348,9 @@ button:focus-visible, a:focus-visible {
   }
 
   function renderTrendContext(series, stats) {
-    // 2026-04-29 BUG-FIX: series 마지막 row가 score=null/0인 경우(자정 cron 실패 산물) 무시.
-    // 유효 score row 중 마지막을 사용 → ALL-TIME tier/badge 정확히 반영.
-    const validSeries = series.filter(b => typeof b.score === 'number' && b.score > 0)
-    const last = validSeries[validSeries.length - 1] || series[series.length - 1]
-    const lastScore = Number(last?.score ?? 0)
+    // 2026-04-29 통합 fix: 단일 헬퍼 사용
+    const last = getValidLatest(series)
+    const lastScore = Number(_scoreOfRow(last) ?? 0)
     const tier = _passTier(lastScore)
     const delta = Number(stats.delta_first_last ?? 0)
     const deltaSign = delta >= 0 ? '+' : ''
@@ -4487,9 +4527,8 @@ button:focus-visible, a:focus-visible {
     const footEta = document.getElementById('trXpFootEta')
     if (!cells) return
 
-    // 2026-04-29 BUG-FIX: score=null/0 row(자정 cron 실패 산물) 제외 → ALL-TIME score 정확히 표시.
-    const validSeries = series.filter(b => typeof b.score === 'number' && b.score > 0)
-    const last = validSeries[validSeries.length - 1] || series[series.length - 1]
+    // 2026-04-29 통합 fix: 단일 헬퍼 사용
+    const last = getValidLatest(series)
     const score = Math.max(0, Math.min(100, Number(last?.score ?? 0)))
     const tier = _passTier(score)
     const filled = Math.round(score / 2)
@@ -4773,16 +4812,11 @@ button:focus-visible, a:focus-visible {
     main.style.display = 'block'
 
     const sorted = history.slice().sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
-    const first = sorted[0]
-    // 2026-04-29 BUG-FIX: 자정 cron 실패로 score=null/0 row가 마지막에 들어가면 INVISIBLE 잘못 표시.
-    // 유효 score row 중 마지막 사용 → PERFECT 도메인이 정확히 PERFECT로 표시됨.
-    const sortedValid = sorted.filter(r => {
-      const s = Number(r?.unified_v15?.score ?? r?.score)
-      return Number.isFinite(s) && s > 0
-    })
-    const last = sortedValid[sortedValid.length - 1] || sorted[sorted.length - 1]
-    const firstScore = Number(first?.unified_v15?.score ?? first?.score) || 0
-    const lastScore = Number(last?.unified_v15?.score ?? last?.score) || 0
+    // 2026-04-29 통합 fix: 단일 헬퍼 사용 (L2-8 first도 동일 fix — 시작 tier 왜곡 방지)
+    const first = getValidFirst(sorted)
+    const last = getValidLatest(sorted)
+    const firstScore = Number(_scoreOfRow(first) ?? 0)
+    const lastScore = Number(_scoreOfRow(last) ?? 0)
 
     const tierByScore = s => TIER_DEFS.find(t => s >= t.min && s <= t.max) || TIER_DEFS[0]
     const startTier = tierByScore(firstScore)
@@ -5412,13 +5446,9 @@ button:focus-visible, a:focus-visible {
     // ── Section 4: AI Visibility Map (YOU dot + zone labels only) ─────
     if (mapWrap && typeof allHistoryData !== 'undefined') {
       const myRows = (allHistoryData || []).filter(r => (r.product_name || '').toLowerCase() === product.toLowerCase())
-      // 2026-04-29 BUG-FIX: score=null/0 row(자정 cron 실패) 제외 — 유효 row의 latest 사용
+      // 2026-04-29 통합 fix: 단일 헬퍼 사용 (desc 정렬 후 valid 첫번째)
       const myRowsSorted = myRows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-      const validLatest = myRowsSorted.find(r => {
-        const s = Number(r?.unified_v15?.score ?? r?.score)
-        return Number.isFinite(s) && s > 0
-      })
-      const latest = validLatest || myRowsSorted[0]
+      const latest = getValidLatestFromDesc(myRowsSorted)
       if (latest) {
         show(mapHead)
         show(mapWrap)
@@ -6223,10 +6253,20 @@ button:focus-visible, a:focus-visible {
     const scores = (!error && data) ? data : []
     allHistoryData = scores
 
-    // One row per product (latest check per product)
+    // 2026-04-29 L2-13 통합 fix:
+    // scores는 created_at desc 정렬. valid score(>0) row를 우선 채택.
+    // 자정 cron이 만든 score=0/null row가 최신이라도 그 이전 valid row로 대표 row 결정.
+    // 효과: Overview/Actions/pickRepresentativeProduct 모두 의미 있는 score 표시.
     const latestMap = {}
+    const productScoreRows = {} // product → all rows (desc) for fallback
     for (const row of scores) {
-      if (!latestMap[row.product_name]) latestMap[row.product_name] = row
+      const name = row.product_name
+      if (!productScoreRows[name]) productScoreRows[name] = []
+      productScoreRows[name].push(row)
+    }
+    for (const name in productScoreRows) {
+      // desc array에서 valid 우선, 없으면 가장 최신 (fallback)
+      latestMap[name] = getValidLatestFromDesc(productScoreRows[name])
     }
     allProducts = Object.values(latestMap)
 
