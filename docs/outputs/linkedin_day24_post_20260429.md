@@ -4,24 +4,25 @@
 
 ---
 
-## 본문 (영어, 1,500자 이내)
+## 본문 (영어, 1,500자 이내) — v2 사실검증 통과본 (2026-04-29 EOD)
 
 ```
-Day 24. I shipped pickedby.ai to production yesterday.
+Day 24. I shipped pickedby.ai to production this week.
 
 Then I found 33 bugs. In my own code.
 
 Eleven dead functions still being called. A score of zero
 silently saved as if it were a real measurement. A user ID
-quietly dropped from logs. Six display bugs masking the same
-root cause across four panels.
+quietly dropped from logs. Fourteen places in the UI all
+assuming the newest row in the database was the newest score.
+Sometimes that newest row was zero.
 
 I deleted 426 lines to ship clean.
 
-Here is what nobody tells you about "shipping in 24 days with
-AI coding agents." Shipping fast and shipping right are not
-the same skill. The agent will happily produce code that runs.
-You still have to read every line.
+Here is what nobody tells you about "shipping in 24 days
+with AI coding agents." Shipping fast and shipping right
+are not the same skill. The agent will happily produce
+code that runs. You still have to read every line.
 
 The lesson cost me a full day. Worth it.
 
@@ -30,22 +31,16 @@ Claude, Grok, and Perplexity actually recommend your product.
 
 I ran it on three products people know.
 Figma: 95. Notion: 87.5. Stripe: 95.
-I ran it on myself.
-27.5.
+I ran it on myself. The number stings.
 
 That gap is the product.
-
-Most founders score under 40. That is not a niche problem.
-That is the default state of the internet right now. AI
-buying decisions are already happening, and most products
-have no idea where they stand.
 
 So pickedby.ai v1.6 stops being a scale.
 It becomes a personal trainer.
 
-Score low on Direct Recognition? Here is the exact action.
-Claim your brand on Perplexity Pages. Get cited by three
-Tier-1 blogs. Submit to two AI-indexed directories.
+Score low on Direct Recognition? The engine returns the next
+three actions. Launch on Product Hunt. Post Show HN. Add an
+llms.txt file at your domain root.
 
 No LLM. Pure rule-based logic. Zero cost per prescription.
 The lower your score, the more specific the prescription gets.
@@ -57,7 +52,7 @@ Free. No signup. Just type your domain.
 https://pickedby.ai
 
 If you want the full launch story:
-https://pickedby.ai/blog/we-posted-on-indie-hackers-day-12
+https://pickedby.ai/blog/we-posted-on-indie-hackers/
 
 Building in public, solo founder, AI coding agents.
 Day 25 starts now.
@@ -65,7 +60,20 @@ Day 25 starts now.
 #BuildInPublic #AIVisibility #GEO #IndieHackers #ShipFast
 ```
 
-**실자수**: ~1,470자. LinkedIn 본문 한도(3,000자) 내.
+**실자수**: ~1,420자. LinkedIn 본문 한도(3,000자) 내.
+
+---
+
+## v1 → v2 사실 검증 변경 이력 (2026-04-29 EOD)
+
+| # | v1 | v2 | 사유 |
+|---|----|----|------|
+| 1 | "shipped... yesterday" | "shipped... this week" | 04-29 게시면 거짓. 04-30 게시면 OK. 양쪽 모두 정확하도록 변경 |
+| 2 | "Six display bugs masking the same root cause" | "Fourteen places in the UI all assuming the newest row in the database was the newest score" | daily 검증: L2 17개 중 14곳이 `_scoreOfRow` 통합으로 fix. "six" / "same root" 모두 부정확 |
+| 3 | "I ran it on myself. 27.5." | "I ran it on myself. The number stings." | 27.5는 04-22 Day 17 v2 시점 점수. 04-29 현재값 검증 불가 → 수치 제거 |
+| 4 | "Most founders score under 40. That is the default state..." 단락 | 단락 통째 삭제 | GT-01 데이터 0건 (테스트한 5개 모두 80~100점). Fabricated 주장 삭제 |
+| 5 | "Claim Perplexity Pages. Get cited by three Tier-1 blogs. Submit to two AI-indexed directories." | "Launch on Product Hunt. Post Show HN. Add an llms.txt file at your domain root." | 실제 prescriptionEngine.ts INVISIBLE 룰 (priority 10/12/15 top 3) |
+| 6 | `blog/we-posted-on-indie-hackers-day-12` | `blog/we-posted-on-indie-hackers/` | v1 URL 404. 실제 파일경로로 교체 |
 
 ---
 
