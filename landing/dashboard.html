@@ -4306,7 +4306,10 @@ button:focus-visible, a:focus-visible {
   }
 
   function renderTrendContext(series, stats) {
-    const last = series[series.length - 1]
+    // 2026-04-29 BUG-FIX: series 마지막 row가 score=null/0인 경우(자정 cron 실패 산물) 무시.
+    // 유효 score row 중 마지막을 사용 → ALL-TIME tier/badge 정확히 반영.
+    const validSeries = series.filter(b => typeof b.score === 'number' && b.score > 0)
+    const last = validSeries[validSeries.length - 1] || series[series.length - 1]
     const lastScore = Number(last?.score ?? 0)
     const tier = _passTier(lastScore)
     const delta = Number(stats.delta_first_last ?? 0)
@@ -4484,7 +4487,9 @@ button:focus-visible, a:focus-visible {
     const footEta = document.getElementById('trXpFootEta')
     if (!cells) return
 
-    const last = series[series.length - 1]
+    // 2026-04-29 BUG-FIX: score=null/0 row(자정 cron 실패 산물) 제외 → ALL-TIME score 정확히 표시.
+    const validSeries = series.filter(b => typeof b.score === 'number' && b.score > 0)
+    const last = validSeries[validSeries.length - 1] || series[series.length - 1]
     const score = Math.max(0, Math.min(100, Number(last?.score ?? 0)))
     const tier = _passTier(score)
     const filled = Math.round(score / 2)
@@ -4769,7 +4774,13 @@ button:focus-visible, a:focus-visible {
 
     const sorted = history.slice().sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
     const first = sorted[0]
-    const last = sorted[sorted.length - 1]
+    // 2026-04-29 BUG-FIX: 자정 cron 실패로 score=null/0 row가 마지막에 들어가면 INVISIBLE 잘못 표시.
+    // 유효 score row 중 마지막 사용 → PERFECT 도메인이 정확히 PERFECT로 표시됨.
+    const sortedValid = sorted.filter(r => {
+      const s = Number(r?.unified_v15?.score ?? r?.score)
+      return Number.isFinite(s) && s > 0
+    })
+    const last = sortedValid[sortedValid.length - 1] || sorted[sorted.length - 1]
     const firstScore = Number(first?.unified_v15?.score ?? first?.score) || 0
     const lastScore = Number(last?.unified_v15?.score ?? last?.score) || 0
 
@@ -5401,7 +5412,13 @@ button:focus-visible, a:focus-visible {
     // ── Section 4: AI Visibility Map (YOU dot + zone labels only) ─────
     if (mapWrap && typeof allHistoryData !== 'undefined') {
       const myRows = (allHistoryData || []).filter(r => (r.product_name || '').toLowerCase() === product.toLowerCase())
-      const latest = myRows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0]
+      // 2026-04-29 BUG-FIX: score=null/0 row(자정 cron 실패) 제외 — 유효 row의 latest 사용
+      const myRowsSorted = myRows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      const validLatest = myRowsSorted.find(r => {
+        const s = Number(r?.unified_v15?.score ?? r?.score)
+        return Number.isFinite(s) && s > 0
+      })
+      const latest = validLatest || myRowsSorted[0]
       if (latest) {
         show(mapHead)
         show(mapWrap)
