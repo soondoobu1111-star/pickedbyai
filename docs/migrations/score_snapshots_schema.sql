@@ -88,6 +88,10 @@ CREATE POLICY score_snapshots_user_read
   USING (user_id = current_setting('request.jwt.claim.sub', true));
 
 -- ── 4. 뷰 — 차트용 편의 뷰 ─────────────────────────────────
+-- 보안 정책 (2026-04-30 fix): 모든 view는 security_invoker=true 필수.
+--   기본값 SECURITY DEFINER는 view 소유자(postgres) 권한으로 RLS 우회됨.
+--   Supabase Security Advisor CRITICAL 경고 사유. 재구축 시에도 자동 적용.
+--   상세: docs/migrations/security_invoker_views_20260430.sql
 
 -- 최근 14일 일간 (Daily 탭)
 CREATE OR REPLACE VIEW v_snapshots_daily_14 AS
@@ -97,6 +101,7 @@ SELECT product_id, user_id, snapshot_date, score,
 FROM score_snapshots
 WHERE snapshot_date >= CURRENT_DATE - INTERVAL '14 days'
 ORDER BY product_id, snapshot_date;
+ALTER VIEW v_snapshots_daily_14 SET (security_invoker = true);
 
 -- 최근 12주 주간 평균 (Weekly 탭)
 CREATE OR REPLACE VIEW v_snapshots_weekly_12 AS
@@ -112,6 +117,7 @@ FROM score_snapshots
 WHERE snapshot_date >= CURRENT_DATE - INTERVAL '12 weeks'
 GROUP BY product_id, user_id, week_start
 ORDER BY product_id, week_start;
+ALTER VIEW v_snapshots_weekly_12 SET (security_invoker = true);
 
 -- 최근 12개월 월간 평균 (Monthly 탭)
 CREATE OR REPLACE VIEW v_snapshots_monthly_12 AS
@@ -127,6 +133,7 @@ FROM score_snapshots
 WHERE snapshot_date >= CURRENT_DATE - INTERVAL '12 months'
 GROUP BY product_id, user_id, month_start
 ORDER BY product_id, month_start;
+ALTER VIEW v_snapshots_monthly_12 SET (security_invoker = true);
 
 -- ── 5. 수학적 무결성 트리거 ─────────────────────────────────
 -- sum(dim_*) === score 검증. 위반 시 INSERT/UPDATE 거부.

@@ -185,6 +185,8 @@ PERFECT (81~100점):
   → 유지 + 모니터링 + 새 카테고리 확장 처방
 ```
 
+> **[참고] Claude-Ads 차용 검토 (2026-04-30 CEO 승인)** — github.com/AgriciDaniel/claude-ads (MIT). 7 광고 플랫폼 250+ 감사를 Score+Prescription 모델로 다룸. 우리 처방 엔진과 구조 동형. **PRESCRIPTION-03(D3) 착수 전 30분 정독 필수**: ① 19 sub-skills 디렉토리 분리 패턴 → `prescriptionEngine.ts` 모듈화 ② 가중치 multiplier(Critical 5.0x / High 3.0x / Medium 1.5x / Low 0.5x) → 처방 우선순위 정렬 알고리즘 ③ Quick Win(15분 내) 라벨링 → 난이도1(30분) UX 강조. 코드 의존성 0, 시간 30분, 위험 0. 직접 사용(광고 감사)은 광고비 $0이므로 PH 런칭 후 재검토(`ADS-CHECK-01` backlog 등록).
+
 ### 3-3. 처방 출력 구조
 
 ```typescript
