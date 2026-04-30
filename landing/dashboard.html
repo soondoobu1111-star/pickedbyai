@@ -4895,7 +4895,7 @@ button:focus-visible, a:focus-visible {
           const span = next.min - tier.min
           const within = Math.max(0, lastScore - tier.min)
           fillW = `${Math.max(5, Math.min(95, (within / span) * 100))}%`
-          label = `+${Math.max(0, next.min - Math.round(lastScore))} PTS TO GO`
+          label = `+${Math.max(0, next.min - Math.round(lastScore))} PTS`
         } else {
           bridgeCls = ''
           fillW = '0%'

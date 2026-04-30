@@ -122,6 +122,40 @@ the only one that ages.
 | 자연스러운 구어체 | ✅ |
 | OP 질문 유도 (토론) | ✅ 댓글 #1, #2, #6 (질문 포함) |
 
+---
+
+## 추가 댓글 (스크린샷 기반, 2026-04-30 06:25 KST)
+
+### 8. r/SideProject — "Show me your apps and services (QA/SWE/PM 5+ years)" (Far_Tangerine9150)
+URL: https://reddit.com/r/SideProject/comments/(thread_id_TBD)
+OP가 명시적 "show me your apps" review 요청 → DM 유도 패턴.
+
+**댓글:**
+```
+Would love a look at pickedby.ai. It checks if ChatGPT, Perplexity,
+Gemini, Claude, and Grok actually recommend your product. People
+land, type a domain, see a score, then leave. That 30-second drop
+is what I can't see from inside.
+```
+> ⚠️ **CEO 지적 (2026-04-30)**: 도메인 노출 → r/SideProject 필터 위험. **재작성 필요**:
+```
+Would love a look at the AI visibility checker I built. It scores
+you across ChatGPT, Perplexity, Gemini, Claude, and Grok. People
+land, type a domain, see a score, then leave. That 30-second drop
+is what I can't see from inside. Happy to DM.
+```
+
+### 9. r/SideProject — "Getting users is harder than building" (LeaderAtLeading)
+OP "drop it" 요청 + Leadline 도구로 분석 제공 — 도메인 노출 회피하면서 reciprocity.
+
+**댓글 (도메인 0 버전):**
+```
+Built an AI visibility checker that scores you across all five major
+engines (ChatGPT, Perplexity, Gemini, Claude, Grok). The people I
+think are already asking: founders Googling "AEO" or "GEO" or "is my
+product on ChatGPT". Happy to DM if you want to see it.
+```
+
 ## 게시 전략
 
 1. **가장 최근부터** (CEO 지시):
