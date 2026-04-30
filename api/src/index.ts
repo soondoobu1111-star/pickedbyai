@@ -10,8 +10,8 @@ import {
   type SingleCheckResult,
 } from './retryAdapter'
 import { validateTurnstile } from './turnstile'
-import { generatePrescription } from './prescriptionEngine'
-import type { PrescriptionResult } from './prescriptionEngine'
+import { generatePrescription } from './prescription'
+import type { PrescriptionResult } from './prescription'
 
 type Bindings = {
   BREVO_API_KEY: string
