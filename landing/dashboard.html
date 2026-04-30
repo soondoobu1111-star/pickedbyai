@@ -1077,18 +1077,23 @@ button:focus-visible, a:focus-visible {
 
   .jr-arc-card { padding: 32px 24px 30px; }
   .jr-arc { display: grid; grid-template-columns: 1fr 72px 1fr 72px 1fr 72px 1fr; align-items: stretch; margin-bottom: 22px; gap: 0; }
-  .jr-stage { position: relative; display: flex; flex-direction: column; align-items: center; min-width: 0; }
-  .jr-stage-flag { position: relative; width: 22px; height: 28px; margin-bottom: 8px; display: grid; place-items: center; }
+  /* 2026-04-30 BUG-HEROARC-OFFSET fix: flag도 absolute로 띄워 모든 카드 베이스라인 통일.
+     current 카드는 transform translateY로 살짝 위로 떠오르는 자연 강조. */
+  .jr-stage { position: relative; display: flex; flex-direction: column; align-items: center; min-width: 0; padding-top: 36px; }
+  .jr-stage-flag { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); width: 22px; height: 28px; margin-bottom: 4px; display: grid; place-items: center; pointer-events: none; }
   .jr-stage-flag svg { width: 16px; height: 22px; }
   .jr-stage-flag.locked-flag svg { width: 18px; height: 22px; }
   .jr-stage.passed .jr-stage-flag::after { content: ''; position: absolute; bottom: -3px; left: 50%; transform: translateX(-50%); width: 10px; height: 2px; background: var(--pba-gold); }
-  .jr-stage-hero { position: relative; display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 6px; }
-  .jr-stage-hero-glyph { font-family: var(--pba-font-pixel); font-size: 22px; color: var(--pba-gold); text-shadow: 2px 2px 0 #b39700; animation: jrBob 1.6s ease-in-out infinite; }
+  /* 2026-04-30 BUG-HEROARC-OFFSET fix (CEO 지적): hero(★+YOU) 영역이 flag보다 커서 current 카드가 아래로 처짐.
+     fix: hero 영역을 flag와 동일 높이(28px)로 통일 + glyph/label 사이즈 비례 축소 + 절대 위치로 띄움. */
+  .jr-stage-hero { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 2px; margin-bottom: 4px; pointer-events: none; }
+  .jr-stage-hero-glyph { font-family: var(--pba-font-pixel); font-size: 16px; color: var(--pba-gold); text-shadow: 2px 2px 0 #b39700; animation: jrBob 1.6s ease-in-out infinite; line-height: 1; }
   @keyframes jrBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
   .jr-stage-hero-label { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-gold); background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); padding: 3px 6px; border-radius: 3px; }
   .jr-stage-card { width: 100%; background: #0d0d0d; border: 1px solid var(--pba-border); border-radius: 6px; padding: 12px 8px 10px; text-align: center; display: flex; flex-direction: column; gap: 5px; }
   .jr-stage.passed .jr-stage-card { background: #0a0800; border-color: var(--pba-gold-border); }
-  .jr-stage.current .jr-stage-card { background: var(--pba-gold-bg); border: 2px solid var(--pba-gold); box-shadow: 3px 3px 0 #b39700; transform: translate(-1px, -1px); }
+  /* 2026-04-30 BUG-HEROARC-OFFSET fix: current 카드 살짝 위로 떠오름 (-1px → -6px). 사용자 직관 강조. */
+  .jr-stage.current .jr-stage-card { background: var(--pba-gold-bg); border: 2px solid var(--pba-gold); box-shadow: 3px 3px 0 #b39700; transform: translate(-1px, -6px); }
   .jr-stage.locked .jr-stage-card { background: transparent; border-style: dashed; border-color: var(--pba-border-faint); opacity: 0.7; }
   .jr-stage-idx { font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.2em; color: var(--pba-fg-5); }
   .jr-stage.current .jr-stage-idx { color: var(--pba-gold); }
