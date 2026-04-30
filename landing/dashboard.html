@@ -5051,6 +5051,9 @@ button:focus-visible, a:focus-visible {
     }).join('')
   }
 
+  // 2026-04-30 PBA-JOURNEY-02 + 03 (간이): ALL ENGINES + STREAK 트로피 활성화
+  // BE engine_grades = Gemini + Perplexity (2 engines). GPT/Claude/Grok 미측정.
+  // STREAK: scores 시간 분포에서 UTC 15:00 cron 외 = manual check 식별. Phase 2c REWARD-01에서 정식 구현 (TRACKING-01 의존).
   function renderJourneyTrophies(arcEvents, sorted, currentIdx, currentTier) {
     const wrap = document.getElementById('jrTrophyGrid')
     if (!wrap) return
@@ -5058,7 +5061,43 @@ button:focus-visible, a:focus-visible {
     const first = sorted[0]
     const firstUp = arcEvents.find(e => e.type === 'upgrade')
     const strongEv = arcEvents.find(e => e.type === 'upgrade' && (e.pi === 'strong' || e.pi === 'perfect'))
-    const lastScore = (_scoreOfRow(sorted[sorted.length - 1]) ?? 0)
+    const lastRow = sorted[sorted.length - 1]
+    const lastScore = (_scoreOfRow(lastRow) ?? 0)
+
+    // PBA-JOURNEY-02: ALL ENGINES — Gemini + Perplexity 모두 recognized A grade
+    const lastUnified = lastRow?.unified_v15 || null
+    const lastEngines = Array.isArray(lastUnified?.engine_grades) ? lastUnified.engine_grades : []
+    const allEnginesRecognized = lastEngines.length >= 2 && lastEngines.every(eg => eg && (eg.grade === 'A' || eg.recommended === true))
+    const firstAllEnginesRow = sorted.find(r => {
+      const u = r?.unified_v15 || null
+      const eg = Array.isArray(u?.engine_grades) ? u.engine_grades : []
+      return eg.length >= 2 && eg.every(e => e && (e.grade === 'A' || e.recommended === true))
+    })
+
+    // PBA-JOURNEY-03 (간이): manual check 일수 — UTC 15:00~16:00 cron 시간대 row 제외
+    const manualDates = new Set()
+    for (const r of sorted) {
+      if ((_scoreOfRow(r) ?? 0) <= 0) continue
+      const d = new Date(r.created_at)
+      const utcHour = d.getUTCHours()
+      // cron은 UTC 15:00 (KST 00:00). 14~16시 UTC 사이 row는 cron으로 간주, 제외.
+      if (utcHour >= 14 && utcHour <= 16) continue
+      manualDates.add(d.toISOString().slice(0, 10))
+    }
+    // 가장 긴 연속 일수 계산
+    let longestStreak = 0
+    if (manualDates.size > 0) {
+      const sortedDates = [...manualDates].sort()
+      let cur = 1
+      longestStreak = 1
+      for (let i = 1; i < sortedDates.length; i++) {
+        const prev = new Date(sortedDates[i - 1])
+        const curD = new Date(sortedDates[i])
+        const diffDays = Math.round((curD - prev) / 86400000)
+        if (diffDays === 1) { cur++; longestStreak = Math.max(longestStreak, cur) }
+        else cur = 1
+      }
+    }
 
     const trophies = [
       { id: 'first-check', icon: '★', name: 'FIRST CHECK', desc: 'Ran your first AI recognition check',
@@ -5068,16 +5107,17 @@ button:focus-visible, a:focus-visible {
       { id: 'tier-strong', icon: '♔', name: 'BECAME STRONG', desc: 'Crossed score 61 — STRONG tier',
         unlocked: currentIdx >= 2, date: strongEv ? _fmtPxDate(strongEv.date) : '', hint: `+${Math.max(1, 61 - Math.round(lastScore))} pts to go` },
       { id: 'tier-perfect', icon: '✪', name: 'PERFECT', desc: 'Reach the top tier — score 81+',
-        unlocked: currentIdx >= 3, date: currentIdx >= 3 ? _fmtPxDate(sorted[sorted.length - 1].created_at) : '', hint: `+${Math.max(1, 81 - Math.round(lastScore))} pts to go` },
-      // 4 locked badges (Phase 2c REWARD-01에서 정식 구현)
-      { id: 'streak-7', icon: '✦', name: '7-DAY STREAK', desc: '7 consecutive days of checks',
-        unlocked: false, hint: 'Coming soon' },
-      { id: 'streak-14', icon: '✦', name: '14-DAY STREAK', desc: '14 consecutive days of checks',
-        unlocked: false, hint: 'Coming soon' },
+        unlocked: currentIdx >= 3, date: currentIdx >= 3 ? _fmtPxDate(lastRow?.created_at) : '', hint: `+${Math.max(1, 81 - Math.round(lastScore))} pts to go` },
+      // PBA-JOURNEY-03 (간이): manual check 7/14일 연속. 정식은 Phase 2c REWARD-01.
+      { id: 'streak-7', icon: '✦', name: '7-DAY STREAK', desc: '7 consecutive days of manual checks',
+        unlocked: longestStreak >= 7, date: '', hint: longestStreak >= 7 ? '' : `${Math.max(0, 7 - longestStreak)} days to go` },
+      { id: 'streak-14', icon: '✦', name: '14-DAY STREAK', desc: '14 consecutive days of manual checks',
+        unlocked: longestStreak >= 14, date: '', hint: longestStreak >= 14 ? '' : `${Math.max(0, 14 - longestStreak)} days to go` },
       { id: 'first-mention', icon: '◆', name: 'FIRST MENTION', desc: 'AI engine first named your product',
         unlocked: false, hint: 'Coming soon' },
-      { id: 'all-engines', icon: '◇', name: 'ALL 3 ENGINES', desc: 'Recognized by Perplexity, GPT, & Gemini',
-        unlocked: false, hint: 'Coming soon' },
+      // PBA-JOURNEY-02: ALL ENGINES (Gemini + Perplexity 2 engines, BE 측정 범위)
+      { id: 'all-engines', icon: '◇', name: 'BOTH ENGINES', desc: 'Recognized by both Gemini and Perplexity',
+        unlocked: !!allEnginesRecognized, date: firstAllEnginesRow ? _fmtPxDate(firstAllEnginesRow.created_at) : '', hint: 'Get recognized on both engines' },
     ]
 
     wrap.innerHTML = trophies.map(t => {
