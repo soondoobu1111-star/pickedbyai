@@ -1081,13 +1081,14 @@ button:focus-visible, a:focus-visible {
   .jr-arc-card { padding: 56px 32px 40px; }
   .jr-arc { display: grid; grid-template-columns: 1fr 88px 1fr 88px 1fr 88px 1fr; align-items: stretch; margin-bottom: 36px; gap: 0; }
   .jr-stage { position: relative; display: flex; flex-direction: column; align-items: center; min-width: 0; }
-  /* flag/hero normal flow + 같은 height 28px 통일 → 모든 stage의 카드 정렬 일치 */
-  .jr-stage-flag { position: relative; width: 22px; height: 28px; margin-bottom: 14px; display: grid; place-items: center; }
+  /* flag/hero normal flow + 같은 height 28px 통일 → 모든 stage의 카드 정렬 일치
+     2026-04-30 CEO 재지적: marker ↔ card gap 14→20px (★+YOU가 카드와 너무 붙음) */
+  .jr-stage-flag { position: relative; width: 22px; height: 28px; margin-bottom: 20px; display: grid; place-items: center; }
   .jr-stage-flag svg { width: 18px; height: 24px; }
   .jr-stage-flag.locked-flag svg { width: 18px; height: 24px; }
   .jr-stage.passed .jr-stage-flag::after { content: ''; position: absolute; bottom: -3px; left: 50%; transform: translateX(-50%); width: 12px; height: 2px; background: var(--pba-gold); }
   /* hero 영역 height 28px (flag와 동일) — glyph 작게 + label 작게 + bottom 정렬 */
-  .jr-stage-hero { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; margin-bottom: 14px; min-height: 28px; }
+  .jr-stage-hero { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; margin-bottom: 20px; min-height: 28px; }
   .jr-stage-hero-glyph { font-family: var(--pba-font-pixel); font-size: 14px; color: var(--pba-gold); text-shadow: 2px 2px 0 #b39700; animation: jrBob 1.6s ease-in-out infinite; line-height: 1; }
   @keyframes jrBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
   .jr-stage-hero-label { font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.2em; color: var(--pba-gold); background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); padding: 2px 5px; border-radius: 3px; line-height: 1; }
@@ -1103,7 +1104,8 @@ button:focus-visible, a:focus-visible {
   .jr-stage-range { font-family: var(--pba-font-mono); font-size: 12px; color: var(--pba-fg-3); }
   .jr-stage.current .jr-stage-range { color: var(--pba-gold); font-weight: 600; }
   .jr-stage.locked .jr-stage-range { color: var(--pba-fg-5); }
-  .jr-stage-status { font-family: var(--pba-font-pixel); font-size: 7.5px; letter-spacing: 0.18em; padding: 4px 6px; border-radius: 3px; margin: 4px 0 2px; }
+  /* 2026-04-30 CEO 재지적: "ACTIVE · 90 PTS" 두 줄 wrap 방지 — nowrap 강제, letter-spacing 살짝 줄임 */
+  .jr-stage-status { font-family: var(--pba-font-pixel); font-size: 7.5px; letter-spacing: 0.14em; padding: 4px 5px; border-radius: 3px; margin: 4px 0 2px; white-space: nowrap; }
   .jr-stage.passed .jr-stage-status { color: var(--pba-gold); background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); }
   .jr-stage-status.active { color: #fff; background: var(--pba-gold); border: 1px solid var(--pba-gold); }
   .jr-stage-status.locked { color: var(--pba-fg-5); background: transparent; border: 1px solid var(--pba-border-faint); }
