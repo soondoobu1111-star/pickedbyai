@@ -3858,20 +3858,25 @@ button:focus-visible, a:focus-visible {
       ring.setAttribute('stroke-dasharray', CIRC)
       ring.setAttribute('stroke-dashoffset', CIRC * (1 - score / 100))
     }
-    const passLabels = { perfect: 'PERFECT', strong: 'STRONG', emerging: 'EMERGING', invisible: 'INVISIBLE' }
-    const passColors = { perfect: '#FFD700', strong: '#4ade80', emerging: '#f59e0b', invisible: '#e05252' }
-    const pi = unified.pass_indicator || 'invisible'
+    // 2026-04-30 BUG-TIER-LABEL fix (CEO 지적: score 45 → STRONG 표시 혼동):
+    //   화면 라벨은 빅파이 1.5 score-tier (score 단독, PRODUCT.md 불변 정의) 따름.
+    //   BE pass_indicator (signal AND score 조합)는 prescriptionEngine 등 BE 컨텍스트에 그대로 보존.
+    const tierColors = { PERFECT: '#FFD700', STRONG: '#4ade80', EMERGING: '#f59e0b', INVISIBLE: '#e05252' }
+    const tierObj = (typeof _passTier === 'function') ? _passTier(score) : { name: 'INVISIBLE', mark: '◆' }
+    const tierName = tierObj.name
+    // BE pass_indicator 보존 (renderD5NextMilestone 등 BE 컨텍스트 사용처 위해 변수 유지)
+    const pi = (unified && unified.pass_indicator) || 'invisible'
     const piEl = document.getElementById('d5-pass-indicator')
     if (piEl) {
-      piEl.textContent = `◆ ${passLabels[pi] || 'INVISIBLE'}`
-      piEl.style.color = passColors[pi] || '#e05252'
-      piEl.style.borderColor = passColors[pi] || '#e05252'
-      piEl.style.background = (pi === 'perfect' || pi === 'strong') ? 'var(--pba-gold-bg)' : '#0d0d0d'
+      piEl.textContent = `${tierObj.mark} ${tierName}`
+      piEl.style.color = tierColors[tierName] || '#e05252'
+      piEl.style.borderColor = tierColors[tierName] || '#e05252'
+      piEl.style.background = (tierName === 'PERFECT' || tierName === 'STRONG') ? 'var(--pba-gold-bg)' : '#0d0d0d'
     }
 
     // Section 2 · Daily Pulse
     const pulseText = (unified.insights && unified.insights.daily_pulse)
-      || `Your score is ${score}/100. ${prod.product_name || 'This product'} — ${passLabels[pi] || 'INVISIBLE'}.`
+      || `Your score is ${score}/100. ${prod.product_name || 'This product'} — ${tierName}.`
     const pulseEl = document.getElementById('d5-pulse-text')
     if (pulseEl) pulseEl.textContent = pulseText
     const deltaEl = document.getElementById('d5-pulse-delta')
@@ -4009,14 +4014,14 @@ button:focus-visible, a:focus-visible {
         recentList.innerHTML = '<div style="color:#555;font-size:0.8rem;padding:0.5rem 0;">No products yet. Use <b style="color:#FFD700;">+ Check</b> to add one.</div>'
       } else {
         // 빅파이 1.5 정합: unified_v15.score 우선 (row.score는 레거시 Tavily fallback으로 33 하드코딩 버그 있음)
-        const passLabels = { perfect: 'PERFECT', strong: 'STRONG', emerging: 'EMERGING', invisible: 'INVISIBLE' }
-        const passColors = { perfect: '#FFD700', strong: '#4ade80', emerging: '#f59e0b', invisible: '#e05252' }
+        // 2026-04-30 BUG-TIER-LABEL fix: 라벨은 score-tier (score 단독). BE pass_indicator 보존.
+        const tierColors = { PERFECT: '#FFD700', STRONG: '#4ade80', EMERGING: '#f59e0b', INVISIBLE: '#e05252' }
         recentList.innerHTML = recent.map(p => {
           const u = p.unified_v15 || null
           const s = Math.round(Number(u?.score ?? p.score) || 0)
-          const pi = u?.pass_indicator || (s >= 81 ? 'perfect' : s >= 61 ? 'strong' : s >= 36 ? 'emerging' : 'invisible')
-          const badgeLabel = passLabels[pi] || '—'
-          const badgeColor = passColors[pi] || '#555'
+          const tierObj = (typeof _passTier === 'function') ? _passTier(s) : { name: 'INVISIBLE' }
+          const badgeLabel = tierObj.name || '—'
+          const badgeColor = tierColors[badgeLabel] || '#555'
           const when = p.created_at ? new Date(p.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: getUserTimezone() }) : '—'
           return `
             <div style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;padding:0.6rem 0.75rem;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;">
@@ -6805,19 +6810,49 @@ button:focus-visible, a:focus-visible {
     wrap.style.display = 'inline-flex'
   }
 
-  function triggerRefreshNow() {
-    // Quick Check modal 트리거 — 기존 모달 재사용
+  // 2026-04-30 BUG-REFRESH-MODAL fix (CEO 지적):
+  //   기존 동작: Quick Check 모달을 띄워 사용자에게 다시 입력 요구 (← 잘못)
+  //   현재 동작: 선택된 도메인을 즉시 재체크 (스피너 + 자동 Turnstile + runCheckForce)
+  //   04-28 BUG-AX-WRONG-PRODUCT 동일 패턴 (`_refreshCurrent`) 재사용.
+  async function triggerRefreshNow() {
     const name = _selectedDomainName
     if (!name) { if (typeof showToast === 'function') showToast('Select a product first', 'error'); return }
-    if (typeof openQuickCheck === 'function') {
-      // 도메인 자동 채우기를 위해 input 사전 세팅
-      try {
-        const input = document.getElementById('product')
-        if (input) input.value = name
-      } catch(e) {}
-      openQuickCheck()
-    } else {
-      window.location.reload()
+    // 등록 도메인 정보 조회 (Recent Products / domains 캐시에서)
+    let prodObj = null
+    try {
+      const list = (allHistoryData || []).filter(p => (p.product_name || '').toLowerCase() === name.toLowerCase())
+      if (list.length > 0) prodObj = list[0]
+    } catch(e) {}
+    // 인라인 스피너
+    const spinner = document.createElement('div')
+    spinner.id = '_ax_refresh_spinner'
+    spinner.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0d0d0d;border:1px solid #FFD700;border-radius:8px;padding:1.25rem 1.75rem;z-index:99999;font-family:Inter,sans-serif;color:#FFD700;font-weight:600;font-size:0.9rem;box-shadow:0 12px 32px rgba(0,0,0,0.55);'
+    spinner.innerHTML = '<div style="display:flex;align-items:center;gap:0.75rem;"><div style="width:18px;height:18px;border:2px solid #FFD70033;border-top-color:#FFD700;border-radius:50%;animation:_axspin 0.8s linear infinite;"></div><span>Refreshing ' + escHtml(name) + '…</span></div><style>@keyframes _axspin{to{transform:rotate(360deg)}}</style>'
+    document.body.appendChild(spinner)
+    try {
+      const inp = document.getElementById('input-product')
+      const urlInp = document.getElementById('input-url')
+      if (inp) inp.value = name
+      if (urlInp) urlInp.value = (prodObj && prodObj.product_url) || ''
+      // Turnstile 토큰 자동 대기 (managed widget이 DOM에 이미 있어 자동 검증)
+      const start = Date.now()
+      while (typeof getTurnstileToken === 'function' && !getTurnstileToken() && Date.now() - start < 8000) {
+        await new Promise(r => setTimeout(r, 100))
+      }
+      if (typeof getTurnstileToken === 'function' && !getTurnstileToken()) {
+        // 폴백: 토큰이 안 오면 모달을 보여 사용자가 직접 처리
+        spinner.remove()
+        if (typeof openQuickCheck === 'function') openQuickCheck()
+        if (typeof showToast === 'function') showToast('Security check is loading. Please click Check in the dialog.', 'info')
+        return
+      }
+      if (typeof runCheckForce === 'function') await runCheckForce()
+      else window.location.reload()
+    } catch (e) {
+      console.error('[triggerRefreshNow] error', e)
+    } finally {
+      const sp = document.getElementById('_ax_refresh_spinner')
+      if (sp) sp.remove()
     }
   }
   window.triggerRefreshNow = triggerRefreshNow
