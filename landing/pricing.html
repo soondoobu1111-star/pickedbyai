@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pricing — pickedby.ai</title>
+  <meta name="description" content="pickedby.ai is free during beta. The first 100 testers get lifetime free access. No credit card required." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pickedby.ai/pricing" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Pricing — pickedby.ai" />
+  <meta property="og:description" content="Free during beta. Lifetime free for the first 100 testers." />
+  <meta property="og:url" content="https://pickedby.ai/pricing" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: #0a0a0a; color: #ccc; padding: 3rem 1.5rem 6rem; }
+    .wrap { max-width: 880px; margin: 0 auto; }
+    a { color: #FFD700; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    nav { display: flex; align-items: center; justify-content: space-between; padding-bottom: 1.5rem; border-bottom: 1px solid #1a1a1a; margin-bottom: 4rem; }
+    nav .logo { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; display: flex; align-items: center; gap: 8px; letter-spacing: 0.05em; }
+    nav .cta { color: #000; background: #FFD700; padding: 0.5rem 1.1rem; border-radius: 6px; font-weight: 700; font-size: 0.88rem; box-shadow: 0 0 12px rgba(255, 215, 0, 0.35); }
+    nav .cta:hover { text-decoration: none; }
+
+    .hero { text-align: center; margin-bottom: 4rem; }
+    .eyebrow { font-family: 'Press Start 2P', monospace; font-size: 0.7rem; color: #FFD700; letter-spacing: 0.2em; margin-bottom: 1rem; }
+    h1 { font-family: 'Press Start 2P', monospace; font-size: 1.5rem; color: #fff; line-height: 1.4; letter-spacing: 0.04em; margin-bottom: 1rem; text-shadow: 3px 3px 0 #b39700; }
+    .subtitle { font-size: 1.05rem; color: #888; line-height: 1.7; max-width: 560px; margin: 0 auto; }
+
+    .plans { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 4rem; }
+    .plan { background: #0d0d0d; border: 1px solid #1f1f1f; border-radius: 12px; padding: 2rem 1.75rem; display: flex; flex-direction: column; }
+    .plan.featured { border: 2px solid #FFD700; box-shadow: 0 14px 36px rgba(255, 215, 0, 0.18), 4px 4px 0 #b39700; transform: translate(-2px, -4px); }
+    .plan-name { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: #FFD700; letter-spacing: 0.12em; margin-bottom: 0.5rem; }
+    .plan-price { font-family: 'Press Start 2P', monospace; font-size: 1.6rem; color: #fff; margin: 0.6rem 0; text-shadow: 2px 2px 0 #444; }
+    .plan.featured .plan-price { color: #FFD700; text-shadow: 2px 2px 0 #b39700; }
+    .plan-period { font-size: 0.85rem; color: #777; margin-bottom: 1.25rem; }
+    .plan-tagline { font-size: 0.92rem; color: #aaa; line-height: 1.6; margin-bottom: 1.5rem; padding-bottom: 1.25rem; border-bottom: 1px solid #1f1f1f; }
+    .plan-features { list-style: none; flex: 1; margin-bottom: 1.5rem; }
+    .plan-features li { font-size: 0.88rem; color: #aaa; line-height: 1.7; padding: 0.4rem 0; padding-left: 1.4rem; position: relative; }
+    .plan-features li::before { content: '✓'; position: absolute; left: 0; color: #FFD700; font-weight: 700; }
+    .plan-cta { display: block; text-align: center; padding: 0.85rem 1rem; border-radius: 6px; font-weight: 700; font-size: 0.92rem; letter-spacing: 0.04em; color: #FFD700; border: 1px solid #FFD700; transition: background 0.18s ease; }
+    .plan.featured .plan-cta { background: #FFD700; color: #000; box-shadow: 0 0 16px rgba(255, 215, 0, 0.3); }
+    .plan-cta:hover { text-decoration: none; }
+    .plan-cta:hover { background: rgba(255, 215, 0, 0.1); }
+    .plan.featured .plan-cta:hover { background: #FFE34D; }
+
+    h2 { font-family: 'Press Start 2P', monospace; font-size: 0.9rem; color: #FFD700; letter-spacing: 0.1em; margin: 3.5rem 0 1.25rem; }
+    p { font-size: 0.95rem; line-height: 1.85; color: #aaa; margin-bottom: 1rem; }
+
+    .faq { margin-top: 3rem; }
+    .faq-item { border-bottom: 1px solid #1f1f1f; padding: 1.5rem 0; }
+    .faq-q { font-weight: 700; color: #fff; font-size: 1rem; margin-bottom: 0.6rem; }
+    .faq-a { font-size: 0.92rem; color: #aaa; line-height: 1.75; }
+
+    .footer-back { margin-top: 4rem; font-size: 0.85rem; color: #555; text-align: center; }
+    .footer-back a { color: #888; }
+
+    @media (max-width: 600px) { .plans { grid-template-columns: 1fr; } .plan.featured { transform: none; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <nav>
+      <a href="/" class="logo">
+        <svg width="20" height="16" viewBox="0 0 20 16" fill="#FFD700" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><rect x="0" y="0" width="2" height="4"/><rect x="9" y="0" width="2" height="4"/><rect x="18" y="0" width="2" height="4"/><rect x="0" y="4" width="20" height="2"/><rect x="0" y="6" width="2" height="6"/><rect x="18" y="6" width="2" height="6"/><rect x="4" y="8" width="2" height="2"/><rect x="9" y="8" width="2" height="2"/><rect x="14" y="8" width="2" height="2"/><rect x="0" y="12" width="20" height="2"/><rect x="2" y="14" width="16" height="2"/></svg>
+        <span><span style="color:#FFD700;">picked</span><span style="color:#fff;">by</span><span style="color:#FFD700;">.ai</span></span>
+      </a>
+      <a href="/dashboard" class="cta">Open Dashboard</a>
+    </nav>
+
+    <div class="hero">
+      <div class="eyebrow">PRICING</div>
+      <h1>FREE DURING BETA</h1>
+      <p class="subtitle">The first 100 testers get lifetime free access. No credit card. No signup. Just type your domain and run a check.</p>
+    </div>
+
+    <div class="plans">
+      <div class="plan">
+        <div class="plan-name">FREE</div>
+        <div class="plan-price">$0</div>
+        <div class="plan-period">forever &middot; no signup</div>
+        <div class="plan-tagline">Run an AI visibility check on any product, any time.</div>
+        <ul class="plan-features">
+          <li>One check per session</li>
+          <li>Score across 4 dimensions</li>
+          <li>5-engine probe (GPT/Gemini/Claude/Grok/Perplexity)</li>
+          <li>Public leaderboard insights</li>
+          <li>No account, no payment</li>
+        </ul>
+        <a href="/" class="plan-cta">Run a check</a>
+      </div>
+
+      <div class="plan featured">
+        <div class="plan-name">BETA &middot; LIFETIME FREE</div>
+        <div class="plan-price">$0</div>
+        <div class="plan-period">first 100 testers &middot; lifetime</div>
+        <div class="plan-tagline">Verified Owner status. Daily auto-tracking. Full prescription engine. Forever.</div>
+        <ul class="plan-features">
+          <li>Verified Owner badge</li>
+          <li>Daily cron auto-refresh (00:00 KST)</li>
+          <li>Trend / Rivals / Journey panes</li>
+          <li>Full prescription engine (20 rules)</li>
+          <li>Daily Pulse email (when ready)</li>
+          <li>Direct line to the founder</li>
+          <li>Lifetime free &mdash; no future paywall</li>
+        </ul>
+        <a href="/dashboard" class="plan-cta">Join the beta</a>
+      </div>
+    </div>
+
+    <h2>HOW PRICING WILL WORK AFTER BETA</h2>
+    <p>After the first 100 beta seats are filled, we'll roll out a paid plan for new users. Beta testers keep everything &mdash; the lifetime free promise is fixed. Pricing for new users will be set transparently and announced on the <a href="/blog/">blog</a> at least 30 days before any change. We will not surprise you.</p>
+
+    <div class="faq">
+      <h2>FAQ</h2>
+      <div class="faq-item">
+        <div class="faq-q">Do I really not need to sign up?</div>
+        <div class="faq-a">Correct. Open <a href="/">pickedby.ai</a>, type your domain, and run a check. Anonymous, free, no email.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">What does &quot;lifetime free&quot; mean for beta testers?</div>
+        <div class="faq-a">If you join the beta and become a Verified Owner before the 100-seat cap, you keep full access permanently &mdash; including features added in Phase 2 and beyond.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How many beta seats are left?</div>
+        <div class="faq-a">Live count visible on the <a href="/dashboard">dashboard</a> banner.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Why is it free?</div>
+        <div class="faq-a">We're early. The first 100 testers help us shape the product. The data they generate makes the prescription engine smarter for everyone. Beta access in exchange for honest feedback is a fair trade.</div>
+      </div>
+    </div>
+
+    <p class="footer-back">
+      <a href="/">&larr; Home</a> &nbsp;&middot;&nbsp;
+      <a href="/dashboard">Dashboard</a> &nbsp;&middot;&nbsp;
+      <a href="/about">About</a> &nbsp;&middot;&nbsp;
+      <a href="/blog/">Blog</a> &nbsp;&middot;&nbsp;
+      <a href="/privacy">Privacy</a> &nbsp;&middot;&nbsp;
+      <a href="/terms">Terms</a>
+    </p>
+  </div>
+</body>
+</html>

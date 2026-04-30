@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign in — pickedby.ai</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <meta http-equiv="refresh" content="0; url=/dashboard" />
+  <link rel="canonical" href="https://pickedby.ai/dashboard" />
+  <script>
+    // 인증은 dashboard.html 내 Supabase OAuth flow에서 처리.
+    // /login URL은 historic 마케팅 링크 호환성용 redirect.
+    window.location.replace('/dashboard' + (window.location.hash || ''));
+  </script>
+  <style>
+    body { background: #0a0a0a; color: #888; font-family: -apple-system, BlinkMacSystemFont, sans-serif; display: grid; place-items: center; min-height: 100vh; margin: 0; }
+    .msg { text-align: center; }
+    .msg a { color: #FFD700; text-decoration: none; font-weight: 600; }
+    .msg a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="msg">
+    Redirecting to <a href="/dashboard">/dashboard</a>…
+  </div>
+</body>
+</html>

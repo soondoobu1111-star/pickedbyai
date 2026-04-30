@@ -547,6 +547,13 @@ app.use('*', cors({
 
 // ── Health check ─────────────────────────────────────────────
 app.get('/', (c) => c.json({ ok: true, service: 'pickedbyai-api' }))
+// 2026-04-30: monitoring/canary 표준 endpoint (CEO /test-all + /debug 발견사항 처리)
+app.get('/v1/health', (c) => c.json({
+  ok: true,
+  service: 'pickedbyai-api',
+  version: 'v1',
+  timestamp: new Date().toISOString(),
+}))
 
 // ── ENGINE-05 core (shared by /v1/check and daily cron) ───────
 // 2026-04-23 TAVILY-CRON-LITE-01: cron 경로는 opts.tavilyLite=true로 쿼리 1개만.
