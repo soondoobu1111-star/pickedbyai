@@ -890,12 +890,10 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   <!-- PAGE WRAP (above canvas) -->
   <div class="page-wrap">
 
-    <!-- TOP STRIP -->
+    <!-- TOP STRIP — 2026-04-30 거짓 정보 제거 (CEO 지적): 하드코딩 "73 LEFT" 삭제. 100 spots 정책만 표시. -->
     <div class="top-strip">
       <span class="live-dot"></span>
       <b>BETA · 100 FOUNDING SPOTS</b>
-      <span class="sep">·</span>
-      73 LEFT
       <span class="sep">·</span>
       LIFETIME FREE
     </div>
@@ -913,6 +911,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
         <span class="beta-chip">BETA</span>
       </a>
       <div class="nav-links">
+        <a href="/about">ABOUT</a>
         <a href="/methodology/">METHODOLOGY</a>
         <a href="/manifesto/">MANIFESTO</a>
         <a href="/blog/">BLOG</a>
@@ -922,6 +921,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
       <button class="nav-burger" onclick="document.querySelector('.nav-mobile').classList.toggle('open')" aria-label="Menu">&#9776;</button>
     </nav>
     <div class="nav-mobile">
+      <a href="/about">ABOUT</a>
       <a href="/methodology/">METHODOLOGY</a>
       <a href="/manifesto/">MANIFESTO</a>
       <a href="/blog/">BLOG</a>
@@ -1108,6 +1108,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
           </form>
         </div>
         <div class="footer-links">
+          <a href="/about">ABOUT</a>
           <a href="/blog/">BLOG</a>
           <a href="/methodology/">METHODOLOGY</a>
           <a href="/manifesto/">MANIFESTO</a>
