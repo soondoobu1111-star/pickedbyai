@@ -3395,13 +3395,17 @@ button:focus-visible, a:focus-visible {
       </div>`
   }
 
-  // 순수 HTML 반환: Pass Indicator + 2D Quadrant + Engine Grades (위/아래 공통 재사용)
+  // 순수 HTML 반환: Score Tier + 2D Quadrant + Engine Grades (위/아래 공통 재사용)
+  // 2026-04-30 BUG-TIER-LABEL fix (옵션 B 근본 해결): 라벨 = score-tier (빅파이 1.5 PRODUCT.md 불변).
+  // BE unified.pass_indicator (signal AND score 조합)는 prescriptionEngine 등 BE 컨텍스트로 보존.
   function buildUnifiedExtrasHtml(unified) {
     if (!unified) return ''
-    const passIcons  = { perfect: '🏆', strong: '🟢', emerging: '🟡', invisible: '🔴' }
-    const passLabels = { perfect: 'PERFECT', strong: 'STRONG', emerging: 'EMERGING', invisible: 'INVISIBLE' }
-    const passIcon  = passIcons[unified.pass_indicator]  || '🔴'
-    const passLabel = passLabels[unified.pass_indicator] || 'INVISIBLE'
+    const _scoreNum = Number(unified.score) || 0
+    const _tierObj = (typeof _passTier === 'function') ? _passTier(_scoreNum) : { name: 'INVISIBLE', mark: '◆' }
+    const tierColors = { PERFECT: '#FFD700', STRONG: '#4ade80', EMERGING: '#f59e0b', INVISIBLE: '#e05252' }
+    const passLabel = _tierObj.name
+    const passIcon  = _tierObj.mark || '◆'
+    const passColor = tierColors[passLabel] || '#e05252'
     const gradeColors = { A: '#4ade80', B: '#86efac', C: '#FFD700', D: '#f59e0b', F: '#555' }
     let __egArr = unified.engine_grades || []
     if (!Array.isArray(__egArr)) { try { __egArr = Object.entries(__egArr).map(([k,v]) => ({ engine:k, grade:v?.recognized?'B':'F', description:v?.recognized?'Recognized':'Not recognized' })) } catch { __egArr = [] } }
@@ -3422,8 +3426,8 @@ button:focus-visible, a:focus-visible {
       <div style="margin-top:0.75rem;padding:0.8rem 1rem;background:#0d0d0d;border:1px solid #1e1e1e;border-radius:8px;">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.7rem;flex-wrap:wrap;gap:0.5rem;">
           <div style="display:flex;align-items:center;gap:0.5rem;">
-            <span style="font-size:1.1rem;">${passIcon}</span>
-            <span style="font-size:0.78rem;font-weight:700;letter-spacing:0.08em;color:#ccc;">${passLabel}</span>
+            <span style="font-size:1.1rem;color:${passColor};">${passIcon}</span>
+            <span style="font-size:0.78rem;font-weight:700;letter-spacing:0.08em;color:${passColor};">${passLabel}</span>
           </div>
           <div style="display:flex;align-items:center;gap:0.4rem;">
             <span style="font-size:0.66rem;color:#666;text-transform:uppercase;letter-spacing:0.1em;">Quadrant</span>
@@ -4703,26 +4707,30 @@ button:focus-visible, a:focus-visible {
   // ─────────────────────────────────────────────────────────────
   // D6 JOURNEY-01 (2026-04-22) — Hero's Arc + Timeline (scores-based MVP)
   // ─────────────────────────────────────────────────────────────
-  const PASS_RANK = { invisible: 0, emerging: 1, strong: 2, perfect: 3 }
+  // PASS_RANK 제거됨 (2026-04-30): computeHerosArc score-tier 마이그레이션으로 미참조. 디자인 시스템 일관성.
 
+  // 2026-04-30 BUG-TIER-LABEL fix (옵션 B 근본 해결): Hero's Arc tier 변화 이벤트도 score-tier 기반.
+  // 사용자 직관: 점수 30→45 = "INVISIBLE → EMERGING tier-up" (점수 구간 변화). BE pass_indicator는 별도 컨텍스트.
   function computeHerosArc(history) {
     const sorted = (history || []).slice().sort((a, b) => new Date(a.created_at) - new Date(b.created_at))
     const events = []
-    let prevPi = null
+    let prevTier = null
     for (const row of sorted) {
       const u = row.unified_v15 || null
-      const pi = u?.pass_indicator || null
       const s = Number(u?.score ?? row.score) || 0
-      if (!pi) continue
-      if (!prevPi) {
-        events.push({ date: row.created_at, type: 'start', pi, score: s, label: 'First check', note: `Started at ${String(pi).toUpperCase()} (${s})` })
-      } else if (pi !== prevPi) {
-        const up = (PASS_RANK[pi] ?? 0) > (PASS_RANK[prevPi] ?? 0)
-        events.push({ date: row.created_at, type: up ? 'upgrade' : 'downgrade', pi, score: s, label: `${String(prevPi).toUpperCase()} → ${String(pi).toUpperCase()}`, note: `Score: ${s}` })
+      if (s <= 0) continue  // score=0/null row 제외 (E안 안전장치)
+      const tObj = (typeof _passTier === 'function') ? _passTier(s) : null
+      if (!tObj) continue
+      const curId = tObj.name.toLowerCase()
+      if (!prevTier) {
+        events.push({ date: row.created_at, type: 'start', pi: curId, score: s, label: 'First check', note: `Started at ${tObj.name} (${s})` })
+      } else if (curId !== prevTier.id) {
+        const up = (tObj.idx ?? 0) > (prevTier.idx ?? 0)
+        events.push({ date: row.created_at, type: up ? 'upgrade' : 'downgrade', pi: curId, score: s, label: `${prevTier.name} → ${tObj.name}`, note: `Score: ${s}` })
       }
-      prevPi = pi
+      prevTier = { id: curId, name: tObj.name, idx: tObj.idx ?? 0 }
     }
-    return { current: prevPi, events }
+    return { current: prevTier ? prevTier.id : null, events }
   }
 
   // 2026-04-29 Claude Design merge: Journey pane (Sections 1+2+3+4 — streak removed by CEO)
