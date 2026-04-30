@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Day 25. I Called Refactoring UI On My Own Dashboard. — pickedby.ai</title>
+  <meta name="description" content="Day 24 I shipped to production. Day 25 my CEO drew pink arrows on a screenshot. Score 5/10. Here is what changed when I actually used the design playbook I owned." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://pickedby.ai/blog/day-25-refactoring-ui-on-my-own-dashboard/" />
+  <meta property="og:title" content="Day 25. I Called Refactoring UI On My Own Dashboard." />
+  <meta property="og:description" content="Day 24 I shipped to production. Day 25 my CEO drew pink arrows on a screenshot. Score 5/10. Here is what changed when I actually used the design playbook I owned." />
+  <meta property="og:url" content="https://pickedby.ai/blog/day-25-refactoring-ui-on-my-own-dashboard/" />
+  <meta property="og:type" content="article" />
+  <meta property="article:published_time" content="2026-04-30" />
+  <meta property="article:author" content="CHEONKYU JANG" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Day 25. I Called Refactoring UI On My Own Dashboard." />
+  <meta name="twitter:description" content="Day 24 I shipped to production. Day 25 my CEO drew pink arrows on a screenshot. Score 5/10. Here is what changed when I actually used the design playbook I owned." />
+  <meta name="keywords" content="Refactoring UI, indie developer design, dashboard UI, visual hierarchy, spacing, building in public, AI visibility, pickedby.ai, day 25" />
+  <meta name="author" content="pickedby.ai" />
+  <meta property="og:site_name" content="pickedby.ai" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://pickedby.ai/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://pickedby.ai/blog/" },
+      { "@type": "ListItem", "position": 3, "name": "Day 25. I Called Refactoring UI On My Own Dashboard.", "item": "https://pickedby.ai/blog/day-25-refactoring-ui-on-my-own-dashboard/" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Day 25. I Called Refactoring UI On My Own Dashboard.",
+    "description": "Day 24 I shipped to production. Day 25 my CEO drew pink arrows on a screenshot. Score 5/10. Here is what changed when I actually used the design playbook I owned.",
+    "datePublished": "2026-04-30",
+    "author": { "@type": "Organization", "name": "pickedby.ai", "url": "https://pickedby.ai" },
+    "publisher": { "@type": "Organization", "name": "pickedby.ai", "url": "https://pickedby.ai" },
+    "url": "https://pickedby.ai/blog/day-25-refactoring-ui-on-my-own-dashboard/",
+    "mainEntityOfPage": "https://pickedby.ai/blog/day-25-refactoring-ui-on-my-own-dashboard/"
+  }
+  </script>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 16'><rect fill='%23FFD700' x='0' y='0' width='2' height='4'/><rect fill='%23FFD700' x='9' y='0' width='2' height='4'/><rect fill='%23FFD700' x='18' y='0' width='2' height='4'/><rect fill='%23FFD700' x='0' y='4' width='20' height='2'/><rect fill='%23FFD700' x='0' y='6' width='2' height='6'/><rect fill='%23FFD700' x='18' y='6' width='2' height='6'/><rect fill='%23FFD700' x='4' y='8' width='2' height='2'/><rect fill='%23FFD700' x='9' y='8' width='2' height='2'/><rect fill='%23FFD700' x='14' y='8' width='2' height='2'/><rect fill='%23FFD700' x='0' y='12' width='20' height='2'/><rect fill='%23FFD700' x='2' y='14' width='16' height='2'/></svg>">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2H007YWM9F"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_personalization: 'denied' });
+    gtag('js', new Date());
+    gtag('config', 'G-2H007YWM9F');
+    if (localStorage.getItem('cookie_consent') === 'accepted') {
+      gtag('consent', 'update', { analytics_storage: 'granted' });
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #000; --bg2: #0d0d0d; --bg3: #161616;
+      --yellow: #FFD700; --yellow2: #b39700;
+      --text: #e8e8e8; --muted: #888; --border: #1f1f1f;
+    }
+    body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, sans-serif; min-height: 100vh; line-height: 1.7; }
+    a { color: var(--yellow); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--border); max-width: 1280px; margin: 0 auto; }
+    .nav-logo { font-family: 'Press Start 2P', monospace; font-size: 0.85rem; color: var(--yellow); text-decoration: none; }
+    .nav-links { display: flex; gap: 1.5rem; font-size: 0.95rem; }
+    .nav-links a { color: var(--muted); }
+    .nav-links a:hover { color: var(--text); text-decoration: none; }
+    .article-wrap { max-width: 680px; margin: 0 auto; padding: 3rem 2rem 5rem; }
+    .article-tag { font-family: 'Press Start 2P', monospace; font-size: 0.38rem; color: var(--yellow); letter-spacing: 0.1em; margin-bottom: 1.25rem; }
+    h1 { font-size: 1.9rem; font-weight: 800; line-height: 1.25; margin-bottom: 1.25rem; }
+    .article-meta { font-size: 0.78rem; color: #555; margin-bottom: 2.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .article-body h2 { font-size: 1.2rem; font-weight: 700; margin: 2.5rem 0 0.85rem; color: var(--text); }
+    .article-body p { font-size: 0.95rem; color: #ccc; margin-bottom: 1.15rem; line-height: 1.8; }
+    .article-body ul, .article-body ol { margin: 0.5rem 0 1.25rem 1.2rem; }
+    .article-body li { font-size: 0.95rem; color: #ccc; margin-bottom: 0.65rem; line-height: 1.75; }
+    .article-body strong { color: var(--text); }
+    .article-body em { color: var(--muted); font-style: italic; }
+    .article-body code { background: var(--bg2); color: var(--yellow); padding: 0.15rem 0.4rem; border-radius: 3px; font-size: 0.85rem; }
+    .callout { background: var(--bg2); border-left: 3px solid var(--yellow); padding: 1rem 1.25rem; margin: 1.75rem 0; }
+    .callout p { margin-bottom: 0; color: #bbb; font-size: 0.92rem; }
+    .stat-row { display: flex; gap: 1.5rem; margin: 1.75rem 0; flex-wrap: wrap; }
+    .stat-box { background: var(--bg2); border: 1px solid #2a2a2a; padding: 1.25rem 1.5rem; flex: 1; min-width: 140px; }
+    .stat-box .stat-num { font-family: 'Press Start 2P', monospace; font-size: 1.4rem; color: var(--yellow); margin-bottom: 0.4rem; }
+    .stat-box .stat-label { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+    .compare-table { width: 100%; border-collapse: collapse; margin: 1.75rem 0; font-size: 0.88rem; }
+    .compare-table th { background: var(--bg3); color: var(--yellow); font-family: 'Press Start 2P', monospace; font-size: 0.4rem; letter-spacing: 0.08em; padding: 0.75rem 1rem; text-align: left; border: 1px solid #2a2a2a; }
+    .compare-table td { padding: 0.75rem 1rem; border: 1px solid #1f1f1f; color: #ccc; vertical-align: top; }
+    .compare-table tr:hover td { background: var(--bg2); }
+    .blockquote { border-left: 3px solid #333; padding: 0.75rem 1.25rem; margin: 1.75rem 0; }
+    .blockquote p { color: #999; font-style: italic; font-size: 1.05rem; margin-bottom: 0; }
+    .cta-box { background: var(--bg2); border: 1px solid #2a2a2a; padding: 2rem; margin: 3rem 0; text-align: center; }
+    .cta-box h3 { font-family: 'Press Start 2P', monospace; font-size: 0.55rem; color: var(--yellow); margin-bottom: 0.75rem; line-height: 1.7; }
+    .cta-box p { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.25rem; }
+    .btn-cta { display: inline-block; background: var(--yellow); color: #000; font-family: 'Press Start 2P', monospace; font-size: 0.42rem; padding: 0.75rem 1.5rem; box-shadow: 3px 3px 0 var(--yellow2); text-decoration: none; }
+    .btn-cta:hover { text-decoration: none; opacity: 0.9; }
+    .prev-next { display: flex; gap: 1rem; margin: 3rem 0 0; padding-top: 2rem; border-top: 1px solid var(--border); font-size: 0.82rem; }
+    .prev-next a { color: var(--muted); flex: 1; }
+    .prev-next a:hover { color: var(--text); text-decoration: none; }
+    @media (max-width: 600px) { .stat-row { flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <nav class="nav">
+    <a href="/" class="nav-logo">pickedby.ai</a>
+    <div class="nav-links">
+      <a href="/dashboard">Dashboard</a>
+      <a href="/blog/">Blog</a>
+      <a href="/about">About</a>
+    </div>
+  </nav>
+
+  <div class="article-wrap">
+    <div class="article-tag"><a href="/blog/">&larr; ALL POSTS</a></div>
+    <h1>Day 25. I Called Refactoring UI On My Own Dashboard.</h1>
+    <div class="article-meta">April 30, 2026 &middot; 6 min read &middot; pickedby.ai</div>
+
+    <div class="article-body">
+      <p>Day 24 I shipped pickedby.ai to production. The fix log was 33 bugs in my own code. I wrote about that yesterday. Today I want to talk about what happened next.</p>
+
+      <p>Within hours, my own CEO, who is also me, opened the dashboard and drew pink arrows on a screenshot.</p>
+
+      <div class="blockquote">
+        <p>"The icons are too close to the top. They need to come down so there is space at the top. Who designs like this."</p>
+      </div>
+
+      <p>The icons in question were the small flag and star markers above each tier card on the Hero's Arc panel. They were 1 pixel away from the section header. The Perfect tier card, the one that should have looked the most important, sat slightly lower than the others because of a subtle DOM height mismatch. The numbers said the user was at 90 out of 100. The visual hierarchy said the user was somewhere near the bottom of the page.</p>
+
+      <p>I had a copy of <em>Refactoring UI</em> on my shelf. I had not opened it.</p>
+
+      <h2>The Score Was 5 Out Of 10</h2>
+
+      <p>Before doing anything, I ran the Refactoring UI diagnostic against the panel. Each principle gets a number from 0 to 10. Here is what came back.</p>
+
+      <table class="compare-table">
+        <thead>
+          <tr><th>Principle</th><th>Score</th><th>What was wrong</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Spacing &amp; Sizing</td><td>4/10</td><td>Header to card was 32px. Marker to card was 0.</td></tr>
+          <tr><td>Visual Hierarchy</td><td>6/10</td><td>The current card was barely larger than the others.</td></tr>
+          <tr><td>Depth &amp; Shadows</td><td>5/10</td><td>One-part pixel shadow. No atmosphere.</td></tr>
+          <tr><td>Layout</td><td>6/10</td><td>Bridge columns at 72px crowded the cards.</td></tr>
+        </tbody>
+      </table>
+
+      <p>This is not a creative score. It is a checklist. I had failed the checklist.</p>
+
+      <h2>Eight Changes, One Hour</h2>
+
+      <p>The fix turned into eight specific edits, all derived from rules I could have looked up at any time.</p>
+
+      <ol>
+        <li><strong>Top padding 32 &rarr; 56 pixels.</strong> Refactoring UI rule: page sections deserve 48 to 64 pixels of breathing room. Headers and content need air.</li>
+        <li><strong>Marker margin 4 &rarr; 20 pixels.</strong> The marker was related to the card, but not the same group. Related elements need a small gap, not a touching gap.</li>
+        <li><strong>Bridge column 72 &rarr; 88 pixels.</strong> The bridges between tier cards were doing real work as visual connectors. They needed room.</li>
+        <li><strong>Card padding 12/8/10 &rarr; 16/12/14.</strong> Tight padding feels overwhelming. The same content with more padding reads as premium.</li>
+        <li><strong>Hero glyph 22 &rarr; 14 pixels.</strong> The glyph was competing with the card. A marker should not shout louder than the thing it marks.</li>
+        <li><strong>Current card translateY 1 &rarr; 14 pixels.</strong> The most important element on the page now visibly floats above the others.</li>
+        <li><strong>Two-part shadow.</strong> The current card now has both a tight pixel shadow and a soft gold atmosphere glow. Refactoring UI calls this depth. It is the difference between cardboard and wood.</li>
+        <li><strong>Status label became a flex container with wrappable spans.</strong> "Active &middot; 90 PTS" reads as one line on desktop. On a phone it splits naturally between "Active" and "90 PTS." Both layouts respect the design system.</li>
+      </ol>
+
+      <h2>Score After: 9 Out Of 10</h2>
+
+      <p>The Perfect card now floats above the Passed cards. The header has space to breathe. The status label survives a phone screen without overflowing. Nothing about the visual changed because of taste. Everything changed because of rules I had ignored.</p>
+
+      <div class="callout">
+        <p><strong>The lesson cost me a day.</strong> Refactoring UI is not a book of opinions. It is a book of constraints. The constraints exist because human eyes follow predictable rules. Pretending you can design without using them is the same as pretending you can write JavaScript without a parser.</p>
+      </div>
+
+      <h2>The Real Bug Was Process, Not Code</h2>
+
+      <p>I have skills installed on my machine. <code>refactoring-ui</code>. <code>design-review</code>. <code>frontend-design</code>. They all have specific scoring rubrics, before-and-after patterns, and checklists. I did not call any of them.</p>
+
+      <p>When the dashboard looked bad, my reflex was to ship it anyway, then patch it after a complaint. That reflex is the actual bug. The patches I tried first were random &mdash; bigger transform, more shadow, more color. They worked the way random patches always work, which is to say they did not work.</p>
+
+      <p>Calling the skill changed the situation in the way that an audit changes a financial report. The numbers were not new. The numbers had been there the whole time. What changed was that someone started looking at them.</p>
+
+      <h2>Two Rules I Adopted After Day 25</h2>
+
+      <ol>
+        <li><strong>If a design issue takes more than one fix attempt, stop and call the audit skill.</strong> Random tweaks compound the original mistake. Audits restart the clock.</li>
+        <li><strong>If you find a problem during a deploy, fix every related instance in the same session.</strong> "I'll do the others later" is how you end up with eleven dead functions still being called.</li>
+      </ol>
+
+      <p>Day 25 ended with the Perfect card floating where it always should have been, the header with the breathing room it always deserved, and a recovery point in git that says <em>stable-20260430-refactoring-ui-applied</em>. Day 26 starts with one fewer ignored book on the shelf.</p>
+
+      <h2>Where To See It</h2>
+
+      <p>The dashboard is free, no signup. <a href="https://pickedby.ai">pickedby.ai</a>. Type your domain. Watch the Hero's Arc panel populate as your score moves between tiers. Tell me if anything looks broken. I am still learning to use the books I own.</p>
+
+      <div class="cta-box">
+        <h3>CHECK YOUR<br/>AI VISIBILITY</h3>
+        <p>Free. No signup. Just type your domain.</p>
+        <a href="/" class="btn-cta">RUN A CHECK</a>
+      </div>
+
+      <div class="prev-next">
+        <a href="/blog/we-posted-on-indie-hackers/">&larr; Day 12. Posting on Indie Hackers</a>
+        <a href="/blog/" style="text-align:right;">All posts &rarr;</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
