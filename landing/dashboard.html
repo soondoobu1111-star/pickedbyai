@@ -1075,23 +1075,22 @@ button:focus-visible, a:focus-visible {
   .jr-hero-medal svg { width: 96px; height: 96px; }
   .jr-hero-medal-tier { font-family: var(--pba-font-pixel); font-size: 8px; letter-spacing: 0.2em; color: var(--pba-gold); }
 
-  /* 2026-04-30 Hero's Arc — Refactoring UI audit (CEO 지적 "상단 padding 부족"):
-     Spacing: card padding 32→56px top (헤더↔마커 generous space, "too much white space" 원칙)
-     Hierarchy: current 카드 SIZE+WEIGHT+COLOR 모두 사용 (Refactoring UI primary 원칙)
-     Depth: pixel shadow + atmosphere shadow (two-part shadow 원칙) */
+  /* 2026-04-30 Hero's Arc — CEO 재지적 "아이콘이 내려와야 위에 공간 생긴다":
+     이전 fix (absolute, bottom:100%)는 marker를 stage box 바깥 위쪽으로 띄워 헤더와 가까워짐.
+     fix: marker를 normal flow로 복귀 + flag와 hero 영역 같은 height(28px) 통일 + jr-arc-card padding-top으로 헤더↔marker space 확보. */
   .jr-arc-card { padding: 56px 32px 40px; }
   .jr-arc { display: grid; grid-template-columns: 1fr 88px 1fr 88px 1fr 88px 1fr; align-items: stretch; margin-bottom: 36px; gap: 0; }
-  /* stage padding-top 36→56: 마커 32px + 카드와 16~20px gap (관련성 spacing 원칙) */
-  .jr-stage { position: relative; display: flex; flex-direction: column; align-items: center; min-width: 0; padding-top: 56px; }
-  .jr-stage-flag { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); width: 22px; height: 28px; margin-bottom: 16px; display: grid; place-items: center; pointer-events: none; }
+  .jr-stage { position: relative; display: flex; flex-direction: column; align-items: center; min-width: 0; }
+  /* flag/hero normal flow + 같은 height 28px 통일 → 모든 stage의 카드 정렬 일치 */
+  .jr-stage-flag { position: relative; width: 22px; height: 28px; margin-bottom: 14px; display: grid; place-items: center; }
   .jr-stage-flag svg { width: 18px; height: 24px; }
   .jr-stage-flag.locked-flag svg { width: 18px; height: 24px; }
   .jr-stage.passed .jr-stage-flag::after { content: ''; position: absolute; bottom: -3px; left: 50%; transform: translateX(-50%); width: 12px; height: 2px; background: var(--pba-gold); }
-  /* hero glyph 16→20px (current 강조 SIZE 증가). label 7→7.5px (비례) */
-  .jr-stage-hero { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 4px; margin-bottom: 12px; pointer-events: none; }
-  .jr-stage-hero-glyph { font-family: var(--pba-font-pixel); font-size: 20px; color: var(--pba-gold); text-shadow: 2px 2px 0 #b39700; animation: jrBob 1.6s ease-in-out infinite; line-height: 1; }
+  /* hero 영역 height 28px (flag와 동일) — glyph 작게 + label 작게 + bottom 정렬 */
+  .jr-stage-hero { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px; margin-bottom: 14px; min-height: 28px; }
+  .jr-stage-hero-glyph { font-family: var(--pba-font-pixel); font-size: 14px; color: var(--pba-gold); text-shadow: 2px 2px 0 #b39700; animation: jrBob 1.6s ease-in-out infinite; line-height: 1; }
   @keyframes jrBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
-  .jr-stage-hero-label { font-family: var(--pba-font-pixel); font-size: 7.5px; letter-spacing: 0.2em; color: var(--pba-gold); background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); padding: 4px 8px; border-radius: 3px; box-shadow: 2px 2px 0 #b39700; }
+  .jr-stage-hero-label { font-family: var(--pba-font-pixel); font-size: 6.5px; letter-spacing: 0.2em; color: var(--pba-gold); background: var(--pba-gold-bg); border: 1px solid var(--pba-gold-border); padding: 2px 5px; border-radius: 3px; line-height: 1; }
   /* card padding 12/8/10 → 16/12/14 (breathing room). gap 5→8 (관련 그룹 spacing) */
   .jr-stage-card { width: 100%; background: #0d0d0d; border: 1px solid var(--pba-border); border-radius: 6px; padding: 16px 12px 14px; text-align: center; display: flex; flex-direction: column; gap: 8px; transition: transform 0.18s ease; }
   .jr-stage.passed .jr-stage-card { background: #0a0800; border-color: var(--pba-gold-border); box-shadow: 2px 2px 0 rgba(179, 151, 0, 0.6); }
