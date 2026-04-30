@@ -3402,7 +3402,7 @@ button:focus-visible, a:focus-visible {
     if (!unified) return ''
     const _scoreNum = Number(unified.score) || 0
     const _tierObj = (typeof _passTier === 'function') ? _passTier(_scoreNum) : { name: 'INVISIBLE', mark: '◆' }
-    const tierColors = { PERFECT: '#FFD700', STRONG: '#4ade80', EMERGING: '#f59e0b', INVISIBLE: '#e05252' }
+    const tierColors = { INVISIBLE: '#FF6B6B', EMERGING: '#FFA94D', STRONG: '#FFD93D', PERFECT: '#6BE08F' }
     const passLabel = _tierObj.name
     const passIcon  = _tierObj.mark || '◆'
     const passColor = tierColors[passLabel] || '#e05252'
@@ -3865,7 +3865,7 @@ button:focus-visible, a:focus-visible {
     // 2026-04-30 BUG-TIER-LABEL fix (CEO 지적: score 45 → STRONG 표시 혼동):
     //   화면 라벨은 빅파이 1.5 score-tier (score 단독, PRODUCT.md 불변 정의) 따름.
     //   BE pass_indicator (signal AND score 조합)는 prescriptionEngine 등 BE 컨텍스트에 그대로 보존.
-    const tierColors = { PERFECT: '#FFD700', STRONG: '#4ade80', EMERGING: '#f59e0b', INVISIBLE: '#e05252' }
+    const tierColors = { INVISIBLE: '#FF6B6B', EMERGING: '#FFA94D', STRONG: '#FFD93D', PERFECT: '#6BE08F' }
     const tierObj = (typeof _passTier === 'function') ? _passTier(score) : { name: 'INVISIBLE', mark: '◆' }
     const tierName = tierObj.name
     // BE pass_indicator 보존 (renderD5NextMilestone 등 BE 컨텍스트 사용처 위해 변수 유지)
@@ -4019,7 +4019,7 @@ button:focus-visible, a:focus-visible {
       } else {
         // 빅파이 1.5 정합: unified_v15.score 우선 (row.score는 레거시 Tavily fallback으로 33 하드코딩 버그 있음)
         // 2026-04-30 BUG-TIER-LABEL fix: 라벨은 score-tier (score 단독). BE pass_indicator 보존.
-        const tierColors = { PERFECT: '#FFD700', STRONG: '#4ade80', EMERGING: '#f59e0b', INVISIBLE: '#e05252' }
+        const tierColors = { INVISIBLE: '#FF6B6B', EMERGING: '#FFA94D', STRONG: '#FFD93D', PERFECT: '#6BE08F' }
         recentList.innerHTML = recent.map(p => {
           const u = p.unified_v15 || null
           const s = Math.round(Number(u?.score ?? p.score) || 0)
