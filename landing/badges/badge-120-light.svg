@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="30" viewBox="0 0 120 30" role="img" aria-label="pickedby.ai · AI Visibility">
+  <title>pickedby.ai — AI Visibility</title>
+  <!-- Background -->
+  <rect width="120" height="30" rx="4" fill="#ffffff"/>
+  <!-- 1px gold border -->
+  <rect x="0.5" y="0.5" width="119" height="29" rx="3.5" fill="none" stroke="#b39700" stroke-width="1" stroke-opacity="0.6"/>
+  <!-- Pixel crown (scale 0.7, centered in 24×24 left area) -->
+  <g fill="#b39700" transform="translate(7, 8) scale(0.7)">
+    <rect x="0"  y="0"  width="2" height="4"/>
+    <rect x="9"  y="0"  width="2" height="4"/>
+    <rect x="18" y="0"  width="2" height="4"/>
+    <rect x="0"  y="4"  width="20" height="2"/>
+    <rect x="0"  y="6"  width="2" height="6"/>
+    <rect x="18" y="6"  width="2" height="6"/>
+    <rect x="4"  y="8"  width="2" height="2"/>
+    <rect x="9"  y="8"  width="2" height="2"/>
+    <rect x="14" y="8"  width="2" height="2"/>
+    <rect x="0"  y="12" width="20" height="2"/>
+    <rect x="2"  y="14" width="16" height="2"/>
+  </g>
+  <!-- Wordmark -->
+  <text x="29" y="19" font-family="ui-monospace, 'SF Mono', 'Menlo', 'Press Start 2P', monospace"
+        font-size="9" font-weight="700" letter-spacing="0.06em" fill="#0a0a0a">PICKEDBY.AI</text>
+</svg>

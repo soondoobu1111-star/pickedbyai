@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="64" viewBox="0 0 240 64" role="img" aria-label="pickedby.ai · AI Visibility">
+  <title>pickedby.ai — AI Visibility</title>
+  <!-- Background -->
+  <rect width="240" height="64" rx="8" fill="#ffffff"/>
+  <!-- 1px gold border -->
+  <rect x="0.5" y="0.5" width="239" height="63" rx="7.5" fill="none" stroke="#b39700" stroke-width="1" stroke-opacity="0.7"/>
+  <!-- Pixel crown (scale 1.6, in 40×32 area on left) -->
+  <g fill="#b39700" transform="translate(15, 16) scale(1.6)">
+    <rect x="0"  y="0"  width="2" height="4"/>
+    <rect x="9"  y="0"  width="2" height="4"/>
+    <rect x="18" y="0"  width="2" height="4"/>
+    <rect x="0"  y="4"  width="20" height="2"/>
+    <rect x="0"  y="6"  width="2" height="6"/>
+    <rect x="18" y="6"  width="2" height="6"/>
+    <rect x="4"  y="8"  width="2" height="2"/>
+    <rect x="9"  y="8"  width="2" height="2"/>
+    <rect x="14" y="8"  width="2" height="2"/>
+    <rect x="0"  y="12" width="20" height="2"/>
+    <rect x="2"  y="14" width="16" height="2"/>
+  </g>
+  <!-- Vertical divider -->
+  <rect x="60" y="14" width="1" height="36" fill="#b39700" fill-opacity="0.5"/>
+  <!-- Wordmark + tagline -->
+  <text x="74" y="29" font-family="ui-monospace, 'SF Mono', 'Menlo', 'Press Start 2P', monospace"
+        font-size="14" font-weight="700" letter-spacing="0.08em" fill="#0a0a0a">PICKEDBY.AI</text>
+  <text x="74" y="46" font-family="ui-monospace, 'SF Mono', 'Menlo', monospace"
+        font-size="9" font-weight="500" letter-spacing="0.18em" fill="#666666">AI VISIBILITY</text>
+  <!-- Pixel shadow accent (golden corner) -->
+  <rect x="232" y="0" width="8" height="8" fill="#b39700" fill-opacity="0.2"/>
+</svg>

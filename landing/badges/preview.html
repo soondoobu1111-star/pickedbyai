@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pickedby.ai — Badge Preview (6 variants)</title>
+  <meta name="robots" content="noindex,nofollow">
+  <style>
+    :root { --gold: #FFD700; --gold-dim: #b39700; --bg: #0a0a0a; --bg-2: #141414; --fg: #f5f5f5; --fg-2: #aaa; --fg-3: #555; --border: #2a2a2a; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--fg); font-family: -apple-system, system-ui, sans-serif; padding: 2rem; min-height: 100vh; }
+    h1 { font-family: ui-monospace, monospace; font-size: 1.1rem; letter-spacing: 0.06em; color: var(--gold); margin-bottom: 0.5rem; }
+    .sub { font-size: 0.85rem; color: var(--fg-2); margin-bottom: 2rem; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; max-width: 900px; }
+    .col-head { font-family: ui-monospace, monospace; font-size: 0.7rem; color: var(--fg-3); letter-spacing: 0.16em; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+    .stage { padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid var(--border); }
+    .stage-dark { background: #050505; }
+    .stage-light { background: #f0f0f0; }
+    .stage-label { font-family: ui-monospace, monospace; font-size: 0.65rem; letter-spacing: 0.18em; color: var(--fg-3); margin-bottom: 1rem; }
+    .stage-light .stage-label { color: #666; }
+    .badge-row { display: flex; flex-direction: column; gap: 1rem; }
+    .badge-item { display: flex; flex-direction: column; gap: 0.4rem; }
+    .badge-item img { display: block; }
+    .badge-meta { font-family: ui-monospace, monospace; font-size: 0.62rem; color: var(--fg-3); letter-spacing: 0.1em; }
+    .stage-light .badge-meta { color: #888; }
+    .footer { margin-top: 3rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 0.78rem; color: var(--fg-2); }
+    .footer code { background: var(--bg-2); padding: 0.15rem 0.4rem; border-radius: 3px; color: var(--gold); font-size: 0.72rem; }
+    .nav { margin-bottom: 2rem; }
+    .nav a { color: var(--gold); text-decoration: none; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <div class="nav"><a href="/">← back to pickedby.ai</a></div>
+  <h1>pickedby.ai — Badge Preview</h1>
+  <p class="sub">3 sizes × 2 themes = 6 variants. No score. Logo + wordmark only.</p>
+
+  <div class="grid">
+    <div>
+      <div class="col-head">DARK PAGE</div>
+      <div class="stage stage-dark">
+        <div class="stage-label">SMALL · 120 × 30</div>
+        <div class="badge-row">
+          <div class="badge-item">
+            <img src="badge-120-dark.svg" alt="pickedby.ai badge small dark" width="120" height="30">
+            <span class="badge-meta">badge-120-dark.svg · footer · inline</span>
+          </div>
+        </div>
+      </div>
+      <div class="stage stage-dark">
+        <div class="stage-label">MEDIUM · 180 × 48</div>
+        <div class="badge-row">
+          <div class="badge-item">
+            <img src="badge-180-dark.svg" alt="pickedby.ai badge medium dark" width="180" height="48">
+            <span class="badge-meta">badge-180-dark.svg · sidebar · footer</span>
+          </div>
+        </div>
+      </div>
+      <div class="stage stage-dark">
+        <div class="stage-label">LARGE · 240 × 64</div>
+        <div class="badge-row">
+          <div class="badge-item">
+            <img src="badge-240-dark.svg" alt="pickedby.ai badge large dark" width="240" height="64">
+            <span class="badge-meta">badge-240-dark.svg · hero · promo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="col-head">LIGHT PAGE</div>
+      <div class="stage stage-light">
+        <div class="stage-label">SMALL · 120 × 30</div>
+        <div class="badge-row">
+          <div class="badge-item">
+            <img src="badge-120-light.svg" alt="pickedby.ai badge small light" width="120" height="30">
+            <span class="badge-meta">badge-120-light.svg · footer · inline</span>
+          </div>
+        </div>
+      </div>
+      <div class="stage stage-light">
+        <div class="stage-label">MEDIUM · 180 × 48</div>
+        <div class="badge-row">
+          <div class="badge-item">
+            <img src="badge-180-light.svg" alt="pickedby.ai badge medium light" width="180" height="48">
+            <span class="badge-meta">badge-180-light.svg · sidebar · footer</span>
+          </div>
+        </div>
+      </div>
+      <div class="stage stage-light">
+        <div class="stage-label">LARGE · 240 × 64</div>
+        <div class="badge-row">
+          <div class="badge-item">
+            <img src="badge-240-light.svg" alt="pickedby.ai badge large light" width="240" height="64">
+            <span class="badge-meta">badge-240-light.svg · hero · promo</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Embed example (HTML):</p>
+    <pre style="margin-top:0.5rem;"><code>&lt;a href="https://pickedby.ai" target="_blank" rel="noopener"&gt;
+  &lt;img src="https://pickedby.ai/badges/badge-180-dark.svg"
+       alt="pickedby.ai · AI Visibility" width="180" height="48"&gt;
+&lt;/a&gt;</code></pre>
+  </div>
+</body>
+</html>
