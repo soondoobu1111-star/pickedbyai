@@ -1658,7 +1658,7 @@ button:focus-visible, a:focus-visible {
             <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#666;letter-spacing:0.2em;margin-bottom:0.3rem;">RECENTLY ADDED</div>
             <div style="font-size:0.82rem;color:#888;">Your tracked products · top 5 latest</div>
           </div>
-          <button onclick="openQuickCheck()" style="background:#FFD700;color:#0a0a0a;border:none;padding:0.4rem 0.85rem;font-weight:700;font-size:0.76rem;cursor:pointer;border-radius:6px;font-family:inherit;box-shadow:2px 2px 0 #b39700;white-space:nowrap;">+ Check</button>
+          <button id="recent-refresh-btn" onclick="refreshTrackedProducts(this)" style="background:#FFD700;color:#0a0a0a;border:none;padding:0.4rem 0.85rem;font-weight:700;font-size:0.76rem;cursor:pointer;border-radius:6px;font-family:inherit;box-shadow:2px 2px 0 #b39700;white-space:nowrap;">↻ Refresh</button>
         </div>
         <div id="d5-recent-list" style="display:flex;flex-direction:column;gap:0.5rem;">
           <div style="color:#555;font-size:0.8rem;padding:0.5rem 0;">No products yet.</div>
@@ -6235,6 +6235,40 @@ button:focus-visible, a:focus-visible {
   }
 
   // ── History (load all) ─────────────────────────────────────
+  // 2026-05-03 CEO: Recently Added 섹션 "+ Check" → "↻ Refresh" 변경
+  // 동작: 새 도메인 추가가 아닌, 기존 tracked products 점수 DB 재조회 (최신 cron 결과 즉시 반영)
+  async function refreshTrackedProducts(btn) {
+    if (!btn) btn = document.getElementById('recent-refresh-btn')
+    if (btn && btn.disabled) return
+    const orig = btn ? btn.textContent : null
+    if (btn) {
+      btn.disabled = true
+      btn.textContent = '↻ Refreshing…'
+      btn.style.opacity = '0.7'
+    }
+    try {
+      await loadHistory()
+      if (typeof renderD5Overview === 'function') renderD5Overview()
+      if (btn) {
+        btn.textContent = '✓ Updated'
+        setTimeout(() => {
+          if (btn) {
+            btn.textContent = orig || '↻ Refresh'
+            btn.disabled = false
+            btn.style.opacity = '1'
+          }
+        }, 1500)
+      }
+    } catch (err) {
+      console.error('[refreshTrackedProducts]', err)
+      if (btn) {
+        btn.textContent = orig || '↻ Refresh'
+        btn.disabled = false
+        btn.style.opacity = '1'
+      }
+    }
+  }
+
   async function loadHistory() {
     document.getElementById('mine-loading').style.display = 'block'
     document.getElementById('mine-empty').style.display = 'none'
