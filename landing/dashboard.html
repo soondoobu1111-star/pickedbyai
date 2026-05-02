@@ -131,6 +131,10 @@
     .coming-soon-badge { font-size: 0.65rem; color: #555; border: 1px solid #333; padding: 1px 6px; border-radius: 10px; }
     .tool-tab { background:none; border:1px solid #333; color:#888; padding:0.3rem 0.85rem; border-radius:6px; cursor:pointer; font-size:0.78rem; font-family:inherit; transition:all 0.15s; }
     .tool-tab.active { border-color:#FFD700; color:#FFD700; background:rgba(255,215,0,0.05); }
+    /* 2026-05-02 Badge Embed redesign */
+    .be-size-tab { background:#0d0d0d; border:1px solid #2a2a2a; padding:0.5rem 0.85rem; border-radius:6px; cursor:pointer; transition:all 0.15s; min-width:96px; text-align:center; }
+    .be-size-tab:hover { border-color:#444; }
+    .be-size-tab.active { border-color:#FFD700; background:rgba(255,215,0,0.06); }
     .lt-input { background:#1a1a1a; border:1px solid #333; color:#f5f5f5; padding:0.55rem 0.7rem; border-radius:6px; width:100%; box-sizing:border-box; font-size:0.82rem; outline:none; font-family:inherit; }
     .lt-input:focus { border-color:#FFD700; }
     .lt-textarea { background:#1a1a1a; border:1px solid #333; color:#f5f5f5; padding:0.55rem 0.7rem; border-radius:6px; width:100%; box-sizing:border-box; font-size:0.82rem; outline:none; font-family:inherit; resize:vertical; min-height:78px; line-height:1.5; }
@@ -1839,50 +1843,76 @@ button:focus-visible, a:focus-visible {
         <button id="tool-tab-llms" class="tool-tab" onclick="switchTool('llms')">llms.txt Generator</button>
       </div>
 
-      <!-- ── Panel: Badge Embed ── -->
+      <!-- ── Panel: Badge Embed (2026-05-02 redesign · Claude Design 통합) ── -->
       <div id="tool-panel-badge">
-        <div class="tools-card">
-          <div style="font-size:0.9rem;font-weight:700;margin-bottom:0.5rem;">Badge Embed</div>
-          <p style="font-size:0.8rem;color:#666;margin-bottom:1rem;">Copy the HTML badge to embed on your site. Based on your highest-scoring product.</p>
-
-          <!-- Tier is always auto — tier is determined by actual score, not user choice -->
-          <input type="hidden" id="badge-tier-select" value="auto">
-          <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+        <!-- Live preview row -->
+        <div class="tools-card" style="margin-bottom:1rem;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem;">
             <div>
-              <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Size</div>
-              <select id="badge-size-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
-                <option value="L">Large</option>
-                <option value="M" selected>Medium</option>
-                <option value="S">Small</option>
-              </select>
+              <div style="font-size:0.9rem;font-weight:700;">Live <em style="font-style:italic;color:#FFD700;">preview</em></div>
+              <p style="font-size:0.75rem;color:#666;margin-top:0.2rem;">Show off you track AI visibility. Same logo, no score, future-proof.</p>
             </div>
-            <div>
-              <div style="font-size:0.7rem;color:#555;margin-bottom:0.35rem;">Shape</div>
-              <select id="badge-shape-select" onchange="updateBadgePreview()" style="background:#1a1a1a;border:1px solid #333;color:#f5f5f5;padding:0.4rem 0.65rem;border-radius:6px;font-size:0.8rem;font-family:inherit;cursor:pointer;">
-                <option value="Rectangle" selected>Rectangle</option>
-                <option value="Square">Square</option>
-              </select>
-            </div>
+            <span style="font-family:ui-monospace,monospace;font-size:0.65rem;color:#555;letter-spacing:0.14em;">LOGO ONLY · 6 VARIANTS</span>
           </div>
 
-          <div id="badge-preview-wrap" style="margin-bottom:1rem;padding:0.75rem 1rem;background:#0a0a0a;border-radius:6px;border:1px solid #1e1e1e;">
-            <div style="font-size:0.65rem;color:#444;margin-bottom:0.6rem;text-transform:uppercase;letter-spacing:0.05em;">Preview</div>
-            <div id="badge-preview-inner" style="display:flex;gap:1rem;flex-wrap:wrap;align-items:flex-start;"></div>
+          <!-- Size tabs -->
+          <div id="be-size-tabs" role="tablist" aria-label="Badge size" style="display:flex;gap:0.4rem;margin-bottom:1rem;flex-wrap:wrap;">
+            <button class="be-size-tab" data-size="120" role="tab" aria-selected="false" onclick="switchBadgeSize('120')">
+              <span style="font-family:ui-monospace,monospace;font-size:0.62rem;letter-spacing:0.12em;color:#888;">SMALL</span>
+              <span style="font-family:ui-monospace,monospace;font-size:0.6rem;color:#555;display:block;margin-top:0.1rem;">120 × 30</span>
+            </button>
+            <button class="be-size-tab active" data-size="180" role="tab" aria-selected="true" onclick="switchBadgeSize('180')">
+              <span style="font-family:ui-monospace,monospace;font-size:0.62rem;letter-spacing:0.12em;color:#FFD700;">MEDIUM</span>
+              <span style="font-family:ui-monospace,monospace;font-size:0.6rem;color:#888;display:block;margin-top:0.1rem;">180 × 48</span>
+            </button>
+            <button class="be-size-tab" data-size="240" role="tab" aria-selected="false" onclick="switchBadgeSize('240')">
+              <span style="font-family:ui-monospace,monospace;font-size:0.62rem;letter-spacing:0.12em;color:#888;">LARGE</span>
+              <span style="font-family:ui-monospace,monospace;font-size:0.6rem;color:#555;display:block;margin-top:0.1rem;">240 × 64</span>
+            </button>
           </div>
 
-          <div id="badge-lock-notice" style="display:none;margin-bottom:0.75rem;padding:0.6rem 0.75rem;background:#0d0d0d;border:1px dashed #2a2a2a;border-radius:6px;font-size:0.75rem;color:#555;">
-            🔒 Verify ownership of at least one product in <b style="color:#888;">My Products</b> to unlock badge embed.
+          <!-- Dual stage preview -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.5rem;">
+            <div style="padding:1.5rem;background:#050505;border:1px solid #1e1e1e;border-radius:6px;display:flex;flex-direction:column;align-items:center;gap:0.6rem;">
+              <span style="font-family:ui-monospace,monospace;font-size:0.6rem;letter-spacing:0.18em;color:#444;">DARK PAGE</span>
+              <img id="be-preview-dark" src="/badges/badge-180-dark.svg" alt="pickedby.ai badge dark" width="180" height="48" style="display:block;">
+            </div>
+            <div style="padding:1.5rem;background:#f0f0f0;border:1px solid #2a2a2a;border-radius:6px;display:flex;flex-direction:column;align-items:center;gap:0.6rem;">
+              <span style="font-family:ui-monospace,monospace;font-size:0.6rem;letter-spacing:0.18em;color:#666;">LIGHT PAGE</span>
+              <img id="be-preview-light" src="/badges/badge-180-light.svg" alt="pickedby.ai badge light" width="180" height="48" style="display:block;">
+            </div>
           </div>
-          <div style="display:flex;align-items:center;gap:0.5rem;">
-            <code id="badge-code-display" style="flex:1;font-size:0.62rem;color:#555;background:#080808;padding:0.4rem 0.6rem;border-radius:4px;border:1px solid #181818;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block;"></code>
-            <button id="badge-copy-btn" onclick="copyBadgeEmbed(this)" style="flex-shrink:0;background:none;border:1px solid #FFD700;color:#FFD700;padding:0.35rem 0.75rem;border-radius:4px;cursor:pointer;font-size:0.75rem;font-family:inherit;white-space:nowrap;">Copy HTML</button>
-          </div>
-          <div style="margin-top:0.75rem;">
-            <a href="/badge-preview.html" style="font-size:0.75rem;color:#555;text-decoration:underline;">View all badge styles</a>
+          <div style="margin-top:0.75rem;text-align:right;">
+            <a href="/badges/preview" target="_blank" rel="noopener" style="font-size:0.7rem;color:#555;text-decoration:underline;font-family:ui-monospace,monospace;letter-spacing:0.08em;">VIEW ALL 6 VARIANTS →</a>
           </div>
         </div>
 
-        <!-- Coming Soon 제거 (2026-04-23 CEO 지시) -->
+        <!-- Embed code card -->
+        <div class="tools-card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
+            <div style="font-size:0.9rem;font-weight:700;">Embed <em style="font-style:italic;color:#FFD700;">code</em></div>
+            <span id="be-current-size" style="font-family:ui-monospace,monospace;font-size:0.65rem;color:#888;letter-spacing:0.12em;">MEDIUM · 180 × 48</span>
+          </div>
+
+          <!-- Code format tabs -->
+          <div id="be-code-tabs" role="tablist" aria-label="Embed code format" style="display:flex;gap:0.4rem;margin-bottom:0.75rem;border-bottom:1px solid #2a2a2a;padding-bottom:0.5rem;">
+            <button class="be-code-tab active" data-code="html" role="tab" aria-selected="true" onclick="switchBadgeCode('html')" style="background:none;border:1px solid #FFD700;color:#FFD700;padding:0.3rem 0.7rem;border-radius:4px;cursor:pointer;font-size:0.7rem;font-family:ui-monospace,monospace;letter-spacing:0.08em;">HTML</button>
+            <button class="be-code-tab" data-code="md" role="tab" aria-selected="false" onclick="switchBadgeCode('md')" style="background:none;border:1px solid #2a2a2a;color:#888;padding:0.3rem 0.7rem;border-radius:4px;cursor:pointer;font-size:0.7rem;font-family:ui-monospace,monospace;letter-spacing:0.08em;">MARKDOWN</button>
+            <button class="be-code-tab" data-code="react" role="tab" aria-selected="false" onclick="switchBadgeCode('react')" style="background:none;border:1px solid #2a2a2a;color:#888;padding:0.3rem 0.7rem;border-radius:4px;cursor:pointer;font-size:0.7rem;font-family:ui-monospace,monospace;letter-spacing:0.08em;">REACT</button>
+          </div>
+
+          <!-- Code output -->
+          <pre id="be-code-output" style="background:#050505;border:1px solid #1a1a1a;border-radius:4px;padding:0.85rem 1rem;font-family:ui-monospace,'SF Mono',monospace;font-size:0.72rem;line-height:1.6;color:#aaa;white-space:pre-wrap;word-break:break-all;margin:0;overflow-x:auto;"></pre>
+
+          <!-- Theme & copy -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.85rem;flex-wrap:wrap;gap:0.5rem;">
+            <div style="display:flex;gap:0.4rem;">
+              <button id="be-theme-dark" class="be-theme-tab active" onclick="switchBadgeTheme('dark')" style="background:#0a0a0a;border:1px solid #FFD700;color:#FFD700;padding:0.3rem 0.7rem;border-radius:4px;cursor:pointer;font-size:0.68rem;font-family:ui-monospace,monospace;letter-spacing:0.1em;">◆ DARK</button>
+              <button id="be-theme-light" class="be-theme-tab" onclick="switchBadgeTheme('light')" style="background:#ffffff;border:1px solid #2a2a2a;color:#0a0a0a;padding:0.3rem 0.7rem;border-radius:4px;cursor:pointer;font-size:0.68rem;font-family:ui-monospace,monospace;letter-spacing:0.1em;">◇ LIGHT</button>
+            </div>
+            <button id="be-copy-btn" onclick="copyBadgeEmbed(this)" style="background:#FFD700;border:none;color:#0a0a0a;padding:0.45rem 1rem;border-radius:4px;cursor:pointer;font-size:0.78rem;font-family:ui-monospace,monospace;font-weight:700;letter-spacing:0.08em;white-space:nowrap;">▣ COPY CODE</button>
+          </div>
+        </div>
       </div>
 
       <!-- ── Panel: llms.txt Generator ── -->
@@ -5711,59 +5741,117 @@ button:focus-visible, a:focus-visible {
     return `<style>@keyframes pba-pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,0)}50%{box-shadow:0 0 14px 4px rgba(255,215,0,0.25)}}</style><a href="https://pickedby.ai?utm_source=badge&utm_medium=embed&utm_campaign=badge_embed" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:${s.gap}px;text-decoration:none;background:${t.bg};border:2px solid ${t.border};border-radius:${radius};padding:${s.pad};font-family:monospace;box-sizing:border-box;${t.pulse}">${crownSvg}<div style="display:flex;flex-direction:column;gap:2px;"><span style="color:${t.color};font-size:${s.titlePx}px;font-weight:800;letter-spacing:0.08em;white-space:nowrap;">${t.label}</span><span style="color:${t.color};opacity:0.55;font-size:${s.subPx}px;font-weight:600;letter-spacing:0.1em;white-space:nowrap;">${subText}</span></div></a>`
   }
 
-  function updateBadgePreview() {
-    const tierSel = document.getElementById('badge-tier-select')?.value || 'auto'
-    const size    = document.getElementById('badge-size-select')?.value || 'M'
-    const shape   = document.getElementById('badge-shape-select')?.value || 'Rectangle'
-    let effectiveTier = tierSel
-    let score = null
-    if (tierSel === 'auto') {
-      const mineSet = getMineSet()
-      const mineProducts = allProducts.filter(p => mineSet.has(p.product_name))
-      if (mineProducts.length > 0) {
-        const maxScore = Math.max(...mineProducts.map(p => p.score))
-        score = maxScore
-        effectiveTier = maxScore >= 81 ? 'gold' : maxScore >= 61 ? 'silver' : 'bronze'
-      } else { effectiveTier = 'gold'; score = 100 }
-    }
-    // Lock badge embed unless at least one My Products product is verified
-    const mineSetV = getMineSet()
-    const hasVerified = [...mineSetV].some(p => localStorage.getItem(`pba_verified_${p}`) === '1')
-    const lockNotice = document.getElementById('badge-lock-notice')
-    const copyBtn = document.getElementById('badge-copy-btn')
-    if (lockNotice) lockNotice.style.display = hasVerified ? 'none' : 'block'
-    if (copyBtn) {
-      copyBtn.disabled = !hasVerified
-      copyBtn.style.opacity = hasVerified ? '1' : '0.35'
-      copyBtn.style.cursor = hasVerified ? 'pointer' : 'not-allowed'
-    }
+  // 2026-05-02 Badge Embed redesign — logo-only, no score, 3 sizes × 2 themes = 6 SVG variants.
+  // CEO 결정: 점수 제거 / 로고 사용 / 직사각형 표준 사이즈.
+  const _badgeState = { size: '180', theme: 'dark', code: 'html' }
+  const _badgeSizeMap = {
+    '120': { w: 120, h: 30, label: 'SMALL · 120 × 30' },
+    '180': { w: 180, h: 48, label: 'MEDIUM · 180 × 48' },
+    '240': { w: 240, h: 64, label: 'LARGE · 240 × 64' },
+  }
+  const _badgeBaseUrl = 'https://pickedby.ai/badges'
 
-    // Show GOLD / SILVER / BRONZE examples side by side
-    const previewEl = document.getElementById('badge-preview-inner')
-    const codeEl = document.getElementById('badge-code-display')
-    if (!previewEl || !codeEl) return
-    const tiers = ['gold', 'silver', 'bronze']
-    const exampleScores = { gold: 82, silver: 57, bronze: 40 }
-    previewEl.innerHTML = tiers.map(t => {
-      const exScore = t === effectiveTier ? score : exampleScores[t]
-      return `<div style="display:inline-flex;flex-direction:column;align-items:center;gap:0.35rem;">
-        ${buildBadgeSnippet(t, exScore, size, shape)}
-        <span style="font-size:0.6rem;color:#444;text-transform:uppercase;letter-spacing:0.04em;">${t}</span>
-      </div>`
-    }).join('')
-    // Copy HTML uses user's actual badge
-    const html = buildBadgeSnippet(effectiveTier, score, size, shape)
-    codeEl.textContent = html
+  function _buildBadgeCode(format, size, theme) {
+    const dim = _badgeSizeMap[size]
+    const url = `${_badgeBaseUrl}/badge-${size}-${theme}.svg`
+    const link = 'https://pickedby.ai'
+    if (format === 'html') {
+      return `<!-- pickedby.ai badge -->\n<a href="${link}" target="_blank" rel="noopener">\n  <img src="${url}"\n       alt="pickedby.ai · AI Visibility"\n       width="${dim.w}" height="${dim.h}" />\n</a>`
+    }
+    if (format === 'md') {
+      return `[![pickedby.ai · AI Visibility](${url})](${link})`
+    }
+    if (format === 'react') {
+      return `// React component\nexport function PickedByBadge() {\n  return (\n    <a href="${link}" target="_blank" rel="noopener noreferrer">\n      <img\n        src="${url}"\n        alt="pickedby.ai · AI Visibility"\n        width={${dim.w}}\n        height={${dim.h}}\n      />\n    </a>\n  )\n}`
+    }
+    return ''
+  }
+
+  function _renderBadgeUI() {
+    const { size, theme, code } = _badgeState
+    // 미리보기 SVG src 갱신
+    const dEl = document.getElementById('be-preview-dark')
+    const lEl = document.getElementById('be-preview-light')
+    if (dEl) {
+      dEl.src = `/badges/badge-${size}-dark.svg`
+      dEl.width = _badgeSizeMap[size].w
+      dEl.height = _badgeSizeMap[size].h
+    }
+    if (lEl) {
+      lEl.src = `/badges/badge-${size}-light.svg`
+      lEl.width = _badgeSizeMap[size].w
+      lEl.height = _badgeSizeMap[size].h
+    }
+    // 사이즈 라벨
+    const sizeMeta = document.getElementById('be-current-size')
+    if (sizeMeta) sizeMeta.textContent = _badgeSizeMap[size].label
+    // 사이즈 탭 active
+    document.querySelectorAll('.be-size-tab').forEach(btn => {
+      const isActive = btn.getAttribute('data-size') === size
+      btn.classList.toggle('active', isActive)
+      btn.setAttribute('aria-selected', isActive ? 'true' : 'false')
+      const labelEl = btn.querySelector('span:first-child')
+      if (labelEl) labelEl.style.color = isActive ? '#FFD700' : '#888'
+    })
+    // 코드 탭 active
+    document.querySelectorAll('.be-code-tab').forEach(btn => {
+      const isActive = btn.getAttribute('data-code') === code
+      btn.classList.toggle('active', isActive)
+      btn.setAttribute('aria-selected', isActive ? 'true' : 'false')
+      btn.style.borderColor = isActive ? '#FFD700' : '#2a2a2a'
+      btn.style.color = isActive ? '#FFD700' : '#888'
+    })
+    // 테마 active
+    const dThemeBtn = document.getElementById('be-theme-dark')
+    const lThemeBtn = document.getElementById('be-theme-light')
+    if (dThemeBtn) {
+      dThemeBtn.style.borderColor = theme === 'dark' ? '#FFD700' : '#2a2a2a'
+      dThemeBtn.style.color = theme === 'dark' ? '#FFD700' : '#888'
+    }
+    if (lThemeBtn) {
+      lThemeBtn.style.borderColor = theme === 'light' ? '#FFD700' : '#2a2a2a'
+      lThemeBtn.style.color = theme === 'light' ? '#0a0a0a' : '#888'
+      lThemeBtn.style.background = theme === 'light' ? '#ffffff' : '#f5f5f5'
+    }
+    // 코드 출력
+    const out = document.getElementById('be-code-output')
+    if (out) out.textContent = _buildBadgeCode(code, size, theme)
+  }
+
+  function switchBadgeSize(size) {
+    if (!_badgeSizeMap[size]) return
+    _badgeState.size = size
+    _renderBadgeUI()
+  }
+  function switchBadgeTheme(theme) {
+    if (theme !== 'dark' && theme !== 'light') return
+    _badgeState.theme = theme
+    _renderBadgeUI()
+  }
+  function switchBadgeCode(code) {
+    if (!['html', 'md', 'react'].includes(code)) return
+    _badgeState.code = code
+    _renderBadgeUI()
+  }
+
+  function updateBadgePreview() {
+    // 호환성 wrapper — Tools 탭 진입 시 호출됨 (line 5919)
+    _renderBadgeUI()
   }
 
   function copyBadgeEmbed(btn) {
-    const codeEl = document.getElementById('badge-code-display')
-    if (!codeEl) return
-    navigator.clipboard.writeText(codeEl.textContent).then(() => {
+    const out = document.getElementById('be-code-output')
+    if (!out) return
+    const text = out.textContent
+    navigator.clipboard.writeText(text).then(() => {
       const orig = btn.textContent
-      btn.textContent = '✓ Copied!'
-      btn.style.color = '#4ade80'; btn.style.borderColor = '#4ade80'
-      setTimeout(() => { btn.textContent = orig; btn.style.color = '#FFD700'; btn.style.borderColor = '#FFD700' }, 2000)
+      const origBg = btn.style.background
+      btn.textContent = '✓ COPIED'
+      btn.style.background = '#4ade80'
+      setTimeout(() => {
+        btn.textContent = orig
+        btn.style.background = origBg
+      }, 2000)
     }).catch(() => alert('Copy failed. Please select and copy manually.'))
   }
 
