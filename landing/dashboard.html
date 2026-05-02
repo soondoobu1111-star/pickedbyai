@@ -1933,9 +1933,17 @@ button:focus-visible, a:focus-visible {
             <div style="font-size:0.9rem;font-weight:700;">Source <em style="font-style:italic;color:#FFD700;">files</em></div>
             <span style="font-family:ui-monospace,monospace;font-size:0.65rem;color:#888;letter-spacing:0.14em;">DISCOVERY FILES YOUR SITE EXPOSES TO AI</span>
           </div>
-          <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.85rem;flex-wrap:wrap;">
-            <input type="text" id="sm-domain-input" placeholder="example.com" style="flex:1;min-width:200px;background:#0a0a0a;border:1px solid #2a2a2a;color:#f5f5f5;padding:0.5rem 0.75rem;border-radius:4px;font-family:ui-monospace,monospace;font-size:0.78rem;">
-            <button onclick="runSourcesScan()" id="sm-scan-btn" style="background:#FFD700;border:none;color:#0a0a0a;padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-family:ui-monospace,monospace;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;">↻ SCAN</button>
+          <!-- 2026-05-03 CEO 재지적: dropdown도 자유도 → 제거. 현재 선택된 내 제품만 자동 스캔. -->
+          <div id="sm-target-bar" style="display:flex;gap:0.5rem;align-items:center;justify-content:space-between;margin-bottom:0.85rem;flex-wrap:wrap;padding:0.6rem 0.85rem;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;">
+            <div style="display:flex;align-items:center;gap:0.5rem;min-width:0;flex:1;">
+              <span style="font-family:ui-monospace,monospace;font-size:0.65rem;color:#666;letter-spacing:0.14em;">SCANNING</span>
+              <span id="sm-target-domain" style="font-family:ui-monospace,monospace;font-size:0.85rem;color:#FFD700;font-weight:600;">—</span>
+            </div>
+            <button onclick="runSourcesScan()" id="sm-scan-btn" style="background:#FFD700;border:none;color:#0a0a0a;padding:0.4rem 0.85rem;border-radius:4px;cursor:pointer;font-family:ui-monospace,monospace;font-size:0.7rem;font-weight:700;letter-spacing:0.08em;flex-shrink:0;">↻ RESCAN</button>
+          </div>
+          <div id="sm-no-verified" style="display:none;padding:0.75rem 0.85rem;background:#0a0a0a;border:1px dashed #2a2a2a;border-radius:4px;font-size:0.75rem;color:#888;line-height:1.5;">
+            🔒 Verify ownership of a domain first.
+            <a href="#" onclick="if(typeof shellNavigateTo==='function')shellNavigateTo('overview');return false;" style="color:#FFD700;text-decoration:underline;margin-left:0.3rem;">Go to My Products</a> to add and verify yours.
           </div>
           <ul id="sm-files-list" style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.4rem;"></ul>
           <div id="sm-files-foot" style="display:none;justify-content:space-between;align-items:center;margin-top:0.85rem;padding-top:0.85rem;border-top:1px solid #2a2a2a;flex-wrap:wrap;gap:0.5rem;">
@@ -6012,30 +6020,63 @@ button:focus-visible, a:focus-visible {
     if (tool === 'sources') autoFillSourcesDomain()
   }
 
-  // ── 02 Sources Manager ─────────────────────────────────────
+  // ── 02 Sources Manager (2026-05-03 verified-only) ─────────
   let _smLastPatchText = ''
+
+  // CEO 재지적 (2026-05-03): dropdown조차 자유도 — 제거. 현재 선택된 내 제품만 자동 스캔.
+  // 도메인은 dashboard 상단 picker(_selectedDomainName) 또는 첫 verified 도메인을 따름.
+  function _smCurrentTargetDomain() {
+    const verified = (verifiedDomains || []).filter(d => d && d.product_name)
+    if (verified.length === 0) return null
+    // 1) 사용자가 dashboard 상단 picker로 선택한 도메인이 verified면 그것
+    if (typeof _selectedDomainName !== 'undefined' && _selectedDomainName) {
+      const match = verified.find(d => (d.product_name || '').toLowerCase() === _selectedDomainName.toLowerCase())
+      if (match) return match.product_name
+    }
+    // 2) 그 외엔 representative product (다른 pane들과 같은 패턴)
+    const prod = (typeof pickRepresentativeProduct === 'function') ? pickRepresentativeProduct() : null
+    if (prod && prod.product_name) {
+      const match = verified.find(d => (d.product_name || '').toLowerCase() === prod.product_name.toLowerCase())
+      if (match) return match.product_name
+    }
+    // 3) fallback: 첫 verified
+    return verified[0].product_name
+  }
+
   function autoFillSourcesDomain() {
-    const inp = document.getElementById('sm-domain-input')
-    if (!inp || inp.value) return
-    // 사용자의 verified 도메인 우선, 없으면 첫 product
-    const verified = (verifiedDomains || [])[0]
-    const prod = pickRepresentativeProduct?.()
-    const dom = verified?.product_name || prod?.product_name || ''
-    if (dom) inp.value = dom
+    const targetEl = document.getElementById('sm-target-domain')
+    const targetBar = document.getElementById('sm-target-bar')
+    const noVerified = document.getElementById('sm-no-verified')
+    const target = _smCurrentTargetDomain()
+    if (!target) {
+      if (targetBar) targetBar.style.display = 'none'
+      if (noVerified) noVerified.style.display = 'block'
+      // 결과 카드 모두 숨김
+      const lst = document.getElementById('sm-files-list'); if (lst) lst.innerHTML = ''
+      const foot = document.getElementById('sm-files-foot'); if (foot) foot.style.display = 'none'
+      const auditList = document.getElementById('sm-audit-list'); if (auditList) auditList.innerHTML = ''
+      const auditSum = document.getElementById('sm-audit-summary'); if (auditSum) auditSum.style.display = 'none'
+      const auditTip = document.getElementById('sm-audit-tip'); if (auditTip) auditTip.style.display = 'none'
+      const patchCard = document.getElementById('sm-patch-card'); if (patchCard) patchCard.style.display = 'none'
+      return
+    }
+    if (noVerified) noVerified.style.display = 'none'
+    if (targetBar) targetBar.style.display = 'flex'
+    if (targetEl) targetEl.textContent = target
+    // 자동 스캔
+    runSourcesScan()
   }
 
   async function runSourcesScan() {
-    const inp = document.getElementById('sm-domain-input')
     const btn = document.getElementById('sm-scan-btn')
-    if (!inp || !btn) return
-    let domain = (inp.value || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/^www\./, '')
-    if (!domain) { alert('Enter a domain first.'); return }
-    inp.value = domain
+    const target = _smCurrentTargetDomain()
+    if (!target) return  // no verified products
+    if (!btn) return
     btn.disabled = true
     btn.textContent = '↻ SCANNING…'
     btn.style.opacity = '0.7'
     try {
-      const res = await fetch(`${API_URL}/v1/sources/diagnose?domain=${encodeURIComponent(domain)}`)
+      const res = await fetch(`${API_URL}/v1/sources/diagnose?domain=${encodeURIComponent(target)}`)
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'scan failed')
       _renderSourcesFiles(data)
@@ -6044,7 +6085,7 @@ button:focus-visible, a:focus-visible {
       alert('Scan failed: ' + (err.message || err))
     } finally {
       btn.disabled = false
-      btn.textContent = '↻ SCAN'
+      btn.textContent = '↻ RESCAN'
       btn.style.opacity = '1'
     }
   }
