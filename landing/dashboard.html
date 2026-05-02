@@ -1837,10 +1837,20 @@ button:focus-visible, a:focus-visible {
         <div class="section-title">Tools</div>
       </div>
 
-      <!-- Tool sub-nav -->
-      <div style="display:flex;gap:0.5rem;margin-bottom:1.25rem;">
-        <button id="tool-tab-badge" class="tool-tab active" onclick="switchTool('badge')">Badge Embed</button>
-        <button id="tool-tab-llms" class="tool-tab" onclick="switchTool('llms')">llms.txt Generator</button>
+      <!-- Tool sub-nav (2026-05-02 Claude Design 통합: 03 Account 제거, 02 Sources Manager 신설) -->
+      <div style="display:flex;gap:0.5rem;margin-bottom:1.25rem;flex-wrap:wrap;">
+        <button id="tool-tab-badge" class="tool-tab active" onclick="switchTool('badge')">
+          <span style="font-family:ui-monospace,monospace;font-size:0.62rem;letter-spacing:0.12em;color:#FFD700;">01</span>
+          <span style="margin-left:0.4rem;">Badge Embed</span>
+        </button>
+        <button id="tool-tab-sources" class="tool-tab" onclick="switchTool('sources')">
+          <span style="font-family:ui-monospace,monospace;font-size:0.62rem;letter-spacing:0.12em;color:#888;">02</span>
+          <span style="margin-left:0.4rem;">Sources Manager</span>
+        </button>
+        <button id="tool-tab-llms" class="tool-tab" onclick="switchTool('llms')">
+          <span style="font-family:ui-monospace,monospace;font-size:0.62rem;letter-spacing:0.12em;color:#888;">02b</span>
+          <span style="margin-left:0.4rem;">llms.txt Generator</span>
+        </button>
       </div>
 
       <!-- ── Panel: Badge Embed (2026-05-02 redesign · Claude Design 통합) ── -->
@@ -1912,6 +1922,58 @@ button:focus-visible, a:focus-visible {
             </div>
             <button id="be-copy-btn" onclick="copyBadgeEmbed(this)" style="background:#FFD700;border:none;color:#0a0a0a;padding:0.45rem 1rem;border-radius:4px;cursor:pointer;font-size:0.78rem;font-family:ui-monospace,monospace;font-weight:700;letter-spacing:0.08em;white-space:nowrap;">▣ COPY CODE</button>
           </div>
+        </div>
+      </div>
+
+      <!-- ── Panel: 02 Sources Manager (2026-05-02 Claude Design 통합) ── -->
+      <div id="tool-panel-sources" style="display:none;">
+        <!-- Domain selector -->
+        <div class="tools-card" style="margin-bottom:1rem;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
+            <div style="font-size:0.9rem;font-weight:700;">Source <em style="font-style:italic;color:#FFD700;">files</em></div>
+            <span style="font-family:ui-monospace,monospace;font-size:0.65rem;color:#888;letter-spacing:0.14em;">DISCOVERY FILES YOUR SITE EXPOSES TO AI</span>
+          </div>
+          <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.85rem;flex-wrap:wrap;">
+            <input type="text" id="sm-domain-input" placeholder="example.com" style="flex:1;min-width:200px;background:#0a0a0a;border:1px solid #2a2a2a;color:#f5f5f5;padding:0.5rem 0.75rem;border-radius:4px;font-family:ui-monospace,monospace;font-size:0.78rem;">
+            <button onclick="runSourcesScan()" id="sm-scan-btn" style="background:#FFD700;border:none;color:#0a0a0a;padding:0.5rem 1rem;border-radius:4px;cursor:pointer;font-family:ui-monospace,monospace;font-size:0.75rem;font-weight:700;letter-spacing:0.08em;">↻ SCAN</button>
+          </div>
+          <ul id="sm-files-list" style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.4rem;"></ul>
+          <div id="sm-files-foot" style="display:none;justify-content:space-between;align-items:center;margin-top:0.85rem;padding-top:0.85rem;border-top:1px solid #2a2a2a;flex-wrap:wrap;gap:0.5rem;">
+            <span style="font-family:ui-monospace,monospace;font-size:0.7rem;letter-spacing:0.1em;">
+              <b id="sm-files-summary" style="color:#FFD700;">— PRESENT</b>
+              <span style="color:#444;margin:0 0.4rem;">·</span>
+              <span id="sm-files-missing" style="color:#888;">— MISSING</span>
+              <span style="color:#444;margin:0 0.4rem;">·</span>
+              <span id="sm-files-invalid" style="color:#888;">— INVALID</span>
+            </span>
+            <span id="sm-files-hint" style="font-family:ui-monospace,monospace;font-size:0.65rem;color:#555;letter-spacing:0.08em;"></span>
+          </div>
+        </div>
+
+        <!-- AI crawler audit -->
+        <div class="tools-card" style="margin-bottom:1rem;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
+            <div style="font-size:0.9rem;font-weight:700;">AI crawler <em style="font-style:italic;color:#FFD700;">access audit</em></div>
+            <span style="font-family:ui-monospace,monospace;font-size:0.65rem;color:#888;letter-spacing:0.14em;">9 BOTS · ALLOW / DISALLOW PER ENGINE</span>
+          </div>
+          <div id="sm-audit-summary" style="display:none;justify-content:space-between;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem;">
+            <div style="font-family:ui-monospace,monospace;font-size:0.78rem;color:#FFD700;letter-spacing:0.08em;">
+              <span id="sm-audit-allow-num" style="font-size:1.1rem;font-weight:700;">—</span><span style="color:#666;margin-left:0.3rem;">/9 ALLOWED</span>
+            </div>
+            <button id="sm-patch-btn" onclick="copyPatchRobots(this)" style="background:none;border:1px solid #FFD700;color:#FFD700;padding:0.4rem 0.85rem;border-radius:4px;cursor:pointer;font-family:ui-monospace,monospace;font-size:0.7rem;letter-spacing:0.08em;">▣ COPY PATCH robots.txt</button>
+          </div>
+          <ul id="sm-audit-list" style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0.4rem;"></ul>
+          <div id="sm-audit-tip" style="display:none;margin-top:0.85rem;padding:0.65rem 0.85rem;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:4px;font-size:0.75rem;color:#aaa;line-height:1.5;">
+            <span style="color:#FFD700;font-family:ui-monospace,monospace;font-size:0.7rem;letter-spacing:0.1em;">◆ TIP</span>
+            <span id="sm-audit-tip-text" style="margin-left:0.5rem;"></span>
+          </div>
+        </div>
+
+        <!-- Patch robots.txt preview -->
+        <div id="sm-patch-card" class="tools-card" style="display:none;margin-bottom:1rem;">
+          <div style="font-size:0.9rem;font-weight:700;margin-bottom:0.5rem;">Patch <em style="font-style:italic;color:#FFD700;">robots.txt</em></div>
+          <p style="font-size:0.75rem;color:#888;margin-bottom:0.85rem;">Add these lines to your <code style="background:#1a1a1a;padding:1px 4px;border-radius:3px;font-size:0.72rem;color:#FFD700;">robots.txt</code> to allow blocked AI crawlers.</p>
+          <pre id="sm-patch-output" style="background:#050505;border:1px solid #1a1a1a;border-radius:4px;padding:0.85rem 1rem;font-family:ui-monospace,'SF Mono',monospace;font-size:0.72rem;line-height:1.6;color:#aaa;white-space:pre-wrap;margin:0;overflow-x:auto;"></pre>
         </div>
       </div>
 
@@ -5936,10 +5998,134 @@ button:focus-visible, a:focus-visible {
   // ── Tool sub-nav switching ─────────────────────────────────
   function switchTool(tool) {
     document.getElementById('tool-panel-badge').style.display = tool === 'badge' ? 'block' : 'none'
+    document.getElementById('tool-panel-sources').style.display = tool === 'sources' ? 'block' : 'none'
     document.getElementById('tool-panel-llms').style.display = tool === 'llms' ? 'block' : 'none'
     document.getElementById('tool-tab-badge').classList.toggle('active', tool === 'badge')
+    document.getElementById('tool-tab-sources').classList.toggle('active', tool === 'sources')
     document.getElementById('tool-tab-llms').classList.toggle('active', tool === 'llms')
+    // active tab 라벨 색상
+    ;[['badge', 'tool-tab-badge'], ['sources', 'tool-tab-sources'], ['llms', 'tool-tab-llms']].forEach(([t, id]) => {
+      const lbl = document.getElementById(id)?.querySelector('span:first-child')
+      if (lbl) lbl.style.color = (tool === t) ? '#FFD700' : '#888'
+    })
     if (tool === 'badge') updateBadgePreview()
+    if (tool === 'sources') autoFillSourcesDomain()
+  }
+
+  // ── 02 Sources Manager ─────────────────────────────────────
+  let _smLastPatchText = ''
+  function autoFillSourcesDomain() {
+    const inp = document.getElementById('sm-domain-input')
+    if (!inp || inp.value) return
+    // 사용자의 verified 도메인 우선, 없으면 첫 product
+    const verified = (verifiedDomains || [])[0]
+    const prod = pickRepresentativeProduct?.()
+    const dom = verified?.product_name || prod?.product_name || ''
+    if (dom) inp.value = dom
+  }
+
+  async function runSourcesScan() {
+    const inp = document.getElementById('sm-domain-input')
+    const btn = document.getElementById('sm-scan-btn')
+    if (!inp || !btn) return
+    let domain = (inp.value || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/^www\./, '')
+    if (!domain) { alert('Enter a domain first.'); return }
+    inp.value = domain
+    btn.disabled = true
+    btn.textContent = '↻ SCANNING…'
+    btn.style.opacity = '0.7'
+    try {
+      const res = await fetch(`${API_URL}/v1/sources/diagnose?domain=${encodeURIComponent(domain)}`)
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'scan failed')
+      _renderSourcesFiles(data)
+      _renderCrawlerAudit(data)
+    } catch (err) {
+      alert('Scan failed: ' + (err.message || err))
+    } finally {
+      btn.disabled = false
+      btn.textContent = '↻ SCAN'
+      btn.style.opacity = '1'
+    }
+  }
+
+  function _renderSourcesFiles(data) {
+    const list = document.getElementById('sm-files-list')
+    const foot = document.getElementById('sm-files-foot')
+    if (!list) return
+    const statusColor = { present: '#4ade80', missing: '#e05252', invalid: '#f59e0b' }
+    const statusLabel = { present: '✓ PRESENT', missing: '✗ MISSING', invalid: '⚠ INVALID' }
+    list.innerHTML = (data.files || []).map(f => `
+      <li style="display:flex;justify-content:space-between;align-items:center;padding:0.6rem 0.85rem;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;gap:0.5rem;">
+        <div style="display:flex;flex-direction:column;gap:0.15rem;min-width:0;flex:1;">
+          <div style="font-family:ui-monospace,monospace;font-size:0.8rem;color:#f5f5f5;font-weight:600;">${escHtml(f.path)}</div>
+          <div style="font-size:0.7rem;color:#666;">${escHtml(f.desc || '')}</div>
+        </div>
+        <span style="font-family:ui-monospace,monospace;font-size:0.7rem;letter-spacing:0.1em;color:${statusColor[f.status] || '#888'};white-space:nowrap;">${statusLabel[f.status] || f.status}</span>
+      </li>
+    `).join('')
+    if (foot) {
+      foot.style.display = 'flex'
+      const s = data.files_summary || {}
+      document.getElementById('sm-files-summary').textContent = `${s.present || 0} PRESENT`
+      document.getElementById('sm-files-missing').textContent = `${s.missing || 0} MISSING`
+      document.getElementById('sm-files-invalid').textContent = `${s.invalid || 0} INVALID`
+      const ts = data.scanned_at ? new Date(data.scanned_at) : new Date()
+      document.getElementById('sm-files-hint').textContent = `last scan · ${ts.toLocaleString('en-US', { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })}`
+    }
+  }
+
+  function _renderCrawlerAudit(data) {
+    const list = document.getElementById('sm-audit-list')
+    const summary = document.getElementById('sm-audit-summary')
+    const tip = document.getElementById('sm-audit-tip')
+    const tipText = document.getElementById('sm-audit-tip-text')
+    const patchCard = document.getElementById('sm-patch-card')
+    const patchOut = document.getElementById('sm-patch-output')
+    if (!list) return
+    list.innerHTML = (data.crawlers || []).map(c => {
+      const allowed = c.allowed
+      const color = allowed ? '#4ade80' : '#e05252'
+      const label = allowed ? '✓ ALLOWED' : '✗ BLOCKED'
+      return `
+        <li style="display:flex;justify-content:space-between;align-items:center;padding:0.55rem 0.85rem;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:4px;gap:0.5rem;">
+          <div style="display:flex;flex-direction:column;gap:0.15rem;min-width:0;flex:1;">
+            <div style="font-family:ui-monospace,monospace;font-size:0.78rem;color:#f5f5f5;font-weight:600;">${escHtml(c.name)}</div>
+            <div style="font-size:0.68rem;color:#666;">${escHtml(c.engine)} · ${escHtml(c.reason || '')}</div>
+          </div>
+          <span style="font-family:ui-monospace,monospace;font-size:0.7rem;letter-spacing:0.1em;color:${color};white-space:nowrap;">${label}</span>
+        </li>`
+    }).join('')
+    summary.style.display = 'flex'
+    document.getElementById('sm-audit-allow-num').textContent = String(data.crawlers_summary?.allowed ?? 0)
+    const blocked = data.crawlers_summary?.blocked || 0
+    if (blocked > 0) {
+      tip.style.display = 'block'
+      tipText.innerHTML = `Your robots.txt blocks <b>${blocked} of 9</b> AI crawlers. Patch generates explicit allow rules below.`
+      patchCard.style.display = 'block'
+      patchOut.textContent = data.patch_robots_txt || ''
+      _smLastPatchText = data.patch_robots_txt || ''
+    } else {
+      tip.style.display = 'block'
+      tipText.innerHTML = `<b>All 9 AI crawlers are allowed.</b> No patch needed.`
+      patchCard.style.display = 'none'
+      _smLastPatchText = ''
+    }
+  }
+
+  function copyPatchRobots(btn) {
+    if (!_smLastPatchText) { alert('No patch available — scan first.'); return }
+    navigator.clipboard.writeText(_smLastPatchText).then(() => {
+      const orig = btn.textContent
+      btn.textContent = '✓ COPIED'
+      btn.style.borderColor = '#4ade80'
+      btn.style.color = '#4ade80'
+      setTimeout(() => {
+        btn.textContent = orig
+        btn.style.borderColor = '#FFD700'
+        btn.style.color = '#FFD700'
+      }, 2000)
+    })
   }
 
   // ── llms.txt Generator (Tools tab) ────────────────────────

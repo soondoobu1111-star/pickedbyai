@@ -124,6 +124,7 @@ const RATE_LIMITS: Record<string, number> = {
   '/v1/subscribe': 5,    // 5 subscribes/min per IP
   '/v1/verify': 10,      // 10 verifies/min per IP
   '/v1/unsubscribe': 5,  // 5 unsubscribes/min per IP
+  '/v1/sources/diagnose': 60,  // 60/min/IP (5 file fetches, cheap)
 }
 
 function checkRateLimit(ip: string, path: string): boolean {
@@ -554,6 +555,159 @@ app.get('/v1/health', (c) => c.json({
   version: 'v1',
   timestamp: new Date().toISOString(),
 }))
+
+// ── /v1/sources/diagnose — Tools Pane 02 SOURCES MANAGER (2026-05-02) ───
+// Claude Design 핸드오프 통합: 5 source files 스캔 + 9 AI crawler audit
+// 사용자 도메인의 discovery 파일들을 fetch하고 robots.txt에서 봇별 allow/disallow 판정
+const SOURCE_FILES_TO_SCAN = [
+  { name: 'llms.txt', path: '/llms.txt', desc: 'AI discovery file' },
+  { name: 'robots.txt', path: '/robots.txt', desc: 'Crawler policy' },
+  { name: 'sitemap.xml', path: '/sitemap.xml', desc: 'Site structure' },
+  { name: 'ai.txt', path: '/ai.txt', desc: 'AI usage policy' },
+  { name: 'security.txt', path: '/.well-known/security.txt', desc: 'Security contact' },
+] as const
+
+const AI_CRAWLERS = [
+  { name: 'GPTBot', engine: 'ChatGPT' },
+  { name: 'ClaudeBot', engine: 'Claude' },
+  { name: 'PerplexityBot', engine: 'Perplexity' },
+  { name: 'Google-Extended', engine: 'Gemini' },
+  { name: 'Bytespider', engine: 'Doubao' },
+  { name: 'Amazonbot', engine: 'Amazon' },
+  { name: 'Applebot', engine: 'Apple' },
+  { name: 'FacebookBot', engine: 'Meta AI' },
+  { name: 'CCBot', engine: 'Common Crawl' },
+] as const
+
+async function scanFile(baseUrl: string, path: string, validator?: (text: string) => boolean): Promise<{ status: 'present' | 'missing' | 'invalid'; size: number }> {
+  try {
+    const url = new URL(path, baseUrl).toString()
+    const ctrl = new AbortController()
+    const timer = setTimeout(() => ctrl.abort(), 5000)
+    const res = await fetch(url, { method: 'GET', redirect: 'follow', signal: ctrl.signal, headers: { 'User-Agent': 'pickedby.ai-sources-scanner/1.0' } })
+    clearTimeout(timer)
+    if (res.status >= 200 && res.status < 300) {
+      const text = await res.text()
+      const size = text.length
+      if (validator && !validator(text)) return { status: 'invalid', size }
+      return { status: 'present', size }
+    }
+    return { status: 'missing', size: 0 }
+  } catch {
+    return { status: 'missing', size: 0 }
+  }
+}
+
+// robots.txt 파싱: 봇별 / 경로 허용 여부
+function parseRobotsForBots(robotsText: string, bots: ReadonlyArray<{ name: string; engine: string }>) {
+  // 그룹화: "User-agent: X" 다음 빈 줄까지가 한 그룹
+  const lines = robotsText.split('\n').map(l => l.replace(/#.*$/, '').trim())
+  type Rule = { agents: string[]; allow: string[]; disallow: string[] }
+  const groups: Rule[] = []
+  let cur: Rule | null = null
+  for (const line of lines) {
+    const m = line.match(/^([A-Za-z-]+)\s*:\s*(.*)$/)
+    if (!m) {
+      if (line === '' && cur) { groups.push(cur); cur = null }
+      continue
+    }
+    const key = m[1].toLowerCase()
+    const val = m[2].trim()
+    if (key === 'user-agent') {
+      if (!cur) cur = { agents: [], allow: [], disallow: [] }
+      cur.agents.push(val.toLowerCase())
+    } else if (cur) {
+      if (key === 'allow') cur.allow.push(val)
+      else if (key === 'disallow') cur.disallow.push(val)
+    }
+  }
+  if (cur) groups.push(cur)
+  // 봇별 매칭: 가장 구체적 매칭(=정확 이름) 우선, 없으면 '*' fallback
+  return bots.map(bot => {
+    const lower = bot.name.toLowerCase()
+    const exact = groups.find(g => g.agents.includes(lower))
+    const wildcard = groups.find(g => g.agents.includes('*'))
+    const match = exact || wildcard
+    if (!match) return { name: bot.name, engine: bot.engine, allowed: true, reason: 'no rules (default allow)' }
+    // / 경로에 대한 판정: Disallow: / 면 차단, Allow: / 또는 Disallow 없음이면 허용
+    const blocksRoot = match.disallow.some(d => d === '/' || d === '/*')
+    const explicitAllow = match.allow.some(a => a === '/' || a === '')
+    if (explicitAllow) return { name: bot.name, engine: bot.engine, allowed: true, reason: exact ? 'explicit allow' : 'wildcard allow' }
+    if (blocksRoot) return { name: bot.name, engine: bot.engine, allowed: false, reason: exact ? 'explicit disallow' : 'wildcard disallow' }
+    return { name: bot.name, engine: bot.engine, allowed: true, reason: exact ? 'no disallow (allowed)' : 'wildcard, no disallow' }
+  })
+}
+
+app.get('/v1/sources/diagnose', async (c) => {
+  const ip = c.req.header('cf-connecting-ip') || 'unknown'
+  // 가벼운 rate limit 재사용 (/v1/check 와 별도 키)
+  if (checkRateLimit(ip, '/v1/sources/diagnose')) {
+    return c.json({ error: 'Too many requests. Please try again later.' }, 429)
+  }
+
+  let domain = (c.req.query('domain') || '').trim().toLowerCase()
+  if (!domain) return c.json({ error: 'domain query param is required' }, 400)
+  // normalize: strip protocol/path
+  domain = domain.replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/^www\./, '')
+  if (!/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(domain) || domain.length > 200) {
+    return c.json({ error: 'Invalid domain' }, 400)
+  }
+  const baseUrl = `https://${domain}`
+  if (isBlockedUrl(baseUrl)) return c.json({ error: 'Domain not allowed' }, 400)
+
+  // 5 파일 병렬 스캔 + robots.txt는 본문 텍스트도 캡처
+  const [llms, robots, sitemap, aiTxt, security] = await Promise.all([
+    scanFile(baseUrl, '/llms.txt'),
+    scanFile(baseUrl, '/robots.txt'),
+    scanFile(baseUrl, '/sitemap.xml', (t) => t.includes('<urlset') || t.includes('<sitemapindex')),
+    scanFile(baseUrl, '/ai.txt'),
+    scanFile(baseUrl, '/.well-known/security.txt', (t) => /Contact:/i.test(t)),
+  ])
+
+  // robots.txt 본문 별도 fetch (parse용)
+  let robotsText = ''
+  if (robots.status === 'present') {
+    try {
+      const ctrl = new AbortController()
+      const timer = setTimeout(() => ctrl.abort(), 5000)
+      const r = await fetch(`${baseUrl}/robots.txt`, { signal: ctrl.signal, headers: { 'User-Agent': 'pickedby.ai-sources-scanner/1.0' } })
+      clearTimeout(timer)
+      if (r.ok) robotsText = await r.text()
+    } catch {}
+  }
+  const crawlers = robots.status === 'present'
+    ? parseRobotsForBots(robotsText, AI_CRAWLERS)
+    : AI_CRAWLERS.map(b => ({ name: b.name, engine: b.engine, allowed: true, reason: 'no robots.txt (default allow)' }))
+
+  const files = [
+    { ...SOURCE_FILES_TO_SCAN[0], ...llms },
+    { ...SOURCE_FILES_TO_SCAN[1], ...robots },
+    { ...SOURCE_FILES_TO_SCAN[2], ...sitemap },
+    { ...SOURCE_FILES_TO_SCAN[3], ...aiTxt },
+    { ...SOURCE_FILES_TO_SCAN[4], ...security },
+  ]
+  const summary = files.reduce((acc, f) => {
+    acc[f.status] = (acc[f.status] || 0) + 1
+    return acc
+  }, { present: 0, missing: 0, invalid: 0 } as Record<string, number>)
+
+  const allowedCount = crawlers.filter(c => c.allowed).length
+  const blockedBots = crawlers.filter(c => !c.allowed).map(c => c.name)
+  const patchLines = blockedBots.length > 0
+    ? blockedBots.map(b => `User-agent: ${b}\nAllow: /\n`).join('\n')
+    : '# All 9 AI crawlers already allowed.'
+
+  return c.json({
+    domain,
+    scanned_at: new Date().toISOString(),
+    files,
+    files_summary: summary,
+    crawlers,
+    crawlers_summary: { allowed: allowedCount, blocked: 9 - allowedCount, total: 9 },
+    patch_robots_txt: patchLines,
+  })
+})
+
 
 // ── ENGINE-05 core (shared by /v1/check and daily cron) ───────
 // 2026-04-23 TAVILY-CRON-LITE-01: cron 경로는 opts.tavilyLite=true로 쿼리 1개만.
