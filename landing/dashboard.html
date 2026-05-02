@@ -2576,25 +2576,53 @@ button:focus-visible, a:focus-visible {
     return null
   }
   // 유효한 score(>0) row만. 자정 cron 실패로 만들어진 score=0/null row 거부.
-  function isValidScoreRow(row) {
+  // 2026-05-02 BUG-SCORE-CONSISTENCY-01 fix:
+  // 기존: s > 0 만 valid → cron 부분 실패한 score=5 같은 anomaly row가 대표 score로 픽됨.
+  // 신규: baseline 대비 anomaly guard 추가. baseline = 직전 valid rows 중앙값.
+  // 절대 floor: s >= 10 (Web Authority alone max=10 인데도 직접 인지 0이면 분명 부분실패).
+  function isValidScoreRow(row, baselineScore) {
+    if (!row) return false
+    // BE flagged 필드 우선 (BUG-SCORE-CONSISTENCY-01, 2026-05-02): cron이 anomaly로 마킹한 row 즉시 제외
+    if (row.flagged === true) return false
     const s = _scoreOfRow(row)
-    return Number.isFinite(s) && s > 0
+    if (!Number.isFinite(s) || s <= 0) return false
+    if (s < 10) return false  // 절대 floor: 10점 미만은 부분 실패 가능성 ↑
+    // baseline 가드: baseline 대비 30% 미만이면 anomaly
+    if (Number.isFinite(baselineScore) && baselineScore >= 20 && s < baselineScore * 0.3) return false
+    return true
   }
   // 시리즈/배열에서 마지막 valid row. fallback: 마지막 row (정보 손실 방지).
   function getValidLatest(rows) {
     if (!Array.isArray(rows) || rows.length === 0) return null
+    // baseline = 같은 product의 직전 모든 valid (s>=10) 점수의 중앙값
+    const baseline = computeBaseline(rows)
     for (let i = rows.length - 1; i >= 0; i--) {
-      if (isValidScoreRow(rows[i])) return rows[i]
+      if (isValidScoreRow(rows[i], baseline)) return rows[i]
     }
     return rows[rows.length - 1] || null
   }
   // 시계열 desc 정렬에서 첫 valid row. fallback: 첫 row.
   function getValidLatestFromDesc(rowsDesc) {
     if (!Array.isArray(rowsDesc) || rowsDesc.length === 0) return null
+    // baseline 계산: 첫 row 제외한 나머지 (anomaly가 첫 row일 가능성)에서 valid 점수 중앙값
+    const baseline = computeBaseline(rowsDesc.slice(1))
     for (const r of rowsDesc) {
-      if (isValidScoreRow(r)) return r
+      if (isValidScoreRow(r, baseline)) return r
     }
     return rowsDesc[0] || null
+  }
+  // 직전 valid 점수의 중앙값 (anomaly 가드용 baseline)
+  function computeBaseline(rows) {
+    if (!Array.isArray(rows) || rows.length === 0) return 0
+    const validScores = rows
+      .map(r => _scoreOfRow(r))
+      .filter(s => Number.isFinite(s) && s >= 10)
+    if (validScores.length === 0) return 0
+    validScores.sort((a, b) => a - b)
+    const mid = Math.floor(validScores.length / 2)
+    return validScores.length % 2 === 0
+      ? (validScores[mid - 1] + validScores[mid]) / 2
+      : validScores[mid]
   }
   // 첫번째 valid row (asc 정렬 가정).
   function getValidFirst(rowsAsc) {

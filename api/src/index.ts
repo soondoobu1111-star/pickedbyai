@@ -1058,6 +1058,26 @@ app.post('/v1/check', async (c) => {
   return c.json({ ...engineResult, ...probeData, co_recommendations_top: coRecs, unified_v15: unifiedV15, prescription })
 })
 
+// ── Helper: 직전 7일 valid (flagged=false, score>=10) 점수의 중앙값 ─────
+// BUG-SCORE-CONSISTENCY-01 (2026-05-02): cron anomaly 가드용 baseline 계산
+async function getRecentBaselineScore(env: Bindings, productName: string, userId: string, daysBack: number): Promise<number> {
+  const sbUrl = getSbUrl(env)
+  const cutoff = new Date(Date.now() - daysBack * 86400_000).toISOString()
+  const url = `${sbUrl}/rest/v1/scores?product_name=eq.${encodeURIComponent(productName)}&user_id=eq.${userId}&flagged=eq.false&score=gte.10&created_at=gte.${cutoff}&select=score&order=created_at.desc&limit=20`
+  const headers = {
+    'apikey': env.SUPABASE_SERVICE_KEY,
+    'Authorization': `Bearer ${env.SUPABASE_SERVICE_KEY}`,
+  }
+  const res = await fetch(url, { headers })
+  if (!res.ok) return 0
+  const rows = (await res.json()) as Array<{ score: number }>
+  if (!Array.isArray(rows) || rows.length === 0) return 0
+  const scores = rows.map(r => r.score).filter(s => Number.isFinite(s) && s >= 10).sort((a, b) => a - b)
+  if (scores.length === 0) return 0
+  const mid = Math.floor(scores.length / 2)
+  return scores.length % 2 === 0 ? (scores[mid - 1] + scores[mid]) / 2 : scores[mid]
+}
+
 // ── Daily cron: auto-refresh all tracked products ─────────────
 async function dailyRefresh(env: Bindings) {
   const sbUrl = getSbUrl(env)
@@ -1103,7 +1123,7 @@ async function dailyRefresh(env: Bindings) {
   console.log(`[CRON] daily refresh: ${tasks.length} verified domains to scan (db=${sbUrl.includes('xzec') ? 'staging' : 'prod'})`)
 
   // 2026-04-29 E안 안전장치 3: KPI 카운터
-  let kpiSuccess = 0, kpiFailRunEngine = 0, kpiZeroScore = 0, kpiInsertFail = 0
+  let kpiSuccess = 0, kpiFailRunEngine = 0, kpiZeroScore = 0, kpiInsertFail = 0, kpiAnomaly = 0
 
   // 4. Scan each product sequentially (avoid rate limits)
   for (const task of tasks) {
@@ -1170,6 +1190,22 @@ async function dailyRefresh(env: Bindings) {
         continue
       }
 
+      // 2026-05-02 BUG-SCORE-CONSISTENCY-01 fix:
+      // cron이 baseline 대비 30% 미만으로 추락하면 anomaly로 간주 → flagged=true 저장.
+      // FE getValidLatestFromDesc는 flagged 제외, baseline 가드도 자체 적용.
+      // 사례: 05-01 pickedby.ai score=5 (baseline 45 대비 11%) → 05-02 사용자에게 5점 잘못 표시
+      let isAnomaly = false
+      try {
+        const baseline = await getRecentBaselineScore(env, task.product_name, task.user_id, 7)
+        if (baseline >= 20 && savedScore < baseline * 0.3) {
+          console.warn(`[CRON] ⚠️ ANOMALY ${task.product_name} score=${savedScore} baseline=${baseline.toFixed(1)} threshold=${(baseline * 0.3).toFixed(1)} — flagged=true 저장 (FE 제외 대상)`)
+          isAnomaly = true
+          kpiAnomaly++
+        }
+      } catch (e) {
+        console.error(`[CRON] baseline check failed for ${task.product_name}:`, e)
+      }
+
       // 2026-04-29 E안 안전장치 1: scores INSERT res.ok 검증.
       // 이전: Prefer:return=minimal + res.ok 미검증 → silent failure.
       // 변경: 응답 status 검증 → 실패 시 ALERT + retry 등록.
@@ -1186,6 +1222,7 @@ async function dailyRefresh(env: Bindings) {
           ai_probe: result.aiProbe,
           unified_v15: cronUnifiedV15,
           prescription: cronPrescription,
+          flagged: isAnomaly,
         }),
       })
       if (!insertRes.ok) {
@@ -1223,7 +1260,7 @@ async function dailyRefresh(env: Bindings) {
   // 2026-04-29 E안 안전장치 3: KPI 종합 출력 + 임계 초과 시 ALERT
   const kpiTotal = tasks.length
   const failRate = kpiTotal > 0 ? Math.round(((kpiFailRunEngine + kpiZeroScore + kpiInsertFail) / kpiTotal) * 100) : 0
-  console.log(`[CRON KPI] total=${kpiTotal} success=${kpiSuccess} fail=${kpiFailRunEngine} zero=${kpiZeroScore} insertFail=${kpiInsertFail} failRate=${failRate}%`)
+  console.log(`[CRON KPI] total=${kpiTotal} success=${kpiSuccess} fail=${kpiFailRunEngine} zero=${kpiZeroScore} insertFail=${kpiInsertFail} anomaly=${kpiAnomaly} failRate=${failRate}%`)
   if (kpiTotal > 0 && failRate >= 30) {
     console.error(`[CRON ALERT] 🚨 daily refresh fail rate ${failRate}% (threshold 30%) — investigate immediately`)
   }
