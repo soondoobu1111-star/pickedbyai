@@ -96,10 +96,16 @@ function isBlockedUrl(url: string): boolean {
     const u = new URL(url)
     const host = u.hostname
     if (host === 'localhost' || host === '127.0.0.1' || host === '::1') return true
-    if (host === '169.254.169.254' || host === 'metadata.google.internal') return true
+    if (host === '0.0.0.0') return true
+    // 2026-05-03 SSRF hardening: 169.254.x.x 전체 차단 (link-local + cloud metadata)
+    if (/^169\.254\./.test(host)) return true
+    if (host === 'metadata.google.internal') return true
     if (/^10\./.test(host)) return true
     if (/^192\.168\./.test(host)) return true
     if (/^172\.(1[6-9]|2\d|3[01])\./.test(host)) return true
+    if (/^127\./.test(host)) return true
+    // IPv6 link-local + unique local
+    if (/^fe[89ab]/i.test(host) || /^fc/i.test(host) || /^fd/i.test(host)) return true
     if (!['http:', 'https:'].includes(u.protocol)) return true
     return false
   } catch {
@@ -651,6 +657,11 @@ app.get('/v1/sources/diagnose', async (c) => {
   domain = domain.replace(/^https?:\/\//, '').replace(/\/.*$/, '').replace(/^www\./, '')
   if (!/^[a-z0-9-]+(\.[a-z0-9-]+)+$/.test(domain) || domain.length > 200) {
     return c.json({ error: 'Invalid domain' }, 400)
+  }
+  // SSRF hardening: 순수 IP 주소 거부 (도메인 TLD에 알파벳 1개 이상 필수)
+  const lastSegment = domain.split('.').pop() || ''
+  if (!/[a-z]/.test(lastSegment)) {
+    return c.json({ error: 'Domain name required (IP addresses not allowed)' }, 400)
   }
   const baseUrl = `https://${domain}`
   if (isBlockedUrl(baseUrl)) return c.json({ error: 'Domain not allowed' }, 400)
