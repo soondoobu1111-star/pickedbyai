@@ -1300,14 +1300,41 @@ button:focus-visible, a:focus-visible {
         </span>
         <span style="color:var(--pba-fg-4);font-size:10px;margin-left:2px;" aria-hidden="true">▼</span>
       </button>
-      <!-- 2026-04-29 E안 안전장치 4: Last refreshed indicator + Refresh now button -->
+      <!-- 2026-04-29 E안 안전장치 4 / 2026-05-04 D안: Reload(화면) + ⓘ 툴팁(측정시각) -->
       <span id="shell-last-refresh" style="display:none;margin-left:0.7rem;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#888;align-items:center;gap:0.4rem;">
         <span id="shell-last-refresh-text">—</span>
-        <button id="shell-refresh-now-btn" onclick="triggerRefreshNow()" title="Run a fresh check now"
+        <span id="shell-refresh-info" tabindex="0" role="button" aria-label="Measurement schedule details"
+          title=""
+          style="position:relative;display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border:1px solid #2a2a2a;border-radius:50%;color:#888;font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;cursor:help;line-height:1;">
+          i
+          <span id="shell-refresh-tooltip"
+            style="display:none;position:absolute;top:calc(100% + 8px);right:0;min-width:230px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:6px;padding:8px 10px;box-shadow:3px 3px 0 #b39700;z-index:600;color:#cfcfcf;font-family:'JetBrains Mono',monospace;font-size:0.7rem;line-height:1.55;text-align:left;white-space:nowrap;">
+            <div style="font-family:'Press Start 2P',monospace;font-size:6.5px;letter-spacing:0.18em;color:#FFD700;margin-bottom:6px;">MEASUREMENT</div>
+            <div>Last AI check: <span id="shell-refresh-tooltip-measure">—</span></div>
+            <div>Next scheduled: <span style="color:#FFD700;">00:00 KST</span></div>
+            <div style="color:#666;font-size:0.62rem;margin-top:4px;">Runs daily. REFRESH reloads from server.</div>
+          </span>
+        </span>
+        <button id="shell-refresh-now-btn" onclick="triggerRefreshNow()" title="Reload from server"
           style="background:transparent;border:1px solid #2a2a2a;border-radius:4px;color:#FFD700;font-family:'Press Start 2P',monospace;font-size:6.5px;letter-spacing:0.16em;padding:3px 7px;cursor:pointer;">
           ↻ REFRESH
         </button>
       </span>
+      <script>
+        (function(){
+          var info = document.getElementById('shell-refresh-info')
+          var tip = document.getElementById('shell-refresh-tooltip')
+          if (!info || !tip) return
+          function show(){ tip.style.display = 'block' }
+          function hide(){ tip.style.display = 'none' }
+          info.addEventListener('mouseenter', show)
+          info.addEventListener('mouseleave', hide)
+          info.addEventListener('focus', show)
+          info.addEventListener('blur', hide)
+          info.addEventListener('click', function(e){ e.stopPropagation(); tip.style.display = (tip.style.display==='block')?'none':'block' })
+          document.addEventListener('click', function(e){ if (!info.contains(e.target)) hide() })
+        })()
+      </script>
       <div id="shell-domain-menu" style="display:none;position:absolute;top:calc(100% + 6px);left:0;min-width:240px;background:#0a0a0a;border:1px solid #2a2a2a;border-radius:8px;padding:0.4rem;box-shadow:0 8px 24px rgba(0,0,0,0.6);z-index:500;">
         <div id="shell-domain-list" style="display:flex;flex-direction:column;gap:2px;"></div>
         <div style="height:1px;background:#1a1a1a;margin:0.4rem 0;"></div>
@@ -7267,10 +7294,14 @@ button:focus-visible, a:focus-visible {
     if (typeof updateLastRefreshIndicator === 'function') updateLastRefreshIndicator(name)
   }
 
-  // 2026-04-29 E안 안전장치 4: Last refreshed indicator + Refresh now
+  // 2026-04-29 E안 안전장치 4 / 2026-05-04 D안 + ⓘ 툴팁:
+  //   메인: "Updated <reload age>" — REFRESH 시 즉시 갱신 (lastReloadAt)
+  //   ⓘ tooltip: 측정 시각(cron) + Next 00:00 KST
+  let _lastReloadAt = Date.now()  // 페이지 진입 시 = 첫 reload
   function updateLastRefreshIndicator(productName) {
     const wrap = document.getElementById('shell-last-refresh')
     const txt = document.getElementById('shell-last-refresh-text')
+    const tipMeasure = document.getElementById('shell-refresh-tooltip-measure')
     if (!wrap || !txt) return
     const rows = (allHistoryData || []).filter(r => (r.product_name || '').toLowerCase() === (productName || '').toLowerCase())
     if (rows.length === 0) {
@@ -7278,22 +7309,36 @@ button:focus-visible, a:focus-visible {
       return
     }
     const latest = rows.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0]
-    const ageMs = Date.now() - new Date(latest.created_at).getTime()
-    const hours = Math.floor(ageMs / 3600000)
-    const minutes = Math.floor((ageMs % 3600000) / 60000)
-    let ageText
-    if (hours >= 24) {
-      const days = Math.floor(hours / 24)
-      ageText = `${days}d ago`
-    } else if (hours >= 1) {
-      ageText = `${hours}h ago`
+    // ── 측정 시각 (cron) — 툴팁용 ──
+    const measureMs = Date.now() - new Date(latest.created_at).getTime()
+    const measureH = Math.floor(measureMs / 3600000)
+    const measureM = Math.floor((measureMs % 3600000) / 60000)
+    let measureText
+    if (measureH >= 24) {
+      const d = Math.floor(measureH / 24)
+      measureText = `${d}d ago`
+    } else if (measureH >= 1) {
+      measureText = `${measureH}h ago`
     } else {
-      ageText = `${Math.max(1, minutes)}m ago`
+      measureText = `${Math.max(1, measureM)}m ago`
     }
+    if (tipMeasure) tipMeasure.textContent = measureText
     // Stale warning if > 25h (cron should run every 24h)
-    const stale = hours >= 25
-    // 2026-05-04 D안 — 다음 측정 시점 명시 (사용자가 REFRESH 후 변화 없을 때 자연스럽게 이해)
-    txt.textContent = `Updated ${ageText} · Next 00:00 KST`
+    const stale = measureH >= 25
+    // ── Reload 시각 (화면 fetch) — 메인 라벨 ──
+    const reloadMs = Date.now() - _lastReloadAt
+    const reloadM = Math.floor(reloadMs / 60000)
+    let reloadText
+    if (reloadMs < 30000) {
+      reloadText = 'just now'
+    } else if (reloadM < 1) {
+      reloadText = `${Math.floor(reloadMs / 1000)}s ago`
+    } else if (reloadM < 60) {
+      reloadText = `${reloadM}m ago`
+    } else {
+      reloadText = `${Math.floor(reloadM / 60)}h ago`
+    }
+    txt.textContent = `Updated ${reloadText}`
     txt.style.color = stale ? '#FFA94D' : '#888'
     wrap.style.display = 'inline-flex'
   }
@@ -7317,6 +7362,11 @@ button:focus-visible, a:focus-visible {
       if (typeof loadHistory === 'function') await loadHistory()
       if (typeof renderD5Overview === 'function') renderD5Overview()
       if (typeof renderActionsPane === 'function') renderActionsPane()
+      // Reload 시각 갱신 → "Updated just now" 즉시 반영 (UX 피드백)
+      _lastReloadAt = Date.now()
+      if (typeof updateLastRefreshIndicator === 'function' && _selectedDomainName) {
+        updateLastRefreshIndicator(_selectedDomainName)
+      }
       if (btn) {
         btn.innerHTML = '✓ Up to date'
         setTimeout(() => {
