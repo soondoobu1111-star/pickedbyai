@@ -7295,9 +7295,10 @@ button:focus-visible, a:focus-visible {
   }
 
   // 2026-04-29 E안 안전장치 4 / 2026-05-04 D안 + ⓘ 툴팁:
-  //   메인: "Updated <reload age>" — REFRESH 시 즉시 갱신 (lastReloadAt)
+  //   메인: 페이지 진입 시 = 측정 시각("11h ago"), REFRESH 클릭 시만 reload("just now")
   //   ⓘ tooltip: 측정 시각(cron) + Next 00:00 KST
-  let _lastReloadAt = Date.now()  // 페이지 진입 시 = 첫 reload
+  //   2026-05-04 CEO 피드백: 페이지 진입 = "just now" 잘못. 사용자 액션(클릭)만 reload 카운트.
+  let _lastReloadAt = null  // null = 사용자 REFRESH 안 함, 측정 시각 표시
   function updateLastRefreshIndicator(productName) {
     const wrap = document.getElementById('shell-last-refresh')
     const txt = document.getElementById('shell-last-refresh-text')
@@ -7325,20 +7326,27 @@ button:focus-visible, a:focus-visible {
     if (tipMeasure) tipMeasure.textContent = measureText
     // Stale warning if > 25h (cron should run every 24h)
     const stale = measureH >= 25
-    // ── Reload 시각 (화면 fetch) — 메인 라벨 ──
-    const reloadMs = Date.now() - _lastReloadAt
-    const reloadM = Math.floor(reloadMs / 60000)
-    let reloadText
-    if (reloadMs < 30000) {
-      reloadText = 'just now'
-    } else if (reloadM < 1) {
-      reloadText = `${Math.floor(reloadMs / 1000)}s ago`
-    } else if (reloadM < 60) {
-      reloadText = `${reloadM}m ago`
+    // ── 메인 라벨: 사용자 REFRESH 안 했으면 측정 시각, 했으면 reload 시각 ──
+    let primaryText
+    if (_lastReloadAt === null) {
+      // 페이지 진입 상태 — 측정 시각 표시 (정직)
+      primaryText = `Updated ${measureText}`
     } else {
-      reloadText = `${Math.floor(reloadM / 60)}h ago`
+      const reloadMs = Date.now() - _lastReloadAt
+      const reloadM = Math.floor(reloadMs / 60000)
+      let reloadText
+      if (reloadMs < 30000) {
+        reloadText = 'just now'
+      } else if (reloadM < 1) {
+        reloadText = `${Math.floor(reloadMs / 1000)}s ago`
+      } else if (reloadM < 60) {
+        reloadText = `${reloadM}m ago`
+      } else {
+        reloadText = `${Math.floor(reloadM / 60)}h ago`
+      }
+      primaryText = `Updated ${reloadText}`
     }
-    txt.textContent = `Updated ${reloadText}`
+    txt.textContent = primaryText
     txt.style.color = stale ? '#FFA94D' : '#888'
     wrap.style.display = 'inline-flex'
   }
@@ -7364,8 +7372,22 @@ button:focus-visible, a:focus-visible {
       if (typeof renderActionsPane === 'function') renderActionsPane()
       // Reload 시각 갱신 → "Updated just now" 즉시 반영 (UX 피드백)
       _lastReloadAt = Date.now()
-      if (typeof updateLastRefreshIndicator === 'function' && _selectedDomainName) {
-        updateLastRefreshIndicator(_selectedDomainName)
+      // 메인 라벨에 골드 강조 1.5초 (사용자 즉각 시각 피드백)
+      const txtEl = document.getElementById('shell-last-refresh-text')
+      if (txtEl) {
+        const origColor = txtEl.style.color
+        txtEl.textContent = '✓ Refreshed just now'
+        txtEl.style.color = '#FFD700'
+        txtEl.style.fontWeight = '700'
+        setTimeout(() => {
+          if (txtEl) {
+            txtEl.style.color = origColor || '#888'
+            txtEl.style.fontWeight = ''
+            if (typeof updateLastRefreshIndicator === 'function' && _selectedDomainName) {
+              updateLastRefreshIndicator(_selectedDomainName)
+            }
+          }
+        }, 1500)
       }
       if (btn) {
         btn.innerHTML = '✓ Up to date'
