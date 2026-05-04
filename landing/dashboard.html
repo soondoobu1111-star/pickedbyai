@@ -7292,54 +7292,49 @@ button:focus-visible, a:focus-visible {
     }
     // Stale warning if > 25h (cron should run every 24h)
     const stale = hours >= 25
-    txt.textContent = `Updated ${ageText}`
+    // 2026-05-04 D안 — 다음 측정 시점 명시 (사용자가 REFRESH 후 변화 없을 때 자연스럽게 이해)
+    txt.textContent = `Updated ${ageText} · Next 00:00 KST`
     txt.style.color = stale ? '#FFA94D' : '#888'
     wrap.style.display = 'inline-flex'
   }
 
-  // 2026-04-30 BUG-REFRESH-MODAL fix (CEO 지적):
-  //   기존 동작: Quick Check 모달을 띄워 사용자에게 다시 입력 요구 (← 잘못)
-  //   현재 동작: 선택된 도메인을 즉시 재체크 (스피너 + 자동 Turnstile + runCheckForce)
-  //   04-28 BUG-AX-WRONG-PRODUCT 동일 패턴 (`_refreshCurrent`) 재사용.
+  // 2026-05-04 BUG-REFRESH-DB-ONLY-01 근본 수정 (D안 — 업계 표준):
+  //   REFRESH = "서버에서 데이터 재fetch" (Gmail/Slack 새로고침 의미). 새 LLM 측정 절대 X.
+  //   측정은 cron(KST 00:00) only. 변화는 어제 대비 delta로 표시.
+  //   feedback_refresh_dom_semantics.md 영구 룰 정착.
+  //   이전 (04-30 fix): runCheckForce 호출 + Turnstile + 폴백 모달 → 매번 다른 점수 회귀.
   async function triggerRefreshNow() {
-    const name = _selectedDomainName
-    if (!name) { if (typeof showToast === 'function') showToast('Select a product first', 'error'); return }
-    // 등록 도메인 정보 조회 (Recent Products / domains 캐시에서)
-    let prodObj = null
+    const btn = document.getElementById('shell-refresh-now-btn')
+    if (btn?.disabled) return
+    const orig = btn ? btn.innerHTML : null
+    if (btn) {
+      btn.disabled = true
+      btn.style.opacity = '0.7'
+      btn.innerHTML = '↻ Loading…'
+    }
     try {
-      const list = (allHistoryData || []).filter(p => (p.product_name || '').toLowerCase() === name.toLowerCase())
-      if (list.length > 0) prodObj = list[0]
-    } catch(e) {}
-    // 인라인 스피너
-    const spinner = document.createElement('div')
-    spinner.id = '_ax_refresh_spinner'
-    spinner.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#0d0d0d;border:1px solid #FFD700;border-radius:8px;padding:1.25rem 1.75rem;z-index:99999;font-family:Inter,sans-serif;color:#FFD700;font-weight:600;font-size:0.9rem;box-shadow:0 12px 32px rgba(0,0,0,0.55);'
-    spinner.innerHTML = '<div style="display:flex;align-items:center;gap:0.75rem;"><div style="width:18px;height:18px;border:2px solid #FFD70033;border-top-color:#FFD700;border-radius:50%;animation:_axspin 0.8s linear infinite;"></div><span>Refreshing ' + escHtml(name) + '…</span></div><style>@keyframes _axspin{to{transform:rotate(360deg)}}</style>'
-    document.body.appendChild(spinner)
-    try {
-      const inp = document.getElementById('input-product')
-      const urlInp = document.getElementById('input-url')
-      if (inp) inp.value = name
-      if (urlInp) urlInp.value = (prodObj && prodObj.product_url) || ''
-      // Turnstile 토큰 자동 대기 (managed widget이 DOM에 이미 있어 자동 검증)
-      const start = Date.now()
-      while (typeof getTurnstileToken === 'function' && !getTurnstileToken() && Date.now() - start < 8000) {
-        await new Promise(r => setTimeout(r, 100))
+      // DB 재조회 only — LLM 호출 0, scores INSERT/UPDATE 0
+      if (typeof loadHistory === 'function') await loadHistory()
+      if (typeof renderD5Overview === 'function') renderD5Overview()
+      if (typeof renderActionsPane === 'function') renderActionsPane()
+      if (btn) {
+        btn.innerHTML = '✓ Up to date'
+        setTimeout(() => {
+          if (btn) {
+            btn.innerHTML = orig || '↻ REFRESH'
+            btn.disabled = false
+            btn.style.opacity = '1'
+          }
+        }, 1500)
       }
-      if (typeof getTurnstileToken === 'function' && !getTurnstileToken()) {
-        // 폴백: 토큰이 안 오면 모달을 보여 사용자가 직접 처리
-        spinner.remove()
-        if (typeof openQuickCheck === 'function') openQuickCheck()
-        if (typeof showToast === 'function') showToast('Security check is loading. Please click Check in the dialog.', 'info')
-        return
-      }
-      if (typeof runCheckForce === 'function') await runCheckForce()
-      else window.location.reload()
+      if (typeof showToast === 'function') showToast('Data refreshed. Next measurement at 00:00 KST.', 'success')
     } catch (e) {
       console.error('[triggerRefreshNow] error', e)
-    } finally {
-      const sp = document.getElementById('_ax_refresh_spinner')
-      if (sp) sp.remove()
+      if (btn) {
+        btn.innerHTML = orig || '↻ REFRESH'
+        btn.disabled = false
+        btn.style.opacity = '1'
+      }
     }
   }
   window.triggerRefreshNow = triggerRefreshNow

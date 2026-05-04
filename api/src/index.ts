@@ -1151,8 +1151,11 @@ app.post('/v1/check', async (c) => {
 
   // ── 서버사이드 scores 저장 (FE 의존 제거) ──────────────────
   // SINGLE-WRITE-REDESIGN (2026-04-28): API가 영속화 단일 책임자.
-  // 기존: API INSERT + FE saveHistory UPDATE/INSERT 이중 쓰기 → race condition.
-  // 수정: API에서 UPSERT (오늘자 row 있으면 UPDATE, 없으면 INSERT) + 모든 컬럼 저장.
+  // 2026-05-04 BUG-REFRESH-DB-ONLY-01 D안 적용:
+  //   측정 책임 분리 — cron만 매일 INSERT (baseline 권한). manual /v1/check는 "새 도메인 첫 baseline 시드"만 허용.
+  //   오늘자 row 이미 존재 (cron이 이미 측정함) → UPDATE skip (LLM 비결정성 회귀 차단).
+  //   사용자에게 화면 표시되는 점수 = cron이 적재한 안정 baseline only. 매일 자정 갱신.
+  //   feedback_refresh_dom_semantics.md 영구 룰 정착.
   let prescription: PrescriptionResult | null = null
   if (unifiedV15) {
     try {
@@ -1187,31 +1190,38 @@ app.post('/v1/check', async (c) => {
         results: (engineResult as any).results ?? null,
       }
       try {
-        // 1. 오늘자 row 검색
-        const findUrl = `${sbUrl}/rest/v1/scores?select=id&user_id=eq.${encodeURIComponent(user.id)}&product_name=eq.${encodeURIComponent(name)}&created_at=gte.${today}T00:00:00.000Z&limit=1`
+        // 1. 오늘자 row 검색 (cron 또는 이전 manual seed)
+        const findUrl = `${sbUrl}/rest/v1/scores?select=id,score&user_id=eq.${encodeURIComponent(user.id)}&product_name=eq.${encodeURIComponent(name)}&created_at=gte.${today}T00:00:00.000Z&limit=1`
         const findRes = await fetch(findUrl, { headers: sbHeaders })
-        const found: Array<{ id: string }> = findRes.ok ? await findRes.json() : []
+        const found: Array<{ id: string; score: number }> = findRes.ok ? await findRes.json() : []
         if (found.length > 0) {
-          // UPDATE
-          const patchRes = await fetch(`${sbUrl}/rest/v1/scores?id=eq.${found[0].id}`, {
-            method: 'PATCH',
-            headers: sbHeaders,
-            body: JSON.stringify(persistBody),
-          })
-          if (!patchRes.ok) {
-            const errBody = await patchRes.text()
-            console.error('[CHECK] UPDATE failed', patchRes.status, errBody)
-          }
+          // 2026-05-04 BUG-REFRESH-DB-ONLY-01 D안: 오늘자 row 존재 → UPDATE skip.
+          // 화면 표시 점수 = 안정 baseline (cron 적재). manual REFRESH 회귀 차단.
+          // 사용자에게는 응답만 반환 (showResult 표시), DB는 무영향.
+          console.log(`[CHECK] skip persist — today row exists score=${found[0].score} (D안: cron baseline 보호)`)
         } else {
-          // INSERT
+          // 새 도메인 첫 baseline 시드 — INSERT 1회만 허용.
+          // baseline 가드 (manual 첫 INSERT도 양방향 적용)
+          let isAnomaly = false
+          try {
+            const baseline = await getRecentBaselineScore(c.env, name, user.id, 7)
+            if (baseline >= 20 && finalScore < baseline * 0.3) {
+              isAnomaly = true
+              console.warn(`[CHECK] ⚠️ MANUAL ANOMALY ${name} score=${finalScore} baseline=${baseline.toFixed(1)} → flagged=true`)
+            }
+          } catch (e) {
+            console.error(`[CHECK] manual baseline check failed:`, e)
+          }
           const postRes = await fetch(`${sbUrl}/rest/v1/scores`, {
             method: 'POST',
             headers: sbHeaders,
-            body: JSON.stringify(persistBody),
+            body: JSON.stringify({ ...persistBody, flagged: isAnomaly }),
           })
           if (!postRes.ok) {
             const errBody = await postRes.text()
             console.error('[CHECK] INSERT failed', postRes.status, errBody)
+          } else {
+            console.log(`[CHECK] new baseline seed score=${finalScore} flagged=${isAnomaly}`)
           }
         }
       } catch (e: any) {
