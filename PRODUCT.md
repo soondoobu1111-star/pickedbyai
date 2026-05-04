@@ -1,8 +1,8 @@
 # pickedby.ai — PRODUCT (현재 상태 단일 소스)
-> **TIER 1 파일** | 최종 갱신: 2026-05-04 (13차 프로덕션 배포 + Phase 2a 진행) | 300줄 제한
+> **TIER 1 파일** | 최종 갱신: 2026-05-04 v2 (14차 프로덕션 배포 + Phase 2a 진행 + Search Console-wide 비전 재싱크) | 300줄 제한
 > CEO가 이 파일 하나로 현재 상태 전부 파악 가능해야 한다.
 > **상세 전략**: `docs/bigpie-v1.6.md` | **투자자용**: `docs/whitepaper.md`
-> **외부 AI 에이전트용 종합 브리프**: `docs/agent-brief.md` ← 2026-05-04 신규
+> **외부 AI 에이전트용 단일 통합 패키지**: `docs/agent-package.md` (브리프 + 리서치 명령, 중국 AI 포함 전 LLM 안전 발송)
 
 ---
 
