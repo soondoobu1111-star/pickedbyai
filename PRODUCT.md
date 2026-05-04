@@ -1,7 +1,8 @@
 # pickedby.ai — PRODUCT (현재 상태 단일 소스)
-> **TIER 1 파일** | 최종 갱신: 2026-04-29 | 300줄 제한
+> **TIER 1 파일** | 최종 갱신: 2026-05-04 (13차 프로덕션 배포 + Phase 2a 진행) | 300줄 제한
 > CEO가 이 파일 하나로 현재 상태 전부 파악 가능해야 한다.
 > **상세 전략**: `docs/bigpie-v1.6.md` | **투자자용**: `docs/whitepaper.md`
+> **외부 AI 에이전트용 종합 브리프**: `docs/agent-brief.md` ← 2026-05-04 신규
 
 ---
 
@@ -19,14 +20,20 @@
 ## 2. 현재 Phase
 
 ```
-✅ Phase 1 (Measure): 완성 + 프로덕션 라이브 (2026-04-29)
+✅ Phase 1 (Measure): 완료 + 프로덕션 라이브 (2026-04-29)
    → 4차원 스코어 + Daily Pulse + Trend/Journey/Volume/Overview
 ✅ Phase 1.5 (DEPLOY-GATE-01 12/13 PASS): 프로덕션 배포 완료
-   → API a5364d01 / FE 08eaf258 / Gemini 8492488f
-🔄 Phase 2 (Growth Loop): 빅파이 1.6 — 진행 예정 (05-01~)
-   → 처방 엔진 + 이행 추적 + 보상 + 바이럴 (6-Stage Loop)
+🔄 Phase 2 (Growth Loop): 빅파이 1.6 — 8주 재계획 (PH 7월 첫째 주, BOT-MKT-01 W3 당김)
+   2a (W1 05-03~09): 처방 엔진 D1~D4 [D1+D2+D2.5+D3 ✅ / D4 잔여]
+   2b (W2 05-10~16): 추적+Sources+이메일 D5~D8 [D5 ✅ / D6 BE ✅ FE 잔여 / D7 D8 잔여]
+   2c (W3 05-17~23): 보상+바이럴+GAP-1/2 D9~D11 + 🚀 BOT-MKT-01 4봇 라이브
+   2d (W4 05-24~30): 정확도+배포 D12~D13 (DEPLOY-GATE-02)
+   W5~W8 (05-31~06-27): 데이터 누적 + 채널 compounding + PH 다듬기
+🚀 2026-07월 첫째 주: PH + Show HN 동시 런칭
 🔮 Phase 3 (Optimize): 2027
 ```
+
+**13차 프로덕션 배포 (2026-05-04 10:18 KST)**: API `e4fb51d7-a32a-49a0-b323-37862f41bdd4` / FE `cf537af9-c0ca-44a9-9dc4-45605a3255d4` — BUG-REFRESH-DB-ONLY-01 D안 (5번째 회귀 차단). 복구포인트: `stable-20260504-pre-prod-deploy`.
 
 ---
 
