@@ -2141,15 +2141,16 @@ app.get('/v1/rivals', async (c) => {
 })
 
 // ── /v1/events ─────────────────────────────────────────────────
-// 빅파이 1.5 Phase 2 Day 1 · user_events 테이블 접근
-// POST: Journey Timeline / Milestones / Streak 이벤트 기록
-// GET : 제품별 이벤트 조회 (Timeline 렌더링)
-// Auth: Supabase JWT (Authorization: Bearer <token>) — verifyToken으로 user.id 추출
+// user_events 접근. POST 기록 / GET 조회. Auth: Supabase JWT.
+// streak_7 / streak_30 은 cron이 발화하므로 dedupe=true 필수.
+// prescription_completed event_data: { action_id, dim, severity, impact }
 const ALLOWED_EVENT_TYPES = new Set([
   'first_check', 'first_tier1_source', 'first_tier2_source',
   'emerging_reached', 'strong_reached', 'picked_reached',
   'perplexity_recognized', 'gemini_recognized', 'category_ranked',
   'co_mention_peer_5', 'score_delta', 'check_run',
+  'prescription_completed', 'prescription_skipped',
+  'streak_7', 'streak_30',
 ])
 
 app.post('/v1/events', async (c) => {

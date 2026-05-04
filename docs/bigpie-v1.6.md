@@ -391,8 +391,8 @@ pickedby.ai Dashboard (v1.6)
 | ID | 작업 | 근거 | 선행 조건 |
 |----|------|------|----------|
 | GAP-3 | 공개 결과 페이지 SEO (Glassdoor 모델) | strategy-sync §8 비자발적 노출 | 처방 엔진 안정화 후. SEO 효과 3~6개월 소요 |
-| BOT-MKT-01 | GPT Store 봇 배포 (AI Visibility Checker) | strategy-sync §12 backlog-ai-bot-marketing | 처방 엔진 완성 후 CTA 강화: "점수+처방 3개 받기" |
-| BOT-MKT-02 | Poe + Coze 확장 배포 | BOT-MKT-01 효과 검증 후 | BOT-MKT-01 UTM 데이터 확보 |
+| BOT-MKT-01 | **W3 (05-17) 당김** — 4봇 라이브 (GPT Store + Gemini Gems + Perplexity Space + Poe) + Anthropic Skills + llms.txt | strategy-sync §12 + 2026-05-04 CEO 승인 | D3+D5 통과 후 즉시. UTM `/g/<bot>` redirect spec 활용 |
+| BOT-MKT-02 | Coze 확장 배포 | BOT-MKT-01 효과 검증 후 (W6+) | BOT-MKT-01 UTM 30일 데이터 |
 | NETWORK-01 | Creator Network (상호 추천 생태계) | strategy-sync §6 경쟁사 0곳이 하는 것 | Verified Owner 100명+ 달성 후 |
 
 ### 제외 (명시 — v1.5 구형 계획)
@@ -437,15 +437,27 @@ v1.5 교훈 #1~15 전부 유지.
 
 ---
 
-## 12. 다음 체크포인트
+## 12. 다음 체크포인트 (2026-05-04 CEO 일정 변경 반영 — PH 7월 연기 + BOT-MKT-01 W3 당김)
 
-- **05-01 (목)**: Phase 2a 착수 — PRESCRIPTION-01 처방 엔진 구현
-- **05-04 (일)**: Phase 2a 완료 — Actions Pane 처방 UI + 스테이징 배포
-- **05-07 (수)**: Phase 2b 완료 — 이행 추적 + Daily Pulse 이메일
-- **05-10 (토)**: Phase 2c 완료 — 배지 + 성장 리포트 + 공유
-- **05-12 (월)**: Phase 2d — 처방 효과 분석 + DEPLOY-GATE-02
+### Phase 2 (8주 재계획 — 압박 0)
+- **W1 (05-03~09)**: Phase 2a 마감 — D3 PRESCRIPTION-03 ✅ / D4 GAP-01 / 채널 진단 완료 ✅
+- **W2 (05-10~16)**: Phase 2b 마감 — D5 TRACKING-01 ✅ / D6 SOURCES-PREVIEW-01 (BE 완료, FE 일부 잔여) / D7 PULSE-EMAIL-01 / D8 PHASE2B-QA-01
+- **W3 (05-17~23)**: Phase 2c + **BOT-MKT-01 4봇 라이브** (당김, 10주 compounding)
+- **W4 (05-24~30)**: Phase 2d — D12 EFFECT-01 / D13 DEPLOY-GATE-02
+- **W5 (05-31~06-06)**: 처방 효과 데이터 누적 + 채널 KPI 측정
+- **W6 (06-07~13)**: 봇 4채널 30일 데이터 분석 + Anthropic Skills 라이브
+- **W7 (06-14~20)**: PH 페이지 정밀 다듬기 + Show HN 본문 작성
+- **W8 (06-21~27)**: 친구 동원 + 마지막 점검
+- 🚀 **2026-07월 첫째 주 PH 런칭 + Show HN 동시** (TBD, D-58~)
+
+### 외부 일정
 - **05-15 (목)**: 모두의 창업 결과 통보 예정
-- **05-31**: 이메일 1,000개 / Product Hunt 런칭 게이트
+- **W3~W7**: 새 채널 (Indie Hackers / 블로그 SEO+Dev.to / HN) 진입 + 봇 compounding
+- ❌ **05-31 EMAIL-1000 게이트**: PH 7월 연기로 무력화. 대체 KPI: W5에 Verified Owner 50+ / IH milestone post 누적
+
+### CEO 결정 반영 (2026-05-04)
+- ✅ BOT-MKT-01 W3 (05-17) 당김 — 7월 PH까지 10주 compounding
+- ✅ 코드 검증 옵션 C — D3 단독 배포 → D5+D7 묶음 배포
 
 ---
 

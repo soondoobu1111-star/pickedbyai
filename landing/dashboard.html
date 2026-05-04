@@ -675,6 +675,22 @@ button:focus-visible, a:focus-visible {
   .ax-pill .dots { display: inline-flex; gap: 3px; }
   .ax-pill .dots i { width: 6px; height: 6px; border-radius: 999px; background: #2a2a2a; display: block; }
   .ax-pill .dots i.on { background: var(--pba-gold); }
+  /* Severity pills — score-tier 색상 토큰 재사용 */
+  .ax-pill.sev { font-weight: 600; }
+  .ax-pill.sev-critical { color: #FF6B6B; border-color: #3a1010; background: #1a0808; }
+  .ax-pill.sev-high     { color: #FFA552; border-color: #3a2410; background: #1a1108; }
+  .ax-pill.sev-medium   { color: #FFD700; border-color: var(--pba-gold-border); background: var(--pba-gold-bg); }
+  .ax-pill.sev-low      { color: var(--pba-fg-3); border-color: var(--pba-border-faint); background: #0d0d0d; }
+  /* Severity dot (mini rows) — pill 색상 재사용 */
+  .sev-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; margin-right: 8px; vertical-align: middle; background: var(--pba-fg-3); }
+  .sev-dot.sev-critical { background: #FF6B6B; }
+  .sev-dot.sev-high     { background: #FFA552; }
+  .sev-dot.sev-medium   { background: #FFD700; }
+  /* Quick Win badge */
+  .ax-pill.qw { color: var(--pba-gold); border-color: var(--pba-gold); background: var(--pba-gold-bg); font-weight: 600; }
+  .ax-pill.qw .ic { font-size: 9px; line-height: 1; }
+  .ax-mini-qw { color: var(--pba-gold); margin-left: 6px; font-size: 10px; }
+  .ax-rx.is-quickwin .ax-rx-num { color: var(--pba-gold); }
   .ax-rx-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; flex: none; }
   .ax-check { position: relative; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; padding: 8px 12px; border: 1px solid var(--pba-border); border-radius: 6px; font-family: var(--pba-font-pixel); font-size: 7px; letter-spacing: 0.18em; color: var(--pba-fg-3); background: transparent; transition: background .15s, color .15s, border-color .15s; }
   .ax-check:hover { color: #fff; border-color: var(--pba-fg-4); }
@@ -3825,19 +3841,37 @@ button:focus-visible, a:focus-visible {
       if (top3.length === 0) {
         rxList.innerHTML = '<div style="color:#555;font-size:0.85rem;padding:14px 0;">No prescriptions available.</div>'
       } else {
+        const sevLabels = { critical:'CRITICAL', high:'HIGH', medium:'MEDIUM', low:'LOW' }
+        // localStorage 낙관 캐시 (BE /v1/events 동기화 전 즉시 표시).
+        // 키: pba_rx_done_v1::<product>::<action_id> = ISO timestamp
+        const _rxDoneKey = (pname, aid) => `pba_rx_done_v1::${(pname||'').toLowerCase()}::${aid}`
+        const _isRxDone = (pname, aid) => { try { return !!localStorage.getItem(_rxDoneKey(pname, aid)) } catch(e) { return false } }
+        const productNameForRx = (prod && prod.product_name) || ''
+
         rxList.innerHTML = top3.map((a, i) => {
           const num = String(i+1).padStart(2, '0')
           const diff = Number(a.difficulty) || 1
           const dotsHtml = [0,1,2].map(j => `<i class="${j<diff?'on':''}"></i>`).join('')
           const linkHtml = a.externalUrl ? `<a class="ax-rx-link" href="${escHtml(a.externalUrl)}" target="_blank" rel="noopener">DOCS ↗</a>` : ''
-          const inProg = i === 0 ? ' in-progress' : ''
+          const isQW = !!a.quickWin
+          const aid = a.id || ''
+          const isDone = aid && _isRxDone(productNameForRx, aid)
+          const inProg = (i === 0 && !isDone) ? ' in-progress' : ''
+          const doneCls = isDone ? ' done' : ''
+          const checkedAttr = isDone ? ' checked' : ''
+          const qwCls = isQW ? ' is-quickwin' : ''
+          const sev = (a.severity || 'medium').toLowerCase()
+          const sevPill = `<span class="ax-pill sev sev-${sev}">${escHtml(sevLabels[sev] || 'MEDIUM')}</span>`
+          const qwPill = isQW ? `<span class="ax-pill qw"><span class="ic">⚡</span> QUICK WIN</span>` : ''
           return `
-            <article class="ov-card ax-rx${inProg}" data-rx data-action-id="${escHtml(a.id || '')}">
+            <article class="ov-card ax-rx${inProg}${qwCls}${doneCls}" data-rx data-action-id="${escHtml(aid)}" data-dim="${escHtml(a.dimension||'')}" data-severity="${escHtml(sev)}" data-impact="${Math.round(Number(a.estimatedImpact)||0)}">
               <div class="ax-rx-num">${num}</div>
               <div class="ax-rx-body">
                 <h3 class="ax-rx-title">${escHtml(a.title || '—')}</h3>
                 <p class="ax-rx-desc">${escHtml(a.description || '')}</p>
                 <div class="ax-rx-meta">
+                  ${sevPill}
+                  ${qwPill}
                   <span class="ax-pill">DIFFICULTY <span class="dots">${dotsHtml}</span></span>
                   <span class="ax-pill">IMPACT <span class="v">+${Math.round(Number(a.estimatedImpact)||0)} PTS</span></span>
                   <span class="ax-pill">TIME <span class="v neutral">${escHtml(a.timeToComplete || '—')}</span></span>
@@ -3845,7 +3879,7 @@ button:focus-visible, a:focus-visible {
               </div>
               <div class="ax-rx-actions">
                 <label class="ax-check" data-check>
-                  <input type="checkbox"/>
+                  <input type="checkbox"${checkedAttr}/>
                   <span class="box"><svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="#000" stroke-width="1.6" stroke-linecap="square"><path d="M2 5l2 2 4-4"/></svg></span>
                   <span class="label">MARK DONE</span>
                 </label>
@@ -3853,15 +3887,43 @@ button:focus-visible, a:focus-visible {
               </div>
             </article>`
         }).join('')
-        // Wire up checkboxes
+        // MARK DONE checkbox: BE /v1/events POST + localStorage 낙관 동기화
         rxList.querySelectorAll('[data-rx]').forEach(rxEl => {
           const cb = rxEl.querySelector('[data-check] input')
-          if (cb) {
-            cb.addEventListener('change', () => {
-              rxEl.classList.toggle('done', cb.checked)
-              if (cb.checked) rxEl.classList.remove('in-progress')
-            })
-          }
+          if (!cb) return
+          cb.addEventListener('change', async () => {
+            const wasChecked = cb.checked
+            const aid = rxEl.getAttribute('data-action-id') || ''
+            const dim = rxEl.getAttribute('data-dim') || ''
+            const sev = rxEl.getAttribute('data-severity') || ''
+            const impact = parseInt(rxEl.getAttribute('data-impact') || '0', 10) || 0
+            // 낙관적 UI 즉시 반영
+            rxEl.classList.toggle('done', wasChecked)
+            if (wasChecked) rxEl.classList.remove('in-progress')
+            // localStorage 동기화 (낙관)
+            try {
+              const k = _rxDoneKey(productNameForRx, aid)
+              if (wasChecked) localStorage.setItem(k, new Date().toISOString())
+              else localStorage.removeItem(k)
+            } catch(e) {}
+            // BE /v1/events POST (체크 시에만 — uncheck는 로컬 상태만 되돌림, 멱등성 보장)
+            if (wasChecked && aid && productNameForRx) {
+              try {
+                const sess = await sb.auth.getSession()
+                const token = sess && sess.data && sess.data.session && sess.data.session.access_token
+                if (!token) return
+                await fetch(`${API_URL}/v1/events`, {
+                  method: 'POST',
+                  headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    product_name: productNameForRx,
+                    event_type: 'prescription_completed',
+                    event_data: { action_id: aid, dim, severity: sev, impact, ts: new Date().toISOString() },
+                  }),
+                })
+              } catch(e) { console.error('[v1/events] prescription_completed POST failed', e) }
+            }
+          })
         })
       }
     }
@@ -3890,9 +3952,18 @@ button:focus-visible, a:focus-visible {
             <span class="ax-leader-score"></span>
           </div>`).join('')
       }
-      // Hide foot for now (no concrete delta data)
+      // bench foot: 다음 티어 진입까지 PTS gap 표시
       const benchFoot = document.getElementById('ax-bench-foot')
-      if (benchFoot) benchFoot.style.display = 'none'
+      const benchMsg = document.getElementById('ax-bench-msg')
+      const benchGapNum = document.getElementById('ax-bench-gap-num')
+      if (benchFoot && gap && gap.nextLevel && gap.pointsNeeded != null && Number(gap.pointsNeeded) > 0) {
+        benchFoot.style.display = 'flex'
+        const nextLbl = (levelLabels[gap.nextLevel] || 'NEXT').toUpperCase()
+        if (benchMsg) benchMsg.innerHTML = `Reach <b>${nextLbl}</b> to enter the leader tier`
+        if (benchGapNum) benchGapNum.textContent = `+${Number(gap.pointsNeeded)} PTS`
+      } else if (benchFoot) {
+        benchFoot.style.display = 'none'
+      }
     } else {
       if (benchHead) benchHead.style.display = 'none'
       if (benchEl) benchEl.style.display = 'none'
@@ -3918,9 +3989,12 @@ button:focus-visible, a:focus-visible {
           const diff = Number(a.difficulty) || 1
           const dotsHtml = [0,1,2].map(j => `<i class="${j<diff?'on':''}"></i>`).join('')
           const impact = Math.round(Number(a.estimatedImpact)||0)
+          const sev = (a.severity || 'medium').toLowerCase()
+          const sevDot = `<span class="sev-dot sev-${sev}" title="${sev.toUpperCase()}"></span>`
+          const qwMark = a.quickWin ? `<span class="ax-mini-qw" title="Quick Win">⚡</span>` : ''
           return `
             <div class="ax-mini">
-              <span class="ax-mini-title">${escHtml(a.title || '—')}</span>
+              <span class="ax-mini-title">${sevDot}${escHtml(a.title || '—')}${qwMark}</span>
               <span class="dots">${dotsHtml}</span>
               <span class="impact">+${impact} PTS</span>
             </div>`
