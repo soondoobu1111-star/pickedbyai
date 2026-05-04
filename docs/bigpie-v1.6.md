@@ -46,20 +46,24 @@ pickedby.ai는 단순히 "AI에서 보이는지"를 측정하는 도구가 아�
 > "엔터프라이즈 고객이 많이 쓸 거 같니? 아니. 소상공인들이 많이 쓸 거야."
 > "있는 놈들에게 정보 정리해줘봤자 의미 없다. 가지지 못한 자들에게 처방이 필요하다."
 
-| 유저 유형 | 점수대 | 필요한 것 | v1.5 제공 | v1.6 제공 |
-|----------|--------|---------|----------|----------|
-| Notion (엔터프라이즈) | 87.5 | 대시보드 정리 | O | O |
-| 신생 SaaS | 15~40 | "왜 AI가 날 모르지?" | X | **진단 리포트** |
-| 1인 크리에이터 | 0~20 | "뭘 해야 AI가 알게 돼?" | X | **처방 3가지** |
-| pickedby.ai 자체 | 27.5 | "PH 런치해, Reddit 달아" | X | **구체 액션 + 효과 예측** |
+> **2026-05-04 CEO 재해석 (영구 룰)**: "소상공인" / "가지지 못한 자" = **글로벌 도메인 보유자 중 점수 낮은 그룹** (특정 직군 한정 X / 한국 시장 X). 광고/마케팅 예산 큰 글로벌 ICP Tier 1~2를 우선 공략. **"AI계의 Google Search Console — 도메인 가진 누구나"**가 진짜 비전 (vision-brief-v2.md §1 unchanged since 2026-04-14).
 
-**점수가 낮을수록 우리 서비스의 가치가 높아진다.** 이것이 v1.6의 핵심입니다.
+| ICP Tier | 예시 (글로벌 영어 시장 only) | 점수대 | 필요한 것 | v1.6 제공 |
+|---------|---------------------------|--------|---------|----------|
+| 엔터프라이즈 | Notion / Stripe / Figma | 87+ | 대시보드 모니터링 | 모니터링만 (가치 낮음) |
+| **Tier 1 (W2~W4 우선)** | Indie/B2B SaaS · Marketing/Design Agencies · Consultants/Coaches | 15~50 | "왜 AI가 날 모르지?" + "뭘 해야 알리지?" | **진단 + 처방** |
+| **Tier 2 (W5+ 확장)** | Newsletter operators · D2C brands · Online course creators · Authors | 5~30 | "AI에게 발견되려면?" | **처방 + 이행 추적** |
+| **Tier 3 (Phase 3 endgame)** | Any domain owner — products / content / personal brand / professional services | 0~20 | "구체 액션 + 효과 예측" | **처방 + 효과 데이터 누적** |
+| pickedby.ai 자체 | (dogfood 검증) | 45 | "IH 진입, 블로그 SEO, 봇 4채널" | **현재 진행 중** |
+
+**점수가 낮을수록 우리 서비스의 가치가 높아진다.** 이것이 v1.6의 핵심입니다. 단 "낮은 점수 = 모든 도메인 보유자" — 특정 직군이나 한국 시장이 아닙니다.
 
 ### 기존 정의 유지 (불변)
 - 5대 AI(GPT·Gemini·Claude·Grok·Perplexity) 전체 커버 포지셔닝
-- 측정 단위: 제품 + 콘텐츠 + 퍼스널 브랜드
+- 측정 단위: 제품 + 콘텐츠 + 퍼스널 브랜드 + 서비스업 도메인 (any discoverable entity)
 - 카테고리 야망: AI Visibility Platform 카테고리 리더
 - "The Google Stack for AI Recommendations" 비전 유지
+- **글로벌 영어 시장 only** (2026-05-04 CEO 재확인) — 한국어 카피·한국 플랫폼 타겟 X
 
 ---
 

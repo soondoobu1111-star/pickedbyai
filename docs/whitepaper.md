@@ -24,9 +24,13 @@
 - ChatGPT 일일 쇼핑 쿼리 5,000만 건
 - GEO 시장 CAGR 40.6%, 2034년 $171.5억 전망
 
-그런데 **디지털 제품 크리에이터 200~300만 명**은 자기 제품이 AI에 보이는지조차 확인할 수 없다. 24개 GEO 도구 전부 기업/브랜드 타겟이다. 크리에이터부터 시작하는 도구는 **0개**다. 이것이 Phase 1 진입점이며, 로드맵은 D2C·SaaS·에이전시까지 확장된다.
+그런데 **글로벌 도메인 가진 수천만 명** — Indie/B2B SaaS · Marketing/Design Agencies · Consultants/Coaches · Newsletter operators · D2C brands · Online course creators · Authors · Professional services · Personal brands — 자기 제품/콘텐츠/도메인이 AI에 보이는지조차 확인할 수 없다. 24개 GEO 도구 전부 Fortune 500/엔터프라이즈 타겟이다. **누구나 시작할 수 있는 도구는 0개**다.
 
-pickedby.ai는 이 공백을 채운다.
+Phase 1 진입점(인디 크리에이터·Indie SaaS 시드 세그먼트)이며, **최종 타겟은 anyone discoverable by AI** — Phase 2 D2C/Agency/SaaS 확장, Phase 3 글로벌 영어 시장 모든 도메인 보유자. (vision-brief-v2.md §1 변경 없음, 2026-04-14 이후 동일)
+
+> **타겟 영구 룰 (2026-05-04 CEO 재확인)**: 글로벌 영어 시장 only · 한국 시장 X · "creators only" 단독 표기 금지 (진입점 맥락에서만 허용) · 5대 AI(GPT·Gemini·Claude·Grok·Perplexity) 전체 커버 불변
+
+pickedby.ai는 이 공백을 채운다 — Search Console for AI, for any website owner.
 
 ---
 

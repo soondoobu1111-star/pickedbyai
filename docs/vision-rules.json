@@ -54,8 +54,31 @@
       "SEO/GEO consultants",
       "Marketing agencies"
     ],
-    "phase_3_endgame": "Any online seller (i.e. Google Ads' entire TAM)",
-    "critical_note": "Creators are the SEED segment, not the ONLY segment. Never write copy that excludes future segments."
+    "phase_3_endgame": "Anyone discoverable by AI — any domain owner across products, content, personal brand, professional services (Google Ads' entire TAM)",
+    "critical_note": "Creators are the SEED segment, not the ONLY segment. Never write copy that excludes future segments.",
+    "icp_tier_2026_05_04_ceo_reaffirmed": {
+      "vision_oneliner": "AI Search Console — webmaster tool for any domain owner",
+      "market_scope": "Global English-only. Korean market explicitly excluded.",
+      "tier_1_priority_W2_W4": [
+        "Indie/B2B SaaS founders",
+        "Marketing and Design Agencies",
+        "Consultants and Coaches and Advisors"
+      ],
+      "tier_2_expansion_W5_plus": [
+        "Newsletter operators (Substack and self-hosted)",
+        "D2C brands and e-commerce founders",
+        "Online course creators (Teachable, Thinkific, self-hosted)",
+        "Authors and publishers"
+      ],
+      "tier_3_endgame_phase_3": "Anyone discoverable by AI — any domain owner across products, content, personal brand, and professional services",
+      "absolute_excluded": [
+        "Korean market",
+        "Korean-language marketing copy",
+        "Korean platforms (Naver, Kakao)",
+        "Single-segment taglines that exclude future tiers (e.g. 'creators only', 'Etsy only')"
+      ],
+      "ceo_reaffirmation_note": "2026-05-04 CEO confirmed: global English market only. 'creators only' single tagline forbidden — entry-segment context permitted, exclusionary copy forbidden. The vision is unchanged since 2026-04-14 (vision-brief-v2.md §1) — past copy drift narrowed the target by accident."
+    }
   },
 
   "priorities": {

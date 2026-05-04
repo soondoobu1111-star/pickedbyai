@@ -28,7 +28,9 @@ GPT · Gemini · Claude · Grok · Perplexity 등 주요 AI가 쇼핑·콘텐츠
 - ChatGPT 일일 쇼핑 쿼리 **5,000만 건**
 - **70%의 디지털 제품이 Product 스키마 없음** → AI에게 보이지 않음
 
-그런데 Gumroad 셀러, Notion 템플릿 작가, AI 프롬프트 팩 크리에이터는 AI에 자기 제품이 추천되는지조차 모른다. 확인 방법도 없고, 최적화 방법도 모른다.
+그런데 **글로벌 도메인 보유자 누구나** — Indie/B2B SaaS 창업자 · Marketing/Design Agency · Consultant/Coach · Newsletter operator · D2C brand · Online course creator · Author · Professional service provider · Personal brand owner — 자기 도메인이 AI에 추천되는지조차 모른다. 확인 방법도 없고, 최적화 방법도 모른다. 24개 기존 GEO 도구 전부 Fortune 500/엔터프라이즈 타겟이다.
+
+> **타겟 영구 룰 (2026-05-04 CEO 재확인)**: "AI계의 Google Search Console — 도메인 가진 누구나의 웹마스터 도구". 글로벌 영어 시장 only · 한국 시장 X · "creators only" 단독 표기 금지 (진입점 맥락에서만 허용).
 
 ---
 
@@ -51,14 +53,18 @@ GPT · Gemini · Claude · Grok · Perplexity 등 주요 AI가 쇼핑·콘텐츠
 
 | 지표 | 수치 | 출처 |
 |------|------|------|
-| 디지털 제품 셀러 수 | 200-300만 명 | Gumroad/Etsy/LS 합산 추정 |
-| 글로벌 콘텐츠 퍼블리셔 | 5,000만+ 블로그 + 5,000만+ 유튜버 + 50만+ 뉴스레터 | Statista/Ahrefs |
-| 크리에이터 이코노미 규모 | $1,910-2,540억 (2025) | Goldman Sachs |
+| 글로벌 활성 웹사이트 (.com·.io·.ai 등) | 2억+ 도메인 | Verisign/Domain Tools |
+| Indie/B2B SaaS 시장 | 30,000+ 활성 (BetaList/IH 추정) | Indie Hackers/PH |
+| Marketing/Design 에이전시 (글로벌) | 50만+ | Statista |
+| Newsletter operators (Substack 외) | 50만+ | Statista |
+| Online course creators (Teachable/Thinkific 외) | 100만+ | Statista |
+| 디지털 제품 셀러 (Gumroad/Etsy/LS) | 200-300만 명 | Gumroad/Etsy/LS 합산 추정 |
+| 글로벌 콘텐츠 퍼블리셔 | 5,000만+ 블로그 + 5,000만+ 유튜버 | Statista/Ahrefs |
 | GEO/AEO 도구 시장 CAGR | **40.6%**, 2034년 $171.5억 전망 | 시장 조사 |
-| 크리에이터·콘텐츠 타겟 GEO 도구 | **0개** | 직접 조사 (24개 전수 확인) |
+| 누구나 시작할 수 있는 GEO 도구 | **0개** | 직접 조사 (24개 전수 — 전부 Fortune 500/엔터프라이즈) |
 
-**핵심**: 24개 GEO 도구 전부 기업/브랜드 타겟. **제품·콘텐츠 둘 다 포괄하는 플랫폼은 전 세계 0개**.
-**확장 가능 시장**: "AI 답변에서 발견되기를 원하는 모든 개인·조직" = 전 세계 수억 명.
+**핵심**: 24개 GEO 도구 전부 Fortune 500/엔터프라이즈 타겟. **누구나 (도메인 보유자) 시작할 수 있는 플랫폼은 전 세계 0개**.
+**확장 가능 시장**: "AI 답변에서 발견되기를 원하는 모든 개인·조직" = 전 세계 글로벌 수억 명 (Phase 3 endgame).
 
 ---
 
@@ -74,18 +80,18 @@ GPT · Gemini · Claude · Grok · Perplexity 등 주요 AI가 쇼핑·콘텐츠
 | amionai.com | TBD | 일반 | 단순 가시성 진단 |
 | Durable Discoverability | 무료 | 로컬 비즈니스 | 배관공/레스토랑 타겟 |
 | Goodie AI | TBD | 인디 SaaS | B2B SaaS 타겟 |
-| **pickedby.ai** | **무료/$19** | **크리에이터** | **10초 무료, 가입 불필요, 5차원 분해** |
+| **pickedby.ai** | **무료/$19** | **도메인 보유자 누구나** (Indie SaaS · Agency · Consultant · Newsletter · D2C · Course · Author 등) | **10초 무료, 가입 불필요, 5차원 분해, 5대 AI 전체 커버, 진단+처방** |
 
-**혁신자의 딜레마**: 기존 경쟁사는 더 높은 마진의 기업/마케터 고객 집중 → 크리에이터 시장에 안 내려옴.
+**혁신자의 딜레마**: 기존 경쟁사는 더 높은 마진의 Fortune 500 집중 → **도메인 보유자 일반 시장에 안 내려옴** (Indie/B2B SaaS · Marketing Agency · Consultant · Newsletter · D2C · Course creator · Author 등 모두 사각지대).
 **⚠️ 2026-04-13 업데이트**: trysight.ai가 "AI Visibility Score" 관련 키워드 블로그 장악 시작. SEO 선점 경쟁 진입 필요.
 
 ---
 
 ## 6. 차별성 (확정, 번복 불가)
 
-### ① 크리에이터부터 시작하는 유일한 GEO 플랫폼
-Notion 템플릿, 전자책, AI 프롬프트, 온라인 강의에서 시작하는 카테고리 기반 모니터링.
-경쟁사는 전부 브랜드명 기반 → 제품 카테고리 개념 없음. Phase 2+: D2C·SaaS·에이전시 확장.
+### ① 누구나 시작할 수 있는 유일한 GEO 플랫폼
+**도메인 가진 누구나** — Indie/B2B SaaS · Marketing/Design Agency · Consultant/Coach · Newsletter operator · D2C brand · Online course creator · Author · Professional service provider · Personal brand — 카테고리 기반 모니터링 시작.
+경쟁사는 전부 Fortune 500 브랜드명 기반 → **누구나 진입점은 0개**. Phase 1 시드 = 인디 크리에이터·Indie SaaS, Phase 2+ D2C·B2B SaaS·Agency 확장, **Phase 3 endgame = anyone discoverable by AI**.
 
 ### ② 10초 무료, 가입 불필요
 URL 또는 제품명 입력 → 즉시 결과.
