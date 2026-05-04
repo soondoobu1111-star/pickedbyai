@@ -16,14 +16,16 @@
 //   );
 //
 // 작성: 2026-04-24 (D7 PROBE-REDESIGN-01)
+// 2026-05-04: BUG-SUPABASE-ENV-BYPASS-01 fix — DEFAULT_SUPABASE_URL 하드코딩 제거,
+//             getSbUrl(env) 헬퍼로 통일. 스테이징에서 prod URL 사용하던 잠재 버그 차단.
 // ─────────────────────────────────────────────────────────────
+import { getSbUrl } from './supabaseEnv'
 
 type CacheEnv = {
   SUPABASE_SERVICE_KEY?: string
   SUPABASE_URL?: string
+  ENVIRONMENT?: string
 }
-
-const DEFAULT_SUPABASE_URL = 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
 
 export type CategoryCacheEntry = {
   description?: string
@@ -45,7 +47,7 @@ export async function getCategoryCache(
   name: string,
 ): Promise<CategoryCacheEntry | null> {
   if (!env.SUPABASE_SERVICE_KEY) return null
-  const sbUrl = env.SUPABASE_URL || DEFAULT_SUPABASE_URL
+  const sbUrl = getSbUrl(env)
   const key = normalizeName(name)
   try {
     const res = await fetch(
@@ -88,7 +90,7 @@ export async function setCategoryCache(
   entry: CategoryCacheEntry,
 ): Promise<void> {
   if (!env.SUPABASE_SERVICE_KEY) return
-  const sbUrl = env.SUPABASE_URL || DEFAULT_SUPABASE_URL
+  const sbUrl = getSbUrl(env)
   const key = normalizeName(name)
   const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
   try {

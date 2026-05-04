@@ -30,6 +30,7 @@ import {
   computeDimensionsFromDAsn,
   buildSyntheticContextFromDAsn,
 } from './probeRedesign'
+import { getSbUrl } from './supabaseEnv'
 
 // ===== Adapter 전용 타입 (index.ts와 느슨하게 결합) =====
 
@@ -37,6 +38,7 @@ export type AdapterEnv = {
   PERPLEXITY_API_KEY?: string
   SUPABASE_SERVICE_KEY?: string
   SUPABASE_URL?: string
+  ENVIRONMENT?: string
   GEMINI_RELAY?: { fetch: (req: Request) => Promise<Response> }
   GEMINI_RELAY_URL?: string
   GEMINI_API_KEY?: string
@@ -57,7 +59,8 @@ export type EngineInputs = {
   }>
 }
 
-const DEFAULT_SUPABASE_URL = 'https://pfrcppgecqsbnhkkjkbd.supabase.co'
+// 2026-05-04: BUG-SUPABASE-ENV-BYPASS-01 fix — DEFAULT_SUPABASE_URL 제거,
+// getSbUrl(env)로 통일. 스테이징에서 prod URL 사용하던 잠재 버그 차단.
 
 // ===== 메인 빌더 + 합산 =====
 
@@ -490,7 +493,7 @@ async function fetchProbeLogsForScoring(
   productName: string,
 ): Promise<Array<{ co_recommendations: string[] | null; created_at?: string }>> {
   if (!env.SUPABASE_SERVICE_KEY) return []
-  const sbUrl = env.SUPABASE_URL || DEFAULT_SUPABASE_URL
+  const sbUrl = getSbUrl(env)
   try {
     const res = await fetch(
       `${sbUrl}/rest/v1/probe_logs?product_id=eq.${encodeURIComponent(productName)}&select=co_recommendations,created_at&order=created_at.desc&limit=200`,
