@@ -1917,6 +1917,27 @@
       document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'));
       if (!isOpen) item.classList.add('open');
     }
+
+    // 2026-05-04 BUG-FAQ-FADE-STUCK-01 fix:
+    // .fade-up이 .visible 클래스 추가 트리거 없이 opacity:0 stuck 상태로 화면에 안 보이던 버그.
+    // manifesto/index.html과 동일한 IntersectionObserver 패턴 차용.
+    (function() {
+      var els = document.querySelectorAll('.fade-up');
+      if ('IntersectionObserver' in window) {
+        var obs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(e) {
+            if (e.isIntersecting) {
+              e.target.classList.add('visible');
+              obs.unobserve(e.target);
+            }
+          });
+        }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+        els.forEach(function(el) { obs.observe(el); });
+      } else {
+        // fallback: 옛 브라우저 즉시 visible
+        els.forEach(function(el) { el.classList.add('visible'); });
+      }
+    })();
   </script>
 </body>
 </html>
