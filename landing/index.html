@@ -689,6 +689,89 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   margin-top: 12px;
 }
 
+/* ── WHO NEEDS THIS ── */
+.who-section {
+  max-width: 1080px; margin: 0 auto;
+  padding: 56px 20px 64px;
+  text-align: center;
+}
+.who-eyebrow {
+  font-family: var(--pixel); font-size: 0.45rem;
+  color: var(--yellow); letter-spacing: 0.25em;
+  margin-bottom: 18px;
+}
+.who-section h2 {
+  font-family: var(--body); font-weight: 800;
+  font-size: clamp(28px, 4vw, 40px);
+  line-height: 1.15; letter-spacing: -0.6px;
+  color: #fff;
+  max-width: 720px; margin: 0 auto 16px;
+}
+.who-sub {
+  color: var(--muted-3); font-size: 1rem;
+  max-width: 640px; margin: 0 auto 40px;
+  line-height: 1.7;
+}
+.who-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  text-align: left;
+}
+.who-card {
+  position: relative;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  padding: 28px 24px 24px;
+  display: flex; flex-direction: column;
+  gap: 14px;
+}
+.who-card::before {
+  content: ''; position: absolute;
+  top: -1px; left: -1px;
+  width: 8px; height: 8px;
+  background: var(--yellow); z-index: 2;
+}
+.who-card::after {
+  content: ''; position: absolute;
+  bottom: -1px; right: -1px;
+  width: 4px; height: 4px;
+  background: #2a2a2a;
+}
+.who-tag {
+  font-family: var(--pixel); font-size: 0.4rem;
+  color: var(--yellow); letter-spacing: 0.2em;
+}
+.who-title {
+  font-family: var(--body); font-weight: 800;
+  font-size: 1.15rem; color: #fff;
+  letter-spacing: -0.3px;
+  margin: 0;
+}
+.who-list {
+  list-style: none; padding: 0; margin: 0;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.who-list li {
+  font-size: 0.9rem; color: var(--muted-3); line-height: 1.5;
+  position: relative; padding-left: 14px;
+}
+.who-list li::before {
+  content: '▸'; position: absolute; left: 0;
+  color: var(--yellow); font-size: 0.7rem; top: 2px;
+}
+.who-why {
+  margin: 4px 0 0;
+  font-size: 0.85rem; color: var(--muted);
+  line-height: 1.55;
+  border-top: 1px solid var(--border-faint);
+  padding-top: 12px;
+}
+@media (max-width: 880px) {
+  .who-grid { grid-template-columns: 1fr; gap: 12px; }
+  .who-section { padding: 40px 16px 48px; }
+}
+
 /* ── SECOND CTA ── */
 .cta-section {
   max-width: 1080px; margin: 0 auto;
@@ -1053,6 +1136,53 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
           <span>🏆 Category rank shifts — who's climbing, who's falling</span>
           <span>💡 One actionable tip per week to climb the AI chart</span>
         </div>
+      </div>
+    </section>
+
+    <!-- WHO NEEDS THIS MOST -->
+    <section class="who-section fade">
+      <div class="who-eyebrow">▶ WHO NEEDS THIS MOST</div>
+      <h2>If you own a domain, this is for you.</h2>
+      <p class="who-sub">
+        AI is becoming the front door to discovery. When your customers ask
+        ChatGPT, Claude, Perplexity, Gemini, or Grok about your category —
+        if you're not in the answer, you don't exist.
+      </p>
+      <div class="who-grid">
+        <article class="who-card">
+          <div class="who-tag">TIER 1 · HIGH-PRIORITY</div>
+          <div class="who-title">Builders &amp; Service Providers</div>
+          <ul class="who-list">
+            <li>Indie / B2B SaaS founders</li>
+            <li>Marketing &amp; Design Agencies</li>
+            <li>Consultants, Coaches, Advisors</li>
+          </ul>
+          <p class="who-why">Every AI miss is a missed sales call. High-LTV customers, real ad budgets, recurring revenue.</p>
+        </article>
+
+        <article class="who-card">
+          <div class="who-tag">TIER 2 · EXPANDING</div>
+          <div class="who-title">Creators &amp; Publishers</div>
+          <ul class="who-list">
+            <li>Newsletter operators (Substack, self-hosted)</li>
+            <li>D2C brands &amp; e-commerce founders</li>
+            <li>Online course creators</li>
+            <li>Authors &amp; publishers</li>
+          </ul>
+          <p class="who-why">AI mentions = audience growth. One recommendation can mean thousands of new subscribers.</p>
+        </article>
+
+        <article class="who-card">
+          <div class="who-tag">TIER 3 · EVERYONE ELSE</div>
+          <div class="who-title">Anyone with a domain</div>
+          <ul class="who-list">
+            <li>Personal brands</li>
+            <li>Professional service providers</li>
+            <li>Content publishers &amp; writers</li>
+            <li>Any product, content, or expertise discoverable by AI</li>
+          </ul>
+          <p class="who-why">Search Console is for any website. So is this.</p>
+        </article>
       </div>
     </section>
 
