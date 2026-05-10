@@ -1,0 +1,217 @@
+{
+  "meta": {
+    "task": "시장 구조 분석 — TAM/SAM/SOM + 트렌드 + 기회 + 돈의 흐름",
+    "created": "2026-05-10",
+    "methodology": "6회 웹 검색 기반, 복수 리서치 기관 교차 검증"
+  },
+
+  "market_structure": {
+    "TAM": {
+      "name": "Total Addressable Market",
+      "definition": "GEO(Generative Engine Optimization) 시장 전체 + 크리에이터 이코노미 디지털 마케팅 지출",
+      "size": {
+        "geo_market_2026": "$1.5B (GEO 서비스+플랫폼, CAGR 45-50%)",
+        "geo_market_2030": "$10-19B (추정치 범위)",
+        "geo_market_2034": "$33.7B (Dimension Market Research)",
+        "seo_software_market_2026": "$96.4B (참고: GEO가 대체할 시장)",
+        "creator_economy_2026": "$314B"
+      },
+      "interpretation": "GEO 시장은 $96B SEO 시장에서 갈라져 나오는 새 카테고리. 2026년 $1.5B → 2034년 $33.7B 성장 예측. 이 안에 우리가 있음."
+    },
+
+    "SAM": {
+      "name": "Serviceable Addressable Market",
+      "definition": "GEO 도구를 쓸 수 있는 디지털 제품 크리에이터 전체",
+      "calculation": {
+        "total_digital_creators": "207M (글로벌 전체 크리에이터)",
+        "digital_product_sellers": "3-5M (Gumroad + Etsy 디지털 + LemonSqueezy + Notion 마켓 등)",
+        "who_care_about_ai_visibility": "약 10-20% = 300K-1M명 (얼리 어답터)",
+        "average_willingness_to_pay": "$0-49/year",
+        "sam_estimate": "$15M-$50M/year"
+      },
+      "interpretation": "디지털 제품 판매자 300만-500만 명 중 AI 가시성에 관심 있는 10-20%가 SAM. 현재 대부분 무료 도구만 사용 의향."
+    },
+
+    "SOM": {
+      "name": "Serviceable Obtainable Market",
+      "definition": "pickedby.ai가 12개월 내 실제로 잡을 수 있는 시장",
+      "calculation": {
+        "reachable_creators": "50K-100K (Product Hunt + Reddit + 디스콰이엇 + GPT Store 유입)",
+        "free_user_conversion": "5-10% 체크 → 1-2% 이메일 가입",
+        "paid_conversion": "2-5% of email users",
+        "realistic_12month_users": "1,000-5,000 가입자",
+        "realistic_12month_paying": "50-250명",
+        "realistic_12month_mrr": "$950-$4,750",
+        "som_estimate": "$12K-$57K/year"
+      },
+      "interpretation": "혼자 운영, 마케팅 예산 $0 기준 현실적 수치. Product Hunt 터지면 상단, 안 터지면 하단."
+    }
+  },
+
+  "demand_drivers": {
+    "description": "수요를 만드는 핵심 트렌드 5개",
+    "trends": [
+      {
+        "id": "T1",
+        "name": "AI 검색이 Google을 대체하기 시작",
+        "data": [
+          "ChatGPT 일일 쿼리 20억 건",
+          "AI 리퍼럴 트래픽 YoY +975% (IT 기업 기준)",
+          "ChatGPT 검색 점유율 2026년 기준 Google 대비 급성장 중",
+          "41%의 ChatGPT 세션이 커머스/쇼핑 관련"
+        ],
+        "impact_on_us": "핵심 존재 이유. 이 트렌드가 꺾이면 우리도 끝. 하지만 모든 데이터가 가속을 가리킴."
+      },
+      {
+        "id": "T2",
+        "name": "AI 리퍼럴 전환율이 Google보다 4-5배 높음",
+        "data": [
+          "AI 방문자 전환율 14.2% vs Google 오가닉 2.8% (5배)",
+          "ChatGPT 리퍼럴 전환율 1.81% vs 비브랜드 오가닉 1.39% (31% 높음)",
+          "Ahrefs 측정: ChatGPT 리퍼럴 4.4배",
+          "AI 리퍼럴 Shopify 트래픽 7x 성장, 주문 11x 성장 (2025→2026)"
+        ],
+        "impact_on_us": "크리에이터에게 '왜 AI 가시성이 중요한지' 설명할 때 가장 강력한 숫자. 랜딩 카피에 반영 필수."
+      },
+      {
+        "id": "T3",
+        "name": "GEO가 마케팅 필수 예산 항목으로 격상",
+        "data": [
+          "32%의 디지털 마케팅 리더가 GEO를 2026년 최우선으로 선정 (2025년 12% → 32%)",
+          "97%가 GEO 시행 후 긍정적 영향 보고",
+          "B2B SaaS 기준 마케팅 예산의 40%를 GEO에 배분하는 것이 표준화 추세",
+          "Profound $96M 투자 유치 ($1B 밸류)"
+        ],
+        "impact_on_us": "시장이 '이게 필요한가?' 단계를 지나고 있음. 타이밍 확인."
+      },
+      {
+        "id": "T4",
+        "name": "크리에이터 이코노미 폭발 + AI 도구 보편화",
+        "data": [
+          "글로벌 크리에이터 2.07억 명",
+          "크리에이터 이코노미 2026년 $314B",
+          "AI 디지털 제품이 Gumroad 베스트셀러 카테고리",
+          "프롬프트 팩, Notion 템플릿, 워크플로우 자동화가 $500-1500/월 수익"
+        ],
+        "impact_on_us": "타겟 유저 풀이 계속 커지고 있음. 특히 AI 제품 크리에이터는 AI 가시성에 더 민감."
+      },
+      {
+        "id": "T5",
+        "name": "빌드 비용 제로화 (바이브코딩)",
+        "data": [
+          "Claude Code, Cursor, Windsurf로 솔로 개발자가 2주만에 SaaS 출시",
+          "pickedby.ai 자체가 증거 (Claude Code로 2주 빌드)",
+          "경쟁 진입장벽 하락 = 더 많은 플레이어 진입 가능"
+        ],
+        "impact_on_us": "양날의 검. 우리도 빠르게 빌드하지만 경쟁자도 빠르게 진입. 해자(데이터/네트워크)가 중요한 이유."
+      }
+    ]
+  },
+
+  "underexploited_opportunities": {
+    "description": "아직 덜 공략된 기회 5개",
+    "opportunities": [
+      {
+        "id": "O1",
+        "name": "크리에이터 전용 GEO 도구 = 0개",
+        "gap": "24개 GEO 도구 전부 기업/에이전시/브랜드 타겟. 디지털 크리에이터 전용은 pickedby.ai뿐.",
+        "evidence": "6회 심층 검색 결과 경쟁자 0개 확인",
+        "money_flowing": false,
+        "why_open": "기업용 $99-989/mo 마진 > 크리에이터 $0-49/mo → 혁신자의 딜레마로 아무도 안 내려옴",
+        "our_play": "이 빈 공간을 선점하는 것이 전체 전략의 핵심"
+      },
+      {
+        "id": "O2",
+        "name": "AI 가시성 '처방' 자동화",
+        "gap": "대부분 도구가 '진단(점수)'만 제공. '처방(llms.txt 자동생성, Schema 자동삽입)'까지 해주는 크리에이터 도구 없음",
+        "evidence": "IH 피드백 '점수 18 받으면 뭘 해야 하는지 모른다', Gemini/ChatGPT 모두 지적",
+        "money_flowing": true,
+        "where": "Profound의 'Write' 기능이 기업용으로 이것을 하지만 $499/mo. 크리에이터 가격대에는 0.",
+        "our_play": "Fix-It Playbook + 원클릭 llms.txt/Schema 생성 = known gap 해결"
+      },
+      {
+        "id": "O3",
+        "name": "AI 추천 데이터 독점",
+        "gap": "카테고리별 'AI가 뭘 추천하는지' 데이터를 체계적으로 수집하는 곳 없음",
+        "evidence": "Profound도 브랜드별 데이터. 'Notion 템플릿 카테고리 AI 추천 트렌드'는 아무도 안 가짐",
+        "money_flowing": false,
+        "why_open": "이 데이터는 체크 횟수가 쌓여야 의미. 초기 단계라 아직 아무도 없음.",
+        "our_play": "무료로 체크량 극대화 → 10만건 누적 → '크리에이터 AI 추천 리포트 2027' 발행 → 미디어 인용 → 브랜드 독점"
+      },
+      {
+        "id": "O4",
+        "name": "AI 배지/인증 생태계",
+        "gap": "Product Hunt 배지, Stripe 배지처럼 'AI가 추천하는 제품' 인증 배지 시장이 비어있음",
+        "evidence": "GEO 도구 10곳 중 배지 시스템 0곳",
+        "money_flowing": false,
+        "why_open": "배지는 네트워크 효과가 있어야 의미. 초기 유저 없으면 못 만듦. = 선점자 독식.",
+        "our_play": "Picked by AI ✓ 배지 → ClickFunnels 배지 MRR $1M+ 레퍼런스"
+      },
+      {
+        "id": "O5",
+        "name": "크리에이터 간 AI 최적화 네트워크",
+        "gap": "크리에이터들이 서로 AI 가시성을 높여주는 상호 추천/백링크 네트워크 없음",
+        "evidence": "DressExisting1726 Reddit 댓글: '제3자 언급이 AI 행동을 바꿈'. 이걸 체계화한 플랫폼 없음.",
+        "money_flowing": false,
+        "why_open": "커뮤니티/네트워크 구축은 시간이 걸림. 도구만 만들면 되는 게 아님.",
+        "our_play": "Creator Network = 관계 기반 해자. 경쟁사 카피 불가."
+      }
+    ]
+  },
+
+  "where_money_flows": {
+    "description": "이미 돈이 흐르는 영역",
+    "flows": [
+      {
+        "area": "Enterprise GEO 모니터링 SaaS",
+        "evidence": "Profound $96M 투자, $1B 밸류, 700+ 기업 고객",
+        "annual_spend": "$2K-$8K/month per company (mid-market)",
+        "our_relevance": "우리 시장 아님. 하지만 시장 존재를 증명."
+      },
+      {
+        "area": "SEO 도구 시장",
+        "evidence": "Semrush $443M/year 매출, Ahrefs $149M/year. SEO 소프트웨어 시장 $96B.",
+        "annual_spend": "$99-$999/month per user",
+        "our_relevance": "GEO가 이 시장에서 %를 빼앗아 오는 중. 40% GEO / 60% SEO가 표준화."
+      },
+      {
+        "area": "크리에이터 디지털 제품 판매",
+        "evidence": "Gumroad 주간 크리에이터 수입 $2M+. 프롬프트팩/Notion 템플릿 $500-1500/월.",
+        "annual_spend": "크리에이터가 마케팅에 쓰는 비용은 대부분 $0-50/월",
+        "our_relevance": "직접적. 이 사람들이 우리 유저. 하지만 지불 의향 낮음 = 무료 전략 필수."
+      },
+      {
+        "area": "AI 쇼핑/커머스",
+        "evidence": "ChatGPT 세션 41%가 커머스 관련. AI 리퍼럴 Shopify 주문 11x 성장.",
+        "annual_spend": "측정 초기 단계",
+        "our_relevance": "간접적. AI가 제품을 추천하는 행위 자체에 돈이 흐르기 시작 = 우리 존재 이유 강화."
+      },
+      {
+        "area": "Reddit/콘텐츠 마케팅 대행",
+        "evidence": "Fiverr Reddit 마케팅 gig $5-500. MediaFast $7.5K+ 수입.",
+        "annual_spend": "$5-10K/month (에이전시 기준)",
+        "our_relevance": "낮음. 하지만 우리가 '제3자 언급' 최적화를 자동화하면 이 시장 일부 흡수 가능."
+      }
+    ]
+  },
+
+  "strategic_insight": {
+    "one_liner": "GEO $1.5B 시장이 $33.7B로 가는 길목에서, 기업용은 Profound가 먹고 있고, 크리에이터용은 아무도 안 하고 있다. 여기가 우리 자리.",
+    "biggest_risk": "크리에이터의 지불 의향이 낮다 (대부분 $0-49). 무료 전략이 맞지만 수익화 경로가 좁다.",
+    "biggest_opportunity": "AI 리퍼럴 전환율이 Google의 4-5배. 이 숫자 하나로 크리에이터에게 '왜 AI 가시성이 중요한지' 설득 가능.",
+    "timing": "GEO 예산 배분이 12%→32%로 급등 중. 2026년은 인식 전환 원년. 2027년부터 본격 지출. 지금 선점이 맞다."
+  },
+
+  "sources": [
+    {"title": "GEO Market Size $33.7B by 2034", "url": "https://dimensionmarketresearch.com/report/generative-engine-optimization-geo-market/"},
+    {"title": "GEO Services Market 2026-2034", "url": "https://www.intelmarketresearch.com/generative-engine-optimization-services-market-36546"},
+    {"title": "98+ GEO Statistics 2026", "url": "https://marketingltb.com/blog/statistics/generative-engine-optimization-statistics/"},
+    {"title": "Creator Economy $2084B by 2035", "url": "https://www.precedenceresearch.com/creator-economy-market"},
+    {"title": "ChatGPT Referral Conversion 31% Higher", "url": "https://almcorp.com/blog/chatgpt-vs-organic-search-conversion-rate/"},
+    {"title": "AI Search Statistics 2026 CMO Cheatsheet", "url": "https://exposureninja.com/blog/ai-search-statistics/"},
+    {"title": "SEO Software Market $96B", "url": "https://www.precedenceresearch.com/seo-software-market"},
+    {"title": "Semrush $443M Revenue", "url": "https://techrt.com/semrush-statistics/"},
+    {"title": "Profound $96M Raise at $1B Valuation", "url": "https://fortune.com/2026/02/24/exclusive-as-ai-threatens-search-profound-raises-96-million-to-help-brands-stay-visible/"},
+    {"title": "AI Visibility Should Be Biggest 2026 Budget Ask", "url": "https://www.codewordagency.com/the-feed/ai-visibility-should-be-your-brands-biggest-2026-budget-ask/"}
+  ]
+}
